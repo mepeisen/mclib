@@ -18,6 +18,14 @@
   
   <modules>
   	<module>bom</module>
+  	<module>build/java-parent</module>
+  	<module>modules/api/fakeplayer-api</module>
+  	<module>modules/api/mclib-api</module>
+  	<module>modules/impl/mclib</module>
+  	<module>modules/impl/fakeplayer</module>
+  	<module>modules/nms/fakeplayer-nms</module>
+  	<module>modules/test/mclib-spigot-testsupport</module>
+  	<module>modules/test/mclib-testsupport</module>
   </modules>
   
   <repositories>

@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>fakeplayer-nms-1.9.4</artifactId>
+  
+  <name>fakeplayer-nms-1.9.4</name>
+  
+  <parent>
+  	<groupId>de.minigameslib.mclib</groupId>
+  	<artifactId>mclib-java-parent</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  <dependencies>
+	    <dependency>
+	      <groupId>org.spigotmc</groupId>
+	      <artifactId>spigot</artifactId>
+	    </dependency>
+	    
+	    <dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.powermock</groupId>
+        	<artifactId>powermock-module-junit4</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.powermock</groupId>
+        	<artifactId>powermock-api-mockito</artifactId>
+        </dependency>
+  </dependencies>
+  
+  <dependencyManagement>
+  	<dependencies>
+	  	<dependency>
+	  		<groupId>de.minigameslib.mclib</groupId>
+	  		<artifactId>spigot-1.9.4-R0.1-api-bom</artifactId>
+	  		<version>0.0.1-SNAPSHOT</version>
+	  		<type>pom</type>
+	  		<scope>import</scope>
+	  	</dependency>
+  	</dependencies>
+  </dependencyManagement>
+  
+</project>
