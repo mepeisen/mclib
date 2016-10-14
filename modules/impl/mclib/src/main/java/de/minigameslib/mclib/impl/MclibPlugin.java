@@ -52,7 +52,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, IFakeClient
     {
         Bukkit.getPluginManager().registerEvents(this, this);
         
-        this.fakePlayer = FakeFactory.instance().createFakePlayer(this, "Fake"); //$NON-NLS-1$
+        this.fakePlayer = FakeFactory.instance().createFakePlayer(this, this, "Fake"); //$NON-NLS-1$
     }
     
     @Override
@@ -80,7 +80,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, IFakeClient
                         break;
                     }
                     sender.sendMessage("Fake player spawned");
-                    this.fakePlayer.connect(this, Bukkit.getWorlds().get(0).getSpawnLocation());
+                    this.fakePlayer.connect(Bukkit.getWorlds().get(0).getSpawnLocation());
                     break;
                 case "say":
                     if (this.fakePlayer.getPlayer() == null)

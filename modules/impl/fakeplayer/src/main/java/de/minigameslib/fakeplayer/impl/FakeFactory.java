@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.fakeclient.nms110.FakeController110;
 import de.minigameslib.mclib.fakeclient.IFakeClient;
@@ -68,13 +69,15 @@ public class FakeFactory
     /**
      * Creates a fake player.
      * 
+     * @param plugin
+     *            the owning plugin
      * @param client
      *            the client simulator
      * @param name
      *            name of the player.
      * @return fake player.
      */
-    public IFakeController createFakePlayer(IFakeClient client, String name)
+    public IFakeController createFakePlayer(Plugin plugin, IFakeClient client, String name)
     {
         IFakeController orig = null;
         final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3]; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
@@ -102,7 +105,7 @@ public class FakeFactory
                 break;
         }
         
-        return new FakeController(this.pool, orig);
+        return new FakeController(plugin, this.pool, orig);
     }
     
 }
