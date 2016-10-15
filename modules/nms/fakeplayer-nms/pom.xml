@@ -7,7 +7,7 @@
   
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
-  	<artifactId>mclib-java-parent</artifactId>
+  	<artifactId>mclib-nms-parent</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
   </parent>
   
