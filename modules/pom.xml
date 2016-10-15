@@ -9,8 +9,14 @@
   	<groupId>de.minigameslib.mclib</groupId>
   	<artifactId>mclib-parent</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
-  	<relativePath>../../pom.xml</relativePath>
   </parent>
+  
+  <modules>
+  	<module>api</module>
+  	<module>impl</module>
+  	<module>nms</module>
+  	<module>test</module>
+  </modules>
   
   <properties>
   		<maven.source.plugin.version>3.0.0</maven.source.plugin.version>

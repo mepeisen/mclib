@@ -1,23 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>mclib-java-parent</artifactId>
+  <artifactId>mclib-impl-parent</artifactId>
   <packaging>pom</packaging>
   
-  <name>parent for fakeplayer-nms</name>
+  <name>api-parent for mclib projects</name>
   
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
-  	<artifactId>mclib-parent</artifactId>
+  	<artifactId>mclib-nms-parent</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
   </parent>
   
   <modules>
-    <module>fakeplayer-nms-api</module>
-  	<module>fakeplayer-nms-1.8</module>
-  	<module>fakeplayer-nms-1.8.3</module>
-  	<module>fakeplayer-nms-1.8.5</module>
-  	<module>fakeplayer-nms-1.9</module>
-  	<module>fakeplayer-nms-1.9.4</module>
-  	<module>fakeplayer-nms-1.10.2</module>
+  	<module>fakeplayer-nms</module>
   </modules>
 </project>
