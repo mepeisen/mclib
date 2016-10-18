@@ -12,7 +12,7 @@
   </parent>
   
   <modules>
-  	<module>mclib-spigot-testsupport</module>
+  	<module>spigot-testsupport</module>
   	<module>mclib-testsupport</module>
   </modules>
 </project>

@@ -1,0 +1,273 @@
+/*
+    Copyright 2016 by minigameslib.de
+    All rights reserved.
+    If you do not own a hand-signed commercial license from minigames.de
+    you are not allowed to use this software in any way except using
+    GPL (see below).
+
+------
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+package de.minigameslib.mclib.spigottest;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import de.minigameslib.mclib.spigottest.SpigotServerConfig.Plugin;
+import de.minigameslib.mclib.spigottest.nms.v1102.Nms1102ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v18.Nms18ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v183.Nms183ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v185.Nms185ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v19.Nms19ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v194.Nms194ServerManager;
+
+/**
+ * Helper to create and manage spigot test servers.
+ * 
+ * @author mepeisen
+ */
+public class SpigotServer
+{
+    
+    /** logger. */
+    static final Logger LOGGER = Logger.getLogger(SpigotServer.class.getName());
+
+    /**
+     * Server starting runnable for configured server types.
+     */
+    private ServerManager manager;
+    
+    /**
+     * Constructor
+     * @param spigotServerConfig configuration.
+     * @throws IOException 
+     */
+    SpigotServer(SpigotServerConfig spigotServerConfig) throws IOException
+    {
+        // check server type.
+        switch (spigotServerConfig.getServerType())
+        {
+            case Local:
+                switch (spigotServerConfig.getServerVersion())
+                {
+                    // TODO install runtime
+                    case V1_10_2:
+                    case Latest:
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_10:
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8:
+                        this.manager = new Nms18ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_3:
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_4:
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_5:
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_6:
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_7:
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_8_8:
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_9:
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_9_2:
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    case V1_9_4:
+                        this.manager = new Nms194ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        break;
+                    default:
+                        throw new IllegalStateException("Unknown server version"); //$NON-NLS-1$
+                }
+                break;
+            case Remote:
+                // TODO add remote support
+                throw new IllegalStateException("Remote server type not yet supported"); //$NON-NLS-1$
+            case Standalone:
+                // TODO add standalone support
+                throw new IllegalStateException("Standalone server type not yet supported"); //$NON-NLS-1$
+            default:
+                throw new IllegalStateException("Unknown server type"); //$NON-NLS-1$
+        }
+        
+        // prepare plugins
+        final File pluginDir = new File(spigotServerConfig.getTempDirectory(), "plugins"); //$NON-NLS-1$
+        if (!pluginDir.exists())
+        {
+            pluginDir.mkdirs();
+        }
+        for (final Plugin plugin : spigotServerConfig.getPlugins())
+        {
+            plugin.prepare(pluginDir);
+        }
+        
+        // eula.txt
+        final File eulaTxt = new File(spigotServerConfig.getTempDirectory(), "eula.txt"); //$NON-NLS-1$
+        if (!eulaTxt.exists())
+        {
+            try (final FileOutputStream fos = new FileOutputStream(eulaTxt))
+            {
+                fos.write("eula=true\n".getBytes()); //$NON-NLS-1$
+            }
+        }
+        
+        // server.properties
+        final File serverProperties = new File(spigotServerConfig.getTempDirectory(), "server.properties"); //$NON-NLS-1$
+        final Properties properties = new Properties();
+        if (serverProperties.exists())
+        {
+            try (final FileInputStream fis = new FileInputStream(serverProperties))
+            {
+                properties.load(fis);
+            }
+        }
+        properties.setProperty("server-port", String.valueOf(spigotServerConfig.getMainPort())); //$NON-NLS-1$
+        properties.setProperty("level-type", spigotServerConfig.getDefaultWorldType()); //$NON-NLS-1$
+        for (final Map.Entry<String, String> entry : spigotServerConfig.getServerProperties().entrySet())
+        {
+            properties.put(entry.getKey(), entry.getValue());
+        }
+        try (final FileOutputStream fos = new FileOutputStream(serverProperties))
+        {
+            properties.store(fos, ""); //$NON-NLS-1$
+        }
+        
+        // TODO Support multiple versions.
+    }
+    
+    /**
+     * Installs the runtime/ spigot.jar
+     * @param runtimeDir
+     * @param serverVersion
+     * @return spigot jar file
+     */
+    private File installRuntime(final File runtimeDir, SpigotVersion serverVersion)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * Starts the server asynchronous; should be followed by a call to {@link #waitGameCycle}
+     */
+    public void start()
+    {
+        this.manager.run();
+    }
+    
+    /**
+     * Waits for a specific text in console
+     * @param pattern regex pattern
+     * @param timeoutMillis timeout in milliseconds; if the pattern did not match the given pattern false is returned
+     * @return true if the console text is found; false if it is not found
+     */
+    public boolean waitForConsole(String pattern, int timeoutMillis)
+    {
+        return this.manager.waitForConsole(pattern, timeoutMillis);
+    }
+    
+    /**
+     * waits for a clean startup
+     * @param timeoutMillis timeout in milliseconds; if the server did not start within this timeout false is returned
+     * @return true if the server is started; false if there are problems
+     */
+    public boolean waitGameCycle(int timeoutMillis)
+    {
+        return this.manager.waitGameCycle(timeoutMillis);
+    }
+    
+    /**
+     * Clears the console from previous messages.
+     */
+    public void clearConsole()
+    {
+        this.manager.clearConsole();
+    }
+    
+    /**
+     * sendds a command to console.
+     * @param command
+     * @throws IOException 
+     */
+    public void sendCommand(String command) throws IOException
+    {
+        this.manager.sendCommand(command);
+    }
+    
+    /**
+     * Destroys the server
+     */
+    public void destroy()
+    {
+        this.manager.destroy();
+    }
+    
+    /**
+     * Stops the server
+     * @throws IOException 
+     */
+    public void stop() throws IOException
+    {
+        this.sendCommand("stop"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Waits for a clean shutdown.
+     * @param timeoutMillis timeout in milliseconds; if the server did not stop within this timeout false is returned
+     * @return true if the server is stopped; false if there are problems
+     */
+    public boolean waitShutdown(int timeoutMillis)
+    {
+        return this.manager.waitGameCycle(timeoutMillis);
+    }
+    
+    /**
+     * Checks if the server is running.
+     * @return true if the server is running.
+     */
+    public boolean isRunning()
+    {
+        return this.manager.isRunning();
+    }
+    
+    /**
+     * Checks if the server is stopped.
+     * @return true if the server is stopped.
+     */
+    public boolean isStopped()
+    {
+        return this.manager.isStopped();
+    }
+    
+}

@@ -27,32 +27,23 @@ package de.minigameslib.mclib.impl;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import de.minigameslib.fakeplayer.impl.FakeFactory;
-import de.minigameslib.mclib.fakeclient.IFakeClient;
-import de.minigameslib.mclib.fakeclient.IFakeController;
 
 /**
  * Main spigot plugin class for MCLIB.
  * 
  * @author mepeisen
  */
-public class MclibPlugin extends JavaPlugin implements Listener, IFakeClient
+public class MclibPlugin extends JavaPlugin implements Listener
 {
-
-    private IFakeController fakePlayer;
 
     @Override
     public void onEnable()
     {
         Bukkit.getPluginManager().registerEvents(this, this);
-        
-        this.fakePlayer = FakeFactory.instance().createFakePlayer(this, this, "Fake"); //$NON-NLS-1$
     }
     
     @Override
@@ -60,45 +51,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, IFakeClient
     {
         if ("mclib".equals(command.getName()))
         {
-            if (args == null || args.length == 0)
-            {
-                sender.sendMessage("commands: spawn, say, kill, list, uuid");
-                return false;
-            }
-            switch (args[0])
-            {
-                case "list":
-                    for (final Player player : Bukkit.getServer().getOnlinePlayers())
-                    {
-                        sender.sendMessage("player: " + player.getName() + " with uuid " + player.getUniqueId());
-                    }
-                    break;
-                case "spawn":
-                    if (this.fakePlayer.getPlayer() != null)
-                    {
-                        sender.sendMessage("already spawned");
-                        break;
-                    }
-                    sender.sendMessage("Fake player spawned");
-                    this.fakePlayer.connect(Bukkit.getWorlds().get(0).getSpawnLocation());
-                    break;
-                case "say":
-                    if (this.fakePlayer.getPlayer() == null)
-                    {
-                        sender.sendMessage("Not spawned");
-                        break;
-                    }
-                    this.fakePlayer.say("fake player says hello");
-                    break;
-                case "kill":
-                    if (this.fakePlayer.getPlayer() == null)
-                    {
-                        sender.sendMessage("Not spawned");
-                        break;
-                    }
-                    this.fakePlayer.disconnect();
-                    break;
-            }
+            sender.sendMessage("commands: spawn, say, kill, list, uuid");
+            return false;
         }
         return false;
     }
@@ -107,36 +61,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, IFakeClient
     public void onPlayerJoined(PlayerJoinEvent evt)
     {
         evt.setJoinMessage("HUHU");
-    }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.fakeclient.IFakeClient#onConnect()
-     */
-    @Override
-    public void onConnect()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.fakeclient.IFakeClient#onDiscconect()
-     */
-    @Override
-    public void onDiscconect()
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.fakeclient.IFakeClient#onChatMessage(java.lang.String, java.lang.String)
-     */
-    @Override
-    public void onChatMessage(String msg)
-    {
-        // TODO Auto-generated method stub
-        
     }
     
 }

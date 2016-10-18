@@ -14,5 +14,6 @@
   <modules>
   	<module>fakeplayer-api</module>
   	<module>mclib-api</module>
+  	<module>spigot-testsupport-api</module>
   </modules>
 </project>
