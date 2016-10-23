@@ -28,10 +28,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.google.common.util.concurrent.TimeLimiter;
@@ -45,7 +45,10 @@ public class ConsoleThread extends Thread
 {
     
     /** logger. */
-    static final Logger LOGGER = Logger.getLogger(ConsoleThread.class.getName());
+    private final PrintStream sysOut = System.out;
+    
+    /** error. */
+    private final PrintStream sysErr = System.err;
     
     /** finished flag. */
     private volatile boolean finished;
@@ -58,12 +61,15 @@ public class ConsoleThread extends Thread
     
     /**
      * @param in
+     * @param os 
      * @param console
      */
-    public ConsoleThread(PipedInputStream in, List<String> console)
+    public ConsoleThread(PipedInputStream in, PipedOutputStream os, List<String> console)
     {
         this.in = in;
         this.console = console;
+        System.setOut(new PrintStream(os));
+        System.setErr(new PrintStream(os));
     }
 
     @Override
@@ -81,10 +87,14 @@ public class ConsoleThread extends Thread
                         try
                         {
                             final String line = limiter.callWithTimeout(br::readLine, 1, TimeUnit.SECONDS, false);
-                            synchronized (this.console)
+                            if (line != null)
                             {
-                                this.console.add(line);
-                                this.console.notifyAll();
+                                synchronized (this.console)
+                                {
+                                    this.sysOut.println(line);
+                                    this.console.add(line);
+                                    this.console.notifyAll();
+                                }
                             }
                         }
                         catch (@SuppressWarnings("unused") UncheckedTimeoutException ex)
@@ -93,7 +103,8 @@ public class ConsoleThread extends Thread
                         }
                         catch (Exception ex)
                         {
-                            LOGGER.log(Level.SEVERE, "Problems reading console", ex); //$NON-NLS-1$
+                            this.sysOut.println("Problems reading console"); //$NON-NLS-1$
+                            ex.printStackTrace(this.sysOut);
                         }
                     }
                 }
@@ -101,7 +112,13 @@ public class ConsoleThread extends Thread
         }
         catch (IOException ex)
         {
-            LOGGER.log(Level.SEVERE, "Problems reading console", ex); //$NON-NLS-1$
+            this.sysOut.println("Problems reading console"); //$NON-NLS-1$
+            ex.printStackTrace(this.sysOut);
+        }
+        finally
+        {
+            System.setOut(this.sysOut);
+            System.setErr(this.sysErr);
         }
     }
     

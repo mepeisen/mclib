@@ -61,9 +61,6 @@ class LocalServerStarter implements ServerManager
     /** the config directory. */
     private File configDirectory;
 
-    /** the spigot jar file. */
-    private File spigotJar;
-
     /** the spigot dedicated server. */
     private SpigotDedicatedServer dedicatedserver;
 
@@ -83,13 +80,11 @@ class LocalServerStarter implements ServerManager
 
     /**
      * Constructor
-     * @param configDirectory 
-     * @param spigotJar 
+     * @param configDirectory  
      */
-    public LocalServerStarter(File configDirectory, File spigotJar)
+    public LocalServerStarter(File configDirectory)
     {
         this.configDirectory = configDirectory;
-        this.spigotJar = spigotJar;
     }
     
     @Override
@@ -179,6 +174,9 @@ class LocalServerStarter implements ServerManager
             @SuppressWarnings("resource")
             final PipedOutputStream sysout = new PipedOutputStream();
             this.pipedIn = new PipedInputStream(sysout);
+
+            this.consoleThread = new ConsoleThread(this.pipedIn, sysout, this.console);
+            this.consoleThread.start();
             
             // This trick bypasses Maven Shade's clever rewriting of our getProperty call when using String literals
             String jline_UnsupportedTerminal = new String(
@@ -193,9 +191,6 @@ class LocalServerStarter implements ServerManager
             this.dedicatedserver = new SpigotDedicatedServer(options, sysin, sysout, this.consoleThread);
             this.dedicatedserver.universe = this.configDirectory;
             this.dedicatedserver.primaryThread.start();
-
-            this.consoleThread = new ConsoleThread(this.pipedIn, this.console);
-            this.consoleThread.start();
         }
         catch (Throwable t)
         {

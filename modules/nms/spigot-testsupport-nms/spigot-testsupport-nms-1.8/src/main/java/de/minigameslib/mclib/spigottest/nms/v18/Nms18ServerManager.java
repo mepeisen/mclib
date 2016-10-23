@@ -25,9 +25,17 @@
 package de.minigameslib.mclib.spigottest.nms.v18;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import de.minigameslib.mclib.spigottest.ServerManager;
 import de.minigameslib.mclib.spigottest.nms.NmsServerManager;
+import de.minigameslib.mclib.spigottest.nms.ServerManagerWrapper;
+import de.minigameslib.mclib.spigottest.nms.SpigotClassLoader;
 
 /**
  * 
@@ -39,9 +47,30 @@ public class Nms18ServerManager implements NmsServerManager
     @Override
     public ServerManager createLocalServerManager(File serverDirectory, File spigotJar)
     {
-        // TODO Classpath wrapper
-        // TODO Load local plugin from classpath
-        return new LocalServerStarter(serverDirectory, spigotJar);
+        final ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            final List<URL> urls = new ArrayList<>(Arrays.asList(((URLClassLoader)NmsServerManager.class.getClassLoader()).getURLs()));
+            urls.add(0, spigotJar.toURI().toURL());
+            final ClassLoader cl = new SpigotClassLoader(
+                    urls.toArray(new URL[urls.size()]),
+                    new String[]{ServerManager.class.getName()}
+                    );
+            Thread.currentThread().setContextClassLoader(cl);
+            final Class<?> clazz = cl.loadClass(LocalServerStarter.class.getName());
+            // TODO Load local plugin from classpath
+            final Constructor<?> constructor = clazz.getConstructor(File.class);
+            constructor.setAccessible(true);
+            return new ServerManagerWrapper(cl, (ServerManager) constructor.newInstance(serverDirectory));
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader(old);
+        }
     }
     
 }

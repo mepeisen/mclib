@@ -42,8 +42,6 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.io.Files;
-
 /**
  * Configuration for spigot test servers.
  * 
@@ -95,13 +93,12 @@ public class SpigotServerConfig
     {
         if (this.tempDirectory == null)
         {
-            this.tempDirectory = Files.createTempDir();
+            this.tempDirectory = new File(".").getAbsoluteFile(); //$NON-NLS-1$
         }
         else if (!this.tempDirectory.exists())
         {
             this.tempDirectory.mkdirs();
         }
-        this.tempDirectory.deleteOnExit();
         
         if (this.runtimeDirectory == null)
         {

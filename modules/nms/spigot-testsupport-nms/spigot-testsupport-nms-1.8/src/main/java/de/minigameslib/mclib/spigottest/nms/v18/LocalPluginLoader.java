@@ -62,7 +62,7 @@ import org.yaml.snakeyaml.error.YAMLException;
  * @author mepeisen
  *
  */
-class LocalPluginLoader implements PluginLoader
+public class LocalPluginLoader implements PluginLoader
 {
     
     /** the server. */

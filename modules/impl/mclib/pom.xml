@@ -28,6 +28,11 @@
         	<groupId>org.powermock</groupId>
         	<artifactId>powermock-api-mockito</artifactId>
         </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>spigot-testsupport</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
         
         <dependency>
         	<groupId>${project.groupId}</groupId>

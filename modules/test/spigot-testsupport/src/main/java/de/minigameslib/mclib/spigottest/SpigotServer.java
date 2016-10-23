@@ -28,6 +28,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -69,43 +72,42 @@ public class SpigotServer
             case Local:
                 switch (spigotServerConfig.getServerVersion())
                 {
-                    // TODO install runtime
                     case V1_10_2:
                     case Latest:
-                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_10:
-                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8:
-                        this.manager = new Nms18ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms18ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_3:
-                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_4:
-                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_5:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_6:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_7:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_8_8:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_9:
-                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_9_2:
-                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     case V1_9_4:
-                        this.manager = new Nms194ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig.getRuntimeDirectory(), spigotServerConfig.getServerVersion()));
+                        this.manager = new Nms194ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
                         break;
                     default:
                         throw new IllegalStateException("Unknown server version"); //$NON-NLS-1$
@@ -132,16 +134,6 @@ public class SpigotServer
             plugin.prepare(pluginDir);
         }
         
-        // eula.txt
-        final File eulaTxt = new File(spigotServerConfig.getTempDirectory(), "eula.txt"); //$NON-NLS-1$
-        if (!eulaTxt.exists())
-        {
-            try (final FileOutputStream fos = new FileOutputStream(eulaTxt))
-            {
-                fos.write("eula=true\n".getBytes()); //$NON-NLS-1$
-            }
-        }
-        
         // server.properties
         final File serverProperties = new File(spigotServerConfig.getTempDirectory(), "server.properties"); //$NON-NLS-1$
         final Properties properties = new Properties();
@@ -163,19 +155,76 @@ public class SpigotServer
             properties.store(fos, ""); //$NON-NLS-1$
         }
         
-        // TODO Support multiple versions.
+        // current work dir
+        System.setProperty("com.mojang.eula.agree", "true");  //$NON-NLS-1$  //$NON-NLS-2$
     }
     
     /**
      * Installs the runtime/ spigot.jar
-     * @param runtimeDir
-     * @param serverVersion
+     * @param config
      * @return spigot jar file
+     * @throws IOException 
      */
-    private File installRuntime(final File runtimeDir, SpigotVersion serverVersion)
+    private File installRuntime(final SpigotServerConfig config) throws IOException
     {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Read base url from config
+        final String baseurl = "http://nexus.xworlds.eu/nexus/service/local/artifact/maven/content?r=mce&g=org.spigotmc&a=spigot&p=jar&v="; //$NON-NLS-1$
+        String version = null;
+        switch (config.getServerVersion())
+        {
+            case Latest:
+            default:
+            case V1_10_2:
+                version = "1.10.2-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_10:
+                version = "1.10-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8:
+                version = "1.8-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_3:
+                version = "1.8.3-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_4:
+                version = "1.8.4-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_5:
+                version = "1.8.5-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_6:
+                version = "1.8.6-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_7:
+                version = "1.8.7-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_8_8:
+                version = "1.8.8-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_9:
+                version = "1.9-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_9_2:
+                version = "1.9.2-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_9_4:
+                version = "1.9.4-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+        }
+        final File target = new File(config.getRuntimeDirectory(), "spigot-" + version + ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!target.exists())
+        {
+            // download.
+            final URL url = new URL(baseurl + version);
+            try (final ReadableByteChannel rbc = Channels.newChannel(url.openStream()))
+            {
+                try (final FileOutputStream fos = new FileOutputStream(target))
+                {
+                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                }
+            }
+        }
+        return target;
     }
 
     /**
@@ -249,7 +298,7 @@ public class SpigotServer
      */
     public boolean waitShutdown(int timeoutMillis)
     {
-        return this.manager.waitGameCycle(timeoutMillis);
+        return this.manager.waitShutdown(timeoutMillis);
     }
     
     /**

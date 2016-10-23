@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.net.UnknownHostException;
 
 import org.bukkit.craftbukkit.libs.jline.console.ConsoleReader;
 import org.bukkit.craftbukkit.libs.joptsimple.OptionSet;
@@ -66,6 +67,28 @@ class SpigotDedicatedServer extends DedicatedServer
         super(options);
         this.reader = new ConsoleReader(in, out);
         this.consoleThread = consoleThread;
+    }
+
+    @Override
+    public boolean init() throws UnknownHostException
+    {
+        final boolean result = super.init();
+        synchronized (this)
+        {
+            this.isMainLoop = true;
+            this.notifyAll();
+        }
+        return result;
+    }
+    
+    @Override
+    public void x()
+    {
+        synchronized (this)
+        {
+            this.isRunning = false;
+            this.notifyAll();
+        }
     }
 
     @Override

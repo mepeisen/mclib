@@ -81,6 +81,28 @@ class SpigotDedicatedServer extends DedicatedServer
     }
 
     @Override
+    public boolean init() throws IOException
+    {
+        final boolean result = super.init();
+        synchronized (this)
+        {
+            this.isMainLoop = true;
+            this.notifyAll();
+        }
+        return result;
+    }
+    
+    @Override
+    public void B()
+    {
+        synchronized (this)
+        {
+            this.isRunning = false;
+            this.notifyAll();
+        }
+    }
+
+    @Override
     public void a(PlayerList playerlist)
     {
         super.a(playerlist);
