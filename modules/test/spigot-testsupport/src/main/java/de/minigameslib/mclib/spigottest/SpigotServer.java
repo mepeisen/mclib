@@ -67,6 +67,7 @@ public class SpigotServer
     SpigotServer(SpigotServerConfig spigotServerConfig) throws IOException
     {
         // check server type.
+        final String[] injectedClasses = {ServerManager.class.getName(), SpigotServer.class.getName()};
         switch (spigotServerConfig.getServerType())
         {
             case Local:
@@ -74,40 +75,40 @@ public class SpigotServer
                 {
                     case V1_10_2:
                     case Latest:
-                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_10:
-                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms1102ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8:
-                        this.manager = new Nms18ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms18ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_3:
-                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_4:
-                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_5:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_6:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_7:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_8:
-                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_9:
-                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_9_2:
-                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms19ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_9_4:
-                        this.manager = new Nms194ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig));
+                        this.manager = new Nms194ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     default:
                         throw new IllegalStateException("Unknown server version"); //$NON-NLS-1$
@@ -317,6 +318,16 @@ public class SpigotServer
     public boolean isStopped()
     {
         return this.manager.isStopped();
+    }
+
+    /**
+     * Creates a java object by using the class loader within the server instance.
+     * @param javaClass
+     * @return instance or {@code null} if there was a problem creating the instance
+     */
+    public Object createInstance(Class<?> javaClass)
+    {
+        return this.manager.createInstance(javaClass);
     }
     
 }

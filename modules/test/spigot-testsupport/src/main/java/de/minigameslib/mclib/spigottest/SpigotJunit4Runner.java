@@ -24,20 +24,29 @@
 
 package de.minigameslib.mclib.spigottest;
 
-import java.util.logging.Logger;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runner.Runner;
+import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
 /**
  * @author mepeisen
  *
  */
-public class SpigotJunit4Runner extends BlockJUnit4ClassRunner
+public class SpigotJunit4Runner extends Suite
 {
     
-    /** logger. */
-    private static final Logger logger = Logger.getLogger(SpigotJunit4Runner.class.getName());
+    /** no runners. */
+    private static final List<Runner> NO_RUNNERS = Collections.<Runner>emptyList();
+    
+    /** the runners. */
+    private final List<Runner> runners;
 
     /**
      * @param klass
@@ -45,15 +54,53 @@ public class SpigotJunit4Runner extends BlockJUnit4ClassRunner
      */
     public SpigotJunit4Runner(Class<?> klass) throws InitializationError
     {
-        super(klass);
-        System.out.println("Testing " + klass);
+        super(klass, NO_RUNNERS);
+        this.runners = Collections.unmodifiableList(this.createRunners());
+    }
+    
+    /**
+     * Creates the runners.
+     * @return runners.
+     * @throws InitializationError 
+     */
+    private List<Runner> createRunners() throws InitializationError
+    {
+        final List<Runner> result = new ArrayList<>();
+        final SpigotTest test = getTestClass().getAnnotation(SpigotTest.class);
+        final Set<SpigotVersion> versions = new TreeSet<>();
+        if (test == null)
+        {
+            versions.add(SpigotVersion.Latest);
+        }
+        else for (final SpigotVersion version : test.versions())
+        {
+            versions.add(version);
+        }
+        if (versions.contains(SpigotVersion.Latest))
+        {
+            versions.remove(SpigotVersion.Latest);
+            versions.add(SpigotVersion.values()[SpigotVersion.values().length - 1]);
+        }
+        
+        for (final SpigotVersion version : versions)
+        {
+            try
+            {
+                result.add(new SpigotTestRunner(getTestClass().getJavaClass(), version));
+            }
+            catch (IOException e)
+            {
+                throw new InitializationError(e);
+            }
+        }
+        
+        return result;
     }
 
     @Override
-    public Object createTest() throws Exception
+    protected List<Runner> getChildren()
     {
-        System.out.println("Create test ");
-        return super.createTest();
+        return this.runners;
     }
     
 }

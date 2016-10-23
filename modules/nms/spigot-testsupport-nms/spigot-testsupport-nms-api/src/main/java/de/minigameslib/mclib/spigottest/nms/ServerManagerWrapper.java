@@ -185,5 +185,19 @@ public class ServerManagerWrapper implements ServerManager
             Thread.currentThread().setContextClassLoader(old);
         }
     }
+
+    @Override
+    public Object createInstance(Class<?> javaClass)
+    {
+        try
+        {
+            return this.classLoader.loadClass(javaClass.getName()).newInstance();
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // TODO logging
+            return null;
+        }
+    }
     
 }

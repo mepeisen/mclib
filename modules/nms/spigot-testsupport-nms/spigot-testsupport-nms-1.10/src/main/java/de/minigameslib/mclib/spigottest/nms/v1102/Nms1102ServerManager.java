@@ -45,7 +45,7 @@ public class Nms1102ServerManager implements NmsServerManager
 {
     
     @Override
-    public ServerManager createLocalServerManager(File serverDirectory, File spigotJar)
+    public ServerManager createLocalServerManager(File serverDirectory, File spigotJar, String[] injectedClasses)
     {
         final ClassLoader old = Thread.currentThread().getContextClassLoader();
         try
@@ -54,7 +54,7 @@ public class Nms1102ServerManager implements NmsServerManager
             urls.add(0, spigotJar.toURI().toURL());
             final ClassLoader cl = new SpigotClassLoader(
                     urls.toArray(new URL[urls.size()]),
-                    new String[]{ServerManager.class.getName()}
+                    injectedClasses
                     );
             Thread.currentThread().setContextClassLoader(cl);
             final Class<?> clazz = cl.loadClass(LocalServerStarter.class.getName());

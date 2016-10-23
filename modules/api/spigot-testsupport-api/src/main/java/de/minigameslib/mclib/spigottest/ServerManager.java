@@ -83,5 +83,12 @@ public interface ServerManager extends Runnable
      * @return true if the server is stopped.
      */
     boolean isStopped();
+
+    /**
+     * Creates a java object by using the class loader within the server instance.
+     * @param javaClass
+     * @return instance or {@code null} if there was a problem creating the instance
+     */
+    Object createInstance(Class<?> javaClass);
     
 }

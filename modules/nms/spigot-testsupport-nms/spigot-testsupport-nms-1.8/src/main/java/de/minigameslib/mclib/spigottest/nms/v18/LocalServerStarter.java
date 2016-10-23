@@ -313,5 +313,19 @@ class LocalServerStarter implements ServerManager
         }
         // TODO force the server to shut down
     }
+
+    @Override
+    public Object createInstance(Class<?> javaClass)
+    {
+        try
+        {
+            return this.getClass().getClassLoader().loadClass(javaClass.getName()).newInstance();
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // TODO logging
+            return null;
+        }
+    }
     
 }

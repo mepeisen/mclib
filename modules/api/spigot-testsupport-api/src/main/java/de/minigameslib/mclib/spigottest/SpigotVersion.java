@@ -27,6 +27,11 @@ package de.minigameslib.mclib.spigottest;
 /**
  * Spigot server version.
  * 
+ * <p>
+ * Implementation hint: Add new versions at the end of the list. SpigotTestRunner depends
+ * on the order.
+ * </p>
+ * 
  * @author mepeisen
  */
 public enum SpigotVersion

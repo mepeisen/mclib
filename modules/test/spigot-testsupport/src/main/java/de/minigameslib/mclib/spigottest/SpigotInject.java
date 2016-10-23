@@ -22,31 +22,24 @@
 
 */
 
-package de.minigameslib.mclib.spigottest.nms;
+package de.minigameslib.mclib.spigottest;
 
-import java.io.File;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import de.minigameslib.mclib.spigottest.ServerManager;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * The nms server manager.
+ * Injection for spigot test variables.
  * 
  * @author mepeisen
  */
-public interface NmsServerManager
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface SpigotInject
 {
     
-    /**
-     * Creates a nms server for running within the same vm.
-     * 
-     * @param serverDirectory
-     *            the server directory including config
-     * @param spigotJar
-     *            the spigot jar file.
-     * @param injectedClasses
-     *            the classes to inject from parent class loader.
-     * @return nms server.
-     */
-    ServerManager createLocalServerManager(final File serverDirectory, final File spigotJar, String[] injectedClasses);
+    // empty
     
 }

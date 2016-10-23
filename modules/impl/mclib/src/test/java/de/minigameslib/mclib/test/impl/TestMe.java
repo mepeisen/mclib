@@ -31,34 +31,29 @@ import java.io.IOException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.minigameslib.mclib.spigottest.SpigotInject;
 import de.minigameslib.mclib.spigottest.SpigotJunit4Runner;
 import de.minigameslib.mclib.spigottest.SpigotServer;
-import de.minigameslib.mclib.spigottest.SpigotServerConfig;
+import de.minigameslib.mclib.spigottest.SpigotTest;
+import de.minigameslib.mclib.spigottest.SpigotVersion;
 
 /**
  * @author mepeisen
  *
  */
 @RunWith(SpigotJunit4Runner.class)
+@SpigotTest(versions={SpigotVersion.V1_10, SpigotVersion.V1_10_2})
 public class TestMe
 {
+    
+    @SpigotInject
+    private SpigotServer server;
     
     @Test
     public void test() throws IOException
     {
-        final SpigotServer server = new SpigotServerConfig().create();
-        server.start();
-        try
-        {
-            assertTrue(server.waitGameCycle(25000));
-            server.sendCommand("FOO"); //$NON-NLS-1$
-            assertTrue(server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-        }
-        finally
-        {
-            server.stop();
-            server.waitShutdown(25000);
-        }
+        this.server.sendCommand("FOO"); //$NON-NLS-1$
+        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
     }
     
 }
