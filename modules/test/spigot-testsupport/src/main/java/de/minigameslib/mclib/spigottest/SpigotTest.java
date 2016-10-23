@@ -46,4 +46,10 @@ public @interface SpigotTest
      */
     SpigotVersion[] versions() default {SpigotVersion.Latest};
     
+    /**
+     * Test for all known spigot versions.
+     * @return {@code true} if all versions will be tested (overrides {@link #versions()}).
+     */
+    boolean all() default false; 
+    
 }

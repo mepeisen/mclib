@@ -72,9 +72,19 @@ public class SpigotJunit4Runner extends Suite
         {
             versions.add(SpigotVersion.Latest);
         }
-        else for (final SpigotVersion version : test.versions())
+        else
         {
-            versions.add(version);
+            for (final SpigotVersion version : test.versions())
+            {
+                versions.add(version);
+            }
+            if (test.all())
+            {
+                for (final SpigotVersion version : SpigotVersion.values())
+                {
+                    versions.add(version);
+                }
+            }
         }
         if (versions.contains(SpigotVersion.Latest))
         {
