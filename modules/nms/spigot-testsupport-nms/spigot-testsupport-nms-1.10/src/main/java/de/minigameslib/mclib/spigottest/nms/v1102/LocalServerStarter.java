@@ -39,12 +39,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.Main;
 import org.bukkit.craftbukkit.libs.jline.TerminalFactory;
 import org.bukkit.craftbukkit.libs.jline.UnsupportedTerminal;
 import org.bukkit.craftbukkit.libs.joptsimple.OptionException;
 import org.bukkit.craftbukkit.libs.joptsimple.OptionParser;
 import org.bukkit.craftbukkit.libs.joptsimple.OptionSet;
+import org.bukkit.plugin.Plugin;
 
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -296,7 +298,17 @@ class LocalServerStarter implements ServerManager
                     // ignore
                 }
             }
-            return !this.dedicatedserver.isRunning;
+            if (this.dedicatedserver.isRunning)
+            {
+                return false;
+            }
+
+            if (this.consoleThread != null)
+            {
+                this.consoleThread.done();
+                this.consoleThread = null;
+            }
+            return true;
         }
     }
 
@@ -332,11 +344,28 @@ class LocalServerStarter implements ServerManager
     }
 
     @Override
-    public Object createInstance(Class<?> javaClass)
+    public Object createInstance(String javaClass)
     {
         try
         {
-            return this.getClass().getClassLoader().loadClass(javaClass.getName()).newInstance();
+            Class<?> clazz = null;
+            for (final Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
+            {
+                try
+                {
+                    clazz = plugin.getClass().getClassLoader().loadClass(javaClass);
+                    break;
+                }
+                catch (@SuppressWarnings("unused") ClassNotFoundException ex)
+                {
+                    // silently ignore
+                }
+            }
+            if (clazz == null)
+            {
+                clazz = this.getClass().getClassLoader().loadClass(javaClass);
+            }
+            return clazz.newInstance();
         }
         catch (@SuppressWarnings("unused") Exception ex)
         {

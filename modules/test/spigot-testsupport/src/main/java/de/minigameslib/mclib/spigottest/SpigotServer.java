@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import de.minigameslib.mclib.spigottest.SpigotServerConfig.Plugin;
+import de.minigameslib.mclib.spigottest.nms.FilterableClassLoader;
 import de.minigameslib.mclib.spigottest.nms.v1102.Nms1102ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v18.Nms18ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v183.Nms183ServerManager;
@@ -67,7 +68,7 @@ public class SpigotServer
     SpigotServer(SpigotServerConfig spigotServerConfig) throws IOException
     {
         // check server type.
-        final String[] injectedClasses = {ServerManager.class.getName(), SpigotServer.class.getName()};
+        final String[] injectedClasses = {ServerManager.class.getName(), SpigotServer.class.getName(), FilterableClassLoader.class.getName()};
         switch (spigotServerConfig.getServerType())
         {
             case Local:
@@ -327,7 +328,7 @@ public class SpigotServer
      */
     public Object createInstance(Class<?> javaClass)
     {
-        return this.manager.createInstance(javaClass);
+        return this.manager.createInstance(javaClass.getName());
     }
     
 }

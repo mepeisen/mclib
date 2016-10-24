@@ -22,40 +22,19 @@
 
 */
 
-package de.minigameslib.mclib.spigottest;
+package de.minigameslib.mclib.spigottest.nms;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.net.URL;
 
 /**
- * Annotation for spigot test support.
- * 
  * @author mepeisen
+ *
  */
-@Retention(RUNTIME)
-@Target(TYPE)
-public @interface SpigotTest
+public interface FilterableClassLoader
 {
-    
     /**
-     * Returns the version to test against.
-     * @return spigot versions for testing.
+     * Adds an url to be filtered during class loading.
+     * @param url
      */
-    SpigotVersion[] versions() default {SpigotVersion.Latest};
-    
-    /**
-     * Flag to test against all known spigot versions.
-     * @return {@code true} if all versions will be tested (overrides {@link #versions()}).
-     */
-    boolean all() default false;
-    
-    /**
-     * Flag to load the local plugin from classpath
-     * @return {@code true} for loading local plugin from classpath; assumes that we are tresting within plugin code.
-     */
-    boolean loadLocalPlugin() default true;
-    
+    void addFilterUrl(URL url);
 }

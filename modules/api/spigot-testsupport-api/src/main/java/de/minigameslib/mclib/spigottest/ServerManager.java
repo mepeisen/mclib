@@ -89,6 +89,6 @@ public interface ServerManager extends Runnable
      * @param javaClass
      * @return instance or {@code null} if there was a problem creating the instance
      */
-    Object createInstance(Class<?> javaClass);
+    Object createInstance(String javaClass);
     
 }

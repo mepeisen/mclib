@@ -45,10 +45,10 @@ public class ConsoleThread extends Thread
 {
     
     /** logger. */
-    private final PrintStream sysOut = System.out;
+    private static final PrintStream sysOut = System.out;
     
     /** error. */
-    private final PrintStream sysErr = System.err;
+    private static final PrintStream sysErr = System.err;
     
     /** finished flag. */
     private volatile boolean finished;
@@ -91,7 +91,7 @@ public class ConsoleThread extends Thread
                             {
                                 synchronized (this.console)
                                 {
-                                    this.sysOut.println(line);
+                                    sysOut.println(line);
                                     this.console.add(line);
                                     this.console.notifyAll();
                                 }
@@ -103,8 +103,8 @@ public class ConsoleThread extends Thread
                         }
                         catch (Exception ex)
                         {
-                            this.sysOut.println("Problems reading console"); //$NON-NLS-1$
-                            ex.printStackTrace(this.sysOut);
+                            sysOut.println("Problems reading console"); //$NON-NLS-1$
+                            ex.printStackTrace(sysOut);
                         }
                     }
                 }
@@ -112,13 +112,13 @@ public class ConsoleThread extends Thread
         }
         catch (IOException ex)
         {
-            this.sysOut.println("Problems reading console"); //$NON-NLS-1$
-            ex.printStackTrace(this.sysOut);
+            sysOut.println("Problems reading console"); //$NON-NLS-1$
+            ex.printStackTrace(sysOut);
         }
         finally
         {
-            System.setOut(this.sysOut);
-            System.setErr(this.sysErr);
+            System.setOut(sysOut);
+            System.setErr(sysErr);
         }
     }
     
@@ -128,6 +128,14 @@ public class ConsoleThread extends Thread
     public void done()
     {
         this.finished = true;
+        try
+        {
+            this.join();
+        }
+        catch (@SuppressWarnings("unused") InterruptedException e)
+        {
+            // silently ignore
+        }
     }
     
 }

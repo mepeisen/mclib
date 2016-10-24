@@ -67,7 +67,16 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
     {
         super(klass);
         this.version = version;
-        this.server = new SpigotServerConfig().setServerVersion(this.version).create();
+        final SpigotServerConfig config = new SpigotServerConfig().setServerVersion(this.version);
+        final SpigotTest test = klass.getAnnotation(SpigotTest.class);
+        if (test != null)
+        {
+            if (test.loadLocalPlugin())
+            {
+                config.addLocalPlugin();
+            }
+        }
+        this.server = config.create();
     }
 
     @Override

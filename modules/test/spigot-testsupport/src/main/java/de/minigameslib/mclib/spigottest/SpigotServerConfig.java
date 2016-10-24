@@ -29,11 +29,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -41,6 +45,8 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Configuration for spigot test servers.
@@ -252,22 +258,42 @@ public class SpigotServerConfig
      * Adds a jar file as plugin.
      * 
      * @param jarFile
+     * @return this object for chaining
      */
-    public void addJarPlugin(File jarFile)
+    public SpigotServerConfig addJarPlugin(File jarFile)
     {
         this.plugins.add(new JarPlugin(jarFile));
+        return this;
     }
     
     /**
      * Adds a new plugin from one or multiple classpath entries
      * 
      * @param builder
+     * @return this object for chaining
      */
-    public void addClasspathPlugin(Consumer<ClasspathPluginBuilder> builder)
+    public SpigotServerConfig addClasspathPlugin(Consumer<ClasspathPluginBuilder> builder)
     {
         final ClasspathPluginBuilder cpb = new ClasspathPluginBuilder();
         builder.accept(cpb);
         this.plugins.add(cpb.build());
+        return this;
+    }
+    
+    /** flag to control if local plugin was already added. */
+    private boolean localPluginAdded = false;
+
+    /**
+     * Adds the plugin from local classpath
+     * @return this object for chaining
+     */
+    public SpigotServerConfig addLocalPlugin()
+    {
+        if (!this.localPluginAdded)
+        {
+            this.plugins.add(new LocalPlugin());
+        }
+        return this;
     }
     
     /**
@@ -367,6 +393,60 @@ public class SpigotServerConfig
          * @param installFolder
          */
         abstract void prepare(File installFolder);
+    }
+    
+    /**
+     * Local plugin class
+     * @author mepeisen
+     */
+    static class LocalPlugin extends Plugin
+    {
+        
+        /**
+         * Constructor
+         */
+        public LocalPlugin()
+        {
+            // empty
+        }
+        
+        @SuppressWarnings("unchecked")
+        @Override
+        void prepare(File installFolder)
+        {
+            LOGGER.log(Level.FINE, "creating local plugin files"); //$NON-NLS-1$
+            try
+            {
+                final Enumeration<URL> urls = SpigotServerConfig.class.getClassLoader().getResources("plugin.yml"); //$NON-NLS-1$
+                while (urls.hasMoreElements())
+                {
+                    final URL url = urls.nextElement();
+                    final Yaml yaml = new Yaml();
+                    Map<String, Object> values = null;
+                    try (final InputStream is = url.openStream())
+                    {
+                        values = (Map<String, Object>) yaml.load(is);
+                    }
+                    final String name = values.get("name").toString(); //$NON-NLS-1$
+                    if (name == null)
+                    {
+                        throw new IllegalStateException("invalid plugin.yml at " + url); //$NON-NLS-1$
+                    }
+                    final Properties properties = new Properties();
+                    properties.setProperty("pluginYml", url.toString()); //$NON-NLS-1$
+                    try (final FileOutputStream fos = new FileOutputStream(new File(installFolder, name + ".localplugin"))) //$NON-NLS-1$
+                    {
+                        properties.store(fos, ""); //$NON-NLS-1$
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                throw new IllegalStateException(ex);
+            }
+            LOGGER.log(Level.FINE, "created local plugin files"); //$NON-NLS-1$
+        }
+        
     }
     
     /**

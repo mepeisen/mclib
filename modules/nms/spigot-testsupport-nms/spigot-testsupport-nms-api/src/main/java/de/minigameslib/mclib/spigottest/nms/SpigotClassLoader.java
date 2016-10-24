@@ -25,8 +25,11 @@
 package de.minigameslib.mclib.spigottest.nms;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 /**
@@ -38,7 +41,7 @@ import java.util.Enumeration;
  * 
  * @author mepeisen
  */
-public class SpigotClassLoader extends ClassLoader
+public class SpigotClassLoader extends ClassLoader implements FilterableClassLoader
 {
     
     /** debug flag for class loader debug output. */
@@ -47,12 +50,23 @@ public class SpigotClassLoader extends ClassLoader
     /**
      * The packages to always load from parent class loader.
      */
-    private String[]             parentPackages;
+    String[]             parentPackages;
     
     /**
      * The real child class loader.
      */
     private ChildClassLoader     childClassLoader;
+
+    /** urls that will be filtered from classpath. */
+    URL[] filters = new URL[0];
+    
+    @Override
+    public void addFilterUrl(URL url)
+    {
+        final URL[] newFilters = Arrays.copyOf(this.filters, this.filters.length + 1);
+        newFilters[this.filters.length] = url;
+        this.filters = newFilters;
+    }
     
     /**
      * @param parentPackages
@@ -62,7 +76,7 @@ public class SpigotClassLoader extends ClassLoader
     {
         super(Thread.currentThread().getContextClassLoader());
         this.parentPackages = parentPackages;
-        this.childClassLoader = new ChildClassLoader(parentPackages, urls, new DetectClassLoader(this.getParent()));
+        this.childClassLoader = new ChildClassLoader(urls, new DetectClassLoader(this.getParent()));
     }
     
     /**
@@ -91,13 +105,8 @@ public class SpigotClassLoader extends ClassLoader
     /**
      * @author mepeisen
      */
-    private static final class ChildClassLoader extends URLClassLoader
+    private final class ChildClassLoader extends URLClassLoader implements FilterableClassLoader
     {
-        
-        /**
-         * The packages to always load from parent class loader.
-         */
-        private String[]    parentPackages;
         
         /**
          * parent class loader.
@@ -105,27 +114,44 @@ public class SpigotClassLoader extends ClassLoader
         private ClassLoader realParent;
         
         /**
-         * @param parentPackages 
          * @param urls
          * @param parent
          */
-        public ChildClassLoader(String[] parentPackages, URL[] urls, ClassLoader parent)
+        public ChildClassLoader(URL[] urls, ClassLoader parent)
         {
             super(urls, null);
             this.realParent = parent;
-            this.parentPackages = parentPackages;
         }
         
         @Override
         protected Class<?> findClass(String name) throws ClassNotFoundException
         {
             boolean isParent = false;
-            for (final String parentPkg : this.parentPackages)
+            for (final String parentPkg : SpigotClassLoader.this.parentPackages)
             {
                 if (name.startsWith(parentPkg))
                 {
                     isParent = true;
                     break;
+                }
+            }
+            
+            final String path = name.replace('.', '/').concat(".class"); //$NON-NLS-1$
+            for (final URL filter : SpigotClassLoader.this.filters)
+            {
+                try
+                {
+                    final URL url = filter.toURI().resolve(path).toURL();
+                    if (DEBUG) System.out.println("Check " + name + " against " + url); //$NON-NLS-1$ //$NON-NLS-2$
+                    try (final InputStream is = url.openStream())
+                    {
+                        // file exists; filter it
+                        throw new ClassNotFoundException();
+                    }
+                }
+                catch (@SuppressWarnings("unused") URISyntaxException | IOException ex)
+                {
+                    // silently ignore
                 }
             }
             
@@ -176,6 +202,12 @@ public class SpigotClassLoader extends ClassLoader
             return super.getResources(name);
         }
         
+        @Override
+        public void addFilterUrl(URL url)
+        {
+            SpigotClassLoader.this.addFilterUrl(url);
+        }
+        
     }
     
     @Override
@@ -188,6 +220,24 @@ public class SpigotClassLoader extends ClassLoader
             {
                 isParent = true;
                 break;
+            }
+        }
+        final String path = name.replace('.', '/').concat(".class"); //$NON-NLS-1$
+        for (final URL filter : this.filters)
+        {
+            try
+            {
+                final URL url = filter.toURI().resolve(path).toURL();
+                if (DEBUG) System.out.println("Check " + name + " against " + url); //$NON-NLS-1$ //$NON-NLS-2$
+                try (final InputStream is = url.openStream())
+                {
+                    // file exists; filter it
+                    throw new ClassNotFoundException();
+                }
+            }
+            catch (@SuppressWarnings("unused") URISyntaxException | IOException ex)
+            {
+                // silently ignore
             }
         }
         synchronized (getClassLoadingLock(name))
@@ -217,6 +267,7 @@ public class SpigotClassLoader extends ClassLoader
     @Override
     public URL getResource(String name)
     {
+        // TODO Check filterUrl
         if (DEBUG)
             System.out.println("childClassLoader.getResource " + name); //$NON-NLS-1$
         URL url = this.childClassLoader.getResource(name);
@@ -232,6 +283,7 @@ public class SpigotClassLoader extends ClassLoader
     @Override
     public Enumeration<URL> getResources(String name) throws IOException
     {
+        // TODO Check filterUrl
         return this.childClassLoader.getResources(name);
     }
     

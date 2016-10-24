@@ -187,16 +187,17 @@ public class ServerManagerWrapper implements ServerManager
     }
 
     @Override
-    public Object createInstance(Class<?> javaClass)
+    public Object createInstance(String javaClass)
     {
+        final ClassLoader old = Thread.currentThread().getContextClassLoader();
         try
         {
-            return this.classLoader.loadClass(javaClass.getName()).newInstance();
+            Thread.currentThread().setContextClassLoader(this.classLoader);
+            return this.delegate.createInstance(javaClass);
         }
-        catch (@SuppressWarnings("unused") Exception ex)
+        finally
         {
-            // TODO logging
-            return null;
+            Thread.currentThread().setContextClassLoader(old);
         }
     }
     
