@@ -47,7 +47,7 @@ import de.minigameslib.mclib.spigottest.SpigotVersion;
  *
  */
 @RunWith(SpigotJunit4Runner.class)
-@SpigotTest(versions={SpigotVersion.V1_10, SpigotVersion.V1_10_2})
+@SpigotTest(all = true)
 public class TestMe
 {
     

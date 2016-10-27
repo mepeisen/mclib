@@ -281,7 +281,17 @@ class LocalServerStarter implements ServerManager
                     // ignore
                 }
             }
-            return !this.dedicatedserver.isRunning;
+            if (this.dedicatedserver.isRunning)
+            {
+                return false;
+            }
+
+            if (this.consoleThread != null)
+            {
+                this.consoleThread.done();
+                this.consoleThread = null;
+            }
+            return true;
         }
     }
 

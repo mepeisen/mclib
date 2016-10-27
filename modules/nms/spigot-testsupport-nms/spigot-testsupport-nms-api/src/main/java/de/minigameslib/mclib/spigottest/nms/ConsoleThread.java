@@ -101,6 +101,11 @@ public class ConsoleThread extends Thread
                         {
                             // silently ignore timeouts
                         }
+                        catch (@SuppressWarnings("unused") IOException ex)
+                        {
+                            // silently ignore io exceptions, my indicate dead streams, however we wait for
+                            // real termination from spigottestrunner
+                        }
                         catch (Exception ex)
                         {
                             sysOut.println("Problems reading console"); //$NON-NLS-1$

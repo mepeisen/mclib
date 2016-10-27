@@ -132,8 +132,19 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
                 }
                 finally
                 {
-                    SpigotTestRunner.this.server.stop();
-                    SpigotTestRunner.this.server.waitShutdown(25000);
+                    try
+                    {
+                        SpigotTestRunner.this.server.stop();
+                        if (!SpigotTestRunner.this.server.waitShutdown(25000))
+                        {
+                            SpigotTestRunner.this.server.destroy();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // TODO logging
+                        SpigotTestRunner.this.server.destroy();
+                    }
                 }
             }
         };
