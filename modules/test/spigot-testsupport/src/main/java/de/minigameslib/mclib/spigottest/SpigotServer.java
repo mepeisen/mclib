@@ -88,7 +88,7 @@ public class SpigotServer
                         this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_4:
-                        this.manager = new Nms183ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
+                        this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_8_5:
                         this.manager = new Nms185ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);

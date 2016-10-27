@@ -40,7 +40,6 @@ import de.minigameslib.mclib.spigottest.SpigotInject;
 import de.minigameslib.mclib.spigottest.SpigotJunit4Runner;
 import de.minigameslib.mclib.spigottest.SpigotServer;
 import de.minigameslib.mclib.spigottest.SpigotTest;
-import de.minigameslib.mclib.spigottest.SpigotVersion;
 
 /**
  * @author mepeisen

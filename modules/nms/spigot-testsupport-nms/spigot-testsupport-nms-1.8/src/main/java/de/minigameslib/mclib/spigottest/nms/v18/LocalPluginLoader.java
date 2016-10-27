@@ -31,10 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -57,7 +57,7 @@ import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.yaml.snakeyaml.error.YAMLException;
 
-import de.minigameslib.mclib.spigottest.nms.FilterClassLoader;
+import de.minigameslib.mclib.spigottest.nms.FilterableClassLoader;
 
 /**
  * @author mepeisen
@@ -73,7 +73,7 @@ public class LocalPluginLoader implements PluginLoader
     private final Pattern[]       fileFilters = { Pattern.compile("\\.localplugin$") }; //$NON-NLS-1$
     
     private Map<String, Class<?>> classes;
-    private List<URLClassLoader>  loaders;
+    private Map<String, URLClassLoader>  loaders;
     
     private JavaPluginLoader      javaLoader;
     
@@ -105,7 +105,7 @@ public class LocalPluginLoader implements PluginLoader
                 
                 final Field loadersField = JavaPluginLoader.class.getDeclaredField("loaders"); //$NON-NLS-1$
                 loadersField.setAccessible(true);
-                this.loaders = (List<URLClassLoader>) loadersField.get(this.javaLoader);
+                this.loaders = (Map<String, URLClassLoader>) loadersField.get(this.javaLoader);
             }
         }
         
@@ -222,8 +222,13 @@ public class LocalPluginLoader implements PluginLoader
             final Properties props = fetchProperties(file);
             final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
             final File classesFolder = Paths.get(url.toURI()).toFile().getParentFile();
-            //final ClassLoader cl2 = new SpigotClassLoader(new URL[]{classesFolder.toURI().toURL()}, new String[]{});
-            loader = ctor.newInstance(this.javaLoader, new FilterClassLoader(new URL[]{url}, appLoader), description, dataFolder, classesFolder);
+            final File testClassesFolder = new File(Paths.get(url.toURI()).toFile().getParentFile().getParentFile(), "test-classes"); //$NON-NLS-1$
+            ((FilterableClassLoader)appLoader).addFilterUrl(classesFolder.toURI().toURL());
+            ((FilterableClassLoader)appLoader).addFilterUrl(testClassesFolder.toURI().toURL());
+            loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, classesFolder);
+            final Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", URL.class); //$NON-NLS-1$
+            addUrl.setAccessible(true);
+            addUrl.invoke(loader, testClassesFolder.toURI().toURL());
             
             final Field field = clazz.getDeclaredField("plugin"); //$NON-NLS-1$
             field.setAccessible(true);
@@ -233,7 +238,7 @@ public class LocalPluginLoader implements PluginLoader
         {
             throw new InvalidPluginException(ex);
         }
-        this.loaders.add(loader);
+        this.loaders.put(plugin.getName(), loader);
         
         return plugin;
     }
