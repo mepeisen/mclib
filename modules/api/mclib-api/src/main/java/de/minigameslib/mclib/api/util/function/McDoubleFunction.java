@@ -22,32 +22,31 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.util.function;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McException;
 
 /**
+ * Similar to {@link java.util.function.DoubleFunction} but is able to throw McExceptions.
+ * 
  * @author mepeisen
  *
+ * @param <R>
+ *            the type of the result of the function
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@FunctionalInterface
+public interface McDoubleFunction<R>
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Applies this function to the given argument.
+     *
+     * @param value
+     *            the function argument
+     * @return the function result
+     * @throws McException
+     *             thrown on problems, f.e. networking errors.
+     */
+    R apply(double value) throws McException;
     
 }

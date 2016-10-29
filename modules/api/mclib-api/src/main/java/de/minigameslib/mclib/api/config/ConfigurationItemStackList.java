@@ -22,32 +22,33 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.config;
 
-import java.io.IOException;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.junit.Test;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * A single configuration value.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface ConfigurationItemStackList
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * The name of the configuration value.
+     * 
+     * <p>
+     * The name is appended to the path of the {@link ConfigurationValues} annotation on the enum class.
+     * </p>
+     * 
+     * @return Name of configuration value; empty string to use the constant name.
+     */
+    String name() default "";
     
 }

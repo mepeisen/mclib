@@ -22,32 +22,28 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
-
-import java.io.IOException;
+package de.minigameslib.mclib.test.locale;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.spigottest.CommonTestUtil;
+
 /**
+ * test case for {@link MessageSeverityType}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class MessageSeverityTypeTest
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
+    /**
+     * Tests the enum.
+     */
     @Test
-    public void test() throws IOException
+    public void testMe()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        CommonTestUtil.testEnumClass(MessageSeverityType.class);
     }
     
 }

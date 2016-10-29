@@ -22,32 +22,32 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.config;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
+ * An object that can be configured through configuration options.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface Configurable
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Reads given object from config.
+     * 
+     * @param section
+     *            configuration section to read from.
+     */
+    void readFromConfig(ConfigurationSection section);
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Writes given object to config.
+     * 
+     * @param section
+     *            configuration section to write to.
+     */
+    void writeToConfig(ConfigurationSection section);
     
 }

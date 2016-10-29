@@ -22,32 +22,36 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
-
-import java.io.IOException;
-
-import org.junit.Test;
+package de.minigameslib.mclib.spigottest;
 
 /**
+ * Some shared test utility.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class CommonTestUtil
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
+    /**
+     * tests some things on enumerations to satisfy code coverage.
+     * 
+     * @param clazz
+     *            enum class to test
+     */
+    public static void testEnumClass(Class<? extends Enum<?>> clazz)
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        try
+        {
+            for (Object o : (Object[]) clazz.getMethod("values").invoke(null)) //$NON-NLS-1$
+            {
+                clazz.getMethod("valueOf", String.class).invoke(null, o.toString()); //$NON-NLS-1$
+            }
+        }
+        catch (Throwable e)
+        {
+            throw new RuntimeException(e);
+        }
+        
     }
     
 }

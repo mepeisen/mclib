@@ -22,32 +22,27 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.util.function;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McException;
 
 /**
+ * Similar to {@link java.util.function.BooleanSupplier} but is able to throw McExceptions.
+ * 
  * @author mepeisen
  *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@FunctionalInterface
+public interface McBooleanSupplier
 {
-    
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+
+    /**
+     * Gets a result.
+     *
+     * @return a result
+     * @throws McException
+     *             thrown on problems, f.e. networking errors.
+     */
+    boolean getAsBoolean() throws McException;
     
 }

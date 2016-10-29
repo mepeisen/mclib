@@ -22,32 +22,35 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.cmd;
 
-import java.io.IOException;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
-import org.junit.Test;
 
 /**
+ * Extends the command handler interface to be placed as a sub command in {@link AbstractCompositeCommandHandler}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface SubCommandHandlerInterface extends CommandHandlerInterface
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Returns a short description line.
+     * 
+     * @param command
+     *            the command to be used.
+     * @return short description line for command help. Single line message.
+     */
+    LocalizedMessageInterface getShortDescription(CommandInterface command);
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Returns a long description.
+     * 
+     * @param command
+     *            the command to be used.
+     * @return long description line for command details. Single line message.
+     */
+    LocalizedMessageInterface getDescription(CommandInterface command);
     
 }

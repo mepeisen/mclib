@@ -22,32 +22,33 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.config;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
+ * Common configuration interface.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface ConfigInterface
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Returns the bukkit configuration for given file.
+     * 
+     * @param file
+     *            configuration file name.
+     * @return the configuration file.
+     */
+    ConfigurationSection getConfig(String file);
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Saves the configuration for given file.
+     * 
+     * @param file
+     *            configuration file name.
+     */
+    void saveConfig(String file);
     
 }

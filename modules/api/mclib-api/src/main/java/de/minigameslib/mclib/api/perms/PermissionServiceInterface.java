@@ -22,32 +22,26 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.perms;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McContext;
 
 /**
+ * A service to register enumerations with plugins.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface PermissionServiceInterface extends McContext
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns the enumeration services instance.
+     * 
+     * @return enumeration services instance.
+     */
+    static PermissionServiceInterface instance()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        return PermissionServiceCache.get();
     }
     
 }

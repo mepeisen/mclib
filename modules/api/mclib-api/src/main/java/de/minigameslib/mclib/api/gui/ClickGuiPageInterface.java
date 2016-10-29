@@ -22,32 +22,30 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.gui;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
+ * A single gui page.
+ * 
  * @author mepeisen
  *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface ClickGuiPageInterface
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Returns the name of the inventory.
+     * 
+     * @return inventory name.
+     */
+    LocalizedMessageInterface getPageName();
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Returns the click items.
+     * @return click items; first array dimension is the line; second the column.
+     */
+    ClickGuiItem[][] getItems();
     
 }

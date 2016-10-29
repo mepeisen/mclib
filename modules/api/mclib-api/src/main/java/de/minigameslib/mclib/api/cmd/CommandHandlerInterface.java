@@ -22,32 +22,43 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.cmd;
 
-import java.io.IOException;
+import java.util.List;
 
-import org.junit.Test;
+import de.minigameslib.mclib.api.McException;
 
 /**
+ * Interface for command handling.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface CommandHandlerInterface
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Handles given command.
+     * 
+     * @param command
+     *            the command to handle.
+     * 
+     * @throws McException
+     *             thrown if there are any problems during command handling.
+     */
+    void handle(CommandInterface command) throws McException;
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * On Tab complete handler.
+     * 
+     * @param command
+     *            the command to handle.
+     * @param lastArg
+     *            the last argument to be completed.
+     * @return list of possible command completions.
+     * 
+     * @throws McException
+     *             thrown if there are any problems during command handling.
+     */
+    List<String> onTabComplete(CommandInterface command, String lastArg) throws McException;
     
 }

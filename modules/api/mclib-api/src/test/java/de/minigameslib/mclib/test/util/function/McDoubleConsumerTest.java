@@ -22,32 +22,42 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.test.util.function;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McDoubleConsumer;
+import com.google.common.util.concurrent.AtomicDouble;
+
 /**
+ * Tests case for {@link McDoubleConsumer}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class McDoubleConsumerTest
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
+    /**
+     * Tests method {@link McDoubleConsumer#andThen(McDoubleConsumer)}
+     * 
+     * @throws McException
+     *             thrown on errors.
+     */
     @Test
-    public void test() throws IOException
+    public void testAndThen() throws McException
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        final AtomicDouble result1 = new AtomicDouble(0);
+        final AtomicDouble result2 = new AtomicDouble(0);
+        final McDoubleConsumer func = (l) -> result1.set(l);
+        final McDoubleConsumer func2 = (l) -> result2.set(l + result1.get());
+        
+        func.andThen(func2).accept(5);
+        
+        assertEquals(5, result1.get(), 0);
+        assertEquals(10, result2.get(), 0);
     }
     
 }

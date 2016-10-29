@@ -22,32 +22,36 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.locale;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McContext;
 
 /**
+ * Message services.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface MessageServiceInterface extends McContext
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns the message services instance.
+     * 
+     * @return message services instance.
+     */
+    static MessageServiceInterface instance()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        return MessageServiceCache.get();
     }
+    
+    /**
+     * Returns the message api declaring the given message.
+     * 
+     * @param item
+     *            the enumeration value; only works on classes that are returned by a plugin or extension provider during initialization.
+     * 
+     * @return message api or {@code null} if the class was not declared by any minigame or extension.
+     */
+    MessagesConfigInterface getMessagesFromMsg(LocalizedMessageInterface item);
     
 }

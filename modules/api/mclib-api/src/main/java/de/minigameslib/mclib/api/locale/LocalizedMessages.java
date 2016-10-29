@@ -22,32 +22,36 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.locale;
 
-import java.io.IOException;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.junit.Test;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * A localized message class used within messages.yml of a plugin; should be used by enumerations that implement the {@link LocalizedMessageInterface}.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface LocalizedMessages
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * The default locale this plugin uses.
+     * 
+     * @return default/fallback locale.
+     */
+    String defaultLocale() default "en";
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * The default path used within messages.yml.
+     * 
+     * @return default path for this message.
+     */
+    String value();
     
 }

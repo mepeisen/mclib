@@ -22,32 +22,30 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
-
-import java.io.IOException;
-
-import org.junit.Test;
+package de.minigameslib.mclib.api.util.function;
 
 /**
+ * Similar to {@link java.util.function.UnaryOperator} but is able to throw McExceptions.
+ * 
  * @author mepeisen
- *
+ * 
+ * @param <T>
+ *            the type of the operand and result of the operator
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@FunctionalInterface
+public interface McUnaryOperator<T> extends McFunction<T, T>
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns a unary operator that always returns its input argument.
+     *
+     * @param <T>
+     *            the type of the input and output of the operator
+     * @return a unary operator that always returns its input argument
+     */
+    static <T> McUnaryOperator<T> identity()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        return t -> t;
     }
     
 }

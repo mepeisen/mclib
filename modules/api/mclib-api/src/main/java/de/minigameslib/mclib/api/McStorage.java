@@ -22,32 +22,39 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.config.Configurable;
 
 /**
+ * The minigame storage can be used on various objects (for example players) to store temporary or persistent data.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface McStorage
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /**
+     * Returns a storage variable.
+     * 
+     * @param clazz
+     *            the class of the variable to be returned.
+     * @return Storage variable or {@code null} if the variable was not set.
+     * @param <T>
+     *            Configurable object class
+     */
+    <T extends Configurable> T get(Class<T> clazz);
     
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Sets a storage variable.
+     * 
+     * @param clazz
+     *            the class of the variable
+     * @param value
+     *            the new value
+     * @param <T>
+     *            Configurable object class
+     */
+    <T extends Configurable> void set(Class<T> clazz, T value);
     
 }

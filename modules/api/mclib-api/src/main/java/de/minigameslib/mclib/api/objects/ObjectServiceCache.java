@@ -22,32 +22,32 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.objects;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.bukkit.Bukkit;
 
 /**
+ * Helper to cache the EnumServices class.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+class ObjectServiceCache
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /** the enumeration services. */
+    private static ObjectServiceInterface SERVICES;
     
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns the enumeration services instance.
+     * @return enumeration services.
+     */
+    static ObjectServiceInterface get()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        if (SERVICES == null)
+        {
+            SERVICES = Bukkit.getServicesManager().load(ObjectServiceInterface.class);
+        }
+        return SERVICES;
     }
     
 }

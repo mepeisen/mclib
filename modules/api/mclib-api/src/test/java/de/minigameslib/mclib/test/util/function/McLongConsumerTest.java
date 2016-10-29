@@ -22,32 +22,43 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.test.util.function;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McLongConsumer;
+
 /**
+ * Tests case for {@link McLongConsumer}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class McLongConsumerTest
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
+    /**
+     * Tests method {@link McLongConsumer#andThen(McLongConsumer)}
+     * 
+     * @throws McException
+     *             thrown on errors.
+     */
     @Test
-    public void test() throws IOException
+    public void testAndThen() throws McException
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        final AtomicLong result1 = new AtomicLong(0);
+        final AtomicLong result2 = new AtomicLong(0);
+        final McLongConsumer func = (l) -> result1.set(l);
+        final McLongConsumer func2 = (l) -> result2.set(l + result1.get());
+        
+        func.andThen(func2).accept(5);
+        
+        assertEquals(5, result1.get());
+        assertEquals(10, result2.get());
     }
     
 }

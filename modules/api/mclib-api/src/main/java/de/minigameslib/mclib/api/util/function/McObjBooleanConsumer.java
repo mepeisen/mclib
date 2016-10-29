@@ -22,32 +22,32 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.util.function;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McException;
 
 /**
+ * Similar to {@link java.util.function.ObjDoubleConsumer} but is able to throw McExceptions, takes a boolean as second argument.
+ * 
  * @author mepeisen
  *
+ * @param <T>
+ *            the type of the object argument to the operation
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@FunctionalInterface
+public interface McObjBooleanConsumer<T>
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * Performs this operation on the given arguments.
+     *
+     * @param obj
+     *            the first input argument
+     * @param value
+     *            the second input argument
+     * @throws McException
+     *             thrown on problems, f.e. networking errors.
+     */
+    void accept(T obj, boolean value) throws McException;
     
 }

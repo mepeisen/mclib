@@ -22,32 +22,32 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.locale;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.bukkit.Bukkit;
 
 /**
+ * Helper to cache the MessageService class.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+class MessageServiceCache
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
+    /** the message services. */
+    private static MessageServiceInterface SERVICES;
     
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns the message services instance.
+     * @return message services.
+     */
+    static MessageServiceInterface get()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        if (SERVICES == null)
+        {
+            SERVICES = Bukkit.getServicesManager().load(MessageServiceInterface.class);
+        }
+        return SERVICES;
     }
     
 }

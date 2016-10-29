@@ -22,32 +22,34 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.test.util.function;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McUnaryOperator;
+
 /**
+ * Tests case for {@link McUnaryOperator}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class McUnaryOperatorTest
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
+    /**
+     * Tests method {@link McUnaryOperator#identity()}
+     * 
+     * @throws McException
+     *             thrown on errors.
+     */
     @Test
-    public void test() throws IOException
+    public void testIdentity() throws McException
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        final McUnaryOperator<Integer> func = McUnaryOperator.identity();
+        assertEquals(Integer.valueOf(10), func.apply(Integer.valueOf(10)));
     }
     
 }

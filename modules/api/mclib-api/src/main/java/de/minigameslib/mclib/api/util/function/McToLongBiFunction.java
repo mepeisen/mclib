@@ -22,32 +22,31 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.util.function;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import de.minigameslib.mclib.api.McException;
 
 /**
+ * Similar to {@link java.util.function.ToLongBiFunction} but is able to throw McExceptions.
+ * 
  * @author mepeisen
  *
+ * @param <T> the type of the first argument to the function
+ * @param <U> the type of the second argument to the function
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@FunctionalInterface
+public interface McToLongBiFunction<T, U>
 {
-    
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+
+    /**
+     * Applies this function to the given arguments.
+     *
+     * @param arg1 the first function argument
+     * @param arg2 the second function argument
+     * @return the function result
+     * @throws McException
+     *             thrown on problems, f.e. networking errors.
+     */
+    long applyAsLong(T arg1, U arg2) throws McException;
     
 }

@@ -22,32 +22,39 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.perms;
 
-import java.io.IOException;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.junit.Test;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * A list of permissions; should be used by enumerations that implement the {@link PermissionsInterface}.
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface Permissions
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
-    {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
-    }
+    /**
+     * The default path used as a prefix for the permissions.
+     * 
+     * <p>
+     * Within path the following variables can be used:
+     * </p>
+     * 
+     * <ul>
+     * <li>"$MGLIB$" : will be replaced with minigame libs permission prefix.</li>
+     * <li>"$MINIGAME$" : will be replaced by the current minigame name.</li>
+     * <li>"$ARENA$" : will be replaces by the current arena name.</li>
+     * </ul>
+     * 
+     * @return default path used as a prefix.
+     */
+    String value();
     
 }

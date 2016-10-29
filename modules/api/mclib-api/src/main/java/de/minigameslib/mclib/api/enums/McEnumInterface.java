@@ -22,32 +22,33 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.api.enums;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.bukkit.plugin.Plugin;
 
 /**
+ * Base interface for McLib-Enumerations.
+ * 
+ * <p>
+ * Each functional enumeration (configuration values etc.) must implement this interface.
+ * </p>
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public interface McEnumInterface
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
-    @Test
-    public void test() throws IOException
+    /**
+     * Returns the plugin declaring the given interface.
+     * @return plugin declaring given interface.
+     */
+    default Plugin getPlugin()
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        if (this instanceof Enum<?>)
+        {
+            return EnumServiceCache.get().getPlugin((Enum<?>) this);
+        }
+        throw new IllegalStateException("Extension of IMcEnum only allowed in enumeration classes. Invalid class: " + this.getClass()); //$NON-NLS-1$
     }
     
 }

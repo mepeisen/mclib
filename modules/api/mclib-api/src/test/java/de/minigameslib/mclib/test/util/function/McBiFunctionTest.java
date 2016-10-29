@@ -22,32 +22,39 @@
 
 */
 
-package de.minigameslib.mclib.test.impl;
+package de.minigameslib.mclib.test.util.function;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
+import de.minigameslib.mclib.api.util.function.McFunction;
+
 /**
+ * Tests case for {@link McBiFunction}
+ * 
  * @author mepeisen
- *
  */
-//@RunWith(SpigotJunit4Runner.class)
-//@SpigotTest(all = true)
-public class TestMe
+public class McBiFunctionTest
 {
     
-//    @SpigotInject
-//    private SpigotServer server;
-    
+    /**
+     * Tests method {@link McBiFunction#andThen(de.minigameslib.mclib.api.util.function.McFunction)}
+     * 
+     * @throws McException
+     *             thrown on errors.
+     */
     @Test
-    public void test() throws IOException
+    public void testAndThen() throws McException
     {
-//        assertEquals(GameMode.SURVIVAL, Bukkit.getServer().getDefaultGameMode());
-//        final MclibPlugin plugin = (MclibPlugin) Bukkit.getServer().getPluginManager().getPlugin("mclib");
-//        assertNotNull(plugin);
-//        this.server.sendCommand("FOO"); //$NON-NLS-1$
-//        assertTrue(this.server.waitForConsole(".*Unknown command.*", 25000)); //$NON-NLS-1$
+        final McFunction<String, Integer> func = Integer::valueOf;
+        final McBiFunction<String, String, String> biFunc = (a1, a2) -> a1.concat(a2);
+        
+        final McBiFunction<String, String, Integer> biFunc2 = biFunc.andThen(func);
+        
+        assertEquals(10, biFunc2.apply("1", "0").intValue()); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
 }
