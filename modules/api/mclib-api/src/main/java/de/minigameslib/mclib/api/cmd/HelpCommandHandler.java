@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -48,6 +50,9 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
     
     /** help on composite command. */
     private AbstractCompositeCommandHandler compositeCommand;
+    
+    /** logger. */
+    private static final Logger LOGGER = Logger.getLogger(HelpCommandHandler.class.getName());
     
     @Override
     public void handle(CommandInterface command) throws McException
@@ -152,7 +157,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
                 }
                 catch (Throwable t)
                 {
-                    // TODO Logging MglibInterface.INSTANCE.get().getLogger().log(Level.WARNING, "Exception fetching short description on command " + sch, t); //$NON-NLS-1$
+                    LOGGER.log(Level.WARNING, "Problems getting short description on command " + key + "/" + sch, t);  //$NON-NLS-1$//$NON-NLS-2$
                 }
                 result.add(CommonMessages.HelpLineUsage.toArg(key, shortDesc));
             }

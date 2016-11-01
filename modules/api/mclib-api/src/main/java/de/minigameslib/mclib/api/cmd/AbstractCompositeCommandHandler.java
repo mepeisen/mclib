@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -46,6 +48,9 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
      * the configured sub commands (ordered).
      */
     protected Map<String, SubCommandHandlerInterface> subCommands = new TreeMap<>();
+    
+    /** logger. */
+    private static final Logger LOGGER = Logger.getLogger(AbstractCompositeCommandHandler.class.getName());
     
     /**
      * pre parse the command.
@@ -104,7 +109,7 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
     {
         if (this.subCommands.containsKey(name.toLowerCase()))
         {
-            // TODO logging
+            LOGGER.log(Level.WARNING, "Duplicate sub command " + name); //$NON-NLS-1$
             return false;
         }
         this.subCommands.put(name.toLowerCase(), handler);

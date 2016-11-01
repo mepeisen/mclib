@@ -1,0 +1,432 @@
+/*
+    Copyright 2016 by minigameslib.de
+    All rights reserved.
+    If you do not own a hand-signed commercial license from minigames.de
+    you are not allowed to use this software in any way except using
+    GPL (see below).
+
+------
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+package de.minigameslib.mclib.impl;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+import de.minigameslib.mclib.api.McContext;
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.api.gui.ClickGuiInterface;
+import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.perms.PermissionsInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
+import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
+
+/**
+ * Implementation of arena players.
+ * 
+ * @author mepeisen
+ *
+ */
+class McPlayerImpl implements McPlayerInterface
+{
+    
+    /** logger. */
+    static final Logger           LOGGER         = Logger.getLogger(McPlayerImpl.class.getName());
+    
+    /** players uuid. */
+    private UUID                  uuid;
+    
+    /** the players name. */
+    private String                name;
+    
+    /** the session storage. */
+    private StorageImpl           sessionStorage = new StorageImpl();
+    
+    /** persistent player configuration. */
+    private MclibPlayersConfig    config;
+    
+    /** persistent storage file. */
+    FileConfiguration             persistentStorage;
+    
+    /** persistent storage file. */
+    private File                  persistentStorageFile;
+    
+    /** the persistent storage. */
+    private PersistentStorageImpl pstorage       = new PersistentStorageImpl();
+    
+    /**
+     * Constructor
+     * 
+     * @param uuid
+     *            players uuid
+     * @param persistentStorage
+     */
+    public McPlayerImpl(UUID uuid, File persistentStorage)
+    {
+        this.uuid = uuid;
+        final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player != null)
+        {
+            this.name = player.getName();
+        }
+        this.persistentStorageFile = persistentStorage;
+        this.persistentStorage = new YamlConfiguration();
+        if (persistentStorage.exists())
+        {
+            try (final FileReader fr = new FileReader(persistentStorage))
+            {
+                this.persistentStorage.load(fr);
+            }
+            catch (InvalidConfigurationException | IOException ex)
+            {
+                LOGGER.log(Level.WARNING, "Problems loading player storage from file; player uuid " + this.uuid.toString(), ex); //$NON-NLS-1$
+            }
+        }
+        else
+        {
+            this.config.writeToConfig(this.persistentStorage.createSection("core")); //$NON-NLS-1$
+            this.persistentStorage.createSection("storage"); //$NON-NLS-1$
+            this.saveStore();
+        }
+    }
+    
+    /**
+     * Saves the persistent storage
+     */
+    void saveStore()
+    {
+        try
+        {
+            this.persistentStorage.save(this.persistentStorageFile);
+        }
+        catch (IOException ex)
+        {
+            LOGGER.log(Level.WARNING, "Problems saving player storage to file; player uuid " + this.uuid.toString(), ex); //$NON-NLS-1$
+        }
+    }
+    
+    @Override
+    public Player getBukkitPlayer()
+    {
+        return Bukkit.getPlayer(this.uuid);
+    }
+    
+    @Override
+    public String getName()
+    {
+        return this.name;
+    }
+    
+    @Override
+    public OfflinePlayer getOfflinePlayer()
+    {
+        return Bukkit.getOfflinePlayer(this.uuid);
+    }
+    
+    @Override
+    public UUID getPlayerUUID()
+    {
+        return this.uuid;
+    }
+    
+    @Override
+    public void sendMessage(LocalizedMessageInterface msg, Serializable... args)
+    {
+        final Player player = this.getBukkitPlayer();
+        if (player != null)
+        {
+            
+            String[] msgs = null;
+            if (msg.isSingleLine())
+            {
+                msgs = new String[] { player.isOp() ? (msg.toAdminMessage(this.getPreferredLocale(), args)) : (msg.toUserMessage(this.getPreferredLocale(), args)) };
+            }
+            else
+            {
+                msgs = player.isOp() ? (msg.toAdminMessageLine(this.getPreferredLocale(), args)) : (msg.toUserMessageLine(this.getPreferredLocale(), args));
+            }
+            
+            for (final String smsg : msgs)
+            {
+                switch (msg.getSeverity())
+                {
+                    default:
+                    case Error:
+                        player.sendMessage(ChatColor.DARK_RED + smsg);
+                        break;
+                    case Information:
+                        player.sendMessage(ChatColor.WHITE + smsg);
+                        break;
+                    case Loser:
+                        player.sendMessage(ChatColor.RED + smsg);
+                        break;
+                    case Success:
+                        player.sendMessage(ChatColor.GREEN + smsg);
+                        break;
+                    case Warning:
+                        player.sendMessage(ChatColor.YELLOW + smsg);
+                        break;
+                    case Winner:
+                        player.sendMessage(ChatColor.GOLD + smsg);
+                        break;
+                }
+            }
+        }
+    }
+    
+    @Override
+    public Locale getPreferredLocale()
+    {
+        return this.config.getPreferredLocale();
+    }
+    
+    @Override
+    public ZoneInterface getZone()
+    {
+        // TODO Support zones
+        return null;
+    }
+    
+    @Override
+    public void setPreferredLocale(Locale locale) throws McException
+    {
+        this.config.setPreferredLocale(locale);
+        this.config.writeToConfig(this.persistentStorage.createSection("core")); //$NON-NLS-1$
+        this.saveStore();
+    }
+    
+    @Override
+    public boolean checkPermission(PermissionsInterface perm)
+    {
+        final Player player = this.getBukkitPlayer();
+        return player == null ? false : player.hasPermission(perm.resolveName());
+    }
+    
+    @Override
+    public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
+    }
+    
+    @Override
+    public McStorage getContextStorage()
+    {
+        final McContext context = Bukkit.getServicesManager().load(McContext.class);
+        ContextStorage ctxStorage = context.getContext(ContextStorage.class);
+        if (ctxStorage == null)
+        {
+            ctxStorage = new ContextStorage();
+            context.setContext(ContextStorage.class, ctxStorage);
+        }
+        return ctxStorage.computeIfAbsent(this.uuid, (key) -> new StorageImpl());
+    }
+    
+    @Override
+    public McStorage getSessionStorage()
+    {
+        return this.sessionStorage;
+    }
+    
+    @Override
+    public McStorage getPersistentStorage()
+    {
+        return this.pstorage;
+    }
+    
+    /**
+     * The persistent storage impl
+     * 
+     * @author mepeisen
+     */
+    private final class PersistentStorageImpl implements McStorage
+    {
+        
+        /**
+         * Constructor.
+         */
+        public PersistentStorageImpl()
+        {
+            // empty
+        }
+        
+        @Override
+        public <T extends Configurable> T get(Class<T> clazz)
+        {
+            final ConfigurationSection section = McPlayerImpl.this.persistentStorage.getConfigurationSection("storage." + clazz.getName()); //$NON-NLS-1$
+            if (section != null)
+            {
+                try
+                {
+                    final T result = clazz.newInstance();
+                    result.readFromConfig(section);
+                    return result;
+                }
+                catch (InstantiationException | IllegalAccessException ex)
+                {
+                    McPlayerImpl.LOGGER.log(Level.WARNING, "Problems saving player storage to file; player uuid " + McPlayerImpl.this.getPlayerUUID().toString(), ex); //$NON-NLS-1$
+                }
+            }
+            return null;
+        }
+        
+        @Override
+        public <T extends Configurable> void set(Class<T> clazz, T value)
+        {
+            final ConfigurationSection section = McPlayerImpl.this.persistentStorage.createSection("storage." + clazz.getName()); //$NON-NLS-1$
+            value.writeToConfig(section);
+            McPlayerImpl.this.saveStore();
+        }
+        
+    }
+    
+    /**
+     * Helper for context storage.
+     * 
+     * @author mepeisen
+     */
+    private static final class ContextStorage extends HashMap<UUID, StorageImpl>
+    {
+        
+        /**
+         * serial version uid
+         */
+        private static final long serialVersionUID = 3803764167708189047L;
+        
+        /**
+         * Constructor
+         */
+        public ContextStorage()
+        {
+            // empty
+        }
+        
+    }
+    
+    /**
+     * Simple implementation of storage map.
+     * 
+     * @author mepeisen
+     */
+    private static final class StorageImpl implements McStorage
+    {
+        
+        /** the underlying data map. */
+        private final Map<Class<?>, Configurable> data = new HashMap<>();
+        
+        /**
+         * Constructor.
+         */
+        public StorageImpl()
+        {
+            // empty
+        }
+        
+        @Override
+        public <T extends Configurable> T get(Class<T> clazz)
+        {
+            return clazz.cast(this.data.get(clazz));
+        }
+        
+        @Override
+        public <T extends Configurable> void set(Class<T> clazz, T value)
+        {
+            this.data.put(clazz, value);
+        }
+        
+    }
+    
+    @Override
+    public GuiSessionInterface getGuiSession()
+    {
+        return this.getSessionStorage().get(GuiSessionInterface.class);
+    }
+    
+    @Override
+    public GuiSessionInterface openGui(ClickGuiInterface gui) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
+        if (oldSession != null)
+        {
+            oldSession.close();
+        }
+        final GuiSessionInterface newSession = new GuiSessionImpl(gui, this);
+        storage.set(GuiSessionInterface.class, newSession);
+        return newSession;
+    }
+    
+    /**
+     * Player quit event
+     */
+    public void onPlayerQuit()
+    {
+        // clear session storage
+        this.sessionStorage = new StorageImpl();
+        if (this.getGuiSession() != null)
+        {
+            this.onCloseGui();
+        }
+    }
+    
+    /**
+     * Player join event
+     */
+    public void onPlayerJoin()
+    {
+        // clear session storage
+        this.sessionStorage = new StorageImpl();
+    }
+    
+    /**
+     * Client closed the gui.
+     */
+    public void onCloseGui()
+    {
+        final McStorage storage = this.getSessionStorage();
+        storage.set(GuiSessionInterface.class, null);
+    }
+    
+}

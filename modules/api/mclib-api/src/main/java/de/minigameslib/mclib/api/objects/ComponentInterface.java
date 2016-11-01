@@ -24,6 +24,10 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import org.bukkit.Location;
+
+import de.minigameslib.mclib.api.McException;
+
 /**
  * A component within arenas.
  * 
@@ -32,6 +36,35 @@ package de.minigameslib.mclib.api.objects;
 public interface ComponentInterface
 {
     
-    // TODO
+    /**
+     * Returns the unique id of this component.
+     * 
+     * @return component id.
+     */
+    ComponentIdInterface getComponentId();
+    
+    /**
+     * Returns the component location.
+     * 
+     * @return component location.
+     */
+    Location getLocation();
+    
+    /**
+     * Changes the component location
+     * 
+     * @param location
+     * @throws McException
+     *             thrown if the location cannot be changed.
+     */
+    void setLocation(Location location) throws McException;
+    
+    /**
+     * Deletes this component.
+     * 
+     * @throws McException
+     *             thrown if the component cannot be deleted.
+     */
+    void delete() throws McException;
     
 }

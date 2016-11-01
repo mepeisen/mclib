@@ -28,6 +28,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageList;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
+import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
@@ -40,97 +41,129 @@ public enum CommonMessages implements LocalizedMessageInterface
 {
     
     /**
-     * Command must be executed in game.
+     * Error message displayed when a command must not be invoked on console.
      * 
      * <p>No Arguments</p>
      */
     @LocalizedMessage(defaultMessage = "Invoke this command in-game.", severity = MessageSeverityType.Error)
+    @MessageComment({"Error message displayed if a command must not be invoked on console."})
     InvokeIngame,
     
     /**
-     * No permissions for a command.
+     * Error message displayed if player does not have permission for a command.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: command name</li>
+     * <li>String: Name of the command.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "No permission for %1$s command.", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error message displayed if player does not have permission for a command."},
+            args = {
+                    @MessageComment.Argument({"Name of the command."})
+            })
     NoPermissionForCommand,
     
     /**
-     * The command is disabled.
+     * Error message displayed if a command is disabled.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: command name</li>
+     * <li>String: Name of the command</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "%1$s command disabled.", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error message displayed if a command is disabled."},
+            args = {
+                    @MessageComment.Argument({"Name of the command."})
+            })
     CommandDisabled,
     
     // ***** commands, usages etc.
     
     /**
-     * Error message for invalid commands (too many arguments)
+     * Error message displayed if there are too many arguments in command.
      * 
      * <p>No arguments.</p>
      */
     @LocalizedMessage(defaultMessage = "Too many arguments", severity = MessageSeverityType.Error)
+    @MessageComment({"Error message displayed if there are too many arguments in command."})
     TooManyArguments,
     
     /**
-     * Mc2 command usage.
+     * The usage of mc2 comment; hint to type /mc2 help.
      * 
      * <p>No arguments.</p>
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Type " + LocalizedMessage.BLUE + "/mc2 help " + LocalizedMessage.GRAY + "for detailed help", severity = MessageSeverityType.Success)
+    @MessageComment({"The usage of mc2 comment; hint to type /mc2 help"})
     Mc2CommandUsage,
     
     /**
-     * Invalid sub command in composite command.
+     * Error message if an invalid sub command was used.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: current command path</li>
-     * <li>String: current sub command</li>
+     * <li>String: Command path for the main command.</li>
+     * <li>String: Command name of the invalid sub command.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "Unknown command " + LocalizedMessage.BLUE + "%1$s %2$s", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error message if an invalid sub command was used."},
+            args = {
+                    @MessageComment.Argument({"Command path for the main command."}),
+                    @MessageComment.Argument({"Command name of the invalid sub command."})
+            })
     CompositeUnknownSubCommand,
     
     /**
-     * Paged output; header.
+     * Paged command: header of output for paged command.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: info text</li>
-     * <li>Integer: current page</li>
-     * <li>Integer: total pages</li>
+     * <li>String: Informational text/ command name.</li>
+     * <li>Integer: Current page number.</li>
+     * <li>Integer: Total number of pages.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "=====" + LocalizedMessage.BLUE + "%1$s" + LocalizedMessage.GRAY + "====" + LocalizedMessage.BLUE + "Page " + LocalizedMessage.DARK_BLUE + "%2$d " + LocalizedMessage.BLUE + " from " + LocalizedMessage.DARK_BLUE + "%3$d" + LocalizedMessage.GRAY + "=====")
+    @MessageComment(
+            value = {"Paged command: header of output for paged command."},
+            args = {
+                    @MessageComment.Argument({"Informational text/ command name."}),
+                    @MessageComment.Argument(value = {"Current page number."}, type = "Integer"),
+                    @MessageComment.Argument(value = {"Total number of pages."}, type = "Integer")
+            })
     PagedHeader,
     
     /**
-     * Paged output; line.
+     * Paged command: line of a paged output.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: line text</li>
-     * <li>Integer: line number</li>
+     * <li>String: Line text.</li>
+     * <li>Integer: Current line number.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = " " + LocalizedMessage.GRAY + "%1$s")
+    @MessageComment(
+            value = {"Paged command: line of a paged output."},
+            args = {
+                    @MessageComment.Argument({"Line text."}),
+                    @MessageComment.Argument(value = {"Current line number."}, type = "Integer")
+            })
     PagedLine,
     
     /**
-     * Paged output; wrong page number.
+     * Paged command: Error message for invalid page number (out of range).
      * 
      * <p>Arguments:</p>
      * 
@@ -140,83 +173,112 @@ public enum CommonMessages implements LocalizedMessageInterface
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "Page %1$d out of range. Only values from 1 to %2$d allowed.", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Paged command: Error message for invalid page number (out of range)."},
+            args = {
+                    @MessageComment.Argument(value = {"Page number that was entered by user."}, type = "Integer"),
+                    @MessageComment.Argument(value = {"Total page count being available."}, type = "Integer")
+            })
     PagedWrongPageNum,
     
 
     /**
-     * Paged output; invalid page number (not numeric).
+     * Paged command: Error message for invalid page number (not numeric).
      * 
      * <p>No arguments.</p>
      */
     @LocalizedMessage(defaultMessage = "Invalid page number/ number format error.", severity = MessageSeverityType.Error)
+    @MessageComment({"Paged command: Error message for invalid page number (not numeric)."})
     PagedInvalidNumber,
     
     /**
-     * Paged output; usage information
+     * Paged output; Command usage.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: The command that was entered</li>
+     * <li>String: The command line entered by the user.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Usage: " + LocalizedMessage.BLUE + "%1$s [page] " + LocalizedMessage.GRAY + "Display the given page.")
+    @MessageComment(
+            value = {"Paged command: Command usage."},
+            args = {
+                    @MessageComment.Argument({"The command line entered by the user."})
+            })
     PageUsage,
     
     /**
-     * Help command header.
+     * Help command: header line text.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: The command that was entered</li>
+     * <li>String: The command line entered by the user.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "help")
+    @MessageComment(
+            value = {"Help command: header line text."},
+            args = {
+                    @MessageComment.Argument({"The command line entered by the user."})
+            })
     HelpHeader,
     
     /**
-     * Help line.
+     * Help command: line of the help command.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: The command line</li>
-     * <li>String: The short description</li>
+     * <li>String: The command line entered by the user.</li>
+     * <li>String: The short description of the sub command.</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.BLUE + "%1$s " + LocalizedMessage.GRAY + "%2$s")
+    @MessageComment(
+            value = {"Help command: line of the help command."},
+            args = {
+                    @MessageComment.Argument({"The command line entered by the user."}),
+                    @MessageComment.Argument({"The short description of the sub command."})
+            })
     HelpLineUsage,
     
     /**
-     * Help command short description.
+     * Help command: Short description.
      * 
      * <p>No arguments.</p>
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Display command help")
+    @MessageComment({"Help command: Short description."})
     HelpShortDescription,
     
     /**
-     * Help on unknown sub command.
+     * Help command: Unknown sub command.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: The command line</li>
-     * <li>String: The sub command</li>
+     * <li>String: The command line entered by the user.</li>
+     * <li>String: The sub command name</li>
      * </ol>
      */
     @LocalizedMessage(defaultMessage = "Unknown command " + LocalizedMessage.BLUE + "%1$s %2$s", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Help command: Unknown sub command."},
+            args = {
+                    @MessageComment.Argument({"The command line entered by the user."}),
+                    @MessageComment.Argument({"The sub command name."})
+            })
     HelpUnknownSubCommand,
     
     /**
-     * Help command long description.
+     * Help command: Long description.
      * 
      * <p>Arguments:</p>
      * 
      * <ol>
-     * <li>String: The command that was entered</li>
-     * <li>String: The usage of this command</li>
+     * <li>String: The command line entered by the user</li>
      * </ol>
      */
     @LocalizedMessageList({
@@ -226,6 +288,11 @@ public enum CommonMessages implements LocalizedMessageInterface
         LocalizedMessageList.GRAY + "will always display the first help page.",
         LocalizedMessageList.GRAY + "If a command name is given it will display help on that command.",
     })
+    @MessageComment(
+            value = {"Help command: Long description."},
+            args = {
+                    @MessageComment.Argument({"The command line entered by the user."})
+            })
     HelpLongDescription;
     
 }

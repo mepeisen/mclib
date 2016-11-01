@@ -24,6 +24,10 @@
 
 package de.minigameslib.mclib.api;
 
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
+
+import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
@@ -34,8 +38,8 @@ import de.minigameslib.mclib.api.util.function.McSupplier;
  * The mclib execution context.
  * 
  * <p>
- * The execution context is some kind of thread local session storage. Once a command or event is being processed the context is responsible for providing common objects. For example the
- * default implementation can return the current player being responsible for a command call or event and to return the zone this player is located in.
+ * The execution context is some kind of thread local session storage. Once a command or event is being processed the context is responsible for providing common objects. For example the default
+ * implementation can return the current player being responsible for a command call or event and to return the zone this player is located in.
  * </p>
  * 
  * @author mepeisen
@@ -122,6 +126,26 @@ public interface McContext
     <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException;
     
     /**
+     * Returns the current command if context is executed within command.
+     * 
+     * @return current command.
+     */
+    default CommandInterface getCurrentCommand()
+    {
+        return this.getContext(CommandInterface.class);
+    }
+    
+    /**
+     * Returns the current bukkit event if context is executed within bukkit event.
+     * 
+     * @return bukkit event.
+     */
+    default Event getCurrentEvent()
+    {
+        return this.getContext(Event.class);
+    }
+    
+    /**
      * Returns the current player.
      * 
      * @return current player.
@@ -150,5 +174,93 @@ public interface McContext
     {
         return this.getContext(ComponentInterface.class);
     }
+    
+    /**
+     * An interface to calculate context variables.
+     * 
+     * @author mepeisen
+     * @param <T>
+     *            context class
+     */
+    public interface ContextHandlerInterface<T>
+    {
+        
+        /**
+         * Calculates the context object from command.
+         * 
+         * @param command
+         *            command to process
+         * @param context
+         *            current minigame context
+         * @return context object or {@code null} if it cannot be calculated
+         */
+        T calculateFromCommand(CommandInterface command, McContext context);
+        
+        /**
+         * Calculates the context object from minigame event.
+         * 
+         * @param event
+         *            event to process
+         * @param context
+         *            current minigame context
+         * @return context object or {@code null} if it cannot be calculated
+         */
+        T calculateFromEvent(Event event, McContext context);
+        
+    }
+    
+    /**
+     * Registers a context handler to calculate context variables.
+     * 
+     * @param plugin
+     *            Plugin owner of the context handler.
+     * @param clazz
+     *            context class.
+     * @param handler
+     *            the context handler.
+     * @throws McException
+     *             thrown if the class to register is already registered.
+     * @param <T>
+     *            context class to register
+     */
+    <T> void registerContextHandler(Plugin plugin, Class<T> clazz, ContextHandlerInterface<T> handler) throws McException;
+    
+    /**
+     * An interface being able to resolve variables with contexts.
+     * 
+     * @author mepeisen
+     */
+    public interface ContextResolverInterface
+    {
+        
+        /**
+         * Tries to resolve given variable name.
+         * 
+         * @param varName
+         *            variable name to resolve.
+         * @param args
+         *            arguments for resolve
+         * @param context
+         *            the context
+         * @return the resolved string or {@code null} if the variable cannot be resolved.
+         */
+        String resolve(String varName, String[] args, McContext context);
+        
+    }
+    
+    /**
+     * Registers a resolver for context variables.
+     * 
+     * @param plugin
+     * @param resolver
+     */
+    void registerContextResolver(Plugin plugin, ContextResolverInterface resolver);
+    
+    /**
+     * Unregisters context handlers and resolvers of given plugin.
+     * 
+     * @param plugin
+     */
+    void unregisterContextHandlersAndResolvers(Plugin plugin);
     
 }

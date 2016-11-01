@@ -26,8 +26,14 @@ package de.minigameslib.mclib.api.objects;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import de.minigameslib.mclib.api.McException;
 
 /**
  * A service to register enumerations with plugins.
@@ -52,7 +58,8 @@ public interface ObjectServiceInterface
     /**
      * Returns the player for given bukkit player.
      * 
-     * @param player bukkit online player
+     * @param player
+     *            bukkit online player
      * @return arena player.
      */
     McPlayerInterface getPlayer(Player player);
@@ -60,7 +67,8 @@ public interface ObjectServiceInterface
     /**
      * Returns the player for given bukkit player.
      * 
-     * @param player bukkit offline player
+     * @param player
+     *            bukkit offline player
      * @return arena player.
      */
     McPlayerInterface getPlayer(OfflinePlayer player);
@@ -68,9 +76,290 @@ public interface ObjectServiceInterface
     /**
      * Returns the player for given bukkit player uuid.
      * 
-     * @param uuid player uuid
+     * @param uuid
+     *            player uuid
      * @return arena player.
      */
     McPlayerInterface getPlayer(UUID uuid);
+    
+    // component api
+    
+    /**
+     * Finds a component by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Component or {@code null} if no component was found.
+     */
+    ComponentInterface findComponent(Location location);
+    
+    /**
+     * Finds a component by block.
+     * 
+     * @param block
+     *            bukkit block
+     * 
+     * @return Component or {@code null} if no component was found.
+     */
+    ComponentInterface findComponent(Block block);
+    
+    /**
+     * Finds component by id.
+     * 
+     * @param id
+     * @return Component or {@code null} if no component was found.
+     */
+    ComponentInterface findComponent(ComponentIdInterface id);
+    
+    /**
+     * Creates a new component with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param location
+     *            the initial location of the component.
+     * @param handler
+     *            handler
+     * @return created component
+     * @throws McException
+     *             thrown if the component could not be created
+     */
+    ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler) throws McException;
+    
+    // entity api
+    
+    /**
+     * Finds aa entity by bukkit entity.
+     * 
+     * @param entity
+     *            bukkit entity
+     * 
+     * @return Entity or {@code null} if no entity was found.
+     */
+    EntityInterface findEntity(Entity entity);
+    
+    /**
+     * Finds entity by id.
+     * 
+     * @param id
+     * @return Entity or {@code null} if no entity was found.
+     */
+    EntityInterface findEntity(EntityIdInterface id);
+    
+    /**
+     * Creates a new entity with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param entity
+     *            the bukkit entity.
+     * @param handler
+     *            handler
+     * @return created entity
+     * @throws McException
+     *             thrown if the entity could not be created
+     */
+    EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler) throws McException;
+    
+    // sign api
+    
+    /**
+     * Finds a sign by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Sign or {@code null} if no sign was found.
+     */
+    SignInterface findSign(Location location);
+    
+    /**
+     * Finds a sign by block.
+     * 
+     * @param block
+     *            bukkit block
+     * 
+     * @return Block or {@code null} if no sign was found.
+     */
+    SignInterface findSign(Block block);
+    
+    /**
+     * Finds a sign by bukkit sign.
+     * 
+     * @param sign
+     *            bukkit sign
+     * 
+     * @return Sign or {@code null} if no sign was found.
+     */
+    SignInterface findSign(Sign sign);
+    
+    /**
+     * Finds sign by id.
+     * 
+     * @param id
+     * @return Sign or {@code null} if no sign was found.
+     */
+    SignInterface findSign(SignIdInterface id);
+    
+    /**
+     * Creates a new sign with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param sign
+     *            the bukkit sign
+     * @param handler
+     *            handler
+     * @return created sign
+     * @throws McException
+     *             thrown if the sign could not be created
+     */
+    SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler) throws McException;
+    
+    // zone api
+    
+    /**
+     * Finds a zone by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return the first zone it finds.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLoc(Location)
+     */
+    ZoneInterface findZone(Location location);
+    
+    /**
+     * Finds all zones by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return every zone that contains given location. Even if multiple zones are overlapping.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLoc(Location)
+     */
+    Iterable<ZoneInterface> findZones(Location location);
+    
+    /**
+     * Finds a zone by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return the first zone it finds.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLocWithoutY(Location)
+     */
+    ZoneInterface findZoneWithoutY(Location location);
+    
+    /**
+     * Finds all zones by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return every zone that contains given location. Even if multiple zones are overlapping.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLocWithoutY(Location)
+     */
+    Iterable<ZoneInterface> findZonesWithoutY(Location location);
+    
+    /**
+     * Finds a zone by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return the first zone it finds.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLocWithoutYD(Location)
+     */
+    ZoneInterface findZoneWithoutYD(Location location);
+    
+    /**
+     * Finds all zones by location.
+     * 
+     * <p>
+     * Zones are parts of a minigame arena having bounds. If the given location is inside the bounds (inclusive) this method will return the zone.
+     * </p>
+     * 
+     * <p>
+     * The method will return every zone that contains given location. Even if multiple zones are overlapping.
+     * </p>
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Zone or {@code null} if no zone was found.
+     * 
+     * @see Cuboid#containsLocWithoutYD(Location)
+     */
+    Iterable<ZoneInterface> findZonesWithoutYD(Location location);
+    
+    /**
+     * Finds zone by id.
+     * 
+     * @param id
+     * @return Zone or {@code null} if no zone was found.
+     */
+    ZoneInterface findZone(ZoneIdInterface id);
+    
+    /**
+     * Creates a new zone with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param cuboid
+     *            the initial location of the zone.
+     * @param handler
+     *            handler
+     * @return created zone
+     * @throws McException
+     *             thrown if the zone could not be created
+     */
+    ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler) throws McException;
     
 }

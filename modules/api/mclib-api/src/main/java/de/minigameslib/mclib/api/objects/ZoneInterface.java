@@ -26,6 +26,8 @@ package de.minigameslib.mclib.api.objects;
 
 import org.bukkit.Location;
 
+import de.minigameslib.mclib.api.McException;
+
 /**
  * A zone/ cuboid component.
  * 
@@ -34,6 +36,12 @@ import org.bukkit.Location;
  */
 public interface ZoneInterface
 {
+    
+    /**
+     * Returns the unique id of this zone.
+     * @return zone id.
+     */
+    ZoneIdInterface getZoneId();
 
     /**
      * Returns the cuboid.
@@ -43,9 +51,13 @@ public interface ZoneInterface
     
     /**
      * Sets the cuboid
-     * @param cub cuboid of the component.
+     * 
+     * @param cub
+     *            cuboid of the component.
+     * @throws McException
+     *             thrown if the location cannot be changed.
      */
-    void setCuboid(Cuboid cub);
+    void setCuboid(Cuboid cub) throws McException;
     
     /**
      * Determines whether the this cuboid contains the passed location.
@@ -73,5 +85,13 @@ public interface ZoneInterface
      * @return true if the location is within this cuboid without y coord, otherwise false
      */
     boolean containsLocWithoutYD(final Location loc);
+    
+    /**
+     * Deletes this zone.
+     * 
+     * @throws McException
+     *             thrown if the zone cannot be deleted.
+     */
+    void delete() throws McException;
     
 }

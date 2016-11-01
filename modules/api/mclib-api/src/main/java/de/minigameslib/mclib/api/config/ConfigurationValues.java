@@ -54,10 +54,4 @@ public @interface ConfigurationValues
      */
     String file() default "config.yml";
     
-    /**
-     * {@code true} for fixed configuration variable calculated from declaring plugin; {@code false} for fetching minigame from context
-     * @return fixed configuration flag
-     */
-    boolean fixed() default false;
-    
 }

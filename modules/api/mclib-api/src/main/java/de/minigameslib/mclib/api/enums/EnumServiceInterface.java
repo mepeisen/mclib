@@ -54,7 +54,7 @@ public interface EnumServiceInterface
      * @param clazz
      *            the class to register.
      */
-    void registerEnumClass(Plugin plugin, Class<Enum<?>> clazz);
+    void registerEnumClass(Plugin plugin, Class<? extends Enum<?>> clazz);
     
     /**
      * Unregisters all enumeration classes of given plugin.
