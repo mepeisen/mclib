@@ -29,6 +29,7 @@ import java.util.Locale;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.impl.McCoreConfig;
 
 /**
  * Players persistent data.
@@ -62,13 +63,13 @@ public class MclibPlayersConfig implements Configurable
     @Override
     public void readFromConfig(ConfigurationSection section)
     {
-        this.preferredLocale = new Locale(section.getString("PreferredLocale", "en")); //$NON-NLS-1$ //$NON-NLS-2$
+        this.preferredLocale = new Locale(section.getString("PreferredLocale", McCoreConfig.DefaultLocale.getString())); //$NON-NLS-1$
     }
 
     @Override
     public void writeToConfig(ConfigurationSection section)
     {
-        section.set("PreferredLocale", this.preferredLocale.getLanguage()); //$NON-NLS-1$
+        section.set("PreferredLocale", this.preferredLocale == null ? null : this.preferredLocale.getLanguage()); //$NON-NLS-1$
     }
     
 }

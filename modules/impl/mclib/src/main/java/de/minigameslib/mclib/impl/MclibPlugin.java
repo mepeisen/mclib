@@ -46,11 +46,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.minigames.mclib.nms.v110.NmsFactory1_10_1;
 import de.minigames.mclib.nms.v18.NmsFactory1_8;
 import de.minigames.mclib.nms.v183.NmsFactory1_8_3;
 import de.minigames.mclib.nms.v185.NmsFactory1_8_5;
@@ -91,6 +92,7 @@ import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
 
 /**
  * Main spigot plugin class for MCLIB.
@@ -121,7 +123,10 @@ public class MclibPlugin extends JavaPlugin
     private final Map<Plugin, ConfigInterface>         configurations = new HashMap<>();
     
     /** the player registry. */
-    private PlayerRegistry                       players;
+    private PlayerRegistry                             players;
+    
+    /** the objects manager. */
+    private ObjectsManager                             objectsManager;
     
     @Override
     public void onEnable()
@@ -172,11 +177,15 @@ public class MclibPlugin extends JavaPlugin
         Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
         
         this.registerEnumClass(this, CommonMessages.class);
+        this.registerEnumClass(this, McCoreConfig.class);
+        
+        this.objectsManager = new ObjectsManager(this.getDataFolder());
     }
     
     @Override
     public void onDisable()
     {
+        this.unregisterAll(this);
         Bukkit.getServicesManager().unregisterAll(this);
     }
     
@@ -415,7 +424,6 @@ public class MclibPlugin extends JavaPlugin
     }
     
     // gui
-
     
     /**
      * Inventory close event
@@ -474,245 +482,181 @@ public class MclibPlugin extends JavaPlugin
             }
         }
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.McLibInterface#getDefaultLocale()
-     */
+    
     @Override
     public Locale getDefaultLocale()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new Locale(McCoreConfig.DefaultLocale.getString());
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.McLibInterface#setDefaultLocale(java.util.Locale)
-     */
+    
     @Override
     public void setDefaultLocale(Locale locale) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        McCoreConfig.DefaultLocale.setString(locale.toString());
+        McCoreConfig.DefaultLocale.saveConfig();
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.McLibInterface#debug()
-     */
+    
     @Override
     public boolean debug()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return McCoreConfig.Debug.getBoolean();
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.McLibInterface#setDebug(boolean)
-     */
+    
     @Override
     public void setDebug(boolean enabled)
     {
-        // TODO Auto-generated method stub
-        
+        McCoreConfig.Debug.setBoolean(enabled);
+        McCoreConfig.Debug.saveConfig();
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findComponent(org.bukkit.Location)
+    
+    /**
+     * event handler for plugin disable events
+     * 
+     * @param evt
      */
+    @EventHandler
+    public void onPluginDisable(PluginDisableEvent evt)
+    {
+        if (!evt.getPlugin().isEnabled())
+        {
+            this.objectsManager.onDisable(evt.getPlugin());
+        }
+    }
+    
+    /**
+     * event handler for plugin enable events
+     * 
+     * @param evt
+     */
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent evt)
+    {
+        if (evt.getPlugin().isEnabled())
+        {
+            this.objectsManager.onEnable(evt.getPlugin());
+        }
+    }
+    
+    // objects api
+    
     @Override
     public ComponentInterface findComponent(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findComponent(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findComponent(org.bukkit.block.Block)
-     */
+    
     @Override
     public ComponentInterface findComponent(Block block)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.findComponent(block.getLocation());
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findComponent(de.minigameslib.mclib.api.objects.ComponentIdInterface)
-     */
+    
     @Override
     public ComponentInterface findComponent(ComponentIdInterface id)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findComponent(id);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#createComponent(de.minigameslib.mclib.api.objects.ComponentTypeId, org.bukkit.Location, de.minigameslib.mclib.api.objects.ComponentHandlerInterface)
-     */
+    
     @Override
     public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.createComponent(type, location, handler);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findEntity(org.bukkit.entity.Entity)
-     */
+    
     @Override
     public EntityInterface findEntity(Entity entity)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findEntity(entity);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findEntity(de.minigameslib.mclib.api.objects.EntityIdInterface)
-     */
+    
     @Override
     public EntityInterface findEntity(EntityIdInterface id)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findEntity(id);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#createEntity(de.minigameslib.mclib.api.objects.EntityTypeId, org.bukkit.entity.Entity, de.minigameslib.mclib.api.objects.EntityHandlerInterface)
-     */
+    
     @Override
     public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.createEntity(type, entity, handler);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findSign(org.bukkit.Location)
-     */
+    
     @Override
     public SignInterface findSign(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findSign(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findSign(org.bukkit.block.Block)
-     */
+    
     @Override
     public SignInterface findSign(Block block)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findSign(block.getLocation());
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findSign(org.bukkit.block.Sign)
-     */
+    
     @Override
     public SignInterface findSign(Sign sign)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findSign(sign.getLocation());
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findSign(de.minigameslib.mclib.api.objects.SignIdInterface)
-     */
+    
     @Override
     public SignInterface findSign(SignIdInterface id)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findSign(id);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#createSign(de.minigameslib.mclib.api.objects.SignTypeId, org.bukkit.block.Sign, de.minigameslib.mclib.api.objects.SignHandlerInterface)
-     */
+    
     @Override
     public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.createSign(type, sign, handler);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZone(org.bukkit.Location)
-     */
+    
     @Override
     public ZoneInterface findZone(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZone(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZones(org.bukkit.Location)
-     */
+    
     @Override
     public Iterable<ZoneInterface> findZones(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZones(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZoneWithoutY(org.bukkit.Location)
-     */
+    
     @Override
     public ZoneInterface findZoneWithoutY(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZoneWithoutY(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZonesWithoutY(org.bukkit.Location)
-     */
+    
     @Override
     public Iterable<ZoneInterface> findZonesWithoutY(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZonesWithoutY(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZoneWithoutYD(org.bukkit.Location)
-     */
+    
     @Override
     public ZoneInterface findZoneWithoutYD(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZoneWithoutYD(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZonesWithoutYD(org.bukkit.Location)
-     */
+    
     @Override
     public Iterable<ZoneInterface> findZonesWithoutYD(Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZonesWithoutYD(location);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#findZone(de.minigameslib.mclib.api.objects.ZoneIdInterface)
-     */
+    
     @Override
     public ZoneInterface findZone(ZoneIdInterface id)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.findZone(id);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ObjectServiceInterface#createZone(de.minigameslib.mclib.api.objects.ZoneTypeId, de.minigameslib.mclib.api.objects.Cuboid, de.minigameslib.mclib.api.objects.ZoneHandlerInterface)
-     */
+    
     @Override
     public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.objectsManager.createZone(type, cuboid, handler);
     }
     
 }

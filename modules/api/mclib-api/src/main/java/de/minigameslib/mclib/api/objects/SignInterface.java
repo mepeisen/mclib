@@ -66,4 +66,11 @@ public interface SignInterface
      */
     void delete() throws McException;
     
+    /**
+     * Saves the configuration after handler changed data.
+     * 
+     * @throws McException
+     */
+    void saveConfig() throws McException;
+    
 }
