@@ -120,7 +120,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      * @param factory
      *            the factory to create minigame events.
      */
-    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, MinecraftEventFactory<T, MgEvt> factory)
+    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, MinecraftEventFactory<T> factory)
     {
         this.eventHandlers.put(clazz, new MinecraftEventHandler<>(clazz, factory));
     }
@@ -325,7 +325,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     {
         
         /** the event factory. */
-        private MinecraftEventFactory<T, MgEvt> factory;
+        private MinecraftEventFactory<T> factory;
         /** event class. */
         private Class<T> cls;
 
@@ -334,7 +334,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          * @param clazz event class
          * @param factory mg event factory
          */
-        public MinecraftEventHandler(Class<T> clazz, MinecraftEventFactory<T, MgEvt> factory)
+        public MinecraftEventHandler(Class<T> clazz, MinecraftEventFactory<T> factory)
         {
             this.cls = clazz;
             this.factory = factory;
@@ -370,9 +370,10 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          * @param evt bukkit event
          * @return minigame event.
          */
+        @SuppressWarnings("unchecked")
         public MgEvt createMgEvent(T evt)
         {
-            return this.factory.create(evt);
+            return (MgEvt) this.factory.create(evt);
         }
         
     }
@@ -381,10 +382,9 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      * Interface for creating minigame event classes from given bukkit event.
      *
      * @param <Evt>
-     * @param <MgEvt>
      */
     @FunctionalInterface
-    public interface MinecraftEventFactory<Evt extends Event, MgEvt extends MinecraftEvent<Evt, MgEvt>>
+    public interface MinecraftEventFactory<Evt extends Event>
     {
         
         /**
@@ -394,7 +394,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          *            bukkit event.
          * @return the minigame event object.
          */
-        MgEvt create(Evt event);
+        MinecraftEvent<?, ?> create(Evt event);
         
     }
     
