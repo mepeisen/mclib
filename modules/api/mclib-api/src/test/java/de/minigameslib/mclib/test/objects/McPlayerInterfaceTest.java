@@ -226,6 +226,12 @@ public class McPlayerInterfaceTest
         {
             return null;
         }
+
+        @Override
+        public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
+        {
+            return null;
+        }
         
     }
     
