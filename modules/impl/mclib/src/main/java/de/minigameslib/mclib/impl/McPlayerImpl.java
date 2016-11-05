@@ -167,6 +167,50 @@ class McPlayerImpl implements McPlayerInterface
     {
         return this.uuid;
     }
+
+    @Override
+    public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
+    {
+        final OfflinePlayer player = this.getOfflinePlayer();
+        String[] msgs = null;
+        if (msg.isSingleLine())
+        {
+            msgs = new String[] { player.isOp() ? (msg.toAdminMessage(this.getPreferredLocale(), args)) : (msg.toUserMessage(this.getPreferredLocale(), args)) };
+        }
+        else
+        {
+            msgs = player.isOp() ? (msg.toAdminMessageLine(this.getPreferredLocale(), args)) : (msg.toUserMessageLine(this.getPreferredLocale(), args));
+        }
+        
+        final String[] result = new String[msgs.length];
+        
+        for (int i = 0; i < result.length; i++)
+        {
+            switch (msg.getSeverity())
+            {
+                default:
+                case Error:
+                    result[i] = ChatColor.DARK_RED + msgs[i];
+                    break;
+                case Information:
+                    result[i] = ChatColor.WHITE + msgs[i];
+                    break;
+                case Loser:
+                    result[i] = ChatColor.RED + msgs[i];
+                    break;
+                case Success:
+                    result[i] = ChatColor.GREEN + msgs[i];
+                    break;
+                case Warning:
+                    result[i] = ChatColor.YELLOW + msgs[i];
+                    break;
+                case Winner:
+                    result[i] = ChatColor.GOLD + msgs[i];
+                    break;
+            }
+        }
+        return result;
+    }
     
     @Override
     public void sendMessage(LocalizedMessageInterface msg, Serializable... args)
@@ -174,41 +218,11 @@ class McPlayerImpl implements McPlayerInterface
         final Player player = this.getBukkitPlayer();
         if (player != null)
         {
-            
-            String[] msgs = null;
-            if (msg.isSingleLine())
-            {
-                msgs = new String[] { player.isOp() ? (msg.toAdminMessage(this.getPreferredLocale(), args)) : (msg.toUserMessage(this.getPreferredLocale(), args)) };
-            }
-            else
-            {
-                msgs = player.isOp() ? (msg.toAdminMessageLine(this.getPreferredLocale(), args)) : (msg.toUserMessageLine(this.getPreferredLocale(), args));
-            }
+            final String[] msgs = this.encodeMessage(msg, args);
             
             for (final String smsg : msgs)
             {
-                switch (msg.getSeverity())
-                {
-                    default:
-                    case Error:
-                        player.sendMessage(ChatColor.DARK_RED + smsg);
-                        break;
-                    case Information:
-                        player.sendMessage(ChatColor.WHITE + smsg);
-                        break;
-                    case Loser:
-                        player.sendMessage(ChatColor.RED + smsg);
-                        break;
-                    case Success:
-                        player.sendMessage(ChatColor.GREEN + smsg);
-                        break;
-                    case Warning:
-                        player.sendMessage(ChatColor.YELLOW + smsg);
-                        break;
-                    case Winner:
-                        player.sendMessage(ChatColor.GOLD + smsg);
-                        break;
-                }
+                player.sendMessage(smsg);
             }
         }
     }

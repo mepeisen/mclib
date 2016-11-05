@@ -107,6 +107,17 @@ public interface McPlayerInterface
      */
     void setPreferredLocale(Locale locale) throws McException;
     
+    /**
+     * Encodes a message to given player by using the players preferred locale.
+     * 
+     * @param msg
+     *            message to encode.
+     * @param args
+     *            arguments to use for this message.
+     * @return the encoded message as string array
+     */
+    String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args);
+    
     // permissions check
     
     /**
