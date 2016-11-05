@@ -91,21 +91,24 @@ public interface CommandInterface
      * @return new command interface containing remaining arguments.
      */
     CommandInterface consumeArgs(int count);
-
+    
     /**
      * Returns the command path being used before the arguments.
+     * 
      * @return current command path.
      */
     String getCommandPath();
     
     /**
      * Returns the locale of the sender.
+     * 
      * @return senders locale
      */
     Locale getLocale();
     
     /**
      * Checks if the sender is an operator
+     * 
      * @return {@code true} for operators.
      */
     default boolean isOp()
@@ -115,8 +118,11 @@ public interface CommandInterface
     
     /**
      * Sends a message to command sender
-     * @param msg message to send
-     * @param args message arguments
+     * 
+     * @param msg
+     *            message to send
+     * @param args
+     *            message arguments
      */
     default void send(LocalizedMessageInterface msg, Serializable... args)
     {
@@ -151,7 +157,7 @@ public interface CommandInterface
                     this.getSender().sendMessage(ChatColor.GOLD + msg2);
                     break;
             }
-
+            
         }
     }
     
@@ -183,14 +189,18 @@ public interface CommandInterface
     }
     
     /**
-     * Checks for given permission and if player does not have permission throws a MinigameException. 
+     * Checks for given permission and if player does not have permission throws a MinigameException.
+     * 
      * @param perm
+     *            permission to check
      * @param command
+     *            command name for error message
      * @throws McException
+     *             thrown if the command sender does not have the permission.
      */
     default void permThrowException(PermissionsInterface perm, String command) throws McException
     {
-        getPlayer().when(p -> !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[]{command});
+        getPlayer().when(p -> !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[] { command });
     }
     
 }

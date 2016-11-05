@@ -60,6 +60,7 @@ public interface EnumServiceInterface
      * Unregisters all enumeration classes of given plugin.
      * 
      * @param plugin
+     *            plugin that is disabled.
      */
     void unregisterAll(Plugin plugin);
     
@@ -68,7 +69,7 @@ public interface EnumServiceInterface
      * 
      * @param enumValue
      *            enumeration value to search for
-     * @return plugin instance or {@ode null} if it was not found.
+     * @return plugin instance or {@code null} if it was not found.
      */
     Plugin getPlugin(Enum<?> enumValue);
     
@@ -76,6 +77,7 @@ public interface EnumServiceInterface
      * Returns the enumeration values of given plugin.
      * 
      * @param plugin
+     *            the plugin whose enum values are returned
      * @return all registered enumeration values.
      */
     Set<Enum<?>> getEnumValues(Plugin plugin);
@@ -84,7 +86,11 @@ public interface EnumServiceInterface
      * Returns the enumeration values of given plugin implementing given interface class.
      * 
      * @param plugin
+     *            the plugin whose enum values are returned
      * @param clazz
+     *            class/interface for filtering the enum values
+     * @param <T>
+     *            class param
      * @return enumeration values
      */
     <T> Set<T> getEnumValues(Plugin plugin, Class<T> clazz);

@@ -39,12 +39,14 @@ public interface ZoneInterface
     
     /**
      * Returns the unique id of this zone.
+     * 
      * @return zone id.
      */
     ZoneIdInterface getZoneId();
-
+    
     /**
      * Returns the cuboid.
+     * 
      * @return cuboid of this component.
      */
     Cuboid getCuboid();
@@ -98,6 +100,7 @@ public interface ZoneInterface
      * Saves the configuration after handler changed data.
      * 
      * @throws McException
+     *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
     

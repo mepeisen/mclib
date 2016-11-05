@@ -108,6 +108,7 @@ public interface ObjectServiceInterface
      * Finds component by id.
      * 
      * @param id
+     *            the component id to search for
      * @return Component or {@code null} if no component was found.
      */
     ComponentInterface findComponent(ComponentIdInterface id);
@@ -143,6 +144,7 @@ public interface ObjectServiceInterface
      * Finds entity by id.
      * 
      * @param id
+     *            the entity id to search for
      * @return Entity or {@code null} if no entity was found.
      */
     EntityInterface findEntity(EntityIdInterface id);
@@ -198,6 +200,7 @@ public interface ObjectServiceInterface
      * Finds sign by id.
      * 
      * @param id
+     *            the sign id to search for
      * @return Sign or {@code null} if no sign was found.
      */
     SignInterface findSign(SignIdInterface id);
@@ -343,6 +346,7 @@ public interface ObjectServiceInterface
      * Finds zone by id.
      * 
      * @param id
+     *            the zone id to search for
      * @return Zone or {@code null} if no zone was found.
      */
     ZoneInterface findZone(ZoneIdInterface id);

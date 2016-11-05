@@ -28,8 +28,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.config.Configurable;
 
 /**
- * A zone handler is declared by another plugin; while zone creation
- * it is used to store custom data.
+ * A zone handler is declared by another plugin; while zone creation it is used to store custom data.
  * 
  * @author mepeisen
  */
@@ -37,22 +36,26 @@ public interface ZoneHandlerInterface extends Configurable
 {
     
     /**
-     * Invoked upon creation of a zone. It is safe to store the zone object within instance fields.
-     * To referr other components or zones within config you must only use the ids.
-     * @param zone zone creation.
+     * Invoked upon creation of a zone. It is safe to store the zone object within instance fields. To referr other components or zones within config you must only use the ids.
+     * 
+     * @param zone
+     *            zone taht was created.
      */
     void onCreate(ZoneInterface zone);
     
     /**
-     * Invoked upon re-loading a component from config (after server restart). It is invoked after
-     * the config was loaded.
+     * Invoked upon re-loading a component from config (after server restart). It is invoked after the config was loaded.
+     * 
      * @param zone
+     *            zone that was resumed.
      */
     void onResume(ZoneInterface zone);
     
     /**
      * Checks if the zone can be deleted
-     * @throws McException thrown to veto the deletion.
+     * 
+     * @throws McException
+     *             thrown to veto the deletion.
      */
     void canDelete() throws McException;
     
@@ -63,14 +66,19 @@ public interface ZoneHandlerInterface extends Configurable
     
     /**
      * Checks if the location can be changed.
+     * 
      * @param newValue
-     * @throws McException thrown to veto the location change.
+     *            the new location
+     * @throws McException
+     *             thrown to veto the location change.
      */
     void canChangeCuboid(Cuboid newValue) throws McException;
     
     /**
      * Invoked upon change of location
+     * 
      * @param newValue
+     *            the new location
      */
     void onCuboidChange(Cuboid newValue);
     

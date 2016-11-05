@@ -28,8 +28,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.config.Configurable;
 
 /**
- * A sign handler is declared by another plugin; while sign creation
- * it is used to store custom data.
+ * A sign handler is declared by another plugin; while sign creation it is used to store custom data.
  * 
  * @author mepeisen
  */
@@ -37,22 +36,26 @@ public interface SignHandlerInterface extends Configurable
 {
     
     /**
-     * Invoked upon creation of a sign. It is safe to store the sign object within instance fields.
-     * To referr other signs or zones within config you must only use the ids.
-     * @param sign sign creation.
+     * Invoked upon creation of a sign. It is safe to store the sign object within instance fields. To referr other signs or zones within config you must only use the ids.
+     * 
+     * @param sign
+     *            sign that was created.
      */
     void onCreate(SignInterface sign);
     
     /**
-     * Invoked upon re-loading a sign from config (after server restart). It is invoked after
-     * the config was loaded.
+     * Invoked upon re-loading a sign from config (after server restart). It is invoked after the config was loaded.
+     * 
      * @param sign
+     *            sign that was resumed
      */
     void onResume(SignInterface sign);
     
     /**
      * Checks if the sign can be deleted
-     * @throws McException thrown to veto the deletion.
+     * 
+     * @throws McException
+     *             thrown to veto the deletion.
      */
     void canDelete() throws McException;
     

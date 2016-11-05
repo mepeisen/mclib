@@ -27,8 +27,7 @@ package de.minigameslib.mclib.api.objects;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * An entity handler is declared by another plugin; while entity creation
- * it is used to store custom data.
+ * An entity handler is declared by another plugin; while entity creation it is used to store custom data.
  * 
  * @author mepeisen
  */
@@ -36,22 +35,26 @@ public interface EntityHandlerInterface
 {
     
     /**
-     * Invoked upon creation of an entity. It is safe to store the entity object within instance fields.
-     * To referr other components or zones within config you must only use the ids.
-     * @param entity entity creation.
+     * Invoked upon creation of an entity. It is safe to store the entity object within instance fields. To referr other components or zones within config you must only use the ids.
+     * 
+     * @param entity
+     *            entity that is created.
      */
     void onCreate(EntityInterface entity);
     
     /**
-     * Invoked upon re-loading an entity from config (after server restart). It is invoked after
-     * the config was loaded.
+     * Invoked upon re-loading an entity from config (after server restart). It is invoked after the config was loaded.
+     * 
      * @param entity
+     *            entity that is resumed
      */
     void onResume(EntityInterface entity);
     
     /**
      * Checks if the entity can be deleted
-     * @throws McException thrown to veto the deletion.
+     * 
+     * @throws McException
+     *             thrown to veto the deletion.
      */
     void canDelete() throws McException;
     

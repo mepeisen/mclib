@@ -38,6 +38,7 @@ public interface SignInterface
     
     /**
      * Returns the unique id of this sign.
+     * 
      * @return sign id.
      */
     SignIdInterface getSignId();
@@ -53,6 +54,7 @@ public interface SignInterface
      * Changes the sign location
      * 
      * @param location
+     *            the new location
      * @throws McException
      *             thrown if the location cannot be changed.
      */
@@ -70,6 +72,7 @@ public interface SignInterface
      * Saves the configuration after handler changed data.
      * 
      * @throws McException
+     *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
     

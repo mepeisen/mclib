@@ -54,6 +54,7 @@ public interface ComponentInterface
      * Changes the component location
      * 
      * @param location
+     *            the new location
      * @throws McException
      *             thrown if the location cannot be changed.
      */
@@ -71,6 +72,7 @@ public interface ComponentInterface
      * Saves the configuration after handler changed data.
      * 
      * @throws McException
+     *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
     

@@ -252,7 +252,9 @@ public interface McContext
      * Registers a resolver for context variables.
      * 
      * @param plugin
+     *            plugin that is responsible for given resolver
      * @param resolver
+     *            helper for resolving context variables
      */
     void registerContextResolver(Plugin plugin, ContextResolverInterface resolver);
     
@@ -260,6 +262,7 @@ public interface McContext
      * Unregisters context handlers and resolvers of given plugin.
      * 
      * @param plugin
+     *            plugin that is disabled
      */
     void unregisterContextHandlersAndResolvers(Plugin plugin);
     

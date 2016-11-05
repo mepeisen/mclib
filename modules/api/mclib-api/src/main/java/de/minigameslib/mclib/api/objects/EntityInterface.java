@@ -36,6 +36,7 @@ public interface EntityInterface
     
     /**
      * Returns the unique id of this entity.
+     * 
      * @return entity id.
      */
     EntityIdInterface getEntityId();
@@ -52,6 +53,7 @@ public interface EntityInterface
      * Saves the configuration after handler changed data.
      * 
      * @throws McException
+     *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
     

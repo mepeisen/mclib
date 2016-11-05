@@ -30,8 +30,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.config.Configurable;
 
 /**
- * A component handler is declared by another plugin; while component creation
- * it is used to store custom data.
+ * A component handler is declared by another plugin; while component creation it is used to store custom data.
  * 
  * @author mepeisen
  */
@@ -39,22 +38,26 @@ public interface ComponentHandlerInterface extends Configurable
 {
     
     /**
-     * Invoked upon creation of a component. It is safe to store the component object within instance fields.
-     * To referr other components or zones within config you must only use the ids.
-     * @param component component creation.
+     * Invoked upon creation of a component. It is safe to store the component object within instance fields. To referr other components or zones within config you must only use the ids.
+     * 
+     * @param component
+     *            component that is created.
      */
     void onCreate(ComponentInterface component);
     
     /**
-     * Invoked upon re-loading a component from config (after server restart). It is invoked after
-     * the config was loaded.
+     * Invoked upon re-loading a component from config (after server restart). It is invoked after the config was loaded.
+     * 
      * @param component
+     *            component hat is resumed.
      */
     void onResume(ComponentInterface component);
     
     /**
      * Checks if the component can be deleted
-     * @throws McException thrown to veto the deletion.
+     * 
+     * @throws McException
+     *             thrown to veto the deletion.
      */
     void canDelete() throws McException;
     
@@ -65,14 +68,19 @@ public interface ComponentHandlerInterface extends Configurable
     
     /**
      * Checks if the location can be changed.
+     * 
      * @param newValue
-     * @throws McException thrown to veto the location change.
+     *            the new location
+     * @throws McException
+     *             thrown to veto the location change.
      */
     void canChangeLocation(Location newValue) throws McException;
     
     /**
      * Invoked upon change of location
+     * 
      * @param newValue
+     *            the new location
      */
     void onLocationChange(Location newValue);
     
