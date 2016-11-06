@@ -24,10 +24,19 @@
 
 package de.minigames.mclib.nms.v185;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,20 +50,138 @@ import net.minecraft.server.v1_8_R3.EntityPlayer;
  */
 public class InventoryManager1_8_5 implements InventoryManagerInterface
 {
-
+    
+    /**
+     * inventory helpers by uuid.
+     */
+    private final Map<UUID, Helper> playerInventories = new HashMap<>();
+    
     @Override
-    public Inventory openInventory(Player player, String name, ItemStack[] items)
+    public InventoryHelper openInventory(Player player, String name, ItemStack[] items, InventoryListener listener)
     {
         final Inventory inventory = Bukkit.createInventory(null, items.length, name);
         inventory.setContents(items);
-        final EntityPlayer entity = ((CraftPlayer)player).getHandle();
+        final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         if (entity.activeContainer != entity.defaultContainer)
         {
             CraftEventFactory.handleInventoryCloseEvent(entity);
             entity.activeContainer = entity.defaultContainer;
         }
         player.openInventory(inventory);
-        return inventory;
+        final Helper helper = new Helper(entity, inventory, listener);
+        this.playerInventories.put(player.getUniqueId(), helper);
+        return helper;
+    }
+    
+    /**
+     * Player click event
+     * 
+     * @param evt
+     *            player click event
+     */
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent evt)
+    {
+        final UUID uuid = evt.getPlayer().getUniqueId();
+        if (this.playerInventories.containsKey(uuid))
+        {
+            this.playerInventories.remove(uuid).close();
+        }
+    }
+    
+    /**
+     * Inventory click event
+     * 
+     * @param evt
+     *            inventory click event
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent evt)
+    {
+        final UUID uuid = evt.getWhoClicked().getUniqueId();
+        if (this.playerInventories.containsKey(uuid))
+        {
+            final ItemStack stack = evt.getCurrentItem();
+            this.playerInventories.get(uuid).listener.onClick(stack);
+        }
+    }
+    
+    /**
+     * Inventory drag event
+     * 
+     * @param evt
+     *            inventory drag event
+     */
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent evt)
+    {
+        final UUID uuid = evt.getWhoClicked().getUniqueId();
+        if (this.playerInventories.containsKey(uuid))
+        {
+            evt.setCancelled(true);
+        }
+    }
+    
+    /**
+     * Inventory close event
+     * 
+     * @param evt
+     *            inventory close event
+     */
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent evt)
+    {
+        final UUID uuid = evt.getPlayer().getUniqueId();
+        if (this.playerInventories.containsKey(uuid))
+        {
+            this.playerInventories.remove(uuid).listener.onClose();
+        }
+    }
+    
+    /**
+     * Helper class for inventories.
+     */
+    private static final class Helper implements InventoryHelper
+    {
+        
+        /** bukkit inventory. */
+        private Inventory    inv;
+        /** craft entity. */
+        private EntityPlayer entity;
+        /** the inventory listener. */
+        InventoryListener    listener;
+        
+        /**
+         * @param entity
+         * @param inventory
+         * @param listener 
+         */
+        public Helper(EntityPlayer entity, Inventory inventory, InventoryListener listener)
+        {
+            this.inv = inventory;
+            this.entity = entity;
+            this.listener = listener;
+        }
+        
+        @Override
+        public void close()
+        {
+            CraftEventFactory.handleInventoryCloseEvent(this.entity);
+        }
+        
+        @Override
+        public Inventory getBukkitInventory()
+        {
+            return this.inv;
+        }
+        
+        @Override
+        public void setNewPage(String name, ItemStack[] items)
+        {
+            this.inv.setContents(items);
+            // TODO Change the name
+        }
+        
     }
     
 }

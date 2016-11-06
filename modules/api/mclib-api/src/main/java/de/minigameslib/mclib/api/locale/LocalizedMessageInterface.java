@@ -28,6 +28,8 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
+import de.minigameslib.mclib.api.McLibInterface;
+
 /**
  * An interface for enumerations that represent localized messages.
  * 
@@ -102,14 +104,15 @@ public interface LocalizedMessageInterface extends Serializable
     /**
      * Returns a human readable text for this message; this message will be displayed to common users.
      * 
-     * @param locale
+     * @param loc
      *            locale to be used.
      * @param args
      *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String toUserMessage(Locale locale, Serializable... args)
+    default String toUserMessage(Locale loc, Serializable... args)
     {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
         {
             final LocalizedMessages msgs = this.getClass().getAnnotation(LocalizedMessages.class);
@@ -137,14 +140,15 @@ public interface LocalizedMessageInterface extends Serializable
     /**
      * Returns an array of human readable texts for this message; this message will be displayed to common users.
      * 
-     * @param locale
+     * @param loc
      *            locale to be used.
      * @param args
      *            object arguments that can be used to build the message.
      * @return message string array.
      */
-    default String[] toUserMessageLine(Locale locale, Serializable... args)
+    default String[] toUserMessageLine(Locale loc, Serializable... args)
     {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
         {
             final LocalizedMessages msgs = this.getClass().getAnnotation(LocalizedMessages.class);
@@ -179,14 +183,15 @@ public interface LocalizedMessageInterface extends Serializable
     /**
      * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
      * 
-     * @param locale
+     * @param loc
      *            locale to be used.
      * @param args
      *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String toAdminMessage(Locale locale, Serializable... args)
+    default String toAdminMessage(Locale loc, Serializable... args)
     {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
         {
             final LocalizedMessages msgs = this.getClass().getAnnotation(LocalizedMessages.class);
@@ -218,14 +223,15 @@ public interface LocalizedMessageInterface extends Serializable
     /**
      * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
      * 
-     * @param locale
+     * @param loc
      *            locale to be used.
      * @param args
      *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String[] toAdminMessageLine(Locale locale, Serializable... args)
+    default String[] toAdminMessageLine(Locale loc, Serializable... args)
     {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
         {
             final LocalizedMessages msgs = this.getClass().getAnnotation(LocalizedMessages.class);

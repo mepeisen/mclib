@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
@@ -48,8 +49,9 @@ public class NmsFactory1_10_1 implements NmsFactory
      */
     public NmsFactory1_10_1()
     {
-        this.impls.put(EventSystemInterface.class, () -> new EventSystem1_10_1());
-        this.impls.put(InventoryManagerInterface.class, () -> new InventoryManager1_10_1());
+        this.impls.put(EventSystemInterface.class, EventSystem1_10_1::new);
+        this.impls.put(InventoryManagerInterface.class, InventoryManager1_10_1::new);
+        this.impls.put(AnvilManagerInterface.class, AnvilManager1_10_1::new);
     }
     
     @Override

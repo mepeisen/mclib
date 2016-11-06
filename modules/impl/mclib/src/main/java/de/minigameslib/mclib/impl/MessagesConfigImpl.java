@@ -36,6 +36,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageList;
@@ -82,7 +83,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     public String getString(Locale locale, String path, String defaultValue)
     {
         final FileConfiguration config1 = this.getConfig();
-        String result = config1.getString(path + ".user." + locale.toString()); //$NON-NLS-1$
+        String result = config1.getString(path + ".user." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
             final String defaultLocale = config1.getString(path + ".default_locale"); //$NON-NLS-1$
@@ -98,7 +99,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     public String getAdminString(Locale locale, String path, String defaultValue)
     {
         final FileConfiguration config1 = this.getConfig();
-        String result = config1.getString(path + ".admin." + locale.toString()); //$NON-NLS-1$
+        String result = config1.getString(path + ".admin." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
             final String defaultLocale = config1.getString(path + ".default_locale"); //$NON-NLS-1$
@@ -114,7 +115,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     public String[] getStringList(Locale locale, String path, String[] defaultValue)
     {
         final FileConfiguration config1 = this.getConfig();
-        List<String> result = config1.getStringList(path + ".user." + locale.toString()); //$NON-NLS-1$
+        List<String> result = config1.getStringList(path + ".user." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
             final String defaultLocale = config1.getString(path + ".default_locale"); //$NON-NLS-1$
@@ -130,7 +131,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     public String[] getAdminStringList(Locale locale, String path, String[] defaultValue)
     {
         final FileConfiguration config1 = this.getConfig();
-        List<String> result = config1.getStringList(path + ".admin." + locale.toString()); //$NON-NLS-1$
+        List<String> result = config1.getStringList(path + ".admin." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
             final String defaultLocale = config1.getString(path + ".default_locale"); //$NON-NLS-1$

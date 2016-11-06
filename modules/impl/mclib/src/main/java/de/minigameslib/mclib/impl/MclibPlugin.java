@@ -41,9 +41,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -91,6 +88,9 @@ import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
+import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
+import de.minigameslib.mclib.nms.api.EventSystemInterface;
+import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
 
@@ -168,6 +168,7 @@ public class MclibPlugin extends JavaPlugin
         
         Bukkit.getPluginManager().registerEvents(this, this);
         
+        // public api services
         Bukkit.getServicesManager().register(EnumServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ConfigServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(MessageServiceInterface.class, this, this, ServicePriority.Highest);
@@ -176,10 +177,22 @@ public class MclibPlugin extends JavaPlugin
         Bukkit.getServicesManager().register(McContext.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
         
+        // mclib enumerations
         this.registerEnumClass(this, CommonMessages.class);
         this.registerEnumClass(this, McCoreConfig.class);
         
+        // nms services
+        final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
+        Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
+        
         this.objectsManager = new ObjectsManager(this.getDataFolder());
+        
+        // nms event listeners
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(InventoryManagerInterface.class), this);
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(AnvilManagerInterface.class), this);
     }
     
     @Override
@@ -424,64 +437,6 @@ public class MclibPlugin extends JavaPlugin
     }
     
     // gui
-    
-    /**
-     * Inventory close event
-     * 
-     * @param evt
-     *            inventory close event
-     */
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent evt)
-    {
-        if (evt.getPlayer() instanceof Player)
-        {
-            final McPlayerImpl player = this.players.getPlayer((Player) evt.getPlayer());
-            if (player.getGuiSession() != null)
-            {
-                player.onCloseGui();
-            }
-        }
-    }
-    
-    /**
-     * Inventory click event
-     * 
-     * @param evt
-     *            inventory click event
-     */
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent evt)
-    {
-        if (evt.getWhoClicked() instanceof Player)
-        {
-            final McPlayerImpl player = this.players.getPlayer((Player) evt.getWhoClicked());
-            final GuiSessionImpl session = (GuiSessionImpl) player.getGuiSession();
-            if (session != null)
-            {
-                session.onClick(evt);
-            }
-        }
-    }
-    
-    /**
-     * Inventory drag event
-     * 
-     * @param evt
-     *            inventory drag event
-     */
-    @EventHandler
-    public void onInventoryDrag(InventoryDragEvent evt)
-    {
-        if (evt.getWhoClicked() instanceof Player)
-        {
-            final McPlayerImpl player = this.players.getPlayer((Player) evt.getWhoClicked());
-            if (player.getGuiSession() != null)
-            {
-                evt.setCancelled(true);
-            }
-        }
-    }
     
     @Override
     public Locale getDefaultLocale()

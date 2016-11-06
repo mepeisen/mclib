@@ -37,6 +37,12 @@ public interface GuiSessionInterface extends Configurable
 {
     
     /**
+     * Returns the type of opened gui.
+     * @return opened gui type.
+     */
+    GuiType getCurrentType();
+    
+    /**
      * Returns the player that owns this gui session.
      * 
      * @return player owning the session.
@@ -48,7 +54,14 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @return current click gui.
      */
-    ClickGuiInterface getGui();
+    ClickGuiInterface getClickGui();
+    
+    /**
+     * Returns the current anvil gui reference.
+     * 
+     * @return current anvil gui.
+     */
+    AnvilGuiInterface getAnvilGui();
     
     /**
      * Sets a new gui page or updates the client after changing the gui items of a page.
