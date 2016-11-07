@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -182,7 +183,18 @@ public interface McPlayerInterface
      * @throws McException
      *             thrown if the player is not online.
      */
-    GuiSessionInterface openGui(ClickGuiInterface gui) throws McException;
+    GuiSessionInterface openClickGui(ClickGuiInterface gui) throws McException;
+    
+    /**
+     * Lets the player opening a new anvil gui session.
+     * 
+     * @param gui
+     *            anvil gui to display
+     * @return gui session
+     * @throws McException
+     *             thrown if the player is not online.
+     */
+    GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException;
     
     // zone
     

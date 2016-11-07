@@ -38,6 +38,7 @@ import org.junit.Test;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -210,7 +211,13 @@ public class McPlayerInterfaceTest
         }
 
         @Override
-        public GuiSessionInterface openGui(ClickGuiInterface gui) throws McException
+        public GuiSessionInterface openClickGui(ClickGuiInterface gui) throws McException
+        {
+            return null;
+        }
+
+        @Override
+        public GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException
         {
             return null;
         }

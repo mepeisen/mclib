@@ -48,6 +48,7 @@ import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -399,7 +400,21 @@ class McPlayerImpl implements McPlayerInterface
     }
     
     @Override
-    public GuiSessionInterface openGui(ClickGuiInterface gui) throws McException
+    public GuiSessionInterface openClickGui(ClickGuiInterface gui) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
+        if (oldSession != null)
+        {
+            oldSession.close();
+        }
+        final GuiSessionInterface newSession = new GuiSessionImpl(gui, this);
+        storage.set(GuiSessionInterface.class, newSession);
+        return newSession;
+    }
+    
+    @Override
+    public GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException
     {
         final McStorage storage = this.getSessionStorage();
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
