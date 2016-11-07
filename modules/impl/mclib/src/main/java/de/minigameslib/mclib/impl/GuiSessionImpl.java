@@ -26,6 +26,8 @@ package de.minigameslib.mclib.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,6 +59,9 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener
  */
 public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, AnvilListener
 {
+    
+    /** logger. */
+    private static final Logger LOGGER = Logger.getLogger(GuiSessionImpl.class.getName());
     
     /** the current gui type. */
     private GuiType type = GuiType.None;
@@ -260,6 +265,15 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         if (this.type == GuiType.AnvilGui)
         {
+            try
+            {
+                this.agui.onInput(name);
+            }
+            catch (McException ex)
+            {
+                this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                return false;
+            }
             // TODO fire event
         }
         return true;
@@ -285,16 +299,16 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     }
                     catch (McException ex)
                     {
-                        // TODO
+                        this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
                     }
                     catch (IndexOutOfBoundsException | NumberFormatException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unable to parse item name " + item, ex); //$NON-NLS-1$
                     }
                 }
                 else
                 {
-                    // TODO Logging
+                    LOGGER.log(Level.WARNING, "Unable to parse item name " + item); //$NON-NLS-1$
                 }
             }
         }
