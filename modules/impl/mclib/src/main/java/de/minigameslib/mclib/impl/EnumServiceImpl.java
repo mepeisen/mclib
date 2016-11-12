@@ -86,7 +86,7 @@ class EnumServiceImpl implements EnumServiceInterface
     {
         synchronized (this.enumsByPlugin)
         {
-            return this.getPlugin(enumValue);
+            return this.pluginsByEnum.get(enumValue);
         }
     }
 

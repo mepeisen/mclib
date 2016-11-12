@@ -124,7 +124,7 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
     @Override
     public ZoneInterface getZone()
     {
-        return this.zone == null ? this.player.getZone() : this.zone;
+        return this.zone == null && this.player != null ? this.player.getZone() : this.zone;
     }
     
     @Override
