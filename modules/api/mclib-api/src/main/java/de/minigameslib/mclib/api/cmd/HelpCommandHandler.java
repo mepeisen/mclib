@@ -147,19 +147,23 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         {
             final List<String> keys = new ArrayList<>(this.compositeCommand.subCommands.keySet());
             final List<Serializable> result = new ArrayList<>();
-            for (final String key : keys.subList(start, start + count))
+            if (start < keys.size())
             {
-                LocalizedMessageInterface.DynamicArg shortDesc = null;
-                final SubCommandHandlerInterface sch = this.compositeCommand.subCommands.get(key);
-                try
+                final int max = Math.min(start + count, result.size());
+                for (final String key : keys.subList(start, max))
                 {
-                    shortDesc = sch.getShortDescription(command).toArg(command.getCommandPath());
+                    LocalizedMessageInterface.DynamicArg shortDesc = null;
+                    final SubCommandHandlerInterface sch = this.compositeCommand.subCommands.get(key);
+                    try
+                    {
+                        shortDesc = sch.getShortDescription(command).toArg(command.getCommandPath());
+                    }
+                    catch (Throwable t)
+                    {
+                        LOGGER.log(Level.WARNING, "Problems getting short description on command " + key + "/" + sch, t);  //$NON-NLS-1$//$NON-NLS-2$
+                    }
+                    result.add(CommonMessages.HelpLineUsage.toArg(key, shortDesc));
                 }
-                catch (Throwable t)
-                {
-                    LOGGER.log(Level.WARNING, "Problems getting short description on command " + key + "/" + sch, t);  //$NON-NLS-1$//$NON-NLS-2$
-                }
-                result.add(CommonMessages.HelpLineUsage.toArg(key, shortDesc));
             }
             return result.toArray(new Serializable[result.size()]);
         }
