@@ -83,7 +83,7 @@ class McPlayerImpl implements McPlayerInterface
     private StorageImpl           sessionStorage = new StorageImpl();
     
     /** persistent player configuration. */
-    private MclibPlayersConfig    config;
+    private MclibPlayersConfig    config = new MclibPlayersConfig();
     
     /** persistent storage file. */
     FileConfiguration             persistentStorage;
