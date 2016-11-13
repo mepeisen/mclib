@@ -268,6 +268,15 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             try
             {
                 this.agui.onInput(name);
+
+                this.type = GuiType.None;
+                this.gui = null;
+                this.agui = null;
+                this.currentItems = null;
+                this.currentName = null;
+                this.guiHelper = null;
+                this.aguiHelper = null;
+                this.player = null;
             }
             catch (McException ex)
             {

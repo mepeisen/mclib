@@ -51,6 +51,7 @@ import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.gui.GuiType;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
@@ -396,7 +397,12 @@ class McPlayerImpl implements McPlayerInterface
     @Override
     public GuiSessionInterface getGuiSession()
     {
-        return this.getSessionStorage().get(GuiSessionInterface.class);
+        final GuiSessionInterface session = this.getSessionStorage().get(GuiSessionInterface.class);
+        if (session != null && session.getCurrentType() != GuiType.None)
+        {
+            return session;
+        }
+        return null;
     }
     
     @Override
@@ -404,7 +410,7 @@ class McPlayerImpl implements McPlayerInterface
     {
         final McStorage storage = this.getSessionStorage();
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
-        if (oldSession != null)
+        if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
             oldSession.close();
         }
@@ -418,7 +424,7 @@ class McPlayerImpl implements McPlayerInterface
     {
         final McStorage storage = this.getSessionStorage();
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
-        if (oldSession != null)
+        if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
             oldSession.close();
         }

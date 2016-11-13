@@ -41,7 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.ChatComponentText;
+import net.minecraft.server.v1_8_R3.ChatMessage;
 import net.minecraft.server.v1_8_R3.ContainerAnvil;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
@@ -66,11 +66,12 @@ public class AnvilManager1_8_5 implements AnvilManagerInterface
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         final Helper helper = new Helper(entity, stack, listener);
         int c = entity.nextContainerCounter();
-        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "Repairing", new ChatComponentText("FOO")));
+        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("FOO", new Object[]{}), 0));
         entity.activeContainer = helper;
         helper.windowId = c;
         entity.activeContainer.addSlotListener(entity);
         this.playerInventories.put(player.getUniqueId(), helper);
+        helper.getBukkitView().getTopInventory().setItem(0, stack);
         return helper;
     }
     
@@ -178,7 +179,6 @@ public class AnvilManager1_8_5 implements AnvilManagerInterface
         public Helper(EntityPlayer entity, ItemStack stack, AnvilListener listener)
         {
             super(entity.inventory, entity.world, new BlockPosition(0, 0, 0), entity);
-            this.getBukkitView().getTopInventory().setItem(0, stack);
             this.stack = stack;
             this.entity = entity;
             this.listener = listener;
