@@ -149,7 +149,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
             final List<Serializable> result = new ArrayList<>();
             if (start < keys.size())
             {
-                final int max = Math.min(start + count, result.size());
+                final int max = Math.min(start + count, keys.size());
                 for (final String key : keys.subList(start, max))
                 {
                     LocalizedMessageInterface.DynamicArg shortDesc = null;
