@@ -1,20 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>mclib-api-parent</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>mclib-shared</artifactId>
   
-  <name>api-parent for mclib projects</name>
+  <name>mclib-shared</name>
   
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
-  	<artifactId>mclib-java-parent</artifactId>
+  	<artifactId>mclib-api-parent</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
   </parent>
   
-  <modules>
-  	<module>fakeplayer-api</module>
-  	<module>mclib-shared</module>
-  	<module>mclib-api</module>
-  	<module>spigot-testsupport-api</module>
-  </modules>
 </project>
