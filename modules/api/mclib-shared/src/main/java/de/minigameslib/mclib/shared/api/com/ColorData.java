@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * Vector data.
  * 
@@ -95,6 +98,17 @@ public class ColorData implements DataFragment
         section.set("r", this.red); //$NON-NLS-1$
         section.set("g", this.green); //$NON-NLS-1$
         section.set("b", this.blue); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        boolean result = true;
+        result &= section.isByte("r"); //$NON-NLS-1$
+        result &= section.isByte("g"); //$NON-NLS-1$
+        result &= section.isByte("b"); //$NON-NLS-1$
+        result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("r", "g", "b"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return result;
     }
 
     /**

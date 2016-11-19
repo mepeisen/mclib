@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -98,6 +100,34 @@ public class PlayerData implements DataFragment
     {
         section.set("uuid", this.playerUuid.toString()); //$NON-NLS-1$
         section.set("name", this.playerName); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        boolean result = true;
+        result &= section.isString("uuid"); //$NON-NLS-1$
+        result &= section.isString("name"); //$NON-NLS-1$
+        result &= isUUID(section.getString("uuid")); //$NON-NLS-1$
+        result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("uuid", "name"))); //$NON-NLS-1$ //$NON-NLS-2$
+        return result;
+    }
+
+    /**
+     * @param str
+     * @return true if this is a uuid
+     */
+    private boolean isUUID(String str)
+    {
+        try
+        {
+            UUID.fromString(str);
+            return true;
+        }
+        catch (@SuppressWarnings("unused") IllegalArgumentException ex)
+        {
+            return false;
+        }
     }
 
     /**

@@ -87,13 +87,6 @@ public interface CommunicationEndpointId extends Serializable
          */
         void send(CommunicationEndpointId id, DataSection... data);
         
-        /**
-         * Creates a new root section.
-         * 
-         * @return root data section to be used with data transports.
-         */
-        DataSection createSection();
-        
     }
     
     /**

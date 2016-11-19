@@ -121,6 +121,70 @@ public interface DataSection
     void set(String key, Object newValue);
     
     /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    void setPrimitiveList(String key, List<?> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    void setPrimitiveMapList(String key, List<Map<String, ?>> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    <T extends DataFragment> void setFragmentList(String key, List<T> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    <T extends DataFragment> void setFragmentMapList(String key, List<Map<String, T>> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    void setPrimitiveMap(String key, Map<String, ?> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    void setPrimitiveListMap(String key, Map<String, List<?>> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    <T extends DataFragment> void setFragmentMap(String key, Map<String, T> newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
+    <T extends DataFragment> void setFragmentListMap(String key, Map<String, List<T>> newValue);
+    
+    /**
      * returns a section by key; creates it on demand.
      * @param key
      * @return data section.
@@ -133,7 +197,7 @@ public interface DataSection
      * @param values
      * @return data section.
      */
-    DataSection createSection(String key, Map<?, ?> values);
+    DataSection createSection(String key, Map<String, ?> values);
     
     /**
      * Returns string value by key
@@ -356,6 +420,28 @@ public interface DataSection
     boolean isDouble(String key);
     
     /**
+     * Returns float value by key
+     * @param key
+     * @return value
+     */
+    float getFloat(String key);
+    
+    /**
+     * Returns float value with default by key
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    float getFloat(String key, float defaultValue);
+    
+    /**
+     * Checks if given key has a float value.
+     * @param key
+     * @return true if key has a float value
+     */
+    boolean isFloat(String key);
+    
+    /**
      * Returns long value by key
      * @param key
      * @return value
@@ -495,7 +581,53 @@ public interface DataSection
      * @param key
      * @return value
      */
-    List<Map<?, ?>> getMapList(String key);
+    List<Map<String, ?>> getMapList(String key);
+    
+    /**
+     * Returns map value by key
+     * @param key
+     * @return value
+     */
+    Map<String, ?> getMap(String key);
+    
+    /**
+     * Returns map value by key
+     * @param key
+     * @return value
+     */
+    Map<String, List<?>> getListMap(String key);
+    
+    /**
+     * Returns map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends DataFragment> Map<String, T> getFragmentMap(Class<T> clazz, String key);
+    
+    /**
+     * Returns map list value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends DataFragment> List<Map<String, T>> getFragmentMapList(Class<T> clazz, String key);
+    
+    /**
+     * Returns list map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends DataFragment> Map<String, List<T>> getFragmentListMap(Class<T> clazz, String key);
+    
+    /**
+     * Returns list of fragments
+     * @param clazz
+     * @param key
+     * @return value
+     */
+    <T extends DataFragment> List<T> getFragmentList(Class<T> clazz, String key);
     
     /**
      * returns vector by key
@@ -568,7 +700,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    ColorData getColorData(String key);
+    ColorData getColor(String key);
     
     /**
      * returns color by key and default value
@@ -576,7 +708,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    ColorData getColorData(String key, ColorData defaultValue);
+    ColorData getColor(String key, ColorData defaultValue);
     
     /**
      * Checks if given key has a color value.
@@ -592,6 +724,14 @@ public interface DataSection
      * @return value
      */
     <T extends DataFragment> T getFragment(Class<T> clazz, String key);
+    
+    /**
+     * Checks if the given path can be read by given fragment class
+     * @param clazz fragment class
+     * @param key
+     * @return true if the given key is a valid fragment of given type.
+     */
+    <T extends DataFragment> boolean isFragment(Class<T> clazz, String key);
     
     /**
      * returns fragment by key and default value

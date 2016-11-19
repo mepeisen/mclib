@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * Vector data.
  * 
@@ -99,6 +102,17 @@ public class VectorData implements DataFragment
         section.set("x", this.x); //$NON-NLS-1$
         section.set("y", this.y); //$NON-NLS-1$
         section.set("z", this.z); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        boolean result = true;
+        result &= section.isDouble("x"); //$NON-NLS-1$
+        result &= section.isDouble("y"); //$NON-NLS-1$
+        result &= section.isDouble("z"); //$NON-NLS-1$
+        result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("x", "y", "z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return result;
     }
 
     /**

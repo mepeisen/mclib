@@ -24,41 +24,22 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
- * Base interface for data fragments.
- * 
- * <p>
- * Data fragments are able to store and receive data.
- * </p>
+ * Annotation to identify fields being saved in data fragments.
  * 
  * @author mepeisen
  */
-public interface DataFragment
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface PersistentField
 {
     
-    /**
-     * Reads given object from section.
-     * 
-     * @param section
-     *            configuration section to read from.
-     */
-    void read(DataSection section);
-    
-    /**
-     * Writes given object to section.
-     * 
-     * @param section
-     *            configuration section to write to.
-     */
-    void write(DataSection section);
-    
-    /**
-     * Checks if the given data section can be read by given section.
-     * 
-     * @param section
-     *            configuration section to read from.
-     * @return true if it is safe to read the given data section.
-     */
-    boolean test(DataSection section);
+    // marker only
     
 }
