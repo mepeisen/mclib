@@ -1,0 +1,9 @@
+name: mclib-test
+main: de.minigameslib.mclib.test.impl.MclibTestPlugin
+version: ${project.version}
+authors: [mepeisen]
+depend: [mclib]
+
+commands:
+  mclibt:
+  

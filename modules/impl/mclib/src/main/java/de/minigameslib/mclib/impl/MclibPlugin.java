@@ -36,6 +36,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -612,6 +614,18 @@ public class MclibPlugin extends JavaPlugin
     public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler) throws McException
     {
         return this.objectsManager.createZone(type, cuboid, handler);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+    {
+//        if (command.getName().equals("mclib"))
+//        {
+//            MyCommandHandler.onCommand(sender, command, label, args);
+//        }
+//        return super.onCommand(sender, command, label, args);
+        // TODO commands
+        return false;
     }
     
 }
