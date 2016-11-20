@@ -45,6 +45,7 @@ class MessageTool
      */
     public static Serializable[] convertArgs(Locale locale, boolean isAdmin, Serializable[] src)
     {
+        if (src == null) return new Serializable[0];
         final Serializable[] result = new Serializable[src.length];
         for (int i = 0; i < src.length; i++)
         {
