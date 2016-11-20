@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mclib",
+  "name": "Minigames Mclib",
+  "description": "Minigames common minecraft library client.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["mepeisen"],
+  "credits": "minigameslib.de",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

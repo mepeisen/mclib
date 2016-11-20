@@ -1,0 +1,4 @@
+subprojects {
+    group = "de.minigameslib.mclib.client"
+    version = "0.0.1"
+}
