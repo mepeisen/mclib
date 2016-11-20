@@ -66,7 +66,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     private final Map<Class<? extends Event>, MinecraftEventHandler<?, ?>> eventHandlers = new HashMap<>();
     
     /** common event listeners. */
-    protected final List<MgEventListener> listeners = new ArrayList<>();
+    public final List<MgEventListener> listeners = new ArrayList<>();
     
     /**
      * Constructor.
