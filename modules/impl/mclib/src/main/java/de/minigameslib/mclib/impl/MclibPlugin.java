@@ -61,10 +61,15 @@ import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
+import de.minigameslib.mclib.api.com.CommunicationServerHandler;
+import de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.ext.ExtensionInterface;
+import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
+import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
@@ -95,6 +100,8 @@ import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Main spigot plugin class for MCLIB.
@@ -102,7 +109,7 @@ import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
  * @author mepeisen
  */
 public class MclibPlugin extends JavaPlugin
-        implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface, McLibInterface
+        implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface, McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface
 {
     
     /** the overall minecraft server versioon. */
@@ -178,6 +185,10 @@ public class MclibPlugin extends JavaPlugin
         Bukkit.getServicesManager().register(PermissionServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(McContext.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
+        
+        CommunicationEndpointId.CommunicationServiceCache.init(this);
         
         // mclib enumerations
         this.registerEnumClass(this, CommonMessages.class);
@@ -626,6 +637,66 @@ public class MclibPlugin extends JavaPlugin
 //        return super.onCommand(sender, command, label, args);
         // TODO commands
         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.shared.api.com.CommunicationEndpointId.CommunicationServiceInterface#send(de.minigameslib.mclib.shared.api.com.CommunicationEndpointId, de.minigameslib.mclib.shared.api.com.DataSection[])
+     */
+    @Override
+    public void send(CommunicationEndpointId id, DataSection... data)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#register(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface, de.minigameslib.mclib.api.ext.ExtensionInterface)
+     */
+    @Override
+    public <T extends ExtensionInterface> void register(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#remove(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface, de.minigameslib.mclib.api.ext.ExtensionInterface)
+     */
+    @Override
+    public <T extends ExtensionInterface> void remove(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#getExtensions(de.minigameslib.mclib.api.ext.ExtensionPointInterface)
+     */
+    @Override
+    public <T extends ExtensionInterface> Iterable<T> getExtensions(ExtensionPointInterface<? extends T> extPoint)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface#removeAll(org.bukkit.plugin.Plugin)
+     */
+    @Override
+    public void removeAll(Plugin plugin)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface#registerHandler(de.minigameslib.mclib.shared.api.com.CommunicationEndpointId, de.minigameslib.mclib.api.com.CommunicationServerHandler)
+     */
+    @Override
+    public void registerHandler(CommunicationEndpointId id, CommunicationServerHandler handler)
+    {
+        // TODO Auto-generated method stub
+        
     }
     
 }

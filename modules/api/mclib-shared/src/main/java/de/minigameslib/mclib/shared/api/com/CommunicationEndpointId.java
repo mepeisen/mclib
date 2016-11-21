@@ -113,7 +113,7 @@ public interface CommunicationEndpointId extends Serializable
          * 
          * @param service
          */
-        void init(CommunicationServiceInterface service)
+        public static void init(CommunicationServiceInterface service)
         {
             if (SERVICES == null)
             {

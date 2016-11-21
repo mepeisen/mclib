@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author mepeisen
  */
-abstract class AnnotatedDataFragment implements DataFragment
+public abstract class AnnotatedDataFragment implements DataFragment
 {
     
     /**

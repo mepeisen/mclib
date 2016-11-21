@@ -42,6 +42,16 @@
         </dependency>
         <dependency>
         	<groupId>${project.groupId}</groupId>
+        	<artifactId>${project.artifactId}-shared</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>${project.artifactId}-private-shared</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
         	<artifactId>${project.artifactId}-nms-api</artifactId>
         	<version>${project.version}</version>
         </dependency>
