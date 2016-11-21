@@ -58,7 +58,7 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
     @Override
     public void onDisable()
     {
-        EnumServiceInterface.instance().unregisterAll(this);
+        EnumServiceInterface.instance().unregisterAllEnumerations(this);
     }
     
     @Override

@@ -168,6 +168,12 @@ public interface McPlayerInterface
     // gui
     
     /**
+     * Checks if the player has a smart gui installed.
+     * @return {@code true} if the player has a smart gui; the mclib client mod.
+     */
+    boolean hasSmartGui();
+    
+    /**
      * Returns the current gui session (if any)
      * 
      * @return gui session or {@code null} if the user has no opened gui.
@@ -195,6 +201,16 @@ public interface McPlayerInterface
      *             thrown if the player is not online.
      */
     GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException;
+    
+    /**
+     * Opens a smart gui session.
+     * 
+     * @return gui session; use the sgui commands to control the client smart gui.
+     * 
+     * @throws McException
+     *             thrown if the player is not online or has no smart gui.
+     */
+    GuiSessionInterface openSmartGui() throws McException;
     
     // zone
     

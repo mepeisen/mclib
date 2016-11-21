@@ -68,7 +68,7 @@ class EnumServiceImpl implements EnumServiceInterface
     }
 
     @Override
-    public void unregisterAll(Plugin plugin)
+    public void unregisterAllEnumerations(Plugin plugin)
     {
         synchronized (this.enumsByPlugin)
         {

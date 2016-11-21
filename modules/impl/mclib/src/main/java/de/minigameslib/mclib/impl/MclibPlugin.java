@@ -25,11 +25,14 @@
 package de.minigameslib.mclib.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -50,6 +53,11 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 
 import de.minigames.mclib.nms.v18.NmsFactory1_8;
 import de.minigames.mclib.nms.v183.NmsFactory1_8_3;
@@ -100,6 +108,8 @@ import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
+import de.minigameslib.mclib.pshared.CoreMessages;
+import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -108,34 +118,43 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * 
  * @author mepeisen
  */
-public class MclibPlugin extends JavaPlugin
-        implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface, McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface
+public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface,
+        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener
 {
     
     /** the overall minecraft server versioon. */
-    private static final MinecraftVersionsType         SERVER_VERSION = MclibPlugin.getServerVersion();
+    private static final MinecraftVersionsType                             SERVER_VERSION  = MclibPlugin.getServerVersion();
     
     /** context helper. */
-    private final McContextImpl                        context        = new McContextImpl();
+    private final McContextImpl                                            context         = new McContextImpl();
     
     /** enum service helper. */
-    private final EnumServiceImpl                      enumService    = new EnumServiceImpl();
+    private final EnumServiceImpl                                          enumService     = new EnumServiceImpl();
     
     /**
      * messages configuration per plugin.
      */
-    private final Map<Plugin, MessagesConfigInterface> messages       = new HashMap<>();
+    private final Map<Plugin, MessagesConfigInterface>                     messages        = new HashMap<>();
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, ConfigInterface>         configurations = new HashMap<>();
+    private final Map<Plugin, ConfigInterface>                             configurations  = new HashMap<>();
     
     /** the player registry. */
-    private PlayerRegistry                             players;
+    private PlayerRegistry                                                 players;
     
     /** the objects manager. */
-    private ObjectsManager                             objectsManager;
+    private ObjectsManager                                                 objectsManager;
+    
+    /** the known endpoints. */
+    private final Map<String, Map<String, CommunicationEndpointId>>        endpoints       = new HashMap<>();
+    
+    /** the known handlers. */
+    private final Map<CommunicationEndpointId, CommunicationServerHandler> handlers        = new ConcurrentHashMap<>();
+    
+    /** the known handlers. */
+    private final Map<String, List<CommunicationEndpointId>>               endpointPlugins = new ConcurrentHashMap<>();
     
     @Override
     public void onEnable()
@@ -206,13 +225,24 @@ public class MclibPlugin extends JavaPlugin
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(InventoryManagerInterface.class), this);
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(AnvilManagerInterface.class), this);
+        
+        // communication endpoints
+        this.registerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
+        
+        // network
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "mclib-channel"); //$NON-NLS-1$
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "mclib-channel", this); //$NON-NLS-1$
     }
     
     @Override
     public void onDisable()
     {
-        this.unregisterAll(this);
+        this.unregisterAllEnumerations(this);
+        this.removeAllCommunicationEndpoints(this);
         Bukkit.getServicesManager().unregisterAll(this);
+        
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, "mclib-channel"); //$NON-NLS-1$
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, "mclib-channel", this); //$NON-NLS-1$
     }
     
     /**
@@ -282,9 +312,9 @@ public class MclibPlugin extends JavaPlugin
     }
     
     @Override
-    public void unregisterAll(Plugin plugin)
+    public void unregisterAllEnumerations(Plugin plugin)
     {
-        this.enumService.unregisterAll(plugin);
+        this.enumService.unregisterAllEnumerations(plugin);
     }
     
     @Override
@@ -428,6 +458,7 @@ public class MclibPlugin extends JavaPlugin
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
         this.players.onPlayerJoin(evt);
+        // try to ping the client mod.
     }
     
     /**
@@ -626,31 +657,127 @@ public class MclibPlugin extends JavaPlugin
     {
         return this.objectsManager.createZone(type, cuboid, handler);
     }
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-//        if (command.getName().equals("mclib"))
-//        {
-//            MyCommandHandler.onCommand(sender, command, label, args);
-//        }
-//        return super.onCommand(sender, command, label, args);
+        // if (command.getName().equals("mclib"))
+        // {
+        // MyCommandHandler.onCommand(sender, command, label, args);
+        // }
+        // return super.onCommand(sender, command, label, args);
         // TODO commands
         return false;
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.CommunicationEndpointId.CommunicationServiceInterface#send(de.minigameslib.mclib.shared.api.com.CommunicationEndpointId, de.minigameslib.mclib.shared.api.com.DataSection[])
+    
+    @Override
+    public void registerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationServerHandler handler)
+    {
+        synchronized (this.endpoints)
+        {
+            Map<String, CommunicationEndpointId> map = this.endpoints.get(id.getClass().getName());
+            if (map == null)
+            {
+                map = new HashMap<>();
+                this.endpoints.put(id.getClass().getName(), map);
+            }
+            if (map.containsKey(id))
+            {
+                throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
+            }
+            map.put(id.name(), id);
+            this.handlers.put(id, handler);
+            this.endpointPlugins.computeIfAbsent(plugin.getName(), k -> new ArrayList<>()).add(id);
+        }
+    }
+    
+    /**
+     * Returns the endpoint for given class and element
+     * 
+     * @param clazz
+     * @param name
+     * @return endpoint or {@code null} if it does not exist.
      */
+    private CommunicationEndpointId getEndpoint(String clazz, String name)
+    {
+        synchronized (this.endpoints)
+        {
+            final Map<String, CommunicationEndpointId> map = this.endpoints.get(clazz);
+            if (map != null)
+            {
+                return map.get(name);
+            }
+        }
+        return null;
+    }
+    
     @Override
     public void send(CommunicationEndpointId id, DataSection... data)
     {
-        // TODO Auto-generated method stub
-        
+        final McPlayerInterface player = this.getCurrentPlayer();
+        if (player == null)
+        {
+            // TODO Logging? Exception?
+        }
+        else if (data != null)
+        {
+            for (final DataSection section : data)
+            {
+                final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                new NetMessage(id, section).toBytes(out);
+                player.getBukkitPlayer().sendPluginMessage(this, "mclib-channel", out.toByteArray()); //$NON-NLS-1$
+            }
+        }
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#register(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface, de.minigameslib.mclib.api.ext.ExtensionInterface)
+    
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] buf)
+    {
+        final McPlayerInterface mcp = this.getPlayer(player);
+        try
+        {
+            this.runInNewContext(() -> {
+                this.setContext(McPlayerInterface.class, mcp);
+                final NetMessage msg = new NetMessage();
+                final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
+                msg.fromBytes(input, this::getEndpoint);
+                
+                if (msg.getEndpoint() != null)
+                {
+                    final CommunicationServerHandler handler = this.handlers.get(msg.getEndpoint());
+                    handler.handleIncomming(mcp, msg.getEndpoint(), msg.getData());
+                }
+            });
+        }
+        catch (@SuppressWarnings("unused") McException ex)
+        {
+            // TODO Logging?
+        }
+    }
+    
+    @Override
+    public void removeAllCommunicationEndpoints(Plugin plugin)
+    {
+        synchronized (this.endpoints)
+        {
+            final List<CommunicationEndpointId> ids = this.endpointPlugins.get(plugin.getName());
+            if (ids != null)
+            {
+                for (final CommunicationEndpointId id : ids)
+                {
+                    this.handlers.remove(id);
+                    this.endpoints.get(id.getClass().getName()).remove(id.name());
+                }
+                this.endpointPlugins.remove(plugin.getName());
+            }
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#register(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface,
+     * de.minigameslib.mclib.api.ext.ExtensionInterface)
      */
     @Override
     public <T extends ExtensionInterface> void register(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
@@ -658,9 +785,12 @@ public class MclibPlugin extends JavaPlugin
         // TODO Auto-generated method stub
         
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#remove(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface, de.minigameslib.mclib.api.ext.ExtensionInterface)
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#remove(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface,
+     * de.minigameslib.mclib.api.ext.ExtensionInterface)
      */
     @Override
     public <T extends ExtensionInterface> void remove(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
@@ -668,8 +798,10 @@ public class MclibPlugin extends JavaPlugin
         // TODO Auto-generated method stub
         
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#getExtensions(de.minigameslib.mclib.api.ext.ExtensionPointInterface)
      */
     @Override
@@ -678,24 +810,46 @@ public class MclibPlugin extends JavaPlugin
         // TODO Auto-generated method stub
         return null;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface#removeAll(org.bukkit.plugin.Plugin)
      */
     @Override
-    public void removeAll(Plugin plugin)
+    public void removeAllExtensions(Plugin plugin)
     {
         // TODO Auto-generated method stub
         
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface#registerHandler(de.minigameslib.mclib.shared.api.com.CommunicationEndpointId, de.minigameslib.mclib.api.com.CommunicationServerHandler)
+    
+    /**
+     * Communication handler for incoming network traffic-
      */
-    @Override
-    public void registerHandler(CommunicationEndpointId id, CommunicationServerHandler handler)
+    private class MclibCoreHandler implements CommunicationServerHandler
     {
-        // TODO Auto-generated method stub
+        
+        /**
+         * Constructor
+         */
+        public MclibCoreHandler()
+        {
+            // empty
+        }
+        
+        @Override
+        public void handleIncomming(McPlayerInterface player, CommunicationEndpointId id, DataSection section)
+        {
+            // silently drop invalid messages.
+            if (!section.contains("KEY")) return; //$NON-NLS-1$
+            
+            final String key = section.getString("KEY"); //$NON-NLS-1$
+            if (key.equals(CoreMessages.ActionPerformed.name()))
+            {
+                // TODO forward to premium extension
+            }
+            // otherwise silently ignore the invalid message.
+        }
         
     }
     

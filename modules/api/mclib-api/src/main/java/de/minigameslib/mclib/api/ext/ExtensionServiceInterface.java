@@ -66,7 +66,7 @@ public interface ExtensionServiceInterface extends McContext
      * Removes all extension points used by given plugin.
      * @param plugin
      */
-    void removeAll(Plugin plugin);
+    void removeAllExtensions(Plugin plugin);
     
     /**
      * Returns the extensions declared by plugins for given extension point.

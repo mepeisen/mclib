@@ -33,6 +33,18 @@ public enum CoreMessages
 {
     
     /**
+     * Ping from server to client
+     * @see PingData
+     */
+    Ping,
+    
+    /**
+     * Pong from client to server
+     * @see PongData
+     */
+    Pong,
+    
+    /**
      * displays an error message.
      * @see DisplayErrorData
      */

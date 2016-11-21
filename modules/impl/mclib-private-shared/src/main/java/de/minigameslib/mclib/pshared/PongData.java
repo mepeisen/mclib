@@ -22,31 +22,34 @@
 
 */
 
-package de.minigameslib.mclib.api.com;
+package de.minigameslib.mclib.pshared;
 
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
-import de.minigameslib.mclib.shared.api.com.DataSection;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * A handler for reciving data from client.
+ * Data Fragment for the {@link CoreMessages#Pong} message.
  * 
  * @author mepeisen
- *
  */
-public interface CommunicationServerHandler
+public class PongData extends AnnotatedDataFragment
 {
     
     /**
-     * Handles incoming traffic.
-     * 
-     * @param player
-     *            player sending the traffic.
-     * @param id
-     *            the unique id of the endpoint
-     * @param data
-     *            the incomming data
+     * The installed client extensions.
      */
-    void handleIncomming(McPlayerInterface player, CommunicationEndpointId id, DataSection data);
+    @PersistentField
+    private List<String> clientExtensions = new ArrayList<>();
+
+    /**
+     * @return the clientExtensions
+     */
+    public List<String> getClientExtensions()
+    {
+        return this.clientExtensions;
+    }
     
 }

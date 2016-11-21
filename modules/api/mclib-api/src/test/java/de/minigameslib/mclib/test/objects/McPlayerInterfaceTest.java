@@ -239,6 +239,18 @@ public class McPlayerInterfaceTest
         {
             return null;
         }
+
+        @Override
+        public boolean hasSmartGui()
+        {
+            return false;
+        }
+
+        @Override
+        public GuiSessionInterface openSmartGui() throws McException
+        {
+            return null;
+        }
         
     }
     

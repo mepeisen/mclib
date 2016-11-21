@@ -22,31 +22,18 @@
 
 */
 
-package de.minigameslib.mclib.api.com;
+package de.minigameslib.mclib.pshared;
 
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
-import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 
 /**
- * A handler for reciving data from client.
+ * Data Fragment for the {@link CoreMessages#Ping} message.
  * 
  * @author mepeisen
- *
  */
-public interface CommunicationServerHandler
+public class PingData extends AnnotatedDataFragment
 {
     
-    /**
-     * Handles incoming traffic.
-     * 
-     * @param player
-     *            player sending the traffic.
-     * @param id
-     *            the unique id of the endpoint
-     * @param data
-     *            the incomming data
-     */
-    void handleIncomming(McPlayerInterface player, CommunicationEndpointId id, DataSection data);
+    // empty
     
 }

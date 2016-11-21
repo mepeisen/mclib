@@ -463,5 +463,25 @@ class McPlayerImpl implements McPlayerInterface
         final McStorage storage = this.getSessionStorage();
         storage.set(GuiSessionInterface.class, null);
     }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#hasSmartGui()
+     */
+    @Override
+    public boolean hasSmartGui()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#openSmartGui()
+     */
+    @Override
+    public GuiSessionInterface openSmartGui() throws McException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

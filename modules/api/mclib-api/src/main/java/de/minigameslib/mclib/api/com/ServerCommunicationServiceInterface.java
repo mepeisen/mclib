@@ -51,16 +51,18 @@ public interface ServerCommunicationServiceInterface extends CommunicationEndpoi
      * 
      * @param plugin
      */
-    void removeAll(Plugin plugin);
+    void removeAllCommunicationEndpoints(Plugin plugin);
     
     /**
      * Registers a handler for given communication endpoint.
      * 
+     * @param plugin
+     *            owning plugin
      * @param id
      *            endpoint id.
      * @param handler
      *            server handler.
      */
-    void registerHandler(CommunicationEndpointId id, CommunicationServerHandler handler);
+    void registerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationServerHandler handler);
     
 }

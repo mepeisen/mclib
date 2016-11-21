@@ -62,7 +62,7 @@ public interface EnumServiceInterface
      * @param plugin
      *            plugin that is disabled.
      */
-    void unregisterAll(Plugin plugin);
+    void unregisterAllEnumerations(Plugin plugin);
     
     /**
      * Returns the plugin that registered given enumeration value.
