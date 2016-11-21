@@ -59,7 +59,7 @@ dependencies {
 task fatJar(type: Jar) {
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+    from { zipTree(jar.archivePath) }
 }
 
 task runLatest(dependsOn: [runClient]) {
