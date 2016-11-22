@@ -107,7 +107,7 @@ public class TwlManager extends Widget
             Util.checkGLError();
             TwlManager.instance.renderer = new LWJGLRenderer();
             Util.checkGLError();
-            String themename = "guiTheme.xml"; //$NON-NLS-1$
+            String themename = "twl-themes/default/theme.xml"; //$NON-NLS-1$
             Util.checkGLError();
             TwlManager.instance.gui = new GUI(TwlManager.instance, TwlManager.instance.renderer, new LWJGLInput());
             Util.checkGLError();

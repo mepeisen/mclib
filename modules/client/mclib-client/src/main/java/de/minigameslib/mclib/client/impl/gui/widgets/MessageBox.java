@@ -48,7 +48,7 @@ public class MessageBox extends ResizableFrame
      */
     public MessageBox(String title, String message, Button... buttons)
     {
-        setTheme("scrollPaneDemoDialog1"); //$NON-NLS-1$
+        setTheme("alertbox"); //$NON-NLS-1$
         setTitle(title);
         
         final SimpleTextAreaModel tam = new SimpleTextAreaModel();
@@ -73,7 +73,7 @@ public class MessageBox extends ResizableFrame
             groupV.addWidget(button);
         }
         
-        layout.setTheme("/alertbox"); //$NON-NLS-1$
+        layout.setTheme("/dialoglayout"); //$NON-NLS-1$
         layout.setHorizontalGroup(layout.createParallelGroup().addWidget(scrollPane2).addGroup(groupH));
         layout.setVerticalGroup(layout.createSequentialGroup().addWidget(scrollPane2).addGroup(groupV));
         add(layout);

@@ -47,13 +47,13 @@ public class ResizableWin extends ResizableFrame
      */
     public ResizableWin(String title, Widget content, boolean closable, boolean hasScroll)
     {
-        setTheme("scrollPaneDemoDialog1"); //$NON-NLS-1$
+        setTheme("resizableframe-title"); //$NON-NLS-1$
         setTitle(title);
         
         if (hasScroll)
         {
             final ScrollPane scrollPane = new ScrollPane(content);
-            scrollPane.setTheme("/tableScrollPane"); //$NON-NLS-1$
+            scrollPane.setTheme("/scrollpane"); //$NON-NLS-1$
             add(scrollPane);
         }
         else
