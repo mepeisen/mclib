@@ -29,6 +29,11 @@ import org.lwjgl.input.Keyboard;
 import de.minigameslib.mclib.client.impl.gui.MclibGuiHandler;
 import de.minigameslib.mclib.client.impl.gui.TwlManager;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.pshared.CoreMessages;
+import de.minigameslib.mclib.pshared.MclibCommunication;
+import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -67,7 +72,16 @@ public class ClientProxy
     {
         if (mc.thePlayer != null && mc.theWorld != null && KEY_BINDING.isPressed())
         {
-            mc.thePlayer.openGui(MclibMod.instance, MclibGuiHandler.IM_SAMPLE_GUI, mc.theWorld, 0, 0, 0);
+
+            // send pong to server.
+            final PongData answer = new PongData();
+            // TODO add extensions
+            final DataSection section = new MemoryDataSection();
+            section.set("KEY", CoreMessages.Pong.name()); //$NON-NLS-1$
+            answer.write(section.createSection("data")); //$NON-NLS-1$
+            MclibCommunication.ClientServerCore.send(section);
+            
+            // mc.thePlayer.openGui(MclibMod.instance, MclibGuiHandler.IM_SAMPLE_GUI, mc.theWorld, 0, 0, 0);
         }
     }
     

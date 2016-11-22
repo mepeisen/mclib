@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -108,10 +110,14 @@ import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
+import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.MclibCommunication;
+import de.minigameslib.mclib.pshared.PingData;
+import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Main spigot plugin class for MCLIB.
@@ -142,7 +148,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     private final Map<Plugin, ConfigInterface>                             configurations  = new HashMap<>();
     
     /** the player registry. */
-    private PlayerRegistry                                                 players;
+    PlayerRegistry                                                         players;
     
     /** the objects manager. */
     private ObjectsManager                                                 objectsManager;
@@ -458,7 +464,24 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
         this.players.onPlayerJoin(evt);
-        // try to ping the client mod.
+        
+        // TODO Have a method on player interface
+        try
+        {
+            this.runInNewContext(() -> {
+                this.setContext(McPlayerInterface.class, this.getPlayer(evt.getPlayer()));
+                // try to ping the client mod.
+                final PingData ping = new PingData();
+                final DataSection section = new MemoryDataSection();
+                section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
+                ping.write(section.createSection("data")); //$NON-NLS-1$
+                MclibCommunication.ClientServerCore.send(section);
+            });
+        }
+        catch (McException e)
+        {
+            // TODO logging
+        }
     }
     
     /**
@@ -717,15 +740,21 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         final McPlayerInterface player = this.getCurrentPlayer();
         if (player == null)
         {
-            // TODO Logging? Exception?
+            this.getLogger().fine("Trying to send data to unknown player (invalid context)"); //$NON-NLS-1$
         }
         else if (data != null)
         {
             for (final DataSection section : data)
             {
                 final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeInt(0);
                 new NetMessage(id, section).toBytes(out);
-                player.getBukkitPlayer().sendPluginMessage(this, "mclib-channel", out.toByteArray()); //$NON-NLS-1$
+                final byte[] bytes = out.toByteArray();
+                if (this.getLogger().isLoggable(Level.FINEST))
+                {
+                    this.getLogger().finest("Sending NetMessage to player " + player.getPlayerUUID() + "\n" + Arrays.toString(bytes)); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                player.getBukkitPlayer().sendPluginMessage(this, "mclib-channel", bytes); //$NON-NLS-1$
             }
         }
     }
@@ -841,12 +870,26 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         public void handleIncomming(McPlayerInterface player, CommunicationEndpointId id, DataSection section)
         {
             // silently drop invalid messages.
-            if (!section.contains("KEY")) return; //$NON-NLS-1$
-            
+            if (!section.contains("KEY")) //$NON-NLS-1$
+                return;
+                
             final String key = section.getString("KEY"); //$NON-NLS-1$
             if (key.equals(CoreMessages.ActionPerformed.name()))
             {
-                // TODO forward to premium extension
+                // forward to smart gui
+                try
+                {
+                    ((McPlayerImpl)player).parseActionPerformed(section.getFragment(ActionPerformedData.class, "data")); //$NON-NLS-1$
+                }
+                catch (McException e)
+                {
+                    // TODO Logging? Reporting error?
+                }
+            }
+            else if (key.equals(CoreMessages.Pong.name()))
+            {
+                // client has the mod installed.
+                MclibPlugin.this.players.parsePong(player, section.getFragment(PongData.class, "data")); //$NON-NLS-1$
             }
             // otherwise silently ignore the invalid message.
         }

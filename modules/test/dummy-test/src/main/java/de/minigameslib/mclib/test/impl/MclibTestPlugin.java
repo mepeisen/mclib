@@ -35,7 +35,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
 /**
  * @author mepeisen
@@ -66,7 +70,16 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            ((Player)sender).sendPluginMessage(this, "mclib-channel", new byte[0]);
+            final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+            try
+            {
+                player.openSmartGui().sguiDisplayInfo(CommonMessages.HelpShortDescription, null, CommonMessages.InvokeIngame, null, null);
+            }
+            catch (McException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             // MyCommandHandler.onCommand(sender, command, label, args);
         }
         return super.onCommand(sender, command, label, args);

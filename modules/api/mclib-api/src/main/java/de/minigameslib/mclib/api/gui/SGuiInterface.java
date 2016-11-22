@@ -25,23 +25,15 @@
 package de.minigameslib.mclib.api.gui;
 
 /**
- * Type of currently opened gui.
+ * Smart gui dialog interface.
  * 
  * @author mepeisen
  */
-public enum GuiType
+public interface SGuiInterface
 {
     
-    /** No gui is opened. */
-    None,
+    // marker interface.
     
-    /** a click gui. */
-    ClickGui,
-    
-    /** an anvil gui. */
-    AnvilGui,
-    
-    /** a smart gui is opened. */
-    SmartGui
+    // TODO add an option to close dialog from server side.
     
 }

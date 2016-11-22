@@ -24,9 +24,14 @@
 
 package de.minigameslib.mclib.api.gui;
 
+import java.io.Serializable;
+
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 
 /**
  * An interface for a gui session.
@@ -38,6 +43,7 @@ public interface GuiSessionInterface extends Configurable
     
     /**
      * Returns the type of opened gui.
+     * 
      * @return opened gui type.
      */
     GuiType getCurrentType();
@@ -64,9 +70,17 @@ public interface GuiSessionInterface extends Configurable
     AnvilGuiInterface getAnvilGui();
     
     /**
+     * Returns the smart gui reference.
+     * 
+     * @return smart gui.
+     */
+    SGuiInterface getSmartGui();
+    
+    /**
      * Sets a new gui page or updates the client after changing the gui items of a page.
      * 
-     * @param page new gui page.
+     * @param page
+     *            new gui page.
      */
     void setNewPage(ClickGuiPageInterface page);
     
@@ -95,5 +109,131 @@ public interface GuiSessionInterface extends Configurable
      * @return gui storage.
      */
     McStorage getPlayerPersistentStorage();
+    
+    // smart gui
+    
+    /**
+     * Displays an error message
+     * 
+     * @param title
+     *            the title to be displayed.
+     * @param titleArgs 
+     * @param message
+     *            the message to be displayed.
+     * @param messageArgs 
+     * @param okButton
+     *            the ok button or {@code null} to use a default ok button.
+     * @return smart gui dialog reference.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException;
+    
+    /**
+     * Displays an info button
+     * 
+     * @param title
+     *            the title to be displayed.
+     * @param titleArgs 
+     * @param message
+     *            the message to be displayed.
+     * @param messageArgs 
+     * @param okButton
+     *            the ok button or {@code null} to use a default ok button.
+     * @return smart gui dialog reference.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException;
+    
+    /**
+     * Creates a new gui button with custom label.
+     * 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs 
+     * @return smart gui button
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[]) throws McException;
+    
+    /**
+     * Creates a new gui button with custom label.
+     * 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs 
+     * @param action
+     *            callback to be invoked once the user clicks the button in gui
+     * @return smart gui button
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action) throws McException;
+    
+    /**
+     * Creates a new gui button with custom label.
+     * 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs 
+     * @param action
+     *            callback to be invoked once the user clicks the button in gui
+     * @param closeAction
+     *            {@code true} to let the button close the dialog
+     * @return smart gui button
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action, boolean closeAction) throws McException;
+    
+    /**
+     * Interface to represent a gui button.
+     */
+    interface GuiButton
+    {
+        // empty
+    }
+    
+    /**
+     * Displays a yes/no confirmation dialog
+     * 
+     * @param title
+     *            the title to be displayed.
+     * @param titleArgs 
+     * @param message
+     *            the message to be displayed.
+     * @param messageArgs 
+     * @param yesButton
+     *            the yes button or {@code null} to use a default yes button.
+     * @param noButton
+     *            the no button or {@code null} to use a default no button.
+     * @return smart gui dialog reference.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton) throws McException;
+    
+    /**
+     * Displays a yes/no/cancel confirmation dialog
+     * 
+     * @param title
+     *            the title to be displayed.
+     * @param titleArgs 
+     * @param message
+     *            the message to be displayed.
+     * @param messageArgs 
+     * @param yesButton
+     *            the yes button or {@code null} to use a default yes button.
+     * @param noButton
+     *            the no button or {@code null} to use a default no button.
+     * @param cancelButton
+     *            the cancel button or {@code null} to use a default cancel button.
+     * @return smart gui dialog reference.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton, GuiButton cancelButton) throws McException;
     
 }

@@ -26,6 +26,7 @@ package de.minigameslib.mclib.client.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import de.minigameslib.mclib.client.impl.com.ComHandler;
 import de.minigameslib.mclib.client.impl.com.MclibCoreHandler;
@@ -33,6 +34,8 @@ import de.minigameslib.mclib.client.impl.com.NetMessage;
 import de.minigameslib.mclib.client.impl.gui.MclibGuiHandler;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId.CommunicationServiceInterface;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -50,7 +53,7 @@ import net.minecraftforge.fml.relauncher.Side;
  *
  */
 @Mod(modid = MclibMod.MODID, version = MclibMod.VERSION, updateJSON = "http://www.minigameslib.de/mclib/client.json")
-public class MclibMod
+public class MclibMod implements CommunicationServiceInterface
 {
     
     /** the mod id. */
@@ -67,7 +70,7 @@ public class MclibMod
     public static MclibMod             instance = new MclibMod();
     
     /** a network wrapper for mclib's channel. */
-    public static SimpleNetworkWrapper NETWORK;
+    private static SimpleNetworkWrapper NETWORK;
     
     /**
      * Initialization.
@@ -81,21 +84,42 @@ public class MclibMod
         MinecraftForge.EVENT_BUS.register(clientProxy);
         NetworkRegistry.INSTANCE.registerGuiHandler(MclibMod.instance, new MclibGuiHandler());
         
-        // TODO Helper method.
-        this.endpoints.put(MclibCommunication.class.getName(), new HashMap<String, CommunicationEndpointId>());
-        this.endpoints.get(MclibCommunication.class.getName()).put("ClientServerCore", MclibCommunication.ClientServerCore);
-        
-        this.handlers.put(MclibCommunication.ClientServerCore, new MclibCoreHandler());
+        CommunicationEndpointId.CommunicationServiceCache.init(this);
+        this.registerCommunicationEndpoint(MclibCommunication.ClientServerCore, new MclibCoreHandler());
         
         NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib-channel"); //$NON-NLS-1$
-        NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 84, Side.CLIENT);
+        NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 0, Side.CLIENT);
     }
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>> endpoints = new HashMap<String, Map<String, CommunicationEndpointId>>();
+    private final Map<String, Map<String, CommunicationEndpointId>> endpoints = new HashMap<>();
     
     /** the known handlers. */
-    private final Map<CommunicationEndpointId, ComHandler>          handlers  = new HashMap<CommunicationEndpointId, ComHandler>();
+    private final Map<CommunicationEndpointId, ComHandler>          handlers  = new ConcurrentHashMap<>();
+    
+    /**
+     * Registers an existing communication endpoint with given network handler.
+     * @param id endpoint id.
+     * @param handler handler.
+     */
+    public void registerCommunicationEndpoint(CommunicationEndpointId id, ComHandler handler)
+    {
+        synchronized (this.endpoints)
+        {
+            Map<String, CommunicationEndpointId> map = this.endpoints.get(id.getClass().getName());
+            if (map == null)
+            {
+                map = new HashMap<>();
+                this.endpoints.put(id.getClass().getName(), map);
+            }
+            if (map.containsKey(id))
+            {
+                throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
+            }
+            map.put(id.name(), id);
+        }
+        this.handlers.put(id, handler);
+    }
     
     /**
      * Returns the endpoint for given class and element
@@ -105,10 +129,13 @@ public class MclibMod
      */
     public CommunicationEndpointId getEndpoint(String clazz, String name)
     {
-        final Map<String, CommunicationEndpointId> map = this.endpoints.get(clazz);
-        if (map != null)
+        synchronized (this.endpoints)
         {
-            return map.get(name);
+            final Map<String, CommunicationEndpointId> map = this.endpoints.get(clazz);
+            if (map != null)
+            {
+                return map.get(name);
+            }
         }
         return null;
     }
@@ -121,6 +148,19 @@ public class MclibMod
     public ComHandler getHandler(CommunicationEndpointId id)
     {
         return this.handlers.get(id);
+    }
+
+    @Override
+    public void send(CommunicationEndpointId id, DataSection... data)
+    {
+        if (data != null)
+        {
+            for (final DataSection section : data)
+            {
+                final NetMessage msg = new NetMessage(id, section);
+                NETWORK.sendToServer(msg);
+            }
+        }
     }
     
 }

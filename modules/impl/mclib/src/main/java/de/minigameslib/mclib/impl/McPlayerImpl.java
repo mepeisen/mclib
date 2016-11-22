@@ -29,8 +29,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +46,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
@@ -61,6 +64,8 @@ import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
+import de.minigameslib.mclib.pshared.ActionPerformedData;
+import de.minigameslib.mclib.pshared.PongData;
 
 /**
  * Implementation of arena players.
@@ -94,6 +99,12 @@ class McPlayerImpl implements McPlayerInterface
     
     /** the persistent storage. */
     private PersistentStorageImpl pstorage       = new PersistentStorageImpl();
+
+    /** {@code true} if the client mod is installed. */
+    private boolean hasForgeMod;
+
+    /** list of client extensions that were reported by client mod. */
+    private Set<String> clientExtensions = new HashSet<>();
     
     /**
      * Constructor
@@ -129,6 +140,15 @@ class McPlayerImpl implements McPlayerInterface
             this.persistentStorage.createSection("storage"); //$NON-NLS-1$
             this.saveStore();
         }
+    }
+
+    /**
+     * @param fragment
+     */
+    void parsePong(PongData fragment)
+    {
+        this.hasForgeMod = true;
+        this.clientExtensions.addAll(fragment.getClientExtensions());
     }
     
     /**
@@ -444,6 +464,9 @@ class McPlayerImpl implements McPlayerInterface
         {
             this.onCloseGui();
         }
+        // clear client information
+        this.hasForgeMod = false;
+        this.clientExtensions.clear();
     }
     
     /**
@@ -464,24 +487,47 @@ class McPlayerImpl implements McPlayerInterface
         storage.set(GuiSessionInterface.class, null);
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#hasSmartGui()
-     */
     @Override
     public boolean hasSmartGui()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.hasForgeMod;
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#openSmartGui()
-     */
     @Override
     public GuiSessionInterface openSmartGui() throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        if (!this.hasSmartGui())
+        {
+            throw new McException(CommonMessages.NoSmartGui);
+        }
+        
+        final McStorage storage = this.getSessionStorage();
+        GuiSessionInterface session = storage.get(GuiSessionInterface.class);
+        if (session == null)
+        {
+            session = new GuiSessionImpl(this);
+            storage.set(GuiSessionInterface.class, session);
+        }
+        else if (session.getCurrentType() != GuiType.SmartGui)
+        {
+            session.close();
+            session = new GuiSessionImpl(this);
+            storage.set(GuiSessionInterface.class, session);
+        }
+        return session;
+    }
+
+    /**
+     * Parse an action performed message
+     * @param fragment
+     * @throws McException 
+     */
+    void parseActionPerformed(ActionPerformedData fragment) throws McException
+    {
+        final String actionId = fragment.getActionId();
+        final McStorage storage = this.getSessionStorage();
+        GuiSessionInterface session = storage.get(GuiSessionInterface.class);
+        ((GuiSessionImpl)session).sguiActionPerformed(actionId);
     }
     
 }

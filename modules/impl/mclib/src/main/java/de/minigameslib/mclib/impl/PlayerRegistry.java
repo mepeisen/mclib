@@ -38,6 +38,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.pshared.PongData;
+
 /**
  * A helper class to register player interfaces.
  * 
@@ -74,6 +77,15 @@ public class PlayerRegistry
             workDir.mkdirs();
         }
         this.workDir = workDir;
+    }
+
+    /**
+     * @param player
+     * @param fragment
+     */
+    void parsePong(McPlayerInterface player, PongData fragment)
+    {
+        ((McPlayerImpl)player).parsePong(fragment);
     }
     
     /**

@@ -217,6 +217,7 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             this.contents.remove(key);
+            return;
         }
         final Object obj = this.contents.get(key.substring(0, indexof));
         if (obj instanceof MemoryDataSection)
@@ -235,6 +236,7 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             this.contents.put(key, value);
+            return;
         }
         final Object obj = this.contents.get(key.substring(0, indexof));
         if (obj instanceof MemoryDataSection)

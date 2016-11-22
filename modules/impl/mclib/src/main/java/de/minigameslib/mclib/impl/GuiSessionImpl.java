@@ -24,10 +24,16 @@
 
 package de.minigameslib.mclib.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,6 +41,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
@@ -43,14 +50,25 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.GuiType;
+import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface.AnvilHelper;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface.AnvilListener;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryHelper;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener;
+import de.minigameslib.mclib.pshared.ButtonData;
+import de.minigameslib.mclib.pshared.CoreMessages;
+import de.minigameslib.mclib.pshared.DisplayErrorData;
+import de.minigameslib.mclib.pshared.DisplayInfoData;
+import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
+import de.minigameslib.mclib.pshared.DisplayYesNoData;
+import de.minigameslib.mclib.pshared.MclibCommunication;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Implementation of a gui session
@@ -59,31 +77,34 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener
  */
 public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, AnvilListener
 {
-    
+
     /** logger. */
-    private static final Logger LOGGER = Logger.getLogger(GuiSessionImpl.class.getName());
+    private static final Logger       LOGGER = Logger.getLogger(GuiSessionImpl.class.getName());
     
     /** the current gui type. */
-    private GuiType type = GuiType.None;
+    private GuiType                   type   = GuiType.None;
     
     /** the gui interface. */
     private ClickGuiInterface         gui;
     /** anvil gui interface. */
-    private AnvilGuiInterface agui;
+    private AnvilGuiInterface         agui;
     /** the arena player. */
-    private McPlayerInterface      player;
+    private McPlayerImpl         player;
     /** the current inventory name. */
     private LocalizedMessageInterface currentName;
     /** the current items. */
     private ClickGuiItem[][]          currentItems;
     /** the line count. */
     private int                       lineCount;
-
+    
     /** gui instance. */
-    private InventoryHelper guiHelper;
-
+    private InventoryHelper           guiHelper;
+    
     /** anvil gui instance. */
-    private AnvilHelper aguiHelper;
+    private AnvilHelper               aguiHelper;
+    
+    /** the smart gui helper. */
+    private SGuiHelper                smartGui;
     
     /**
      * Constructor
@@ -93,7 +114,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      * @param player
      *            the arena player to be used
      */
-    public GuiSessionImpl(ClickGuiInterface gui, McPlayerInterface player)
+    public GuiSessionImpl(ClickGuiInterface gui, McPlayerImpl player)
     {
         this.type = GuiType.ClickGui;
         this.gui = gui;
@@ -115,7 +136,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      * @param player
      *            the arena player to be used
      */
-    public GuiSessionImpl(AnvilGuiInterface gui, McPlayerInterface player)
+    public GuiSessionImpl(AnvilGuiInterface gui, McPlayerImpl player)
     {
         this.type = GuiType.AnvilGui;
         this.agui = gui;
@@ -125,7 +146,20 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
+     * Constructor for smart gui
+     * @param player
+     *            the arena player to be used
+     */
+    public GuiSessionImpl(McPlayerImpl player)
+    {
+        this.type = GuiType.SmartGui;
+        this.player = player;
+        this.smartGui = new SGuiHelper();
+    }
+
+    /**
      * Converts the existing items to item stack.
+     * 
      * @return item stack.
      */
     private ItemStack[] toItemStack()
@@ -144,10 +178,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 {
                     final ItemStack stack = itemline[column].getItemStack().clone();
                     final ItemMeta meta = stack.getItemMeta();
-                    final String displayName = InventoryManagerInterface.toColorsString(
-                            this.player.getBukkitPlayer().isOp() ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale()) : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale()),
+                    final String displayName = InventoryManagerInterface.toColorsString(this.player.getBukkitPlayer().isOp()
+                            ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale()) : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale()),
                             line + ":" + column //$NON-NLS-1$
-                            );
+                    );
                     meta.setDisplayName(displayName);
                     stack.setItemMeta(meta);
                     result.add(stack);
@@ -238,7 +272,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     @Override
     public void onClose()
     {
@@ -250,6 +284,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             // TODO fire event
         }
+        else if (this.type == GuiType.SmartGui)
+        {
+            // TODO fire event
+        }
         this.type = GuiType.None;
         this.gui = null;
         this.agui = null;
@@ -257,9 +295,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.currentName = null;
         this.guiHelper = null;
         this.aguiHelper = null;
+        this.smartGui = null;
         this.player = null;
     }
-
+    
     @Override
     public boolean onCommit(String name)
     {
@@ -268,7 +307,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             try
             {
                 this.agui.onInput(name);
-
+                
                 this.type = GuiType.None;
                 this.gui = null;
                 this.agui = null;
@@ -287,7 +326,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         return true;
     }
-
+    
     @Override
     public void onClick(ItemStack stack)
     {
@@ -322,11 +361,239 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
         }
     }
-
+    
     @Override
     public GuiType getCurrentType()
     {
         return this.type;
+    }
+    
+    @Override
+    public SGuiInterface getSmartGui()
+    {
+        return this.smartGui;
+    }
+    
+    @Override
+    public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException
+    {
+        checkForSmartGui();
+        initSmartGui();
+        this.smartGui.registerAction((GuiButtonImpl) okButton);
+        
+        // send to client
+        final DisplayErrorData display = new DisplayErrorData();
+        display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setOkButton((GuiButtonImpl) okButton);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayError.name()); //$NON-NLS-1$
+        display.write(section.createSection("data")); //$NON-NLS-1$
+        MclibCommunication.ClientServerCore.send(section);
+        return this.smartGui;
+    }
+
+    /**
+     * Initializes the smart gui.
+     */
+    private void initSmartGui()
+    {
+        if (this.smartGui == null)
+        {
+            if (this.type != GuiType.None)
+            {
+                this.onClose();
+            }
+            this.smartGui = new SGuiHelper();
+        }
+    }
+
+    /**
+     * Checks the player for haviong a smart gui.
+     * @throws McException
+     */
+    private void checkForSmartGui() throws McException
+    {
+        if (!this.player.hasSmartGui())
+        {
+            throw new McException(CommonMessages.NoSmartGui);
+        }
+    }
+    
+    @Override
+    public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException
+    {
+        checkForSmartGui();
+        initSmartGui();
+        this.smartGui.registerAction((GuiButtonImpl) okButton);
+        
+        // send to client
+        final DisplayInfoData display = new DisplayInfoData();
+        display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setOkButton((GuiButtonImpl) okButton);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayInfo.name()); //$NON-NLS-1$
+        display.write(section.createSection("data")); //$NON-NLS-1$
+        MclibCommunication.ClientServerCore.send(section);
+        return this.smartGui;
+    }
+    
+    @Override
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[]) throws McException
+    {
+        return this.sguiCreateButton(label, labelArgs, null);
+    }
+    
+    @Override
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action) throws McException
+    {
+        return this.sguiCreateButton(label, labelArgs, action, true);
+    }
+    
+    @Override
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action, boolean closeAction) throws McException
+    {
+        checkForSmartGui();
+        
+        final GuiButtonImpl button = new GuiButtonImpl();
+        button.setLabel(Arrays.asList(this.player.encodeMessage(label, labelArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        button.setCloseAction(closeAction);
+        button.setAction(action);
+        return button;
+    }
+    
+    @Override
+    public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton) throws McException
+    {
+        checkForSmartGui();
+        initSmartGui();
+        this.smartGui.registerAction((GuiButtonImpl) yesButton);
+        this.smartGui.registerAction((GuiButtonImpl) noButton);
+        
+        // send to client
+        final DisplayYesNoData display = new DisplayYesNoData();
+        display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setYesButton((GuiButtonImpl) yesButton);
+        display.setNoButton((GuiButtonImpl) noButton);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
+        display.write(section.createSection("data")); //$NON-NLS-1$
+        MclibCommunication.ClientServerCore.send(section);
+        return this.smartGui;
+    }
+    
+    @Override
+    public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton, GuiButton cancelButton) throws McException
+    {
+        checkForSmartGui();
+        initSmartGui();
+        this.smartGui.registerAction((GuiButtonImpl) yesButton);
+        this.smartGui.registerAction((GuiButtonImpl) noButton);
+        this.smartGui.registerAction((GuiButtonImpl) cancelButton);
+        
+        // send to client
+        final DisplayYesNoCancelData display = new DisplayYesNoCancelData();
+        display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
+        display.setYesButton((GuiButtonImpl) yesButton);
+        display.setNoButton((GuiButtonImpl) noButton);
+        display.setCancelButton((GuiButtonImpl) cancelButton);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
+        display.write(section.createSection("data")); //$NON-NLS-1$
+        MclibCommunication.ClientServerCore.send(section);
+        return this.smartGui;
+    }
+    
+    /**
+     * helper for smart guis.
+     * 
+     * @author mepeisen
+     */
+    private static final class SGuiHelper implements SGuiInterface
+    {
+        
+        /** the registered actions. */
+        private final Map<String, McRunnable> actions = new HashMap<>();
+
+        /**
+         * Constructor
+         */
+        public SGuiHelper()
+        {
+            // empty
+        }
+
+        /**
+         * @param button
+         */
+        public void registerAction(GuiButtonImpl button)
+        {
+            if (button.getAction() != null)
+            {
+                final UUID actionUuid = UUID.randomUUID();
+                button.setHasActionListener(true);
+                button.setActionId(actionUuid.toString());
+                this.actions.put(actionUuid.toString(), button.getAction());
+            }
+        }
+        
+        /**
+         * Performs given action.
+         * @param uuid action uuid.
+         * @throws McException
+         */
+        public void performAction(String uuid) throws McException
+        {
+            final McRunnable run = this.actions.get(uuid);
+            if (run != null)
+            {
+                run.run();
+            }
+        }
+    }
+    
+    /**
+     * Button data.
+     * @author mepeisen
+     */
+    public class GuiButtonImpl extends ButtonData implements GuiButton
+    {
+        
+        /** the action. */
+        private McRunnable action;
+
+        /**
+         * @return the action
+         */
+        public McRunnable getAction()
+        {
+            return this.action;
+        }
+
+        /**
+         * @param action the action to set
+         */
+        public void setAction(McRunnable action)
+        {
+            this.action = action;
+        }
+        
+    }
+
+    /**
+     * Performs action.
+     * @param actionId
+     * @throws McException 
+     */
+    void sguiActionPerformed(String actionId) throws McException
+    {
+        if (this.smartGui != null)
+        {
+            this.smartGui.performAction(actionId);
+        }
     }
     
 }

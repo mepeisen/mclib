@@ -293,6 +293,15 @@ public enum CommonMessages implements LocalizedMessageInterface
             args = {
                     @MessageComment.Argument({"The command line entered by the user."})
             })
-    HelpLongDescription;
+    HelpLongDescription,
+    
+    /**
+     * Invoking smart gui commands but client has no forge mod.
+     * 
+     * <p>No arguments.</p>
+     */
+    @LocalizedMessage(defaultMessage = "You do not have the mclib client mod.", severity = MessageSeverityType.Error)
+    @MessageComment({"Smart gui/ client mod not installed."})
+    NoSmartGui,
     
 }
