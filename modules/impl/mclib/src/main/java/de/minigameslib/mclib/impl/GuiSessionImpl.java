@@ -531,7 +531,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
          */
         public void registerAction(GuiButtonImpl button)
         {
-            if (button.getAction() != null)
+            if (button != null && button.getAction() != null)
             {
                 final UUID actionUuid = UUID.randomUUID();
                 button.setHasActionListener(true);

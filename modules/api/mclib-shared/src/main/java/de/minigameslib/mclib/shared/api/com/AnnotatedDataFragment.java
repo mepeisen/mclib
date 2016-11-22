@@ -226,6 +226,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         public FieldDescriptor(Field field)
         {
             this.field = field;
+            this.field.setAccessible(true);
             this.clazz = field.getType();
             this.primitiveType = FIELD_TYPES.get(this.clazz);
             if (this.primitiveType == null)

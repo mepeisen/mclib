@@ -32,6 +32,7 @@ import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 
 /**
  * Factory to create NMS relevant classes.
@@ -52,6 +53,7 @@ public class NmsFactory1_9_4 implements NmsFactory
         this.impls.put(EventSystemInterface.class, EventSystem1_9_4::new);
         this.impls.put(InventoryManagerInterface.class, InventoryManager1_9_4::new);
         this.impls.put(AnvilManagerInterface.class, AnvilManager1_9_4::new);
+        this.impls.put(PlayerManagerInterface.class, PlayerManager1_9_4::new);
     }
     
     @Override

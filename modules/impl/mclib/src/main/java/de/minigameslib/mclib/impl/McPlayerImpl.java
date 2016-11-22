@@ -148,7 +148,10 @@ class McPlayerImpl implements McPlayerInterface
     void parsePong(PongData fragment)
     {
         this.hasForgeMod = true;
-        this.clientExtensions.addAll(fragment.getClientExtensions());
+        if (fragment != null)
+        {
+            this.clientExtensions.addAll(fragment.getClientExtensions());
+        }
     }
     
     /**

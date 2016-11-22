@@ -110,11 +110,11 @@ public class NetMessage implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        System.out.println("===NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+//        System.out.println("===NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
         final String endpointclass = readUtf8(buf);
-        System.out.println(endpointclass);
+//        System.out.println(endpointclass);
         final String endpointName = readUtf8(buf);
-        System.out.println(endpointName);
+//        System.out.println(endpointName);
         this.endpoint = MclibMod.instance.getEndpoint(endpointclass, endpointName);
         
         this.data = new MemoryDataSection();
@@ -164,9 +164,9 @@ public class NetMessage implements IMessage
                     throw new IllegalStateException("Invalid content type: " + typeNum); //$NON-NLS-1$
             }
         }
-        System.out.println(this.data);
-        System.out.println(this.endpoint);
-        System.out.println("===END OF NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+//        System.out.println(this.data);
+//        System.out.println(this.endpoint);
+//        System.out.println("===END OF NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
     }
     
     /** type num. */

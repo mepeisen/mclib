@@ -26,12 +26,11 @@ package de.minigameslib.mclib.client.impl;
 
 import org.lwjgl.input.Keyboard;
 
-import de.minigameslib.mclib.client.impl.gui.MclibGuiHandler;
 import de.minigameslib.mclib.client.impl.gui.TwlManager;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.MclibCommunication;
-import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import net.minecraft.client.Minecraft;
@@ -74,7 +73,7 @@ public class ClientProxy
         {
 
             // send pong to server.
-            final PongData answer = new PongData();
+            final PingData answer = new PingData();
             // TODO add extensions
             final DataSection section = new MemoryDataSection();
             section.set("KEY", CoreMessages.Pong.name()); //$NON-NLS-1$

@@ -87,7 +87,8 @@ public class MclibMod implements CommunicationServiceInterface
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         this.registerCommunicationEndpoint(MclibCommunication.ClientServerCore, new MclibCoreHandler());
         
-        NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib-channel"); //$NON-NLS-1$
+        //sc = s[erver]c[client] (both directions)
+        NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib|sc"); //$NON-NLS-1$
         NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 0, Side.CLIENT);
     }
     

@@ -109,6 +109,7 @@ import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.CoreMessages;
@@ -128,6 +129,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener
 {
     
+    /**
+     * plugin channel for messages between servers and clients
+     */
+    private static final String MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc"; //$NON-NLS-1$
+
     /** the overall minecraft server versioon. */
     private static final MinecraftVersionsType                             SERVER_VERSION  = MclibPlugin.getServerVersion();
     
@@ -236,8 +242,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         this.registerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
         
         // network
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "mclib-channel"); //$NON-NLS-1$
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "mclib-channel", this); //$NON-NLS-1$
+      //sc = s[erver]c[client] (both directions)
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
     }
     
     @Override
@@ -247,8 +254,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         this.removeAllCommunicationEndpoints(this);
         Bukkit.getServicesManager().unregisterAll(this);
         
-        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, "mclib-channel"); //$NON-NLS-1$
-        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, "mclib-channel", this); //$NON-NLS-1$
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
     }
     
     /**
@@ -463,6 +470,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
+        Bukkit.getServicesManager().load(PlayerManagerInterface.class).registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
         this.players.onPlayerJoin(evt);
         
         // TODO Have a method on player interface
@@ -747,14 +755,14 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             for (final DataSection section : data)
             {
                 final ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                out.writeInt(0);
+                out.writeByte(0);
                 new NetMessage(id, section).toBytes(out);
-                final byte[] bytes = out.toByteArray();
+                byte[] bytes = out.toByteArray();
                 if (this.getLogger().isLoggable(Level.FINEST))
                 {
                     this.getLogger().finest("Sending NetMessage to player " + player.getPlayerUUID() + "\n" + Arrays.toString(bytes)); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                player.getBukkitPlayer().sendPluginMessage(this, "mclib-channel", bytes); //$NON-NLS-1$
+                player.getBukkitPlayer().sendPluginMessage(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, bytes);
             }
         }
     }
@@ -769,12 +777,15 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
                 this.setContext(McPlayerInterface.class, mcp);
                 final NetMessage msg = new NetMessage();
                 final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
-                msg.fromBytes(input, this::getEndpoint);
-                
-                if (msg.getEndpoint() != null)
+                if (input.readByte() == 0) // forge NetMessage byte code.
                 {
-                    final CommunicationServerHandler handler = this.handlers.get(msg.getEndpoint());
-                    handler.handleIncomming(mcp, msg.getEndpoint(), msg.getData());
+                    msg.fromBytes(input, this::getEndpoint);
+                    
+                    if (msg.getEndpoint() != null)
+                    {
+                        final CommunicationServerHandler handler = this.handlers.get(msg.getEndpoint());
+                        handler.handleIncomming(mcp, msg.getEndpoint(), msg.getData());
+                    }
                 }
             });
         }
