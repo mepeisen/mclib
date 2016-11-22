@@ -48,6 +48,9 @@ public enum MessageSeverityType
     Winner,
     
     /** A losing message (sad mood). */
-    Loser
+    Loser,
+    
+    /** a neutral message without any color codes. */
+    Neutral
     
 }

@@ -214,6 +214,9 @@ class McPlayerImpl implements McPlayerInterface
             switch (msg.getSeverity())
             {
                 default:
+                case Neutral:
+                    result[i] = msgs[i];
+                    break;
                 case Error:
                     result[i] = ChatColor.DARK_RED + msgs[i];
                     break;

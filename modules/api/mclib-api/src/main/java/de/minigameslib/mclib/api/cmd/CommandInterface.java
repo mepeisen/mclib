@@ -138,6 +138,9 @@ public interface CommandInterface
             switch (msg.getSeverity())
             {
                 default:
+                case Neutral:
+                    this.getSender().sendMessage(msg2);
+                    break;
                 case Error:
                     this.getSender().sendMessage(ChatColor.DARK_RED + msg2);
                     break;
