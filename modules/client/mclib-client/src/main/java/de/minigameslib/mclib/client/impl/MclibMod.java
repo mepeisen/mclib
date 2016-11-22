@@ -36,6 +36,7 @@ import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId.CommunicationServiceInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -57,28 +58,36 @@ public class MclibMod implements CommunicationServiceInterface
 {
     
     /** the mod id. */
-    public static final String         MODID    = "mclib"; //$NON-NLS-1$
+    public static final String          MODID    = "mclib";       //$NON-NLS-1$
     /** the version of this mod. */
-    public static final String         VERSION  = "0.0.1"; //$NON-NLS-1$
+    public static final String          VERSION  = "0.0.1";       //$NON-NLS-1$
     
     /** the client stuff proxy. */
     @SidedProxy(clientSide = "de.minigameslib.mclib.client.impl.ClientProxy")
-    public static ClientProxy          clientProxy;
+    public static ClientProxy           clientProxy;
+    
+    /** minecraft instance. */
+    public Minecraft                    mc;
     
     /** mod instance. */
     @Instance
-    public static MclibMod             instance = new MclibMod();
+    public static MclibMod              instance = new MclibMod();
     
     /** a network wrapper for mclib's channel. */
     private static SimpleNetworkWrapper NETWORK;
     
+    /** true to activate tracing output */
+    public static final boolean TRACE = true;
+    
     /**
      * Initialization.
+     * 
      * @param event
      */
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        this.mc = Minecraft.getMinecraft();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new MclibGuiHandler());
         
         MinecraftForge.EVENT_BUS.register(clientProxy);
@@ -87,7 +96,7 @@ public class MclibMod implements CommunicationServiceInterface
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         this.registerCommunicationEndpoint(MclibCommunication.ClientServerCore, new MclibCoreHandler());
         
-        //sc = s[erver]c[client] (both directions)
+        // sc = s[erver]c[client] (both directions)
         NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib|sc"); //$NON-NLS-1$
         NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 0, Side.CLIENT);
     }
@@ -100,8 +109,11 @@ public class MclibMod implements CommunicationServiceInterface
     
     /**
      * Registers an existing communication endpoint with given network handler.
-     * @param id endpoint id.
-     * @param handler handler.
+     * 
+     * @param id
+     *            endpoint id.
+     * @param handler
+     *            handler.
      */
     public void registerCommunicationEndpoint(CommunicationEndpointId id, ComHandler handler)
     {
@@ -124,6 +136,7 @@ public class MclibMod implements CommunicationServiceInterface
     
     /**
      * Returns the endpoint for given class and element
+     * 
      * @param clazz
      * @param name
      * @return endpoint or {@code null} if it does not exist.
@@ -143,6 +156,7 @@ public class MclibMod implements CommunicationServiceInterface
     
     /**
      * Returns the handler for given endpoint.
+     * 
      * @param id
      * @return handler or {@code null} if no handler was registered.
      */
@@ -150,7 +164,7 @@ public class MclibMod implements CommunicationServiceInterface
     {
         return this.handlers.get(id);
     }
-
+    
     @Override
     public void send(CommunicationEndpointId id, DataSection... data)
     {

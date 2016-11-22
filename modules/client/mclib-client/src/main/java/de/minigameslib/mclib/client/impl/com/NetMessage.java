@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
@@ -110,18 +111,23 @@ public class NetMessage implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
-//        System.out.println("===NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+        if (MclibMod.TRACE) System.out.println("===NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+        logBuf(buf);
         final String endpointclass = readUtf8(buf);
-//        System.out.println(endpointclass);
+        if (MclibMod.TRACE) System.out.println(endpointclass);
         final String endpointName = readUtf8(buf);
-//        System.out.println(endpointName);
+        if (MclibMod.TRACE) System.out.println(endpointName);
         this.endpoint = MclibMod.instance.getEndpoint(endpointclass, endpointName);
         
         this.data = new MemoryDataSection();
         while (buf.isReadable())
         {
+            logBuf(buf);
             final String key = readUtf8(buf);
+            if (MclibMod.TRACE) System.out.println("key = " + key); //$NON-NLS-1$
+            logBuf(buf);
             final byte typeNum = buf.readByte();
+            if (MclibMod.TRACE) System.out.println("typenum = " + typeNum); //$NON-NLS-1$
             switch (typeNum)
             {
                 case TYPE_STRING:
@@ -163,10 +169,26 @@ public class NetMessage implements IMessage
                 default:
                     throw new IllegalStateException("Invalid content type: " + typeNum); //$NON-NLS-1$
             }
+            if (MclibMod.TRACE) System.out.println("value = " + this.data.get(key)); //$NON-NLS-1$
+            if (MclibMod.TRACE) System.out.println("values = " + this.data.getValues(true)); //$NON-NLS-1$
         }
-//        System.out.println(this.data);
-//        System.out.println(this.endpoint);
-//        System.out.println("===END OF NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+        if (MclibMod.TRACE) System.out.println(this.data);
+        if (MclibMod.TRACE) System.out.println(this.endpoint);
+        if (MclibMod.TRACE) System.out.println("===END OF NEW INCOMING NET MESSAGE==="); //$NON-NLS-1$
+    }
+
+    /**
+     * @param buf
+     */
+    private void logBuf(ByteBuf buf)
+    {
+        if (MclibMod.TRACE)
+        {
+            int n = buf.readableBytes();
+            final byte[] bytes = new byte[n];
+            buf.getBytes(buf.readerIndex(), bytes);
+            System.out.println("bytes: " + Arrays.toString(bytes)); //$NON-NLS-1$
+        }
     }
     
     /** type num. */
@@ -208,26 +230,33 @@ public class NetMessage implements IMessage
         return result;
     }
 
+    /**
+     * @param buf
+     * @param value
+     */
+    private void writeUtf8(ByteBuf buf, String value)
+    {
+        final byte[] bytes = value.getBytes(Charsets.UTF_8);
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
+    }
+
     @Override
     public void toBytes(ByteBuf buf)
     {
         final String endpointclass = this.endpoint.getClass().getName();
         final String endpointName = this.endpoint.name();
-        buf.writeInt(endpointclass.length());
-        buf.writeBytes(endpointclass.getBytes(Charsets.UTF_8));
-        buf.writeInt(endpointName.length());
-        buf.writeBytes(endpointName.getBytes(Charsets.UTF_8));
+        this.writeUtf8(buf, endpointclass);
+        this.writeUtf8(buf, endpointName);
         
         for (final Map.Entry<String, Object> entry : this.data.getValues(true).entrySet())
         {
-            buf.writeInt(entry.getKey().length());
-            buf.writeBytes(entry.getKey().getBytes(Charsets.UTF_8));
+            this.writeUtf8(buf, entry.getKey());
             if (entry.getValue() instanceof String)
             {
                 final String value = (String) entry.getValue();
                 buf.writeByte(TYPE_STRING);
-                buf.writeInt(value.length());
-                buf.writeBytes(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof Byte)
             {
@@ -273,22 +302,19 @@ public class NetMessage implements IMessage
             {
                 final String value = ((LocalDateTime) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 buf.writeByte(TYPE_DATETIME);
-                buf.writeInt(value.length());
-                buf.writeBytes(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof LocalDate)
             {
                 final String value = ((LocalDate) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_DATE);
                 buf.writeByte(TYPE_DATE);
-                buf.writeInt(value.length());
-                buf.writeBytes(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof LocalTime)
             {
                 final String value = ((LocalTime) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_TIME);
                 buf.writeByte(TYPE_TIME);
-                buf.writeInt(value.length());
-                buf.writeBytes(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else
             {
@@ -309,7 +335,9 @@ public class NetMessage implements IMessage
                 final ComHandler handler = MclibMod.instance.getHandler(message.getEndpoint());
                 if (handler != null)
                 {
-                    handler.handle(ctx, message);
+                    MclibMod.instance.mc.addScheduledTask(() -> {
+                        handler.handle(ctx, message);
+                    });
                 }
             }
             return null;

@@ -10,4 +10,13 @@
   	<version>0.0.1-SNAPSHOT</version>
   </parent>
   
+  <dependencies>
+	    <dependency>
+	      <groupId>de.minigameslib.mclib</groupId>
+	      <artifactId>spigot-testsupport-api</artifactId>
+	      <version>${project.version}</version>
+	      <scope>test</scope>
+	    </dependency>
+  </dependencies>
+  
 </project>

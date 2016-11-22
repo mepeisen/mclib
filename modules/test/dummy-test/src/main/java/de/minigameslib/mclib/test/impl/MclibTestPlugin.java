@@ -36,7 +36,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
@@ -73,7 +76,10 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
             final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
             try
             {
-                player.openSmartGui().sguiDisplayInfo(CommonMessages.HelpShortDescription, null, CommonMessages.InvokeIngame, null, null);
+                ConfigServiceInterface.instance().runInNewContext(() -> {
+                    ConfigServiceInterface.instance().setContext(McPlayerInterface.class, player);
+                    player.openSmartGui().sguiDisplayInfo(CommonMessages.HelpShortDescription, null, CommonMessages.InvokeIngame, null, null);
+                });
             }
             catch (McException e)
             {

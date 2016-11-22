@@ -224,6 +224,17 @@ class NetMessage
     }
 
     /**
+     * @param buf
+     * @param value
+     */
+    private void writeUtf8(ByteArrayDataOutput buf, String value)
+    {
+        final byte[] bytes = value.getBytes(Charsets.UTF_8);
+        buf.writeInt(bytes.length);
+        buf.write(bytes);
+    }
+
+    /**
      * Converts this message to byte stream.
      * @param buf
      */
@@ -231,21 +242,17 @@ class NetMessage
     {
         final String endpointclass = this.endpoint.getClass().getName();
         final String endpointName = this.endpoint.name();
-        buf.writeInt(endpointclass.length());
-        buf.write(endpointclass.getBytes(Charsets.UTF_8));
-        buf.writeInt(endpointName.length());
-        buf.write(endpointName.getBytes(Charsets.UTF_8));
+        this.writeUtf8(buf, endpointclass);
+        this.writeUtf8(buf, endpointName);
         
         for (final Map.Entry<String, Object> entry : this.data.getValues(true).entrySet())
         {
-            buf.writeInt(entry.getKey().length());
-            buf.write(entry.getKey().getBytes(Charsets.UTF_8));
+            this.writeUtf8(buf, entry.getKey());
             if (entry.getValue() instanceof String)
             {
                 final String value = (String) entry.getValue();
                 buf.writeByte(TYPE_STRING);
-                buf.writeInt(value.length());
-                buf.write(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof Byte)
             {
@@ -291,22 +298,19 @@ class NetMessage
             {
                 final String value = ((LocalDateTime) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 buf.writeByte(TYPE_DATETIME);
-                buf.writeInt(value.length());
-                buf.write(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof LocalDate)
             {
                 final String value = ((LocalDate) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_DATE);
                 buf.writeByte(TYPE_DATE);
-                buf.writeInt(value.length());
-                buf.write(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else if (entry.getValue() instanceof LocalTime)
             {
                 final String value = ((LocalTime) entry.getValue()).format(DateTimeFormatter.ISO_LOCAL_TIME);
                 buf.writeByte(TYPE_TIME);
-                buf.writeInt(value.length());
-                buf.write(value.getBytes(Charsets.UTF_8));
+                this.writeUtf8(buf, value);
             }
             else
             {

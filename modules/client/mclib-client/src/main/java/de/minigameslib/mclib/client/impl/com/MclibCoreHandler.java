@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.client.impl.com;
 
 import de.matthiasmann.twl.Button;
+import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
@@ -52,6 +53,7 @@ public class MclibCoreHandler implements ComHandler
     @Override
     public void handle(MessageContext context, NetMessage message)
     {
+        if (MclibMod.TRACE) System.out.println(message.getData().getValues(true));
         // silently drop invalid messages.
         if (!message.getData().contains("KEY")) return; //$NON-NLS-1$
         
