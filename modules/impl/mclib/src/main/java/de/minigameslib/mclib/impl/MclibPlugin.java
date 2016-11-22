@@ -470,7 +470,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
-        Bukkit.getServicesManager().load(PlayerManagerInterface.class).registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        Bukkit.getServicesManager().load(NmsFactory.class).create(PlayerManagerInterface.class).registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
         this.players.onPlayerJoin(evt);
         
         // TODO Have a method on player interface

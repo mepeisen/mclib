@@ -403,7 +403,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         Long((name, section) -> section.getLong(name), (name, section, value) -> section.set(name, value)),
         
         /** primitive list type. */
-        PrimitiveList((name, section) -> section.getList(name), (name, section, value) -> section.set(name, value)),
+        PrimitiveList((name, section) -> section.getList(name), (name, section, value) -> section.setPrimitiveList(name, (List<?>)value)),
         
         /** vector type. */
         Vector((name, section) -> section.getVector(name), (name, section, value) -> section.set(name, value)),
@@ -418,16 +418,20 @@ public abstract class AnnotatedDataFragment implements DataFragment
         Color((name, section) -> section.getColor(name), (name, section, value) -> section.set(name, value)),
         
         /** vector list type. */
-        VectorList((name, section) -> section.getVectorList(name), (name, section, value) -> section.set(name, value)),
+        @SuppressWarnings("unchecked")
+        VectorList((name, section) -> section.getVectorList(name), (name, section, value) -> section.setFragmentList(name, (List<VectorData>)value)),
         
         /** color list type. */
-        ColorList((name, section) -> section.getColorList(name), (name, section, value) -> section.set(name, value)),
+        @SuppressWarnings("unchecked")
+        ColorList((name, section) -> section.getColorList(name), (name, section, value) -> section.setFragmentList(name, (List<ColorData>)value)),
         
         /** player list type. */
-        PlayerList((name, section) -> section.getPlayerList(name), (name, section, value) -> section.set(name, value)),
+        @SuppressWarnings("unchecked")
+        PlayerList((name, section) -> section.getPlayerList(name), (name, section, value) -> section.setFragmentList(name, (List<PlayerData>)value)),
         
         /** item stack list type. */
-        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.set(name, value)),
+        @SuppressWarnings("unchecked")
+        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.setFragmentList(name, (List<ItemStackData>)value)),
         
         /** primitive map type. */
         Map((name, section) -> section.getMap(name), (name, section, value) -> section.set(name, value)),
