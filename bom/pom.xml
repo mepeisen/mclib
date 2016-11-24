@@ -71,10 +71,14 @@
   <modules>
   	<module>bungeecord-1.10-R0.1-api-bom</module>
   	<module>bungeecord-1.10-R0.1-bom</module>
+  	<module>bungeecord-1.11-R0.1-api-bom</module>
+  	<module>bungeecord-1.11-R0.1-bom</module>
   	<module>spigot-1.10-R0.1-api-bom</module>
   	<module>spigot-1.10-R0.1-bom</module>
   	<module>spigot-1.10.2-R0.1-api-bom</module>
   	<module>spigot-1.10.2-R0.1-bom</module>
+  	<module>spigot-1.11-R0.1-api-bom</module>
+  	<module>spigot-1.11-R0.1-bom</module>
   	<module>spigot-1.8-R0.1-api-bom</module>
   	<module>spigot-1.8-R0.1-bom</module>
   	<module>spigot-1.8.3-R0.1-api-bom</module>

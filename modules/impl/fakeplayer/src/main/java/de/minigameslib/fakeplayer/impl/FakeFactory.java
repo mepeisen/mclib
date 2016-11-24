@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.fakeclient.nms110.FakeController110;
+import de.minigameslib.fakeclient.nms111.FakeController111;
 import de.minigameslib.mclib.fakeclient.IFakeClient;
 import de.minigameslib.mclib.fakeclient.IFakeController;
 
@@ -100,6 +101,9 @@ public class FakeFactory
                 break;
             case "v1_10_R1": //$NON-NLS-1$
                 orig = new FakeController110(client, name);
+                break;
+            case "v1_11_R1": //$NON-NLS-1$
+                orig = new FakeController111(client, name);
                 break;
             default:
                 break;

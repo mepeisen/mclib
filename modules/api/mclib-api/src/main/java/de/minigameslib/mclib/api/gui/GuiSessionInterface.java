@@ -117,10 +117,10 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param title
      *            the title to be displayed.
-     * @param titleArgs 
+     * @param titleArgs
      * @param message
      *            the message to be displayed.
-     * @param messageArgs 
+     * @param messageArgs
      * @param okButton
      *            the ok button or {@code null} to use a default ok button.
      * @return smart gui dialog reference.
@@ -134,10 +134,10 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param title
      *            the title to be displayed.
-     * @param titleArgs 
+     * @param titleArgs
      * @param message
      *            the message to be displayed.
-     * @param messageArgs 
+     * @param messageArgs
      * @param okButton
      *            the ok button or {@code null} to use a default ok button.
      * @return smart gui dialog reference.
@@ -151,7 +151,7 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param label
      *            custom gui label.
-     * @param labelArgs 
+     * @param labelArgs
      * @return smart gui button
      * @throws McException
      *             thrown if player has no smart gui.
@@ -163,7 +163,7 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param label
      *            custom gui label.
-     * @param labelArgs 
+     * @param labelArgs
      * @param action
      *            callback to be invoked once the user clicks the button in gui
      * @return smart gui button
@@ -177,7 +177,7 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param label
      *            custom gui label.
-     * @param labelArgs 
+     * @param labelArgs
      * @param action
      *            callback to be invoked once the user clicks the button in gui
      * @param closeAction
@@ -201,10 +201,10 @@ public interface GuiSessionInterface extends Configurable
      * 
      * @param title
      *            the title to be displayed.
-     * @param titleArgs 
+     * @param titleArgs
      * @param message
      *            the message to be displayed.
-     * @param messageArgs 
+     * @param messageArgs
      * @param yesButton
      *            the yes button or {@code null} to use a default yes button.
      * @param noButton
@@ -213,17 +213,18 @@ public interface GuiSessionInterface extends Configurable
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton) throws McException;
+    SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton)
+            throws McException;
     
     /**
      * Displays a yes/no/cancel confirmation dialog
      * 
      * @param title
      *            the title to be displayed.
-     * @param titleArgs 
+     * @param titleArgs
      * @param message
      *            the message to be displayed.
-     * @param messageArgs 
+     * @param messageArgs
      * @param yesButton
      *            the yes button or {@code null} to use a default yes button.
      * @param noButton
@@ -234,6 +235,20 @@ public interface GuiSessionInterface extends Configurable
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton, GuiButton cancelButton) throws McException;
+    SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
+            GuiButton noButton, GuiButton cancelButton) throws McException;
+    
+    /**
+     * Creates a form builder to produce forms.
+     * 
+     * @param title
+     *            the title to be used in form.
+     * @param titleArgs
+     * @param closable
+     * @return form builder
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable titleArgs[], boolean closable) throws McException;
     
 }

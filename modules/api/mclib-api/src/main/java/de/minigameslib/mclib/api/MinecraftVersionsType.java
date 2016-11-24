@@ -73,7 +73,15 @@ public enum MinecraftVersionsType
     V1_10(true, "v1_10_R1"), //$NON-NLS-1$
     
     /** V1.10 R1 */
-    V1_10_R1(true, "v1_10_R1"); //$NON-NLS-1$
+    V1_10_R1(true, "v1_10_R1"), //$NON-NLS-1$
+    
+    /** any 1.11 version. */
+    V1_11(true, "v1_11_R1"), //$NON-NLS-1$
+    
+    /** V1.10 R1 */
+    V1_11_R1(true, "v1_11_R1"), //$NON-NLS-1$
+    
+    ;
     
     /**
      * {@code true} if this version is still supported.
@@ -122,6 +130,8 @@ public enum MinecraftVersionsType
     {
         switch (this)
         {
+            case V1_11:
+                return type == V1_11 || type == V1_11_R1;
             case V1_10:
                 return type == V1_10 || type == V1_10_R1;
             case V1_7:
@@ -134,6 +144,8 @@ public enum MinecraftVersionsType
             default:
                 switch (type)
                 {
+                    case V1_11:
+                        return this == V1_11 || this == V1_11_R1;
                     case V1_10:
                         return this == V1_10 || this == V1_10_R1;
                     case V1_7:

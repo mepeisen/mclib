@@ -50,6 +50,7 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.GuiType;
+import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -506,13 +507,21 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         MclibCommunication.ClientServerCore.send(section);
         return this.smartGui;
     }
+
+    @Override
+    public SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable) throws McException
+    {
+        checkForSmartGui();
+        initSmartGui();
+        return new SGuiFormBuilder(this.smartGui);
+    }
     
     /**
      * helper for smart guis.
      * 
      * @author mepeisen
      */
-    private static final class SGuiHelper implements SGuiInterface
+    static final class SGuiHelper implements SGuiInterface
     {
         
         /** the registered actions. */

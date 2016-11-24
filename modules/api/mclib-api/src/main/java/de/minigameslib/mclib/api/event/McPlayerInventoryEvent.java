@@ -26,6 +26,8 @@ package de.minigameslib.mclib.api.event;
 
 import org.bukkit.event.player.PlayerInventoryEvent;
 
+import de.minigameslib.mclib.api.MinecraftVersionsType;
+
 /**
  * Minigame event representation of corresponding bukkit event.
  * 
@@ -42,6 +44,7 @@ import org.bukkit.event.player.PlayerInventoryEvent;
  * 
  * @author mepeisen
  */
+@MinecraftVersionRange(max = MinecraftVersionsType.V1_10)
 public interface McPlayerInventoryEvent extends MinecraftEvent<PlayerInventoryEvent, McPlayerInventoryEvent>
 {
     
