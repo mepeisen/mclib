@@ -58,6 +58,28 @@ public class DisplayYesNoData extends AnnotatedDataFragment
      */
     @PersistentField
     private ButtonData noButton;
+    
+    /**
+     * The window id.
+     */
+    @PersistentField
+    private String id;
+
+    /**
+     * @return the id
+     */
+    public String getId()
+    {
+        return this.id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 
     /**
      * @return the title

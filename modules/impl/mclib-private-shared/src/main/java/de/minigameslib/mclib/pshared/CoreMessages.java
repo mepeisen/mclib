@@ -75,9 +75,27 @@ public enum CoreMessages
     DisplayResizableWin,
     
     /**
+     * client notifies about a closed window.
+     * @see WinClosedData
+     */
+    WinClosed,
+    
+    /**
+     * server requires a window to be closed.
+     * @see CloseWinData
+     */
+    CloseWin,
+    
+    /**
      * An action has performed from client side.
      * @see ActionPerformedData
      */
     ActionPerformed,
+    
+    /**
+     * Sends an error message to an existing resizable win.
+     * @see SendErrorData
+     */
+    SendError,
     
 }

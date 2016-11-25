@@ -66,6 +66,7 @@ import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.WinClosedData;
 
 /**
  * Implementation of arena players.
@@ -533,7 +534,19 @@ class McPlayerImpl implements McPlayerInterface
         final String actionId = fragment.getActionId();
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
-        ((GuiSessionImpl)session).sguiActionPerformed(actionId);
+        ((GuiSessionImpl)session).sguiActionPerformed(fragment.getWinId(), actionId, fragment.getData());
+    }
+
+    /**
+     * Parse an win closed message
+     * @param fragment
+     * @throws McException 
+     */
+    void parseWinClosed(WinClosedData fragment) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        GuiSessionInterface session = storage.get(GuiSessionInterface.class);
+        ((GuiSessionImpl)session).sguiWinClosed(fragment.getWinId());
     }
     
 }

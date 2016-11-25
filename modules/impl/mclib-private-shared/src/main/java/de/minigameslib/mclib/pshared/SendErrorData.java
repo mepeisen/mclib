@@ -28,30 +28,18 @@ import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * Data Fragment for the {@link CoreMessages#DisplayInfo} message.
+ * Data Fragment for the {@link CoreMessages#SendError} message.
  * 
  * @author mepeisen
  */
-public class DisplayInfoData extends AnnotatedDataFragment
+public class SendErrorData extends AnnotatedDataFragment
 {
     
     /**
-     * Title of the message box.
-     */
-    @PersistentField
-    private String title;
-    
-    /**
-     * Text content of the message box.
+     * Text content of the error message.
      */
     @PersistentField
     private String message;
-    
-    /**
-     * OK-Button
-     */
-    @PersistentField
-    private ButtonData okButton;
     
     /**
      * The window id.
@@ -76,22 +64,6 @@ public class DisplayInfoData extends AnnotatedDataFragment
     }
 
     /**
-     * @return the title
-     */
-    public String getTitle()
-    {
-        return this.title;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-
-    /**
      * @return the message
      */
     public String getMessage()
@@ -105,22 +77,6 @@ public class DisplayInfoData extends AnnotatedDataFragment
     public void setMessage(String message)
     {
         this.message = message;
-    }
-
-    /**
-     * @return the okButton
-     */
-    public ButtonData getOkButton()
-    {
-        return this.okButton;
-    }
-
-    /**
-     * @param okButton the okButton to set
-     */
-    public void setOkButton(ButtonData okButton)
-    {
-        this.okButton = okButton;
     }
     
 }

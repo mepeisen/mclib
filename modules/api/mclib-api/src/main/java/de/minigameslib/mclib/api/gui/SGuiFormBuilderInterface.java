@@ -28,7 +28,6 @@ import java.io.Serializable;
 
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -69,7 +68,7 @@ public interface SGuiFormBuilderInterface
      * @param action
      * @return this object for chaining
      */
-    SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McRunnable action);
+    SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McConsumer<DataSection> action);
     
     /**
      * Adds text input field.

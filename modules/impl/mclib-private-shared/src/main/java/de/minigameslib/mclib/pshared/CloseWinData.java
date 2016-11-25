@@ -24,31 +24,16 @@
 
 package de.minigameslib.mclib.pshared;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * Data Fragment for the {@link CoreMessages#ActionPerformed} message.
+ * Data Fragment for the {@link CoreMessages#CloseWin} message.
  * 
  * @author mepeisen
  */
-public class ActionPerformedData extends AnnotatedDataFragment
+public class CloseWinData extends AnnotatedDataFragment
 {
-    
-    /**
-     * Title of the action performed box.
-     */
-    @PersistentField
-    private String actionId;
-    
-    /**
-     * the form data.
-     */
-    @PersistentField
-    private List<FormData> data = new ArrayList<>();
     
     /**
      * The window id.
@@ -71,31 +56,5 @@ public class ActionPerformedData extends AnnotatedDataFragment
     {
         this.winId = winId;
     }
-
-    /**
-     * @return the actionId
-     */
-    public String getActionId()
-    {
-        return this.actionId;
-    }
-
-    /**
-     * @param actionId the actionId to set
-     */
-    public void setActionId(String actionId)
-    {
-        this.actionId = actionId;
-    }
-
-    /**
-     * @return the data
-     */
-    public List<FormData> getData()
-    {
-        return this.data;
-    }
-    
-    
     
 }

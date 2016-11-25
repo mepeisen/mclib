@@ -54,7 +54,9 @@ import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
+import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper.SGuiImpl;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface.AnvilHelper;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface.AnvilListener;
@@ -62,11 +64,13 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryHelper;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener;
 import de.minigameslib.mclib.pshared.ButtonData;
+import de.minigameslib.mclib.pshared.CloseWinData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayErrorData;
 import de.minigameslib.mclib.pshared.DisplayInfoData;
 import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.pshared.DisplayYesNoData;
+import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
@@ -370,28 +374,24 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface getSmartGui()
-    {
-        return this.smartGui;
-    }
-    
-    @Override
     public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException
     {
         checkForSmartGui();
         initSmartGui();
-        this.smartGui.registerAction((GuiButtonImpl) okButton);
+        final SGuiImpl result = this.smartGui.create(null);
+        result.registerAction((GuiButtonImpl) okButton);
         
         // send to client
         final DisplayErrorData display = new DisplayErrorData();
         display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         display.setOkButton((GuiButtonImpl) okButton);
+        display.setId(result.getUuid());
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayError.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
-        return this.smartGui;
+        return result;
     }
 
     /**
@@ -426,18 +426,20 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         checkForSmartGui();
         initSmartGui();
-        this.smartGui.registerAction((GuiButtonImpl) okButton);
+        final SGuiImpl result = this.smartGui.create(null);
+        result.registerAction((GuiButtonImpl) okButton);
         
         // send to client
         final DisplayInfoData display = new DisplayInfoData();
         display.setTitle(Arrays.asList(this.player.encodeMessage(title, titleArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         display.setOkButton((GuiButtonImpl) okButton);
+        display.setId(result.getUuid());
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayInfo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
-        return this.smartGui;
+        return result;
     }
     
     @Override
@@ -447,20 +449,23 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action) throws McException
     {
         return this.sguiCreateButton(label, labelArgs, action, true);
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McRunnable action, boolean closeAction) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action, boolean closeAction) throws McException
     {
         checkForSmartGui();
         
         final GuiButtonImpl button = new GuiButtonImpl();
         button.setLabel(Arrays.asList(this.player.encodeMessage(label, labelArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         button.setCloseAction(closeAction);
-        button.setAction(action);
+        button.setAction((data) -> {
+            final DataSection form = new MemoryDataSection();
+            data.forEach(entry -> form.set(entry.getKey(), entry.getValue()));
+        });
         return button;
     }
     
@@ -469,8 +474,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         checkForSmartGui();
         initSmartGui();
-        this.smartGui.registerAction((GuiButtonImpl) yesButton);
-        this.smartGui.registerAction((GuiButtonImpl) noButton);
+        final SGuiImpl result = this.smartGui.create(null);
+        result.registerAction((GuiButtonImpl) yesButton);
+        result.registerAction((GuiButtonImpl) noButton);
         
         // send to client
         final DisplayYesNoData display = new DisplayYesNoData();
@@ -478,11 +484,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         display.setMessage(Arrays.asList(this.player.encodeMessage(message, messageArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         display.setYesButton((GuiButtonImpl) yesButton);
         display.setNoButton((GuiButtonImpl) noButton);
+        display.setId(result.getUuid());
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
-        return this.smartGui;
+        return result;
     }
     
     @Override
@@ -490,9 +497,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         checkForSmartGui();
         initSmartGui();
-        this.smartGui.registerAction((GuiButtonImpl) yesButton);
-        this.smartGui.registerAction((GuiButtonImpl) noButton);
-        this.smartGui.registerAction((GuiButtonImpl) cancelButton);
+        final SGuiImpl result = this.smartGui.create(null);
+        result.registerAction((GuiButtonImpl) yesButton);
+        result.registerAction((GuiButtonImpl) noButton);
+        result.registerAction((GuiButtonImpl) cancelButton);
         
         // send to client
         final DisplayYesNoCancelData display = new DisplayYesNoCancelData();
@@ -501,67 +509,174 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         display.setYesButton((GuiButtonImpl) yesButton);
         display.setNoButton((GuiButtonImpl) noButton);
         display.setCancelButton((GuiButtonImpl) cancelButton);
+        display.setId(result.getUuid());
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
-        return this.smartGui;
+        return result;
     }
 
     @Override
-    public SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable) throws McException
+    public SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable, McRunnable closeAction) throws McException
     {
         checkForSmartGui();
         initSmartGui();
-        return new SGuiFormBuilder(this.smartGui);
+        return new SGuiFormBuilder(title, titleArgs, closable, closeAction, this.smartGui);
     }
     
     /**
-     * helper for smart guis.
-     * 
+     * smart gui helper
      * @author mepeisen
      */
-    static final class SGuiHelper implements SGuiInterface
+    final class SGuiHelper
     {
         
-        /** the registered actions. */
-        private final Map<String, McRunnable> actions = new HashMap<>();
-
+        // TODO potential memory leak. If user stays online but client does not send "window closed" event
+        // TODO potential memory leak for form builders if display is never called
+        /** gui implementations. */
+        private final Map<String, SGuiImpl> impls = new HashMap<>();
+        
         /**
-         * Constructor
+         * Creates a new SGUI Impl
+         * @param closeAction
+         * @return SGUI Impl
          */
-        public SGuiHelper()
+        SGuiImpl create(McRunnable closeAction)
         {
-            // empty
-        }
-
-        /**
-         * @param button
-         */
-        public void registerAction(GuiButtonImpl button)
-        {
-            if (button != null && button.getAction() != null)
-            {
-                final UUID actionUuid = UUID.randomUUID();
-                button.setHasActionListener(true);
-                button.setActionId(actionUuid.toString());
-                this.actions.put(actionUuid.toString(), button.getAction());
-            }
+            final String uuid = UUID.randomUUID().toString();
+            final SGuiImpl impl = new SGuiImpl(uuid, closeAction);
+            this.impls.put(uuid, impl);
+            return impl;
         }
         
         /**
-         * Performs given action.
-         * @param uuid action uuid.
-         * @throws McException
+         * Encodes given message by using players locale
+         * @param msg
+         * @param args
+         * @return encoded message
          */
-        public void performAction(String uuid) throws McException
+        String[] encode(LocalizedMessageInterface msg, Serializable[] args)
         {
-            final McRunnable run = this.actions.get(uuid);
-            if (run != null)
+            return GuiSessionImpl.this.player.encodeMessage(msg, args);
+        }
+        
+        /**
+         * Returns the gui session.
+         * @return gui session
+         */
+        GuiSessionImpl getGuiSession()
+        {
+            return GuiSessionImpl.this;
+        }
+        
+        /**
+         * Returns the gui with associated key.
+         * @param id
+         * @return gui
+         */
+        SGuiImpl get(String id)
+        {
+            return this.impls.get(id);
+        }
+        
+        /**
+         * Removes the gui with associated key
+         * @param id
+         * @return gui
+         */
+        SGuiImpl remove(String id)
+        {
+            return this.impls.remove(id);
+        }
+        
+        /**
+         * helper for smart guis.
+         * 
+         * @author mepeisen
+         */
+        final class SGuiImpl implements SGuiInterface
+        {
+            
+            /** the registered actions. */
+            private final Map<String, McConsumer<List<FormData>>> actions = new HashMap<>();
+            
+            /** the uuid. */
+            private final String uuid;
+            
+            /** the close action. */
+            private final McRunnable closeAction;
+
+            /**
+             * Constructor
+             * @param closeAction 
+             * @param uuid 
+             */
+            public SGuiImpl(String uuid, McRunnable closeAction)
             {
-                run.run();
+                this.uuid = uuid;
+                this.closeAction = closeAction;
+            }
+
+            /**
+             * @return the closeAction
+             */
+            public McRunnable getCloseAction()
+            {
+                return this.closeAction;
+            }
+
+            /**
+             * @param button
+             */
+            public void registerAction(GuiButtonImpl button)
+            {
+                if (button != null && button.getAction() != null)
+                {
+                    final UUID actionUuid = UUID.randomUUID();
+                    button.setHasActionListener(true);
+                    button.setActionId(actionUuid.toString());
+                    this.actions.put(actionUuid.toString(), button.getAction());
+                }
+            }
+            
+            /**
+             * Performs given action.
+             * @param actionId action uuid.
+             * @param data from data
+             * @throws McException
+             */
+            public void performAction(String actionId, List<FormData> data) throws McException
+            {
+                final McConsumer<List<FormData>> run = this.actions.get(actionId);
+                if (run != null)
+                {
+                    run.accept(data);
+                }
+            }
+
+            @Override
+            public void close()
+            {
+                final CloseWinData data = new CloseWinData();
+                data.setWinId(this.getUuid());
+                final DataSection section = new MemoryDataSection();
+                section.set("KEY", CoreMessages.CloseWin.name()); //$NON-NLS-1$
+                data.write(section.createSection("data")); //$NON-NLS-1$
+                MclibCommunication.ClientServerCore.send(section);
+                
+                SGuiHelper.this.remove(this.getUuid());
+            }
+
+            /**
+             * @return the uuid
+             */
+            public String getUuid()
+            {
+                return this.uuid;
             }
         }
+        
     }
     
     /**
@@ -572,12 +687,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         
         /** the action. */
-        private McRunnable action;
+        private McConsumer<List<FormData>> action;
 
         /**
          * @return the action
          */
-        public McRunnable getAction()
+        public McConsumer<List<FormData>> getAction()
         {
             return this.action;
         }
@@ -585,7 +700,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         /**
          * @param action the action to set
          */
-        public void setAction(McRunnable action)
+        public void setAction(McConsumer<List<FormData>> action)
         {
             this.action = action;
         }
@@ -594,14 +709,44 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
 
     /**
      * Performs action.
+     * @param winId
      * @param actionId
+     * @param formData 
      * @throws McException 
      */
-    void sguiActionPerformed(String actionId) throws McException
+    void sguiActionPerformed(String winId, String actionId, List<FormData> formData) throws McException
     {
         if (this.smartGui != null)
         {
-            this.smartGui.performAction(actionId);
+            final SGuiImpl impl = this.smartGui.get(winId);
+            if (impl != null)
+            {
+                impl.performAction(actionId, formData);
+            }
+        }
+    }
+
+    /**
+     * Performs action.
+     * @param winId
+     * @throws McException 
+     */
+    void sguiWinClosed(String winId) throws McException
+    {
+        if (this.smartGui != null)
+        {
+            final SGuiImpl impl = this.smartGui.remove(winId);
+            if (impl != null && impl.getCloseAction() != null)
+            {
+                try
+                {
+                    impl.getCloseAction().run();
+                }
+                catch (McException ex)
+                {
+                    // TODO logging
+                }
+            }
         }
     }
     

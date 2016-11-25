@@ -34,6 +34,9 @@ public interface SGuiInterface
     
     // marker interface.
     
-    // TODO add an option to close dialog from server side.
+    /**
+     * Forces to close this gui on client.
+     */
+    void close();
     
 }

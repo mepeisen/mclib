@@ -117,6 +117,7 @@ import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
@@ -892,26 +893,31 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             // silently drop invalid messages.
             if (!section.contains("KEY")) //$NON-NLS-1$
                 return;
-                
-            final String key = section.getString("KEY"); //$NON-NLS-1$
-            if (key.equals(CoreMessages.ActionPerformed.name()))
+
+            try
             {
-                // forward to smart gui
-                try
+                final String key = section.getString("KEY"); //$NON-NLS-1$
+                if (key.equals(CoreMessages.ActionPerformed.name()))
                 {
+                    // forward to smart gui
                     ((McPlayerImpl)player).parseActionPerformed(section.getFragment(ActionPerformedData.class, "data")); //$NON-NLS-1$
                 }
-                catch (McException e)
+                else if (key.equals(CoreMessages.WinClosed.name()))
                 {
-                    // TODO Logging? Reporting error?
+                    // forward to smart gui
+                    ((McPlayerImpl)player).parseWinClosed(section.getFragment(WinClosedData.class, "data")); //$NON-NLS-1$
                 }
+                else if (key.equals(CoreMessages.Pong.name()))
+                {
+                    // client has the mod installed.
+                    MclibPlugin.this.players.parsePong(player, section.getFragment(PongData.class, "data")); //$NON-NLS-1$
+                }
+                // otherwise silently ignore the invalid message.
             }
-            else if (key.equals(CoreMessages.Pong.name()))
+            catch (McException e)
             {
-                // client has the mod installed.
-                MclibPlugin.this.players.parsePong(player, section.getFragment(PongData.class, "data")); //$NON-NLS-1$
+                // TODO Logging? Reporting error?
             }
-            // otherwise silently ignore the invalid message.
         }
         
     }

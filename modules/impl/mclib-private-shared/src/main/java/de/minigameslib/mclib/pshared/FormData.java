@@ -24,78 +24,60 @@
 
 package de.minigameslib.mclib.pshared;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * Data Fragment for the {@link CoreMessages#ActionPerformed} message.
+ * Data fragments for form data entries.
  * 
  * @author mepeisen
  */
-public class ActionPerformedData extends AnnotatedDataFragment
+public class FormData extends AnnotatedDataFragment
 {
     
     /**
-     * Title of the action performed box.
+     * Form key.
      */
     @PersistentField
-    private String actionId;
+    private String key;
     
     /**
-     * the form data.
+     * Form value as string.
      */
     @PersistentField
-    private List<FormData> data = new ArrayList<>();
-    
-    /**
-     * The window id.
-     */
-    @PersistentField
-    private String winId;
+    private String value;
 
     /**
-     * @return the widgetId
+     * @return the key
      */
-    public String getWinId()
+    public String getKey()
     {
-        return this.winId;
+        return this.key;
     }
 
     /**
-     * @param winId the winId to set
+     * @param key the key to set
      */
-    public void setWinId(String winId)
+    public void setKey(String key)
     {
-        this.winId = winId;
+        this.key = key;
     }
 
     /**
-     * @return the actionId
+     * @return the value
      */
-    public String getActionId()
+    public String getValue()
     {
-        return this.actionId;
+        return this.value;
     }
 
     /**
-     * @param actionId the actionId to set
+     * @param value the value to set
      */
-    public void setActionId(String actionId)
+    public void setValue(String value)
     {
-        this.actionId = actionId;
-    }
-
-    /**
-     * @return the data
-     */
-    public List<FormData> getData()
-    {
-        return this.data;
+        this.value = value;
     }
     
-    
-    
+
 }

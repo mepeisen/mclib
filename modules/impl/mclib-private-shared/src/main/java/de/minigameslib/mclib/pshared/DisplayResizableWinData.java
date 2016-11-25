@@ -50,13 +50,69 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     @PersistentField
     private boolean closable;
     
-    // TODO content widgets
+    /**
+     * Number of columns.
+     */
+    @PersistentField
+    private int numColumns;
+    
+    /**
+     * Content widgets.
+     */
+    @PersistentField
+    private List<WidgetData> widgets = new ArrayList<>();
     
     /**
      * Additional buttons
      */
     @PersistentField
     private List<ButtonData> buttons = new ArrayList<>();
+    
+    /**
+     * The window id.
+     */
+    @PersistentField
+    private String id;
+
+    /**
+     * @return the id
+     */
+    public String getId()
+    {
+        return this.id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id)
+    {
+        this.id = id;
+    }
+
+    /**
+     * @return the numColumns
+     */
+    public int getNumColumns()
+    {
+        return this.numColumns;
+    }
+
+    /**
+     * @param numColumns the numColumns to set
+     */
+    public void setNumColumns(int numColumns)
+    {
+        this.numColumns = numColumns;
+    }
+
+    /**
+     * @return the widgets
+     */
+    public List<WidgetData> getWidgets()
+    {
+        return this.widgets;
+    }
 
     /**
      * @return the title
