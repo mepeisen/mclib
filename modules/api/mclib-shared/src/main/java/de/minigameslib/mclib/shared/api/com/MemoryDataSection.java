@@ -27,6 +27,7 @@ package de.minigameslib.mclib.shared.api.com;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -927,24 +928,27 @@ public class MemoryDataSection implements DataSection
         return this.get(key) instanceof Long;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getList(java.lang.String)
-     */
     @Override
     public List<?> getList(String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<Object> result = new ArrayList<>();
+            for (final String ckey : child.getKeys(false))
+            {
+                result.add(child.get(ckey));
+            }
+            return result;
+        }
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getList(java.lang.String, java.util.List)
-     */
     @Override
     public List<?> getList(String key, List<?> defaultValue)
     {
-        // TODO Auto-generated method stub
-        return null;
+        final List<?> result = this.getList(key);
+        return result == null ? defaultValue : result;
     }
     
     @Override
@@ -963,7 +967,7 @@ public class MemoryDataSection implements DataSection
     @SuppressWarnings("unchecked")
     private <T> List<T> safeListCast(Class<T> clazz, List<?> list)
     {
-        if (list.stream().filter(o -> !clazz.isInstance(o)).findFirst().isPresent())
+        if (list != null && list.stream().filter(o -> !clazz.isInstance(o)).findFirst().isPresent())
         {
             throw new ClassCastException("List contains at least one element of wrong type: " + clazz); //$NON-NLS-1$
         }
@@ -1105,13 +1109,19 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getFragmentList(java.lang.Class, java.lang.String)
-     */
     @Override
     public <T extends DataFragment> List<T> getFragmentList(Class<T> clazz, String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<T> result = new ArrayList<>();
+            for (final String ckey : child.getKeys(false))
+            {
+                result.add(child.getFragment(clazz, ckey));
+            }
+            return result;
+        }
         return null;
     }
     

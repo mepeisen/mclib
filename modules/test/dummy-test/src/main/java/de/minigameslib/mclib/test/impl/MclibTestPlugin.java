@@ -41,6 +41,8 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
@@ -78,7 +80,16 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
             {
                 ConfigServiceInterface.instance().runInNewContext(() -> {
                     ConfigServiceInterface.instance().setContext(McPlayerInterface.class, player);
-                    player.openSmartGui().sguiDisplayInfo(CommonMessages.HelpShortDescription, null, CommonMessages.InvokeIngame, null, null);
+                    
+                    final SGuiFormBuilderInterface form = player.openSmartGui().sguiForm(
+                            CommonMessages.HelpShortDescription, null,
+                            false,
+                            null);
+                    form.addText(2, CommonMessages.HelpShortDescription)
+                        .addTextInput(CommonMessages.HelpShortDescription, null, "foo", "bar", true)
+                        .addSubmitButton(CommonMessages.HelpShortDescription, null, data -> System.out.println(data))
+                        .addCancelButton(CommonMessages.HelpShortDescription, null, null)
+                        .display();
                 });
             }
             catch (McException e)

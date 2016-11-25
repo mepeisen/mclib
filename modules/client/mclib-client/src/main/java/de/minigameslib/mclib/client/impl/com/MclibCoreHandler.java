@@ -24,12 +24,19 @@
 
 package de.minigameslib.mclib.client.impl.com;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.matthiasmann.twl.Button;
+import de.matthiasmann.twl.Widget;
 import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.client.impl.gui.widgets.FormEditField;
+import de.minigameslib.mclib.client.impl.gui.widgets.FormWindow;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.ButtonData;
+import de.minigameslib.mclib.pshared.CloseWinData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayErrorData;
 import de.minigameslib.mclib.pshared.DisplayInfoData;
@@ -39,6 +46,9 @@ import de.minigameslib.mclib.pshared.DisplayYesNoData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.SendErrorData;
+import de.minigameslib.mclib.pshared.WidgetData;
+import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import net.minecraft.client.Minecraft;
@@ -82,6 +92,14 @@ public class MclibCoreHandler implements ComHandler
         {
             this.displayResizableWin(context, message.getData().getFragment(DisplayResizableWinData.class, "data")); //$NON-NLS-1$
         }
+        else if (key.equals(CoreMessages.CloseWin.name()))
+        {
+            this.closeWin(context, message.getData().getFragment(CloseWinData.class, "data")); //$NON-NLS-1$
+        }
+        else if (key.equals(CoreMessages.SendError.name()))
+        {
+            this.sendError(context, message.getData().getFragment(SendErrorData.class, "data")); //$NON-NLS-1$
+        }
         // otherwise silently ignore the invalid message.
     }
 
@@ -104,18 +122,63 @@ public class MclibCoreHandler implements ComHandler
      * @param context
      * @param fragment
      */
+    private void closeWin(MessageContext context, CloseWinData fragment)
+    {
+        closeCallback(fragment.getWinId());
+    }
+
+    /**
+     * @param context
+     * @param fragment
+     */
+    private void sendError(MessageContext context, SendErrorData fragment)
+    {
+        final Widget widget = getWidget(fragment.getId());
+        if (widget != null)
+        {
+            // TODO
+        }
+    }
+
+    /**
+     * @param context
+     * @param fragment
+     */
     private void displayResizableWin(MessageContext context, DisplayResizableWinData fragment)
     {
-        // TODO Auto-generated method stub
+        final String title = fragment.getTitle() == null ? "Error" : fragment.getTitle(); //$NON-NLS-1$
+        final List<Button> buttons = new ArrayList<>();
+        for (final ButtonData button : fragment.getButtons())
+        {
+            buttons.add(this.createButton(fragment.getId(), button, "OK")); //$NON-NLS-1$
+        }
         
-    }
-    
-    /**
-     * A callback to close the current widget.
-     */
-    private static final void closeCallback()
-    {
-        Minecraft.getMinecraft().displayGuiScreen(null);
+        final FormWindow form = new FormWindow(title, buttons.toArray(new Button[buttons.size()]));
+        
+        for (final WidgetData wd : fragment.getWidgets())
+        {
+            if (wd.getLabel() != null)
+            {
+                // TODO support spans
+                form.addRow("col1").addLabel(wd.getLabel().getText()); //$NON-NLS-1$
+            }
+            else if (wd.getSubmit() != null)
+            {
+                form.addRow("col1").add(this.createButton(fragment.getId(), wd.getSubmit(), "Submit")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            else if (wd.getCancel() != null)
+            {
+                form.addRow("col1").add(this.createButton(fragment.getId(), wd.getSubmit(), "Submit")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            else if (wd.getTextInput() != null)
+            {
+                final FormEditField editField = new FormEditField(wd.getTextInput().getFormKey());
+                editField.setText(wd.getTextInput().getValue());
+                form.addRow("col1", "col2").addWithLabel(wd.getTextInput().getLabel(), editField); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        
+        this.displayWidget(fragment.getId(), form);
     }
 
     /**
@@ -126,36 +189,48 @@ public class MclibCoreHandler implements ComHandler
     {
         final String title = fragment.getTitle() == null ? "Information" : fragment.getTitle(); //$NON-NLS-1$
         final String message = fragment.getMessage() == null ? "" : fragment.getMessage(); //$NON-NLS-1$
-        final Button button = createButton(fragment.getOkButton(), "OK"); //$NON-NLS-1$
+        final Button button = createButton(fragment.getId(), fragment.getOkButton(), "OK"); //$NON-NLS-1$
         
         final MessageBox msgbox = new MessageBox(title, message, button);
-        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(msgbox));
+        this.displayWidget(fragment.getId(), msgbox);
     }
 
     /**
      * Creates a button with default text
+     * @param winId
      * @param buttonData
      * @param defaultLabel
      * @return button widget
      */
-    private Button createButton(ButtonData buttonData, String defaultLabel)
+    private Button createButton(String winId, ButtonData buttonData, String defaultLabel)
     {
         if (buttonData == null)
         {
             final Button button = new Button(defaultLabel);
-            button.addCallback(MclibCoreHandler::closeCallback);
+            button.addCallback(() -> {
+                MclibCoreHandler.closeCallback(winId);
+                // send close info to server.
+                final WinClosedData answer = new WinClosedData();
+                answer.setWinId(winId);
+                final DataSection section = new MemoryDataSection();
+                section.set("KEY", CoreMessages.WinClosed.name()); //$NON-NLS-1$
+                answer.write(section.createSection("data")); //$NON-NLS-1$
+                MclibCommunication.ClientServerCore.send(section);
+            });
             return button;
         }
         
         final Button button = new Button(buttonData.getLabel() == null ? defaultLabel : buttonData.getLabel());
         button.addCallback(() -> {
             if (buttonData.isCloseAction()) {
-                closeCallback();
+                closeCallback(winId);
             }
             if (buttonData.isHasActionListener()) {
                 // send action performed to server.
                 final ActionPerformedData answer = new ActionPerformedData();
+                answer.setWinId(winId);
                 answer.setActionId(buttonData.getActionId());
+                // TODO FormData
                 final DataSection section = new MemoryDataSection();
                 section.set("KEY", CoreMessages.ActionPerformed.name()); //$NON-NLS-1$
                 answer.write(section.createSection("data")); //$NON-NLS-1$
@@ -173,12 +248,12 @@ public class MclibCoreHandler implements ComHandler
     {
         final String title = fragment.getTitle() == null ? "Confirmation" : fragment.getTitle(); //$NON-NLS-1$
         final String message = fragment.getMessage() == null ? "" : fragment.getMessage(); //$NON-NLS-1$
-        final Button button1 = createButton(fragment.getYesButton(), "Yes"); //$NON-NLS-1$
-        final Button button2 = createButton(fragment.getNoButton(), "No"); //$NON-NLS-1$
-        final Button button3 = createButton(fragment.getCancelButton(), "Cancel"); //$NON-NLS-1$
+        final Button button1 = createButton(fragment.getId(), fragment.getYesButton(), "Yes"); //$NON-NLS-1$
+        final Button button2 = createButton(fragment.getId(), fragment.getNoButton(), "No"); //$NON-NLS-1$
+        final Button button3 = createButton(fragment.getId(), fragment.getCancelButton(), "Cancel"); //$NON-NLS-1$
         
         final MessageBox msgbox = new MessageBox(title, message, button1, button2, button3);
-        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(msgbox));
+        this.displayWidget(fragment.getId(), msgbox);
     }
 
     /**
@@ -189,11 +264,11 @@ public class MclibCoreHandler implements ComHandler
     {
         final String title = fragment.getTitle() == null ? "Confirmation" : fragment.getTitle(); //$NON-NLS-1$
         final String message = fragment.getMessage() == null ? "" : fragment.getMessage(); //$NON-NLS-1$
-        final Button button1 = createButton(fragment.getYesButton(), "Yes"); //$NON-NLS-1$
-        final Button button2 = createButton(fragment.getNoButton(), "No"); //$NON-NLS-1$
+        final Button button1 = createButton(fragment.getId(), fragment.getYesButton(), "Yes"); //$NON-NLS-1$
+        final Button button2 = createButton(fragment.getId(), fragment.getNoButton(), "No"); //$NON-NLS-1$
         
         final MessageBox msgbox = new MessageBox(title, message, button1, button2);
-        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(msgbox));
+        this.displayWidget(fragment.getId(), msgbox);
     }
 
     /**
@@ -204,10 +279,41 @@ public class MclibCoreHandler implements ComHandler
     {
         final String title = fragment.getTitle() == null ? "Error" : fragment.getTitle(); //$NON-NLS-1$
         final String message = fragment.getMessage() == null ? "" : fragment.getMessage(); //$NON-NLS-1$
-        final Button button = createButton(fragment.getOkButton(), "OK"); //$NON-NLS-1$
+        final Button button = createButton(fragment.getId(), fragment.getOkButton(), "OK"); //$NON-NLS-1$
         
         final MessageBox msgbox = new MessageBox(title, message, button);
-        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(msgbox));
+        this.displayWidget(fragment.getId(), msgbox);
+    }
+    
+    /**
+     * Displays given widget
+     * @param id
+     * @param widget
+     */
+    private void displayWidget(String id, Widget widget)
+    {
+        // TODO support multiple widgets
+        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(widget));
+    }
+
+    /**
+     * @param id
+     * @return widget
+     */
+    private Widget getWidget(String id)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /**
+     * A callback to close the current widget.
+     * @param winId
+     */
+    private static final void closeCallback(final String winId)
+    {
+        // TODO support multiple guis... Only reset the gui with associated id.
+        Minecraft.getMinecraft().displayGuiScreen(null);
     }
     
 }
