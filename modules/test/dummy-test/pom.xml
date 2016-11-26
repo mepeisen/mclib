@@ -19,6 +19,12 @@
   	</dependency>
   	<dependency>
   		<groupId>de.minigameslib.mclib</groupId>
+  		<artifactId>mclib-shared</artifactId>
+  		<version>${project.version}</version>
+  		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.minigameslib.mclib</groupId>
   		<artifactId>mclib</artifactId>
   		<version>${project.version}</version>
   		<scope>runtime</scope>
