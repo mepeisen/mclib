@@ -27,6 +27,7 @@ package de.minigameslib.mclib.test.cmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -148,6 +149,7 @@ public class AbstractCompositeCommandHandlerTest
         final Player bukkitPlayer = mock(Player.class);
         
         final SubCommandHandlerInterface subCommand = mock(SubCommandHandlerInterface.class);
+        when(subCommand.visible(any(CommandInterface.class))).thenReturn(Boolean.TRUE);
         final DummyCommandHandler handler = new DummyCommandHandler();
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         // no twice injection
@@ -277,6 +279,7 @@ public class AbstractCompositeCommandHandlerTest
         final Player bukkitPlayer = mock(Player.class);
         
         final SubCommandHandlerInterface subCommand = mock(SubCommandHandlerInterface.class);
+        when(subCommand.visible(any(CommandInterface.class))).thenReturn(Boolean.TRUE);
         final DummyCommandHandler handler = new DummyCommandHandler();
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         assertTrue(handler.injectSubCommand("foo", subCommand)); //$NON-NLS-1$
