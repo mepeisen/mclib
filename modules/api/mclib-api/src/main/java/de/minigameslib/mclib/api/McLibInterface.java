@@ -31,7 +31,7 @@ import java.util.Locale;
  * 
  * @author mepeisen
  */
-public interface McLibInterface
+public interface McLibInterface extends McContext
 {
     
     /**
