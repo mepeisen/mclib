@@ -32,7 +32,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
-import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.GuiSessionImpl.GuiButtonImpl;
 import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper;
@@ -109,11 +109,11 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
 
     @Override
-    public SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McConsumer<DataSection> action)
+    public SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
     {
         try
         {
-            final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, (formdata) -> { this.handleSubmit(action, formdata); }, false);
+            final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, (gui, formdata) -> { this.handleSubmit(action, gui, formdata); }, false);
             this.window.registerAction(guiButton);
             final ButtonData submit = new ButtonData();
             submit.setActionId(guiButton.getActionId());
@@ -131,13 +131,14 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
 
     /**
      * @param action
+     * @param gui 
      * @param formdata
      */
-    private void handleSubmit(McConsumer<DataSection> action, DataSection formdata)
+    private void handleSubmit(McBiConsumer<SGuiInterface, DataSection> action, SGuiInterface gui, DataSection formdata)
     {
         try
         {
-            action.accept(formdata);
+            action.accept(gui, formdata);
             this.window.close();
         }
         catch (McException ex)
@@ -154,7 +155,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
 
     @Override
-    public SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McConsumer<DataSection> action)
+    public SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
     {
         try
         {

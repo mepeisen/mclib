@@ -84,7 +84,7 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
                             null);
                     form.addText(2, CommonMessages.HelpShortDescription)
                         .addTextInput(CommonMessages.HelpShortDescription, null, "foo", "bar", true)
-                        .addSubmitButton(CommonMessages.HelpShortDescription, null, data -> System.out.println(data))
+                        .addSubmitButton(CommonMessages.HelpShortDescription, null, (gui, data) -> System.out.println(data))
                         .addCancelButton(CommonMessages.HelpShortDescription, null, null)
                         .display();
                 });

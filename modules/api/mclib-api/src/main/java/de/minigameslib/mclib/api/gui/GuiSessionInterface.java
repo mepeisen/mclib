@@ -31,7 +31,7 @@ import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -165,7 +165,7 @@ public interface GuiSessionInterface extends Configurable
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action) throws McException;
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action) throws McException;
     
     /**
      * Creates a new gui button with custom label.
@@ -181,7 +181,7 @@ public interface GuiSessionInterface extends Configurable
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action, boolean closeAction) throws McException;
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException;
     
     /**
      * Interface to represent a gui button.

@@ -54,7 +54,7 @@ import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper.SGuiImpl;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
@@ -449,22 +449,23 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action) throws McException
     {
         return this.sguiCreateButton(label, labelArgs, action, true);
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McConsumer<DataSection> action, boolean closeAction) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException
     {
         checkForSmartGui();
         
         final GuiButtonImpl button = new GuiButtonImpl();
         button.setLabel(Arrays.asList(this.player.encodeMessage(label, labelArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         button.setCloseAction(closeAction);
-        button.setAction((data) -> {
+        button.setAction((sgui, data) -> {
             final DataSection form = new MemoryDataSection();
             data.forEach(entry -> form.set(entry.getKey(), entry.getValue()));
+            action.accept(sgui, form);
         });
         return button;
     }
@@ -599,7 +600,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             
             /** the registered actions. */
-            private final Map<String, McConsumer<List<FormData>>> actions = new HashMap<>();
+            private final Map<String, McBiConsumer<SGuiInterface, List<FormData>>> actions = new HashMap<>();
             
             /** the uuid. */
             private final String uuid;
@@ -648,10 +649,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
              */
             public void performAction(String actionId, List<FormData> data) throws McException
             {
-                final McConsumer<List<FormData>> run = this.actions.get(actionId);
+                final McBiConsumer<SGuiInterface, List<FormData>> run = this.actions.get(actionId);
                 if (run != null)
                 {
-                    run.accept(data);
+                    run.accept(this, data);
                 }
             }
 
@@ -687,12 +688,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         
         /** the action. */
-        private McConsumer<List<FormData>> action;
+        private McBiConsumer<SGuiInterface, List<FormData>> action;
 
         /**
          * @return the action
          */
-        public McConsumer<List<FormData>> getAction()
+        public McBiConsumer<SGuiInterface, List<FormData>> getAction()
         {
             return this.action;
         }
@@ -700,7 +701,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         /**
          * @param action the action to set
          */
-        public void setAction(McConsumer<List<FormData>> action)
+        public void setAction(McBiConsumer<SGuiInterface, List<FormData>> action)
         {
             this.action = action;
         }
