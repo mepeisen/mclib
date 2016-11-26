@@ -82,6 +82,13 @@ public interface SGuiFormBuilderInterface
      */
     SGuiFormBuilderInterface addTextInput(LocalizedMessageInterface label, Serializable[] labelArgs, String formKey, String initialValue, boolean allowsEmpty);
     
+    /**
+     * Adds a list control
+     * @param supplier provides the data for this list
+     * @return gui builder for list controls.
+     */
+    SGuiListBuilderInterface addList(SGuiListSupplier supplier);
+    
     // SGuiFormBuilderInterface addComboInput(LocalizedMessageInterface label, Serializable[] labelArgs, String formKey, McSupplier<Iterable<SGuiComboValue>> values, String initialValue, boolean
     // allowsNull, boolean allowsUserDefined);
     

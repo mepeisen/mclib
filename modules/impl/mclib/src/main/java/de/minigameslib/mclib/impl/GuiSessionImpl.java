@@ -55,6 +55,7 @@ import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
+import de.minigameslib.mclib.api.util.function.McFunction;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper.SGuiImpl;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
@@ -72,6 +73,8 @@ import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.pshared.DisplayYesNoData;
 import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
+import de.minigameslib.mclib.pshared.QueryFormAnswerData;
+import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -602,6 +605,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             /** the registered actions. */
             private final Map<String, McBiConsumer<SGuiInterface, List<FormData>>> actions = new HashMap<>();
             
+            /** the registered suppliers. */
+            private final Map<String, McFunction<QueryFormRequestData, QueryFormAnswerData>> suppliers = new HashMap<>();
+            
             /** the uuid. */
             private final String uuid;
             
@@ -655,6 +661,22 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     run.accept(this, data);
                 }
             }
+            
+            /**
+             * Query data from data suppliers.
+             * @param data
+             * @return data result.
+             * @throws McException
+             */
+            public QueryFormAnswerData queryData(QueryFormRequestData data) throws McException
+            {
+                final McFunction<QueryFormRequestData, QueryFormAnswerData> supplier = this.suppliers.get(data.getInputId());
+                if (supplier != null)
+                {
+                    return supplier.apply(data);
+                }
+                return null;
+            }
 
             @Override
             public void close()
@@ -675,6 +697,17 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             public String getUuid()
             {
                 return this.uuid;
+            }
+
+            /**
+             * @param dataSupplier
+             * @return unique data supplier id.
+             */
+            public String registerDataSupplier(McFunction<QueryFormRequestData, QueryFormAnswerData> dataSupplier)
+            {
+                final String result = UUID.randomUUID().toString();
+                this.suppliers.put(result, dataSupplier);
+                return result;
             }
         }
         

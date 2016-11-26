@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
@@ -329,6 +331,109 @@ public class WidgetData extends AnnotatedDataFragment
         }
         
     }
+    
+    /**
+     * Request for list data.
+     */
+    public static class ListRequest extends AnnotatedDataFragment
+    {
+        /** start index. */
+        @PersistentField
+        protected int start;
+        
+        /** row limit. */
+        @PersistentField
+        protected int limit;
+
+        /**
+         * @return the start
+         */
+        public int getStart()
+        {
+            return this.start;
+        }
+
+        /**
+         * @param start the start to set
+         */
+        public void setStart(int start)
+        {
+            this.start = start;
+        }
+
+        /**
+         * @return the limit
+         */
+        public int getLimit()
+        {
+            return this.limit;
+        }
+
+        /**
+         * @param limit the limit to set
+         */
+        public void setLimit(int limit)
+        {
+            this.limit = limit;
+        }
+    }
+    
+    /**
+     * Response for list data.
+     */
+    public static class ListResponse extends AnnotatedDataFragment
+    {
+        /** total count. */
+        @PersistentField
+        protected int count;
+        
+        /** row data. */
+        @PersistentField
+        protected List<ListResponseRow> rows = new ArrayList<>();
+
+        /**
+         * @return the count
+         */
+        public int getCount()
+        {
+            return this.count;
+        }
+
+        /**
+         * @param count the count to set
+         */
+        public void setCount(int count)
+        {
+            this.count = count;
+        }
+
+        /**
+         * @return the rows
+         */
+        public List<ListResponseRow> getRows()
+        {
+            return this.rows;
+        }
+    }
+    
+    /**
+     * Single list row.
+     */
+    public static class ListResponseRow extends AnnotatedDataFragment
+    {
+        /** row data. */
+        @PersistentField
+        protected DataSection data = new MemoryDataSection();
+
+        /**
+         * @return the data
+         */
+        public DataSection getData()
+        {
+            return this.data;
+        }
+    }
+    
 
     /**
      * A text input.

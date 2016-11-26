@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
+import de.minigameslib.mclib.api.gui.SGuiListBuilderInterface;
+import de.minigameslib.mclib.api.gui.SGuiListSupplier;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -41,10 +43,19 @@ import de.minigameslib.mclib.pshared.ButtonData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayResizableWinData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
+import de.minigameslib.mclib.pshared.QueryFormAnswerData;
+import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
 import de.minigameslib.mclib.pshared.WidgetData.Label;
+import de.minigameslib.mclib.pshared.WidgetData.ListButton;
+import de.minigameslib.mclib.pshared.WidgetData.ListColumn;
+import de.minigameslib.mclib.pshared.WidgetData.ListInput;
+import de.minigameslib.mclib.pshared.WidgetData.ListRequest;
+import de.minigameslib.mclib.pshared.WidgetData.ListResponse;
+import de.minigameslib.mclib.pshared.WidgetData.ListResponseRow;
 import de.minigameslib.mclib.pshared.WidgetData.TextInput;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -63,7 +74,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     private DisplayResizableWinData data = new DisplayResizableWinData();
     
     /** the window. */
-    private SGuiImpl window;
+    SGuiImpl window;
 
     /**
      * Constructor
@@ -91,7 +102,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
      * @param args
      * @return encoded message
      */
-    private String encode(LocalizedMessageInterface msg, Serializable[] args)
+    String encode(LocalizedMessageInterface msg, Serializable[] args)
     {
         return Arrays.asList(this.smartGui.encode(msg, args)).stream().collect(Collectors.joining("\n")); //$NON-NLS-1$
     }
@@ -107,25 +118,39 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.getWidgets().add(widget);
         return this;
     }
-
-    @Override
-    public SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
+    
+    /**
+     * Creates a new gui button.
+     * @param label
+     * @param labelArgs
+     * @param action
+     * @param closeAction
+     * @return gui button
+     */
+    GuiButtonImpl sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction)
     {
         try
         {
-            final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, (gui, formdata) -> { this.handleSubmit(action, gui, formdata); }, false);
-            this.window.registerAction(guiButton);
-            final ButtonData submit = new ButtonData();
-            submit.setActionId(guiButton.getActionId());
-            submit.setLabel(guiButton.getLabel());
-            submit.setCloseAction(false);
-            submit.setHasActionListener(true);
-            this.data.getButtons().add(submit);
+            return (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, action, false);
         }
         catch (McException ex)
         {
             // TODO logging, should not happen
         }
+        return null;
+    }
+
+    @Override
+    public SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
+    {
+        final GuiButtonImpl guiButton = this.sguiCreateButton(label, labelArgs, (gui, formdata) -> { this.handleSubmit(action, gui, formdata); }, false);
+        this.window.registerAction(guiButton);
+        final ButtonData submit = new ButtonData();
+        submit.setActionId(guiButton.getActionId());
+        submit.setLabel(guiButton.getLabel());
+        submit.setCloseAction(false);
+        submit.setHasActionListener(true);
+        this.data.getButtons().add(submit);
         return this;
     }
 
@@ -157,21 +182,15 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     @Override
     public SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
     {
-        try
-        {
-            final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, action, false);
-            this.window.registerAction(guiButton);
-            final ButtonData cancel = new ButtonData();
-            cancel.setActionId(guiButton.getActionId());
-            cancel.setLabel(guiButton.getLabel());
-            cancel.setCloseAction(false);
-            cancel.setHasActionListener(true);
-            this.data.getButtons().add(cancel);
-        }
-        catch (McException ex)
-        {
-            // TODO logging, should not happen
-        }
+
+        final GuiButtonImpl guiButton = this.sguiCreateButton(label, labelArgs, action, false);
+        this.window.registerAction(guiButton);
+        final ButtonData cancel = new ButtonData();
+        cancel.setActionId(guiButton.getActionId());
+        cancel.setLabel(guiButton.getLabel());
+        cancel.setCloseAction(false);
+        cancel.setHasActionListener(true);
+        this.data.getButtons().add(cancel);
         return this;
     }
 
@@ -197,6 +216,121 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
         return this.window;
+    }
+
+    @Override
+    public SGuiListBuilderInterface addList(SGuiListSupplier supplier)
+    {
+        final String uuid = this.window.registerDataSupplier(request -> this.parseListRequest(request, supplier));
+        final WidgetData widget = new WidgetData();
+        widget.setListInput(new ListInput());
+        widget.getListInput().setDataId(uuid);
+        this.data.getWidgets().add(widget);
+        return new SGuiListBuilderImpl(this, widget.getListInput());
+    }
+    
+    /**
+     * Parses and performs a list request
+     * @param request
+     * @param supplier
+     * @return answer
+     * @throws McException 
+     */
+    private QueryFormAnswerData parseListRequest(QueryFormRequestData request, SGuiListSupplier supplier) throws McException
+    {
+        final ListRequest lrq = new ListRequest();
+        lrq.read(request.getData());
+        
+        final ListResponse lresp = new ListResponse();
+        lresp.setCount(supplier.count());
+        for (final DataFragment df : supplier.select(lrq.getStart(), lrq.getLimit()))
+        {
+            final ListResponseRow row = new ListResponseRow();
+            df.write(row.getData());
+            lresp.getRows().add(row);
+        }
+        final QueryFormAnswerData answer = new QueryFormAnswerData();
+        lresp.write(answer.getData());
+        return answer;
+    }
+
+    /**
+     * Helper to build a list control
+     * @author mepeisen
+     */
+    private static final class SGuiListBuilderImpl implements SGuiListBuilderInterface
+    {
+
+        /** the list widget. */
+        private ListInput listInput;
+        
+        /** the underlying formbuilder. */
+        private SGuiFormBuilder form;
+
+        /**
+         * Constructor to create a list control builder.
+         * @param form
+         * @param listInput
+         */
+        public SGuiListBuilderImpl(SGuiFormBuilder form, ListInput listInput)
+        {
+            this.listInput = listInput;
+            this.form = form;
+        }
+
+        @Override
+        public SGuiListBuilderInterface addColumn(String dataKey, String formKey, LocalizedMessageInterface label, Serializable... args)
+        {
+            final ListColumn column = new ListColumn();
+            column.setDataKey(dataKey);
+            column.setFormKey(formKey);
+            column.setLabel(this.form.encode(label, args));
+            column.setVisible(true);
+            this.listInput.getColumns().add(column);
+            return this;
+        }
+
+        @Override
+        public SGuiListBuilderInterface addColumn(String dataKey, String formKey)
+        {
+            final ListColumn column = new ListColumn();
+            column.setDataKey(dataKey);
+            column.setFormKey(formKey);
+            column.setVisible(false);
+            this.listInput.getColumns().add(column);
+            return this;
+        }
+
+        @Override
+        public SGuiListBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
+        {
+            final GuiButtonImpl guiButton = this.form.sguiCreateButton(label, labelArgs, action, false);
+            this.form.window.registerAction(guiButton);
+            final ListButton button = new ListButton();
+            button.setActionId(guiButton.getActionId());
+            button.setCloseAction(guiButton.isCloseAction());
+            button.setHasActionListener(true);
+            button.setLabel(guiButton.getLabel());
+            button.setNeedsInput(true);
+            this.listInput.getButtons().add(button);
+            return this;
+        }
+
+        @Override
+        public SGuiListBuilderInterface addButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
+        {
+            final GuiButtonImpl guiButton = this.form.sguiCreateButton(label, labelArgs, action, false);
+            this.form.window.registerAction(guiButton);
+            final ListButton button = new ListButton();
+            button.setActionId(guiButton.getActionId());
+            button.setCloseAction(guiButton.isCloseAction());
+            button.setHasActionListener(true);
+            button.setLabel(guiButton.getLabel());
+            button.setNeedsInput(false);
+            this.listInput.getButtons().add(button);
+            return this;
+        }
+        
     }
     
 }
