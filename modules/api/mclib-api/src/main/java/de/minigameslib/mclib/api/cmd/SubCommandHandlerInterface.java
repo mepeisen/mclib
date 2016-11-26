@@ -53,4 +53,14 @@ public interface SubCommandHandlerInterface extends CommandHandlerInterface
      */
     LocalizedMessageInterface getDescription(CommandInterface command);
     
+    /**
+     * Checks for visibility of this sub command
+     * @param command
+     * @return {@code true} if this command is visible
+     */
+    default boolean visible(CommandInterface command)
+    {
+        return true;
+    }
+    
 }

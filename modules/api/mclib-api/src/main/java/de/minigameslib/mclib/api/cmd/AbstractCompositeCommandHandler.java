@@ -85,8 +85,8 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
         }
         
         final String name = command.getArgs()[0].toLowerCase();
-        final CommandHandlerInterface handler = this.subCommands.get(name);
-        if (handler == null)
+        final SubCommandHandlerInterface handler = this.subCommands.get(name);
+        if (handler == null || !handler.visible(command))
         {
             command.send(CommonMessages.CompositeUnknownSubCommand, command.getCommandPath(), command.getArgs()[0]);
             sendUsage(command);
@@ -130,8 +130,8 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
         if (command.getArgs().length > 0)
         {
             final String name = command.getArgs()[0].toLowerCase();
-            final CommandHandlerInterface handler = this.subCommands.get(name);
-            if (handler == null)
+            final SubCommandHandlerInterface handler = this.subCommands.get(name);
+            if (handler == null || !handler.visible(command))
             {
                 return Collections.emptyList();
             }
@@ -143,7 +143,7 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
     /**
      * Returns the sub command by name.
      * @param key name of the sub command
-     * @return the sub command.
+     * @return the sub command; even invisible commands
      */
     public SubCommandHandlerInterface getSubCommand(String key)
     {

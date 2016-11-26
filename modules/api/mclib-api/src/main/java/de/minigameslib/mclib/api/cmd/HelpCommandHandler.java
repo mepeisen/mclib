@@ -28,9 +28,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
@@ -68,7 +70,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
                 // assume we have a command name given to us.
                 final String name = command.getArgs()[0].toLowerCase();
                 final SubCommandHandlerInterface sub = this.compositeCommand.subCommands.get(name);
-                if (sub == null)
+                if (sub == null || !sub.visible(command))
                 {
                     command.send(CommonMessages.HelpUnknownSubCommand, command.getCommandPath(), name);
                     return;
@@ -87,7 +89,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         {
             return Collections.emptyList();
         }
-        return new ArrayList<>(this.compositeCommand.subCommands.keySet()).stream().filter(elm -> elm.startsWith(lastArg)).collect(Collectors.toList());
+        return getVisibleCommands(command).map(e -> e.getKey()).filter(elm -> elm.startsWith(lastArg)).collect(Collectors.toList());
     }
 
     /**
@@ -129,7 +131,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
     {
         if (this.compositeCommand != null)
         {
-            return this.compositeCommand.subCommands.size();
+            return (int) this.getVisibleCommands(command).count();
         }
         return this.subCommand.getDescription(command).toListArg(command.getCommandPath()).apply(command.getLocale(), command.isOp()).length;
     }
@@ -145,7 +147,8 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
     {
         if (this.compositeCommand != null)
         {
-            final List<String> keys = new ArrayList<>(this.compositeCommand.subCommands.keySet());
+            final List<String> keys = new ArrayList<>();
+            getVisibleCommands(command).map(e -> e.getKey()).forEach(keys::add);
             final List<Serializable> result = new ArrayList<>();
             if (start < keys.size())
             {
@@ -168,6 +171,15 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
             return result.toArray(new Serializable[result.size()]);
         }
         return this.subCommand.getDescription(command).toListArg(start, count, new Serializable[]{command.getCommandPath()}).apply(command.getLocale(), command.isOp());
+    }
+
+    /**
+     * @param command
+     * @return
+     */
+    private Stream<Entry<String, SubCommandHandlerInterface>> getVisibleCommands(CommandInterface command)
+    {
+        return this.compositeCommand.subCommands.entrySet().stream().filter(e -> e.getValue().visible(command));
     }
     
 }
