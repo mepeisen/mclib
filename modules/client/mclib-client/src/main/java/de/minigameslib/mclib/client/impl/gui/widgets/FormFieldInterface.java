@@ -27,7 +27,7 @@ package de.minigameslib.mclib.client.impl.gui.widgets;
 /**
  * @author mepeisen
  */
-public interface FormField
+public interface FormFieldInterface
 {
     
     /**

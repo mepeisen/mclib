@@ -225,11 +225,19 @@
         <param name="namedGaps"><map/></param>
         
         <theme name="scrollpane" ref="scrollpane">
-	        <theme name="textarea" ref="textarea">
+	        <theme name="textarea" ref="textarea" />
+	        <theme name="columnlayout" ref="-defaults">
+		        <param name="defaultGap"><dimension>8,8</dimension></param>
+		        <param name="smallGap"><dimension>12,12</dimension></param>
+		        <param name="mediumGap"><dimension>20,20</dimension></param>
+		        <param name="largeGap"><dimension>25,25</dimension></param>
+		        <param name="namedGaps"><map/></param>
+		        <theme name="label" ref="label" />
+		        <theme name="editfield" ref="editfield" />
+		        <theme name="textarea" ref="textarea" />
 	        </theme>
         </theme>
-        <theme name="button" ref="button">
-        </theme>
+        <theme name="button" ref="button" />
     </theme>
 
     <theme name="colorselector" ref="dialoglayout">

@@ -31,8 +31,11 @@ import de.matthiasmann.twl.Button;
 import de.matthiasmann.twl.Widget;
 import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.client.impl.gui.widgets.ErrorWidgetInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormEditField;
+import de.minigameslib.mclib.client.impl.gui.widgets.FormFieldInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormWindow;
+import de.minigameslib.mclib.client.impl.gui.widgets.MultiWidget;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.ButtonData;
@@ -43,6 +46,7 @@ import de.minigameslib.mclib.pshared.DisplayInfoData;
 import de.minigameslib.mclib.pshared.DisplayResizableWinData;
 import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.pshared.DisplayYesNoData;
+import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
@@ -52,6 +56,7 @@ import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
@@ -134,9 +139,9 @@ public class MclibCoreHandler implements ComHandler
     private void sendError(MessageContext context, SendErrorData fragment)
     {
         final Widget widget = getWidget(fragment.getId());
-        if (widget != null)
+        if (widget instanceof ErrorWidgetInterface)
         {
-            // TODO
+            ((ErrorWidgetInterface) widget).displayError(fragment.getMessage());
         }
     }
 
@@ -159,8 +164,14 @@ public class MclibCoreHandler implements ComHandler
         {
             if (wd.getLabel() != null)
             {
-                // TODO support spans
-                form.addRow("col1").addLabel(wd.getLabel().getText()); //$NON-NLS-1$
+                if (wd.getLabel().getSpan() > 1)
+                {
+                    form.addRow("col1+2").addLabel(wd.getLabel().getText()); //$NON-NLS-1$
+                }
+                else
+                {
+                    form.addRow("col1").addLabel(wd.getLabel().getText()); //$NON-NLS-1$
+                }
             }
             else if (wd.getSubmit() != null)
             {
@@ -222,22 +233,57 @@ public class MclibCoreHandler implements ComHandler
         
         final Button button = new Button(buttonData.getLabel() == null ? defaultLabel : buttonData.getLabel());
         button.addCallback(() -> {
-            if (buttonData.isCloseAction()) {
-                closeCallback(winId);
-            }
             if (buttonData.isHasActionListener()) {
                 // send action performed to server.
                 final ActionPerformedData answer = new ActionPerformedData();
                 answer.setWinId(winId);
                 answer.setActionId(buttonData.getActionId());
-                // TODO FormData
+                this.fillFormData(winId, answer);
                 final DataSection section = new MemoryDataSection();
                 section.set("KEY", CoreMessages.ActionPerformed.name()); //$NON-NLS-1$
                 answer.write(section.createSection("data")); //$NON-NLS-1$
                 MclibCommunication.ClientServerCore.send(section);
             }
+            if (buttonData.isCloseAction()) {
+                closeCallback(winId);
+            }
         });
         return button;
+    }
+
+    /**
+     * @param winId
+     * @param answer
+     */
+    private void fillFormData(String winId, ActionPerformedData answer)
+    {
+        final Widget widget = this.getWidget(winId);
+        if (widget != null)
+        {
+            fillFormData(winId, answer, widget);
+        }
+    }
+
+    /**
+     * @param winId
+     * @param answer
+     * @param widget
+     */
+    private void fillFormData(String winId, ActionPerformedData answer, final Widget widget)
+    {
+        for (int i = 0; i < widget.getNumChildren(); i++)
+        {
+            final Widget child = widget.getChild(i);
+            if (child instanceof FormFieldInterface)
+            {
+                final FormFieldInterface formfield = (FormFieldInterface) child;
+                final FormData data = new FormData();
+                data.setKey(formfield.getFormKey());
+                data.setValue(formfield.getFormValue());
+                answer.getData().add(data);
+            }
+            this.fillFormData(winId, answer, child);
+        }
     }
 
     /**
@@ -292,8 +338,19 @@ public class MclibCoreHandler implements ComHandler
      */
     private void displayWidget(String id, Widget widget)
     {
-        // TODO support multiple widgets
-        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(widget));
+        final GuiScreen current = Minecraft.getMinecraft().currentScreen;
+        if (current instanceof TwlScreen)
+        {
+            final Widget main = ((TwlScreen) current).getMainWidget();
+            if (main instanceof MultiWidget)
+            {
+                ((MultiWidget) main).addWidget(id, widget);
+                return;
+            }
+        }
+        final MultiWidget main = new MultiWidget();
+        main.addWidget(id, widget);
+        Minecraft.getMinecraft().displayGuiScreen(new TwlScreen(main));
     }
 
     /**
@@ -302,7 +359,15 @@ public class MclibCoreHandler implements ComHandler
      */
     private Widget getWidget(String id)
     {
-        // TODO Auto-generated method stub
+        final GuiScreen current = Minecraft.getMinecraft().currentScreen;
+        if (current instanceof TwlScreen)
+        {
+            final Widget main = ((TwlScreen) current).getMainWidget();
+            if (main instanceof MultiWidget)
+            {
+                return ((MultiWidget) main).getWidget(id);
+            }
+        }
         return null;
     }
     
@@ -312,8 +377,20 @@ public class MclibCoreHandler implements ComHandler
      */
     private static final void closeCallback(final String winId)
     {
-        // TODO support multiple guis... Only reset the gui with associated id.
-        Minecraft.getMinecraft().displayGuiScreen(null);
+
+        final GuiScreen current = Minecraft.getMinecraft().currentScreen;
+        if (current instanceof TwlScreen)
+        {
+            final Widget main = ((TwlScreen) current).getMainWidget();
+            if (main instanceof MultiWidget)
+            {
+                ((MultiWidget) main).removeWidget(winId);
+                if (main.getNumChildren() == 0)
+                {
+                    Minecraft.getMinecraft().displayGuiScreen(null);
+                }
+            }
+        }
     }
     
 }

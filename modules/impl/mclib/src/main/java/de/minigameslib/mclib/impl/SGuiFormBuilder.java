@@ -37,14 +37,13 @@ import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.GuiSessionImpl.GuiButtonImpl;
 import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper;
 import de.minigameslib.mclib.impl.GuiSessionImpl.SGuiHelper.SGuiImpl;
+import de.minigameslib.mclib.pshared.ButtonData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayResizableWinData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
-import de.minigameslib.mclib.pshared.WidgetData.CancelButton;
 import de.minigameslib.mclib.pshared.WidgetData.Label;
-import de.minigameslib.mclib.pshared.WidgetData.SubmitButton;
 import de.minigameslib.mclib.pshared.WidgetData.TextInput;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
@@ -82,6 +81,8 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.setTitle(this.encode(title, titleArgs));
         
         this.window = this.smartGui.create(closeAction);
+        
+        this.data.setId(this.window.getUuid());
     }
     
     /**
@@ -114,8 +115,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         {
             final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, (formdata) -> { this.handleSubmit(action, formdata); }, false);
             this.window.registerAction(guiButton);
-            final SubmitButton submit = new SubmitButton();
-            submit.setCloseAction(false);
+            final ButtonData submit = new ButtonData();
             submit.setActionId(guiButton.getActionId());
             submit.setLabel(guiButton.getLabel());
             submit.setCloseAction(false);
@@ -160,8 +160,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         {
             final GuiButtonImpl guiButton = (GuiButtonImpl) this.smartGui.getGuiSession().sguiCreateButton(label, labelArgs, action, false);
             this.window.registerAction(guiButton);
-            final CancelButton cancel = new CancelButton();
-            cancel.setCloseAction(false);
+            final ButtonData cancel = new ButtonData();
             cancel.setActionId(guiButton.getActionId());
             cancel.setLabel(guiButton.getLabel());
             cancel.setCloseAction(false);

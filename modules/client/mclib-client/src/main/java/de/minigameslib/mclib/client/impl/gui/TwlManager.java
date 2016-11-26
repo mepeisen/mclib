@@ -79,10 +79,10 @@ public class TwlManager extends Widget
      * This is the rendered used by TWL.
      */
     public LWJGLRenderer     renderer      = null;
-    /**
-     * This is the ScaledResolution class that is used to scale all of the widgets.
-     */
-    public ScaledResolution  screenSize    = null;
+//    /**
+//     * This is the ScaledResolution class that is used to scale all of the widgets.
+//     */
+//    public ScaledResolution  screenSize    = null;
     /**
      * This the the ThemeManager for GuiAPI.
      */
@@ -134,7 +134,7 @@ public class TwlManager extends Widget
             TwlManager.instance.setTheme(""); //$NON-NLS-1$
             TwlManager.instance.gui.applyTheme(TwlManager.instance.theme);
             TwlManager.instance.minecraftInstance = Minecraft.getMinecraft();
-            TwlManager.instance.screenSize = new ScaledResolution(TwlManager.instance.minecraftInstance);
+            //TwlManager.instance.screenSize = new ScaledResolution(TwlManager.instance.minecraftInstance);
         }
         catch (Throwable e)
         {
@@ -156,11 +156,11 @@ public class TwlManager extends Widget
     @Override
     public void layout()
     {
-        this.screenSize = new ScaledResolution(this.minecraftInstance);
+        //this.screenSize = new ScaledResolution(this.minecraftInstance);
         if (this.currentWidget != null)
         {
-            TwlManager.screenwidth = this.screenSize.getScaledWidth();
-            TwlManager.screenheight = this.screenSize.getScaledHeight();
+            TwlManager.screenwidth = this.minecraftInstance.displayWidth;
+            TwlManager.screenheight = this.minecraftInstance.displayHeight;
             this.currentWidget.setSize(TwlManager.screenwidth, TwlManager.screenheight);
             this.currentWidget.setPosition(0, 0);
         }

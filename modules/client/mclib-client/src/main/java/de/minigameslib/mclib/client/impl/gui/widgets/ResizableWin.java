@@ -47,7 +47,7 @@ public class ResizableWin extends ResizableFrame
      */
     public ResizableWin(String title, Widget content, boolean closable, boolean hasScroll)
     {
-        setTheme("resizableframe-title"); //$NON-NLS-1$
+        setTheme("/resizableframe-title"); //$NON-NLS-1$
         setTitle(title);
         
         if (hasScroll)

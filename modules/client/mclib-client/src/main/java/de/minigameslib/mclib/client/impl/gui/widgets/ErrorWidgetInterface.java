@@ -24,39 +24,18 @@
 
 package de.minigameslib.mclib.client.impl.gui.widgets;
 
-import de.matthiasmann.twl.EditField;
-
 /**
- * A form field.
+ * Widget that can receive and displays errors, for example in forms.
  * 
  * @author mepeisen
- *
  */
-public class FormEditField extends EditField implements FormFieldInterface
+public interface ErrorWidgetInterface
 {
-
-    /** the form key to be used. */
-    private String formKey;
     
     /**
-     * @param formKey
+     * Displays given error message.
+     * @param message
      */
-    public FormEditField(String formKey)
-    {
-        this.formKey = formKey;
-        this.setTheme("editfield");
-    }
-
-    @Override
-    public String getFormKey()
-    {
-        return this.formKey;
-    }
-
-    @Override
-    public String getFormValue()
-    {
-        return this.getText();
-    }
+    void displayError(String message);
     
 }

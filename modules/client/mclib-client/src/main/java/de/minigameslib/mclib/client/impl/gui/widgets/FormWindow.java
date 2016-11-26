@@ -29,6 +29,7 @@ import de.matthiasmann.twl.ColumnLayout;
 import de.matthiasmann.twl.ColumnLayout.Row;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.DialogLayout.Group;
+import de.matthiasmann.twl.Label;
 import de.matthiasmann.twl.ResizableFrame;
 import de.matthiasmann.twl.ScrollPane;
 import de.matthiasmann.twl.Widget;
@@ -38,11 +39,14 @@ import de.matthiasmann.twl.Widget;
  * 
  * @author mepeisen
  */
-public class FormWindow extends ResizableFrame
+public class FormWindow extends ResizableFrame implements ErrorWidgetInterface
 {
     
     /** the underlying column layout. */
     private ColumnLayout collayout;
+    
+    /** the error label. */
+    private Label error;
 
     /**
      * Constructor creating a message box.
@@ -51,10 +55,13 @@ public class FormWindow extends ResizableFrame
      */
     public FormWindow(String title, Button[] buttons)
     {
-        setTheme("alertbox"); //$NON-NLS-1$
+        setTheme("/alertbox"); //$NON-NLS-1$
         setTitle(title);
         
         this.collayout = new ColumnLayout();
+        this.error = new Label();
+        this.error.setText("123456789012345678901234567890123456789012345678901234567890");
+        this.collayout.addRow("error").add(this.error); //$NON-NLS-1$
         
         ScrollPane scrollPane2 = new ScrollPane(this.collayout);
         scrollPane2.setTheme("scrollpane"); //$NON-NLS-1$
@@ -86,6 +93,12 @@ public class FormWindow extends ResizableFrame
     public Row addRow(String... columnNames)
     {
         return this.collayout.addRow(columnNames);
+    }
+
+    @Override
+    public void displayError(String message)
+    {
+        this.error.setText(message);
     }
     
 }

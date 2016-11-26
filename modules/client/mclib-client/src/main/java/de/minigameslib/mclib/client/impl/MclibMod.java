@@ -77,7 +77,7 @@ public class MclibMod implements CommunicationServiceInterface
     private static SimpleNetworkWrapper NETWORK;
     
     /** true to activate tracing output */
-    public static final boolean TRACE = false;
+    public static final boolean TRACE = true;
     
     /**
      * Initialization.

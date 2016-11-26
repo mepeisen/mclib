@@ -48,7 +48,7 @@ public class MessageBox extends ResizableFrame
      */
     public MessageBox(String title, String message, Button... buttons)
     {
-        setTheme("alertbox"); //$NON-NLS-1$
+        setTheme("/alertbox"); //$NON-NLS-1$
         setTitle(title);
         
         final SimpleTextAreaModel tam = new SimpleTextAreaModel();
