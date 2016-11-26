@@ -42,7 +42,7 @@ public class PongData extends AnnotatedDataFragment
      * The installed client extensions.
      */
     @PersistentField
-    private List<String> clientExtensions = new ArrayList<>();
+    protected List<String> clientExtensions = new ArrayList<>();
 
     /**
      * @return the clientExtensions

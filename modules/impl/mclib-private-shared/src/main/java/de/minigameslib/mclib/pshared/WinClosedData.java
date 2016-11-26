@@ -39,7 +39,7 @@ public class WinClosedData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    private String winId;
+    protected String winId;
 
     /**
      * @return the widgetId

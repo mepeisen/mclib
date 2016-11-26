@@ -98,4 +98,16 @@ public enum CoreMessages
      */
     SendError,
     
+    /**
+     * Form data for form inputs (f.e. lists) has been queried.
+     * @see QueryFormRequestData
+     */
+    QueryFormRequest,
+    
+    /**
+     * Form data for form inputs (f.e. lists).
+     * @see QueryFormAnswerData
+     */
+    QueryFormAnswer,
+    
 }

@@ -39,25 +39,25 @@ public class DisplayErrorData extends AnnotatedDataFragment
      * Title of the message box.
      */
     @PersistentField
-    private String title;
+    protected String title;
     
     /**
      * Text content of the message box.
      */
     @PersistentField
-    private String message;
+    protected String message;
     
     /**
      * OK-Button
      */
     @PersistentField
-    private ButtonData okButton;
+    protected ButtonData okButton;
     
     /**
      * The window id.
      */
     @PersistentField
-    private String id;
+    protected String id;
 
     /**
      * @return the id

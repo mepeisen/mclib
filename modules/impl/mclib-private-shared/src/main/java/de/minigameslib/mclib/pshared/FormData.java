@@ -39,13 +39,13 @@ public class FormData extends AnnotatedDataFragment
      * Form key.
      */
     @PersistentField
-    private String key;
+    protected String key;
     
     /**
      * Form value as string.
      */
     @PersistentField
-    private String value;
+    protected String value;
 
     /**
      * @return the key

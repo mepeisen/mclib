@@ -25,36 +25,30 @@
 package de.minigameslib.mclib.pshared;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * Data Fragment for the {@link CoreMessages#CloseWin} message.
+ * Data Fragment for the {@link CoreMessages#QueryFormAnswer} message.
  * 
  * @author mepeisen
  */
-public class CloseWinData extends AnnotatedDataFragment
+public class QueryFormAnswerData extends AnnotatedDataFragment
 {
     
     /**
-     * The window id.
+     * the answer.
      */
     @PersistentField
-    protected String winId;
+    protected DataSection data = new MemoryDataSection();
 
     /**
-     * @return the widgetId
+     * @return the data
      */
-    public String getWinId()
+    public DataSection getData()
     {
-        return this.winId;
-    }
-
-    /**
-     * @param winId the winId to set
-     */
-    public void setWinId(String winId)
-    {
-        this.winId = winId;
+        return this.data;
     }
     
 }

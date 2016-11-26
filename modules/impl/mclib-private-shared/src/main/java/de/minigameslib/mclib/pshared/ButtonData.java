@@ -39,25 +39,25 @@ public class ButtonData extends AnnotatedDataFragment
      * Button label.
      */
     @PersistentField
-    private String label;
+    protected String label;
     
     /**
      * {@code true} if an action listener is installed on server side.
      */
     @PersistentField
-    private boolean hasActionListener;
+    protected boolean hasActionListener;
     
     /**
      * Action id; only set if an action listener is present.
      */
     @PersistentField
-    private String actionId;
+    protected String actionId;
     
     /**
      * {@code true} if this button closes the dialog.
      */
     @PersistentField
-    private boolean isCloseAction;
+    protected boolean isCloseAction;
 
     /**
      * @return the label

@@ -1254,5 +1254,13 @@ public class MemoryDataSection implements DataSection
             throw new IllegalStateException(e);
         }
     }
+
+    @Override
+    public void setSection(String key, DataSection newValue)
+    {
+        final MemoryDataSection section = (MemoryDataSection) this.createSection(key);
+        section.contents.clear();
+        newValue.getValues(true).forEach(section::set);
+    }
     
 }

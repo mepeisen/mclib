@@ -150,6 +150,14 @@ public interface DataSection
      * @param key
      * @param newValue
      */
+    void setSection(String key, DataSection newValue);
+    
+    /**
+     * Sets object for given key
+     * 
+     * @param key
+     * @param newValue
+     */
     <T extends DataFragment> void setFragmentMapList(String key, List<Map<String, T>> newValue);
     
     /**

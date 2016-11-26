@@ -39,22 +39,22 @@ public class ActionPerformedData extends AnnotatedDataFragment
 {
     
     /**
-     * Title of the action performed box.
+     * unique id of the action that was performed.
      */
     @PersistentField
-    private String actionId;
+    protected String actionId;
     
     /**
      * the form data.
      */
     @PersistentField
-    private List<FormData> data = new ArrayList<>();
+    protected List<FormData> data = new ArrayList<>();
     
     /**
      * The window id.
      */
     @PersistentField
-    private String winId;
+    protected String winId;
 
     /**
      * @return the widgetId

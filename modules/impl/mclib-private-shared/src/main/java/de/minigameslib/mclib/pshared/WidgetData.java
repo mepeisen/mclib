@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.pshared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -39,25 +42,31 @@ public class WidgetData extends AnnotatedDataFragment
      * A label widget.
      */
     @PersistentField
-    private Label label;
+    protected Label label;
     
     /**
      * Submit button
      */
     @PersistentField
-    private SubmitButton submit;
+    protected SubmitButton submit;
     
     /**
      * Cancel button
      */
     @PersistentField
-    private CancelButton cancel;
+    protected CancelButton cancel;
     
     /**
      * The text input
      */
     @PersistentField
-    private TextInput textInput;
+    protected TextInput textInput;
+    
+    /**
+     * The list input
+     */
+    @PersistentField
+    protected ListInput listInput;
     
     /**
      * @return the label
@@ -122,6 +131,204 @@ public class WidgetData extends AnnotatedDataFragment
     {
         this.textInput = textInput;
     }
+    
+    /**
+     * @return the listInput
+     */
+    public ListInput getListInput()
+    {
+        return this.listInput;
+    }
+
+    /**
+     * @param listInput the listInput to set
+     */
+    public void setListInput(ListInput listInput)
+    {
+        this.listInput = listInput;
+    }
+
+    /**
+     * A list form input.
+     */
+    public static class ListInput extends AnnotatedDataFragment
+    {
+        
+        /**
+         * list columns.
+         */
+        @PersistentField
+        protected List<ListColumn> columns = new ArrayList<>();
+        
+        /**
+         * internal id to query data.
+         */
+        @PersistentField
+        protected String dataId;
+        
+        /**
+         * The list buttons.
+         */
+        @PersistentField
+        protected List<ListButton> buttons = new ArrayList<>();
+
+        /**
+         * @return the dataId
+         */
+        public String getDataId()
+        {
+            return this.dataId;
+        }
+
+        /**
+         * @param dataId the dataId to set
+         */
+        public void setDataId(String dataId)
+        {
+            this.dataId = dataId;
+        }
+
+        /**
+         * @return the columns
+         */
+        public List<ListColumn> getColumns()
+        {
+            return this.columns;
+        }
+
+        /**
+         * @return the buttons
+         */
+        public List<ListButton> getButtons()
+        {
+            return this.buttons;
+        }
+        
+    }
+    
+    /**
+     * A list column
+     */
+    public static class ListColumn extends AnnotatedDataFragment
+    {
+        
+        /**
+         * Data key to query data from data entry.
+         */
+        @PersistentField
+        protected String dataKey;
+        
+        /**
+         * Form key if this column represents the primary key of the data entries.
+         */
+        @PersistentField
+        protected String formKey;
+        
+        /**
+         * visible flag.
+         */
+        @PersistentField
+        protected boolean visible;
+        
+        /**
+         * column label.
+         */
+        @PersistentField
+        protected String label;
+
+        /**
+         * @return the dataKey
+         */
+        public String getDataKey()
+        {
+            return this.dataKey;
+        }
+
+        /**
+         * @param dataKey the dataKey to set
+         */
+        public void setDataKey(String dataKey)
+        {
+            this.dataKey = dataKey;
+        }
+
+        /**
+         * @return the formKey
+         */
+        public String getFormKey()
+        {
+            return this.formKey;
+        }
+
+        /**
+         * @param formKey the formKey to set
+         */
+        public void setFormKey(String formKey)
+        {
+            this.formKey = formKey;
+        }
+
+        /**
+         * @return the visible
+         */
+        public boolean isVisible()
+        {
+            return this.visible;
+        }
+
+        /**
+         * @param visible the visible to set
+         */
+        public void setVisible(boolean visible)
+        {
+            this.visible = visible;
+        }
+
+        /**
+         * @return the label
+         */
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        /**
+         * @param label the label to set
+         */
+        public void setLabel(String label)
+        {
+            this.label = label;
+        }
+        
+    }
+    
+    /**
+     * A list button
+     */
+    public static class ListButton extends ButtonData
+    {
+        
+        /** {@code true} if the button needs a selected list entry. */
+        @PersistentField
+        protected boolean needsInput;
+
+        /**
+         * @return the needsInput
+         */
+        public boolean isNeedsInput()
+        {
+            return this.needsInput;
+        }
+
+        /**
+         * @param needsInput the needsInput to set
+         */
+        public void setNeedsInput(boolean needsInput)
+        {
+            this.needsInput = needsInput;
+        }
+        
+    }
 
     /**
      * A text input.
@@ -133,25 +340,25 @@ public class WidgetData extends AnnotatedDataFragment
          * label of text input.
          */
         @PersistentField
-        private String label;
+        protected String label;
         
         /**
          * initial value
          */
         @PersistentField
-        private String value;
+        protected String value;
         
         /**
          * {@code true} if empty values are allowed.
          */
         @PersistentField
-        private boolean allowsEmpty;
+        protected boolean allowsEmpty;
         
         /**
          * the form key
          */
         @PersistentField
-        private String formKey;
+        protected String formKey;
 
         /**
          * @return the label
@@ -231,13 +438,13 @@ public class WidgetData extends AnnotatedDataFragment
          * Column span of label.
          */
         @PersistentField
-        private int span;
+        protected int span;
         
         /**
          * Label label.
          */
         @PersistentField
-        private String text;
+        protected String text;
 
         /**
          * @return the span

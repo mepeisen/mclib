@@ -83,6 +83,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         FIELD_TYPES.put(PlayerData.class, PrimitiveFieldType.Player);
         FIELD_TYPES.put(ItemStackData.class, PrimitiveFieldType.ItemStack);
         FIELD_TYPES.put(ColorData.class, PrimitiveFieldType.Color);
+        FIELD_TYPES.put(DataSection.class, PrimitiveFieldType.DataSection);
     }
 
     @Override
@@ -435,6 +436,9 @@ public abstract class AnnotatedDataFragment implements DataFragment
         
         /** primitive map type. */
         Map((name, section) -> section.getMap(name), (name, section, value) -> section.set(name, value)),
+        
+        /** data section type. */
+        DataSection((name, section) -> section.getSection(name), (name, section, value) -> section.setSection(name, (DataSection) value)),
         ;
         
         /** getter to receive values. */

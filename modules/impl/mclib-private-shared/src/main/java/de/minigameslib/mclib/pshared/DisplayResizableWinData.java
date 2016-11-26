@@ -42,37 +42,37 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
      * Title of the window.
      */
     @PersistentField
-    private String title;
+    protected String title;
     
     /**
      * {@code true} true if a close button is added.
      */
     @PersistentField
-    private boolean closable;
+    protected boolean closable;
     
     /**
      * Number of columns.
      */
     @PersistentField
-    private int numColumns;
+    protected int numColumns;
     
     /**
      * Content widgets.
      */
     @PersistentField
-    private List<WidgetData> widgets = new ArrayList<>();
+    protected List<WidgetData> widgets = new ArrayList<>();
     
     /**
      * Additional buttons
      */
     @PersistentField
-    private List<ButtonData> buttons = new ArrayList<>();
+    protected List<ButtonData> buttons = new ArrayList<>();
     
     /**
      * The window id.
      */
     @PersistentField
-    private String id;
+    protected String id;
 
     /**
      * @return the id

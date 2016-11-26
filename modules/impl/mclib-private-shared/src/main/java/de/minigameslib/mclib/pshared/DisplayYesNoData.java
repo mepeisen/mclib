@@ -39,31 +39,31 @@ public class DisplayYesNoData extends AnnotatedDataFragment
      * Title of the message box.
      */
     @PersistentField
-    private String title;
+    protected String title;
     
     /**
      * Text content of the message box.
      */
     @PersistentField
-    private String message;
+    protected String message;
     
     /**
      * Yes-Button
      */
     @PersistentField
-    private ButtonData yesButton;
+    protected ButtonData yesButton;
     
     /**
      * No-Button
      */
     @PersistentField
-    private ButtonData noButton;
+    protected ButtonData noButton;
     
     /**
      * The window id.
      */
     @PersistentField
-    private String id;
+    protected String id;
 
     /**
      * @return the id

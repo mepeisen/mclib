@@ -39,13 +39,13 @@ public class SendErrorData extends AnnotatedDataFragment
      * Text content of the error message.
      */
     @PersistentField
-    private String message;
+    protected String message;
     
     /**
      * The window id.
      */
     @PersistentField
-    private String id;
+    protected String id;
 
     /**
      * @return the id
