@@ -117,6 +117,7 @@ import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
@@ -906,6 +907,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
                 {
                     // forward to smart gui
                     ((McPlayerImpl)player).parseWinClosed(section.getFragment(WinClosedData.class, "data")); //$NON-NLS-1$
+                }
+                else if (key.equals(CoreMessages.QueryFormRequest.name()))
+                {
+                    // client has the mod installed.
+                    ((McPlayerImpl)player).parseFormRequest(section.getFragment(QueryFormRequestData.class, "data")); //$NON-NLS-1$
                 }
                 else if (key.equals(CoreMessages.Pong.name()))
                 {

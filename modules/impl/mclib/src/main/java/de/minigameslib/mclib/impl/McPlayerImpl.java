@@ -66,6 +66,7 @@ import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WinClosedData;
 
 /**
@@ -538,7 +539,7 @@ class McPlayerImpl implements McPlayerInterface
     }
 
     /**
-     * Parse an win closed message
+     * Parse a win closed message
      * @param fragment
      * @throws McException 
      */
@@ -547,6 +548,18 @@ class McPlayerImpl implements McPlayerInterface
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
         ((GuiSessionImpl)session).sguiWinClosed(fragment.getWinId());
+    }
+
+    /**
+     * Parse a form request message
+     * @param fragment
+     * @throws McException 
+     */
+    void parseFormRequest(QueryFormRequestData fragment) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        GuiSessionInterface session = storage.get(GuiSessionInterface.class);
+        ((GuiSessionImpl)session).sguiFormRequest(fragment);
     }
     
 }

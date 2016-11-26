@@ -38,10 +38,22 @@ public class QueryFormAnswerData extends AnnotatedDataFragment
 {
     
     /**
+     * form input id
+     */
+    @PersistentField
+    protected String inputId;
+    
+    /**
      * the answer.
      */
     @PersistentField
     protected DataSection data = new MemoryDataSection();
+    
+    /**
+     * The window id.
+     */
+    @PersistentField
+    protected String winId;
 
     /**
      * @return the data
@@ -49,6 +61,38 @@ public class QueryFormAnswerData extends AnnotatedDataFragment
     public DataSection getData()
     {
         return this.data;
+    }
+
+    /**
+     * @return the inputId
+     */
+    public String getInputId()
+    {
+        return this.inputId;
+    }
+
+    /**
+     * @param inputId the inputId to set
+     */
+    public void setInputId(String inputId)
+    {
+        this.inputId = inputId;
+    }
+
+    /**
+     * @return the winId
+     */
+    public String getWinId()
+    {
+        return this.winId;
+    }
+
+    /**
+     * @param winId the winId to set
+     */
+    public void setWinId(String winId)
+    {
+        this.winId = winId;
     }
     
 }

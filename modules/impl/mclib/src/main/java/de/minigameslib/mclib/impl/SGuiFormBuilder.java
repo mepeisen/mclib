@@ -250,6 +250,8 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             lresp.getRows().add(row);
         }
         final QueryFormAnswerData answer = new QueryFormAnswerData();
+        answer.setWinId(request.getWinId());
+        answer.setInputId(request.getInputId());
         lresp.write(answer.getData());
         return answer;
     }

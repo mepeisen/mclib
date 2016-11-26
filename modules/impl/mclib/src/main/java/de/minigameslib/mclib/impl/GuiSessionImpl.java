@@ -709,6 +709,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 this.suppliers.put(result, dataSupplier);
                 return result;
             }
+            
         }
         
     }
@@ -780,6 +781,27 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 {
                     // TODO logging
                 }
+            }
+        }
+    }
+
+    /**
+     * @param fragment
+     * @throws McException 
+     */
+    void sguiFormRequest(QueryFormRequestData fragment) throws McException
+    {
+        if (this.smartGui != null)
+        {
+            final SGuiImpl impl = this.smartGui.get(fragment.getWinId());
+            if (impl != null)
+            {
+                final QueryFormAnswerData answer = impl.queryData(fragment);
+
+                final DataSection section = new MemoryDataSection();
+                section.set("KEY", CoreMessages.QueryFormAnswer.name()); //$NON-NLS-1$
+                answer.write(section.createSection("data")); //$NON-NLS-1$
+                MclibCommunication.ClientServerCore.send(section);
             }
         }
     }
