@@ -70,6 +70,35 @@ public class AnnotatedDataFragmentTest
         assertEquals(d1.lst4.get(0).str1, res.lst4.get(0).str1);
     }
     
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testInheritance()
+    {
+        final Data3 d1 = new Data3();
+        d1.int2 = 123;
+        d1.str1 = "FOO"; //$NON-NLS-1$
+        final Data2 d2 = new Data2();
+        d2.int2 = 1234;
+        d2.str1 = "FOO1"; //$NON-NLS-1$
+        d2.int3 = Integer.valueOf(12);
+        d1.lst4.add(d2);
+        d1.str5 = "BAZ"; //$NON-NLS-1$
+        final MemoryDataSection section = new MemoryDataSection();
+        d1.write(section.createSection("d1"));
+        
+        final Data3 res = section.getFragment(Data3.class, "d1");
+        assertEquals(d1.int2, res.int2);
+        assertEquals(d1.int3, res.int3);
+        assertEquals(d1.str1, res.str1);
+        assertEquals(d1.str5, res.str5);
+        assertEquals(1, res.lst4.size());
+        assertEquals(d1.lst4.get(0).int2, res.lst4.get(0).int2);
+        assertEquals(d1.lst4.get(0).int3, res.lst4.get(0).int3);
+        assertEquals(d1.lst4.get(0).str1, res.lst4.get(0).str1);
+    }
+    
     public static class Data1 extends AnnotatedDataFragment
     {
         @PersistentField
@@ -90,6 +119,12 @@ public class AnnotatedDataFragmentTest
         public int int2;
         @PersistentField
         public Integer int3;
+    }
+    
+    public static class Data3 extends Data1
+    {
+        @PersistentField
+        public String str5;
     }
     
 }

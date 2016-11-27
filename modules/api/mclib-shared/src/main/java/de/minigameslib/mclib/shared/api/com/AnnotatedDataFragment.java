@@ -182,6 +182,19 @@ public abstract class AnnotatedDataFragment implements DataFragment
          */
         public DataDescriptor(Class<?> clazz)
         {
+            addFieldDesc(clazz);
+        }
+
+        /**
+         * @param clazz
+         */
+        private void addFieldDesc(Class<?> clazz)
+        {
+            final Class<?> superClazz = clazz.getSuperclass();
+            if (superClazz != AnnotatedDataFragment.class)
+            {
+                addFieldDesc(superClazz);
+            }
             for (final Field field : clazz.getDeclaredFields())
             {
                 if (field.getAnnotation(PersistentField.class) != null)

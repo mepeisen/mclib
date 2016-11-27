@@ -29,6 +29,7 @@ import de.matthiasmann.twl.ColumnLayout;
 import de.matthiasmann.twl.ColumnLayout.Row;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.DialogLayout.Group;
+import net.minecraft.client.Minecraft;
 import de.matthiasmann.twl.Label;
 import de.matthiasmann.twl.ResizableFrame;
 import de.matthiasmann.twl.ScrollPane;
@@ -52,11 +53,26 @@ public class FormWindow extends ResizableFrame implements ErrorWidgetInterface
      * Constructor creating a message box.
      * @param title
      * @param buttons
+     * @param closable
      */
-    public FormWindow(String title, Button[] buttons)
+    public FormWindow(String title, Button[] buttons, boolean closable)
     {
         setTheme("/alertbox"); //$NON-NLS-1$
         setTitle(title);
+        
+        if (closable)
+        {
+            this.addCloseCallback(new Runnable(){
+
+                @Override
+                public void run()
+                {
+                    // TODO only close this gui
+                    Minecraft.getMinecraft().displayGuiScreen(null);
+                }
+                
+            });
+        }
         
         this.collayout = new ColumnLayout();
         this.error = new Label();

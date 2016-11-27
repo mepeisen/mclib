@@ -29,6 +29,7 @@ import java.util.List;
 
 import de.matthiasmann.twl.Button;
 import de.matthiasmann.twl.Widget;
+import de.matthiasmann.twl.model.TableSingleSelectionModel;
 import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
 import de.minigameslib.mclib.client.impl.gui.widgets.DataTable;
@@ -55,6 +56,7 @@ import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
+import de.minigameslib.mclib.pshared.WidgetData.ListButton;
 import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
@@ -198,7 +200,7 @@ public class MclibCoreHandler implements ComHandler
             buttons.add(this.createButton(fragment.getId(), button, "OK")); //$NON-NLS-1$
         }
         
-        final FormWindow form = new FormWindow(title, buttons.toArray(new Button[buttons.size()]));
+        final FormWindow form = new FormWindow(title, buttons.toArray(new Button[buttons.size()]), fragment.isClosable());
         
         for (final WidgetData wd : fragment.getWidgets())
         {
@@ -230,6 +232,20 @@ public class MclibCoreHandler implements ComHandler
             else if (wd.getListInput() != null)
             {
                 final DataTable table = new DataTable(wd.getListInput().getColumns(), fragment.getId(), wd.getListInput().getDataId(), wd.getListInput().getDataId());
+                final List<Button> tableButtons = new ArrayList<>();
+                for (final ListButton lb : wd.getListInput().getButtons())
+                {
+                    final Button lbWidget = this.createButton(fragment.getId(), lb, "OK"); //$NON-NLS-1$
+                    if (lb.isNeedsInput())
+                    {
+                        lbWidget.setEnabled(false);
+                        table.getSelectionModel().addSelectionChangeListener(() -> {
+                            lbWidget.setEnabled(table.getSelectionModel().getFirstSelected() != TableSingleSelectionModel.NO_SELECTION);
+                        });
+                    }
+                    tableButtons.add(lbWidget);
+                }
+                table.setButtons(tableButtons);
                 form.addRow("col1+2").add(table); //$NON-NLS-1$
                 postActions.add(() -> table.queryRows(1)); // display first page
             }

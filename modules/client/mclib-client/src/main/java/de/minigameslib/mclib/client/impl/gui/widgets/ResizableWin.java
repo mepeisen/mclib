@@ -68,6 +68,7 @@ public class ResizableWin extends ResizableFrame
                 @Override
                 public void run()
                 {
+                    // TODO only close this gui
                     Minecraft.getMinecraft().displayGuiScreen(null);
                 }
                 

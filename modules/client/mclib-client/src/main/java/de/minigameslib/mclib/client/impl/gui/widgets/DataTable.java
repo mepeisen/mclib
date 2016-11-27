@@ -101,9 +101,10 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
         this.inputId = inputId;
         this.formKey = formKey;
         this.winId = winId;
-        this.visibleColumns.stream().filter(ListColumn::isVisible).collect(Collectors.toList());
+        this.visibleColumns = this.columnDefinitions.stream().filter(ListColumn::isVisible).collect(Collectors.toList());
         this.model = new MyTableModel();
         this.table = new Table(this.model);
+        this.table.setTheme("/table"); //$NON-NLS-1$
         this.table.setSelectionManager(new TableRowSelectionManager(new TableSingleSelectionModel()));
         this.addRow("table").add(this.table); //$NON-NLS-1$
     }
@@ -235,6 +236,14 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
             super.fireAllChanged();
         }
         
+    }
+
+    /**
+     * @return table selection model.
+     */
+    public TableSingleSelectionModel getSelectionModel()
+    {
+        return (TableSingleSelectionModel) this.table.getSelectionManager().getSelectionModel();
     }
     
 }
