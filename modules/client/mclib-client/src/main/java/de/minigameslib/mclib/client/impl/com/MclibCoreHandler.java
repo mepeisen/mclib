@@ -32,6 +32,7 @@ import de.matthiasmann.twl.Widget;
 import de.matthiasmann.twl.model.TableSingleSelectionModel;
 import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.client.impl.gui.widgets.ComboField;
 import de.minigameslib.mclib.client.impl.gui.widgets.DataTable;
 import de.minigameslib.mclib.client.impl.gui.widgets.ErrorWidgetInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormEditField;
@@ -254,6 +255,12 @@ public class MclibCoreHandler implements ComHandler
                 table.setButtons(tableButtons);
                 form.addRow("col1+2").add(table); //$NON-NLS-1$
                 postActions.add(() -> table.queryRows(1)); // display first page
+            }
+            else if (wd.getComboInput() != null)
+            {
+                // TODO support NKey (inline new value creation)
+                final ComboField field = new ComboField(wd.getComboInput().getFormKey(), wd.getComboInput().getIdKey(), wd.getComboInput().getLabelKey(), wd.getComboInput().getValues(), wd.getComboInput().getValue());
+                form.addRow("col1", "col2").addWithLabel(wd.getComboInput().getLabel(), field); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         
