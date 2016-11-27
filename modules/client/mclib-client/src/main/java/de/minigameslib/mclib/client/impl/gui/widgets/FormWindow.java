@@ -60,7 +60,6 @@ public class FormWindow extends ResizableFrame implements ErrorWidgetInterface
         
         this.collayout = new ColumnLayout();
         this.error = new Label();
-        this.error.setText("123456789012345678901234567890123456789012345678901234567890");
         this.collayout.addRow("error").add(this.error); //$NON-NLS-1$
         
         ScrollPane scrollPane2 = new ScrollPane(this.collayout);

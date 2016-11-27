@@ -31,9 +31,11 @@ import de.matthiasmann.twl.Button;
 import de.matthiasmann.twl.Widget;
 import de.minigameslib.mclib.client.impl.MclibMod;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.client.impl.gui.widgets.DataTable;
 import de.minigameslib.mclib.client.impl.gui.widgets.ErrorWidgetInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormEditField;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormFieldInterface;
+import de.minigameslib.mclib.client.impl.gui.widgets.FormQueryWidgetInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormWindow;
 import de.minigameslib.mclib.client.impl.gui.widgets.MultiWidget;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
@@ -50,6 +52,7 @@ import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
+import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
 import de.minigameslib.mclib.pshared.WinClosedData;
@@ -105,6 +108,10 @@ public class MclibCoreHandler implements ComHandler
         {
             this.sendError(context, message.getData().getFragment(SendErrorData.class, "data")); //$NON-NLS-1$
         }
+        else if (key.equals(CoreMessages.QueryFormAnswer.name()))
+        {
+            this.queryAnswer(context, message.getData().getFragment(QueryFormAnswerData.class, "data")); //$NON-NLS-1$
+        }
         // otherwise silently ignore the invalid message.
     }
 
@@ -149,8 +156,41 @@ public class MclibCoreHandler implements ComHandler
      * @param context
      * @param fragment
      */
+    private void queryAnswer(MessageContext context, QueryFormAnswerData fragment)
+    {
+        final Widget widget = getWidget(fragment.getWinId());
+        queryAnswer(fragment, widget);
+    }
+
+    /**
+     * @param fragment
+     * @param widget
+     */
+    private void queryAnswer(QueryFormAnswerData fragment, final Widget widget)
+    {
+        // note: There may be more than one widget interested in form answer.
+        // So we do not break the execution if we find an interested widget.
+        for (int i = 0; i < widget.getNumChildren(); i++)
+        {
+            final Widget child = widget.getChild(i);
+            if (child instanceof FormQueryWidgetInterface)
+            {
+                if (fragment.getInputId().equals(((FormQueryWidgetInterface) child).getInputId()))
+                {
+                    ((FormQueryWidgetInterface) child).parseFormQuery(fragment.getData());
+                }
+            }
+            queryAnswer(fragment, child);
+        }
+    }
+
+    /**
+     * @param context
+     * @param fragment
+     */
     private void displayResizableWin(MessageContext context, DisplayResizableWinData fragment)
     {
+        final List<Runnable> postActions = new ArrayList<>();
         final String title = fragment.getTitle() == null ? "Error" : fragment.getTitle(); //$NON-NLS-1$
         final List<Button> buttons = new ArrayList<>();
         for (final ButtonData button : fragment.getButtons())
@@ -187,9 +227,17 @@ public class MclibCoreHandler implements ComHandler
                 editField.setText(wd.getTextInput().getValue());
                 form.addRow("col1", "col2").addWithLabel(wd.getTextInput().getLabel(), editField); //$NON-NLS-1$ //$NON-NLS-2$
             }
+            else if (wd.getListInput() != null)
+            {
+                final DataTable table = new DataTable(wd.getListInput().getColumns(), fragment.getId(), wd.getListInput().getDataId(), wd.getListInput().getDataId());
+                form.addRow("col1+2").add(table); //$NON-NLS-1$
+                postActions.add(() -> table.queryRows(1)); // display first page
+            }
         }
         
         this.displayWidget(fragment.getId(), form);
+        
+        postActions.forEach(Runnable::run);
     }
 
     /**

@@ -235,6 +235,9 @@
 		        <theme name="label" ref="label" />
 		        <theme name="editfield" ref="editfield" />
 		        <theme name="textarea" ref="textarea" />
+		        <theme name="datatable" ref="-defaults">
+		        	<theme name="table" ref="table" />
+		        </theme>
 	        </theme>
         </theme>
         <theme name="button" ref="button" />
