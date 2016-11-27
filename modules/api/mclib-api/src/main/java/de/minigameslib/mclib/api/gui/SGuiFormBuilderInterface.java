@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.gui;
 
 import java.io.Serializable;
+import java.util.List;
 
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
@@ -84,13 +85,56 @@ public interface SGuiFormBuilderInterface
     
     /**
      * Adds a list control
-     * @param supplier provides the data for this list
+     * 
+     * @param supplier
+     *            provides the data for this list
      * @return gui builder for list controls.
      */
     SGuiListBuilderInterface addList(SGuiListSupplier supplier);
     
-    // SGuiFormBuilderInterface addComboInput(LocalizedMessageInterface label, Serializable[] labelArgs, String formKey, McSupplier<Iterable<SGuiComboValue>> values, String initialValue, boolean
-    // allowsNull, boolean allowsUserDefined);
+    /**
+     * Adds a combo box
+     * 
+     * @param label
+     * @param labelArgs
+     * @param allowsNull
+     * @param idKey
+     *            the key to receive ids from data section
+     * @param labelKey
+     *            the key to receive labels from data section
+     * @param formKey
+     *            the form key to be used
+     * @param value
+     *            the current value
+     * @param values
+     *            possible values.
+     * @return this object for chaining
+     */
+    SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
+            List<DataSection> values);
+    
+    /**
+     * Adds a combo box that allows new values to be entered
+     * 
+     * @param label
+     * @param labelArgs
+     * @param allowsNull
+     * @param idKey
+     *            the key to receive ids from data section
+     * @param labelKey
+     *            the key to receive labels from data section
+     * @param formKey
+     *            the form key to be used
+     * @param value
+     *            the current value
+     * @param values
+     *            possible values.
+     * @param newValueKey
+     *            form key used for user defined new values.
+     * @return this object for chaining
+     */
+    SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
+            List<DataSection> values, String newValueKey);
     
     /**
      * Displays the form on client.

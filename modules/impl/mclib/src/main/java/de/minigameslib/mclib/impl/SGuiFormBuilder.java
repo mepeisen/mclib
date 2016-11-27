@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import de.minigameslib.mclib.api.McException;
@@ -47,6 +48,8 @@ import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
+import de.minigameslib.mclib.pshared.WidgetData.ComboInput;
+import de.minigameslib.mclib.pshared.WidgetData.ComboValue;
 import de.minigameslib.mclib.pshared.WidgetData.Label;
 import de.minigameslib.mclib.pshared.WidgetData.ListButton;
 import de.minigameslib.mclib.pshared.WidgetData.ListColumn;
@@ -333,6 +336,55 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             return this;
         }
         
+    }
+
+    @Override
+    public SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
+            List<DataSection> values)
+    {
+        final ComboInput input = new ComboInput();
+        input.setAllowsNewValues(false);
+        input.setAllowsNull(allowsNull);
+        input.setFormKey(formKey);
+        input.setIdKey(idKey);
+        input.setLabel(this.encode(label, labelArgs));
+        input.setLabelKey(labelKey);
+        input.setValue(value);
+        for (final DataSection cvdata : values)
+        {
+            final ComboValue cv = new ComboValue();
+            cv.setData(cvdata);
+            input.getValues().add(cv);
+        }
+        final WidgetData w = new WidgetData();
+        w.setComboInput(input);
+        this.data.getWidgets().add(w);
+        return this;
+    }
+
+    @Override
+    public SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
+            List<DataSection> values, String newValueKey)
+    {
+        final ComboInput input = new ComboInput();
+        input.setAllowsNewValues(true);
+        input.setAllowsNull(allowsNull);
+        input.setFormKey(formKey);
+        input.setNformKey(newValueKey);
+        input.setIdKey(idKey);
+        input.setLabel(this.encode(label, labelArgs));
+        input.setLabelKey(labelKey);
+        input.setValue(value);
+        for (final DataSection cvdata : values)
+        {
+            final ComboValue cv = new ComboValue();
+            cv.setData(cvdata);
+            input.getValues().add(cv);
+        }
+        final WidgetData w = new WidgetData();
+        w.setComboInput(input);
+        this.data.getWidgets().add(w);
+        return this;
     }
     
 }

@@ -71,6 +71,12 @@ public class WidgetData extends AnnotatedDataFragment
     protected ListInput listInput;
     
     /**
+     * The combobox input
+     */
+    @PersistentField
+    protected ComboInput comboInput;
+    
+    /**
      * @return the label
      */
     public Label getLabel()
@@ -148,6 +154,246 @@ public class WidgetData extends AnnotatedDataFragment
     public void setListInput(ListInput listInput)
     {
         this.listInput = listInput;
+    }
+    
+    /**
+     * @return the comboInput
+     */
+    public ComboInput getComboInput()
+    {
+        return this.comboInput;
+    }
+
+    /**
+     * @param comboInput the comboInput to set
+     */
+    public void setComboInput(ComboInput comboInput)
+    {
+        this.comboInput = comboInput;
+    }
+
+    /**
+     * A combo box input.
+     */
+    public static class ComboInput extends AnnotatedDataFragment
+    {
+        
+        /**
+         * Allows empty values.
+         */
+        @PersistentField
+        protected boolean allowsNull;
+        
+        /**
+         * Allows new values.
+         */
+        @PersistentField
+        protected boolean allowsNewValues;
+        
+        /**
+         * Data key to query the label from data entry.
+         */
+        @PersistentField
+        protected String labelKey;
+        
+        /**
+         * ID key of the selected data entry.
+         */
+        @PersistentField
+        protected String idKey;
+        
+        /**
+         * Form key of the selected data entry.
+         */
+        @PersistentField
+        protected String formKey;
+        
+        /**
+         * Form key for new values.
+         */
+        @PersistentField
+        protected String nformKey;
+     
+        /**
+         * label of text input.
+         */
+        @PersistentField
+        protected String label;
+        
+        /**
+         * initial value
+         */
+        @PersistentField
+        protected String value;
+        
+        /**
+         * the possible combobox values.
+         */
+        @PersistentField
+        protected List<ComboValue> values = new ArrayList<>();
+
+        /**
+         * @return the allowsNull
+         */
+        public boolean isAllowsNull()
+        {
+            return this.allowsNull;
+        }
+
+        /**
+         * @param allowsNull the allowsNull to set
+         */
+        public void setAllowsNull(boolean allowsNull)
+        {
+            this.allowsNull = allowsNull;
+        }
+
+        /**
+         * @return the allowsNewValues
+         */
+        public boolean isAllowsNewValues()
+        {
+            return this.allowsNewValues;
+        }
+
+        /**
+         * @param allowsNewValues the allowsNewValues to set
+         */
+        public void setAllowsNewValues(boolean allowsNewValues)
+        {
+            this.allowsNewValues = allowsNewValues;
+        }
+
+        /**
+         * @return the labelKey
+         */
+        public String getLabelKey()
+        {
+            return this.labelKey;
+        }
+
+        /**
+         * @param labelKey the labelKey to set
+         */
+        public void setLabelKey(String labelKey)
+        {
+            this.labelKey = labelKey;
+        }
+
+        /**
+         * @return the idKey
+         */
+        public String getIdKey()
+        {
+            return this.idKey;
+        }
+
+        /**
+         * @param idKey the idKey to set
+         */
+        public void setIdKey(String idKey)
+        {
+            this.idKey = idKey;
+        }
+
+        /**
+         * @return the nformKey
+         */
+        public String getNformKey()
+        {
+            return this.nformKey;
+        }
+
+        /**
+         * @param nformKey the nformKey to set
+         */
+        public void setNformKey(String nformKey)
+        {
+            this.nformKey = nformKey;
+        }
+
+        /**
+         * @return the formKey
+         */
+        public String getFormKey()
+        {
+            return this.formKey;
+        }
+
+        /**
+         * @param formKey the formKey to set
+         */
+        public void setFormKey(String formKey)
+        {
+            this.formKey = formKey;
+        }
+
+        /**
+         * @return the label
+         */
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        /**
+         * @param label the label to set
+         */
+        public void setLabel(String label)
+        {
+            this.label = label;
+        }
+
+        /**
+         * @return the value
+         */
+        public String getValue()
+        {
+            return this.value;
+        }
+
+        /**
+         * @param value the value to set
+         */
+        public void setValue(String value)
+        {
+            this.value = value;
+        }
+
+        /**
+         * @return the values
+         */
+        public List<ComboValue> getValues()
+        {
+            return this.values;
+        }
+        
+    }
+    
+    /**
+     * Combobox value
+     */
+    public static class ComboValue extends AnnotatedDataFragment
+    {
+        /** row data. */
+        @PersistentField
+        protected DataSection data = new MemoryDataSection();
+
+        /**
+         * @return the data
+         */
+        public DataSection getData()
+        {
+            return this.data;
+        }
+
+        /**
+         * @param data the data to set
+         */
+        public void setData(DataSection data)
+        {
+            this.data = data;
+        }
     }
 
     /**
