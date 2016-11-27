@@ -393,7 +393,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayError.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
-        MclibCommunication.ClientServerCore.send(section);
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
 
@@ -441,7 +441,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayInfo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
-        MclibCommunication.ClientServerCore.send(section);
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
     
@@ -492,7 +492,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
-        MclibCommunication.ClientServerCore.send(section);
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
     
@@ -517,7 +517,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
-        MclibCommunication.ClientServerCore.send(section);
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
 
@@ -686,7 +686,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 final DataSection section = new MemoryDataSection();
                 section.set("KEY", CoreMessages.CloseWin.name()); //$NON-NLS-1$
                 data.write(section.createSection("data")); //$NON-NLS-1$
-                MclibCommunication.ClientServerCore.send(section);
+                GuiSessionImpl.this.player.sendToClient(MclibCommunication.ClientServerCore, section);
                 
                 SGuiHelper.this.remove(this.getUuid());
             }
@@ -710,6 +710,15 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 return result;
             }
             
+        }
+
+        /**
+         * Returns the underlying player
+         * @return underlying player
+         */
+        public McPlayerInterface getPlayer()
+        {
+            return GuiSessionImpl.this.getPlayer();
         }
         
     }
@@ -801,7 +810,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 final DataSection section = new MemoryDataSection();
                 section.set("KEY", CoreMessages.QueryFormAnswer.name()); //$NON-NLS-1$
                 answer.write(section.createSection("data")); //$NON-NLS-1$
-                MclibCommunication.ClientServerCore.send(section);
+                this.player.sendToClient(MclibCommunication.ClientServerCore, section);
             }
         }
     }

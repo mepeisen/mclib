@@ -49,6 +49,7 @@ import org.bukkit.entity.Player;
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
@@ -68,6 +69,8 @@ import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WinClosedData;
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Implementation of arena players.
@@ -560,6 +563,22 @@ class McPlayerImpl implements McPlayerInterface
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
         ((GuiSessionImpl)session).sguiFormRequest(fragment);
+    }
+
+    @Override
+    public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
+    {
+        try
+        {
+            McLibInterface.instance().runInNewContext(() -> {
+                McLibInterface.instance().setContext(McPlayerInterface.class, this);
+                endpoint.send(data);
+            });
+        }
+        catch (McException ex)
+        {
+            // TODO Logging; should never happen
+        }
     }
     
 }

@@ -47,6 +47,8 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 
 /**
@@ -250,6 +252,12 @@ public class McPlayerInterfaceTest
         public GuiSessionInterface openSmartGui() throws McException
         {
             return null;
+        }
+
+        @Override
+        public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
+        {
+            // empty
         }
         
     }

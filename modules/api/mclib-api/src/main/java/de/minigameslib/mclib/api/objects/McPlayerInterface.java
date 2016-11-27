@@ -40,6 +40,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Interface representing players.
@@ -259,5 +261,17 @@ public interface McPlayerInterface
     {
         return this.getZone() != null;
     }
+    
+    // communication
+    
+    /**
+     * Sends given data to client side of this player.
+     *
+     * @param endpoint
+     * @param data
+     * 
+     * @throws IllegalStateException
+     */
+    void sendToClient(CommunicationEndpointId endpoint, DataSection... data);
     
 }

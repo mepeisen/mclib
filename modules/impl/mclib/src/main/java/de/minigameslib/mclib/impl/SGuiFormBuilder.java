@@ -175,7 +175,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             final DataSection section = new MemoryDataSection();
             section.set("KEY", CoreMessages.SendError.name()); //$NON-NLS-1$
             error.write(section.createSection("data")); //$NON-NLS-1$
-            MclibCommunication.ClientServerCore.send(section);
+            this.smartGui.getPlayer().sendToClient(MclibCommunication.ClientServerCore, section);
         }
     }
 
@@ -214,7 +214,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.DisplayResizableWin.name()); //$NON-NLS-1$
         this.data.write(section.createSection("data")); //$NON-NLS-1$
-        MclibCommunication.ClientServerCore.send(section);
+        this.smartGui.getPlayer().sendToClient(MclibCommunication.ClientServerCore, section);
         return this.window;
     }
 

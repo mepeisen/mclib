@@ -484,23 +484,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getServicesManager().load(NmsFactory.class).create(PlayerManagerInterface.class).registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
         this.players.onPlayerJoin(evt);
         
-        // TODO Have a method on player interface
-        try
-        {
-            this.runInNewContext(() -> {
-                this.setContext(McPlayerInterface.class, this.getPlayer(evt.getPlayer()));
-                // try to ping the client mod.
-                final PingData ping = new PingData();
-                final DataSection section = new MemoryDataSection();
-                section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
-                ping.write(section.createSection("data")); //$NON-NLS-1$
-                MclibCommunication.ClientServerCore.send(section);
-            });
-        }
-        catch (McException e)
-        {
-            // TODO logging
-        }
+        // try to ping the client mod.
+        final PingData ping = new PingData();
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
+        ping.write(section.createSection("data")); //$NON-NLS-1$
+        this.getPlayer(evt.getPlayer()).sendToClient(MclibCommunication.ClientServerCore, section);
     }
     
     /**
