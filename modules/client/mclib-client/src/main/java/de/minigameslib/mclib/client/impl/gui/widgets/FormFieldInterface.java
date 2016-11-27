@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.client.impl.gui.widgets;
 
+import de.minigameslib.mclib.pshared.FormData;
+
 /**
  * @author mepeisen
  */
@@ -31,15 +33,9 @@ public interface FormFieldInterface
 {
     
     /**
-     * Returns the form key.
-     * @return form key.
+     * Returns the form data.
+     * @return form data.
      */
-    String getFormKey();
-    
-    /**
-     * Returns the form value.
-     * @return form value.
-     */
-    String getFormValue();
+    FormData[] getFormData();
     
 }

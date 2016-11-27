@@ -231,7 +231,7 @@ public class MclibCoreHandler implements ComHandler
             }
             else if (wd.getListInput() != null)
             {
-                final DataTable table = new DataTable(wd.getListInput().getColumns(), fragment.getId(), wd.getListInput().getDataId(), wd.getListInput().getDataId());
+                final DataTable table = new DataTable(wd.getListInput().getColumns(), fragment.getId(), wd.getListInput().getDataId());
                 final List<Button> tableButtons = new ArrayList<>();
                 for (final ListButton lb : wd.getListInput().getButtons())
                 {
@@ -244,6 +244,12 @@ public class MclibCoreHandler implements ComHandler
                         });
                     }
                     tableButtons.add(lbWidget);
+                }
+                if (MclibMod.TRACE)
+                {
+                    table.getSelectionModel().addSelectionChangeListener(() -> {
+                        System.out.println("Table selection changed: " + table.getSelectionModel().getFirstSelected()); //$NON-NLS-1$
+                    });
                 }
                 table.setButtons(tableButtons);
                 form.addRow("col1+2").add(table); //$NON-NLS-1$
@@ -341,10 +347,14 @@ public class MclibCoreHandler implements ComHandler
             if (child instanceof FormFieldInterface)
             {
                 final FormFieldInterface formfield = (FormFieldInterface) child;
-                final FormData data = new FormData();
-                data.setKey(formfield.getFormKey());
-                data.setValue(formfield.getFormValue());
-                answer.getData().add(data);
+                for (final FormData data : formfield.getFormData())
+                {
+                    answer.getData().add(data);
+                    if (MclibMod.TRACE)
+                    {
+                        System.out.println("fill form data " + data.getKey() + " -> " + data.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
             }
             this.fillFormData(winId, answer, child);
         }

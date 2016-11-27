@@ -6,6 +6,7 @@
 
     <fontDef name="normal" filename="font.fnt" color="white">
         <fontParam if="error" color="red"/>
+        <fontParam if="selected" color="red"/>
         <fontParam if="textSelection" color="white"/>
     </fontDef>
 
@@ -183,6 +184,8 @@
             <param name=""><image>scrollpane.dragbutton.*</image></param>
             <!-- <param name="mouseCursor"><cursor>eforen.cursor.arrow.drag2d</cursor></param> -->
         </theme>
+        
+        <theme name="" ref="*"/>
     </theme>
 
     <theme name="textarea" ref="-defaults" allowWildcard="true">
@@ -224,24 +227,22 @@
         <param name="largeGap"><dimension>25,25</dimension></param>
         <param name="namedGaps"><map/></param>
         
-        <theme name="scrollpane" ref="scrollpane">
-	        <theme name="textarea" ref="textarea" />
-	        <theme name="columnlayout" ref="-defaults">
-		        <param name="defaultGap"><dimension>8,8</dimension></param>
-		        <param name="smallGap"><dimension>12,12</dimension></param>
-		        <param name="mediumGap"><dimension>20,20</dimension></param>
-		        <param name="largeGap"><dimension>25,25</dimension></param>
-		        <param name="namedGaps"><map/></param>
-		        <theme name="label" ref="label" />
-		        <theme name="editfield" ref="editfield" />
-		        <theme name="textarea" ref="textarea" />
-		        <theme name="datatable" ref="-defaults">
-		        	<theme name="button" ref="button" />
-		        </theme>
-	        </theme>
-        </theme>
-        <theme name="button" ref="button" />
+        <theme name="" ref="*"/>
     </theme>
+    
+    
+	<theme name="columnlayout" ref="-defaults" allowWildcard="true">
+		<param name="defaultGap"><dimension>8,8</dimension></param>
+		<param name="smallGap"><dimension>12,12</dimension></param>
+		<param name="mediumGap"><dimension>20,20</dimension></param>
+		<param name="largeGap"><dimension>25,25</dimension></param>
+		<param name="namedGaps"><map/></param>
+		<theme name="" ref="*"/>
+	</theme>
+	
+	<theme name="datatable" ref="-defaults" allowWildcard="true">
+		<theme name="" ref="*"/>
+	</theme>
 
     <theme name="colorselector" ref="dialoglayout">
         <theme name="label" ref="label"/>

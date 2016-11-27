@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.client.impl.gui.widgets;
 
 import de.matthiasmann.twl.EditField;
+import de.minigameslib.mclib.pshared.FormData;
 
 /**
  * A form field.
@@ -48,15 +49,12 @@ public class FormEditField extends EditField implements FormFieldInterface
     }
 
     @Override
-    public String getFormKey()
+    public FormData[] getFormData()
     {
-        return this.formKey;
-    }
-
-    @Override
-    public String getFormValue()
-    {
-        return this.getText();
+        final FormData data = new FormData();
+        data.setKey(this.formKey);
+        data.setValue(this.getText());
+        return new FormData[]{data};
     }
     
 }

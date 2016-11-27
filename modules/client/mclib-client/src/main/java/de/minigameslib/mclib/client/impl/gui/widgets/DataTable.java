@@ -35,6 +35,7 @@ import de.matthiasmann.twl.TableRowSelectionManager;
 import de.matthiasmann.twl.model.AbstractTableModel;
 import de.matthiasmann.twl.model.TableSingleSelectionModel;
 import de.minigameslib.mclib.pshared.CoreMessages;
+import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WidgetData.ListColumn;
@@ -75,9 +76,6 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
     /** the input id to query the data. */
     private String inputId;
 
-    /** the form key */
-    private String formKey;
-
     /** window id for data queries. */
     private String winId;
     
@@ -89,9 +87,8 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
      * @param columns 
      * @param winId
      * @param inputId 
-     * @param formKey 
      */
-    public DataTable(List<ListColumn> columns, String winId, String inputId, String formKey)
+    public DataTable(List<ListColumn> columns, String winId, String inputId)
     {
         // TODO Support sorting and filtering
         // TODO Support load errors (through sending error to this widget)
@@ -99,7 +96,6 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
         this.setTheme("datatable"); //$NON-NLS-1$
         this.columnDefinitions = columns;
         this.inputId = inputId;
-        this.formKey = formKey;
         this.winId = winId;
         this.visibleColumns = this.columnDefinitions.stream().filter(ListColumn::isVisible).collect(Collectors.toList());
         this.model = new MyTableModel();
@@ -168,14 +164,10 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
     }
 
     @Override
-    public String getFormKey()
+    public FormData[] getFormData()
     {
-        return this.formKey;
-    }
+        final List<FormData> result = new ArrayList<>();
 
-    @Override
-    public String getFormValue()
-    {
         final int row = this.table.getSelectionManager().getSelectionModel().getFirstSelected();
         if (row != TableSingleSelectionModel.NO_SELECTION)
         {
@@ -184,11 +176,16 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
             {
                 if (column.getFormKey() != null)
                 {
-                    return rowdata.getString(column.getFormKey());
+                    final FormData fd = new FormData();
+                    fd.setKey(column.getFormKey());
+                    fd.setValue(rowdata.getString(column.getDataKey()));
+                    result.add(fd);
+                    break;
                 }
             }
         }
-        return null;
+        
+        return result.toArray(new FormData[result.size()]);
     }
     
     /**
