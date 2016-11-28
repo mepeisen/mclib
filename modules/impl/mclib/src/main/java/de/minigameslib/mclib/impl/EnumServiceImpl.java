@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 
 /**
@@ -63,6 +64,13 @@ class EnumServiceImpl implements EnumServiceInterface
                 }
                 this.pluginsByEnum.put(ev, plugin);
                 set.add(ev);
+            }
+        }
+        if (clazz.getAnnotation(ChildEnum.class) != null)
+        {
+            for (final Class<? extends Enum<?>> childClazz : clazz.getAnnotation(ChildEnum.class).value())
+            {
+                this.registerEnumClass(plugin, childClazz);
             }
         }
     }
