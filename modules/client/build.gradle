@@ -1,6 +1,13 @@
+    
+def buildTime() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMddHHmmss')
+	return formattedDate
+}
+    
 subprojects {
     group = "de.minigameslib.mclib.client"
-    version = "0.0.1"
+    version = "0.0.1.${buildTime()}"
     
     configurations.all {
         // Check for updates every build

@@ -58,9 +58,9 @@ public class MclibMod implements CommunicationServiceInterface
 {
     
     /** the mod id. */
-    public static final String          MODID    = "mclib";       //$NON-NLS-1$
+    public static final String          MODID    = "mclib";         //$NON-NLS-1$
     /** the version of this mod. */
-    public static final String          VERSION  = "0.0.1";       //$NON-NLS-1$
+    public static final String          VERSION  = "VERSIONNUMBER"; //$NON-NLS-1$
     
     /** the client stuff proxy. */
     @SidedProxy(clientSide = "de.minigameslib.mclib.client.impl.ClientProxy")
@@ -77,7 +77,7 @@ public class MclibMod implements CommunicationServiceInterface
     private static SimpleNetworkWrapper NETWORK;
     
     /** true to activate tracing output */
-    public static final boolean TRACE = true;
+    public static final boolean         TRACE    = true;
     
     /**
      * Initialization.

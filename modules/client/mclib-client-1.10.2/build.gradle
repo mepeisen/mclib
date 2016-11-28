@@ -44,6 +44,8 @@ minecraft {
     runDir = "run"
     version = "1.10.2-12.18.2.2151"
     mappings = "snapshot_20161111"
+    replaceIn "MclibMod.java"
+    replace "VERSIONNUMBER", project.version
 }
 
 processResources {
