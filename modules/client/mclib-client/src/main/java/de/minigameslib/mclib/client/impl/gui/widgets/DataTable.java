@@ -30,6 +30,9 @@ import java.util.stream.Collectors;
 
 import de.matthiasmann.twl.Button;
 import de.matthiasmann.twl.ColumnLayout;
+import de.matthiasmann.twl.EditField;
+import de.matthiasmann.twl.Event;
+import de.matthiasmann.twl.Label;
 import de.matthiasmann.twl.Table;
 import de.matthiasmann.twl.TableRowSelectionManager;
 import de.matthiasmann.twl.model.AbstractTableModel;
@@ -78,6 +81,36 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
 
     /** window id for data queries. */
     private String winId;
+
+    /** start button. */
+    private Button startBtn;
+
+    /** prev button. */
+    private Button prevBtn;
+
+    /** start page input field. */
+    private EditField startPage;
+
+    /** page count label. */
+    private Label pageCount;
+
+    /** end index label. */
+    private Label endIx;
+
+    /** start index label. */
+    private Label startIx;
+
+    /** next button. */
+    private Button nextBtn;
+
+    /** end button. */
+    private Button endBtn;
+    
+    /** current page number requested by query. */
+    private int curPage;
+    
+    /** total count of entries in list. */
+    private int totalCount;
     
     /** list limit. */
     private static final int LIMIT = 50;
@@ -103,6 +136,45 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
         this.table.setTheme("/table"); //$NON-NLS-1$
         this.table.setSelectionManager(new TableRowSelectionManager(new TableSingleSelectionModel()));
         this.addRow("table").add(this.table); //$NON-NLS-1$
+        this.startBtn = new Button("<<"); //$NON-NLS-1$
+        this.prevBtn = new Button("<"); //$NON-NLS-1$
+        this.startPage = new EditField();
+        this.pageCount = new Label();
+        this.endIx = new Label();
+        this.startIx = new Label();
+        this.nextBtn = new Button(">"); //$NON-NLS-1$
+        this.endBtn = new Button(">>"); //$NON-NLS-1$
+        this.addRow("startbtn", "prevpage", "startpage", "l0", "pagecount", "l1", "startix", "l2", "endix", "l4", "nextpage", "endpage") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$
+            .add(this.startBtn).add(this.prevBtn)
+            .add(this.startPage).add(new Label("/")).add(this.pageCount) //$NON-NLS-1$
+            .add(new Label(" (#")).add(this.startIx).add(new Label(" - #")).add(this.endIx).add(new Label(")")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            .add(this.nextBtn).add(this.endBtn);
+        
+        this.startBtn.addCallback(() -> this.queryRows(1));
+        this.prevBtn.addCallback(() -> this.queryRows(this.curPage <= 1 ? 1 : this.curPage - 1));
+        this.nextBtn.addCallback(() -> this.queryRows(this.curPage * LIMIT >= this.totalCount ? this.curPage : this.curPage + 1));
+        this.endBtn.addCallback(() -> this.queryRows(this.totalCount / LIMIT));
+        this.startPage.addCallback(key -> {
+            if (key == Event.KEY_RETURN)
+            {
+                try
+                {
+                    final int page = Integer.valueOf(this.startPage.getText());
+                    if (page >= 1 && (page * LIMIT) < this.totalCount)
+                    {
+                        this.queryRows(page);
+                    }
+                    else
+                    {
+                        this.queryRows(1);
+                    }
+                }
+                catch (@SuppressWarnings("unused") NumberFormatException ex)
+                {
+                    this.queryRows(1);
+                }
+            }
+        });
     }
     
     /**
@@ -111,6 +183,8 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
      */
     public void queryRows(int page)
     {
+        this.curPage = page;
+        
         // send query to server.
         final QueryFormRequestData request = new QueryFormRequestData();
         request.setWinId(this.winId);
@@ -161,6 +235,12 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
             this.data.add(row.getData());
         }
         this.model.fireAllChanged();
+        
+        this.totalCount = response.getCount();
+        this.startPage.setText(String.valueOf(this.curPage));
+        this.startIx.setText(String.valueOf(1 + (this.curPage - 1) * LIMIT));
+        this.endIx.setText(String.valueOf(this.curPage * LIMIT));
+        this.pageCount.setText(String.valueOf(this.totalCount / LIMIT));
     }
 
     @Override
