@@ -24,13 +24,23 @@
 
 package de.minigameslib.mclib.client.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import de.minigameslib.mclib.client.impl.gui.TwlManager;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
+import de.minigameslib.mclib.client.impl.markers.BlockMarker;
+import de.minigameslib.mclib.client.impl.markers.CuboidMarker;
+import de.minigameslib.mclib.client.impl.markers.MarkerColor;
+import de.minigameslib.mclib.client.impl.markers.MarkerInterface;
+import de.minigameslib.mclib.client.impl.util.CameraPos;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -49,6 +59,9 @@ public class ClientProxy
     /** key binding to activate MINIGAMES gui. */
     private static final KeyBinding KEY_BINDING = new KeyBinding("Sample GUI", Keyboard.KEY_M, "MINIGAMES"); //$NON-NLS-1$ //$NON-NLS-2$
     
+    /** block markers. */
+    private final List<MarkerInterface> markers = new ArrayList<>();
+    
     /**
      * Constructor.
      */
@@ -66,16 +79,33 @@ public class ClientProxy
     {
         if (mc.thePlayer != null && mc.theWorld != null && KEY_BINDING.isPressed())
         {
-//
-//            // send pong to server.
-//            final PingData answer = new PingData();
-//            // TODO add extensions
-//            final DataSection section = new MemoryDataSection();
-//            section.set("KEY", CoreMessages.Pong.name()); //$NON-NLS-1$
-//            answer.write(section.createSection("data")); //$NON-NLS-1$
-//            MclibCommunication.ClientServerCore.send(section);
-            
-            // mc.thePlayer.openGui(MclibMod.instance, MclibGuiHandler.IM_SAMPLE_GUI, mc.theWorld, 0, 0, 0);
+            // set the marker
+            if (this.markers.size() == 2)
+            {
+                this.markers.clear();
+            }
+            else if (this.markers.size() == 0)
+            {
+                final int x = (int) Math.floor(mc.thePlayer.posX);
+                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
+                final int z = (int) Math.floor(mc.thePlayer.posZ);
+                if (MclibMod.TRACE)
+                {
+                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                this.markers.add(new BlockMarker(x, y, z, MarkerColor.YELLOW));
+            }
+            else
+            {
+                final int x = (int) Math.floor(mc.thePlayer.posX);
+                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
+                final int z = (int) Math.floor(mc.thePlayer.posZ);
+                if (MclibMod.TRACE)
+                {
+                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                this.markers.add(new CuboidMarker(x, y, z, x + 5, y + 5, z + 5, MarkerColor.BLUE));
+            }
         }
     }
     
@@ -89,6 +119,62 @@ public class ClientProxy
         if (evt.getGui() instanceof TwlScreen)
         {
             TwlManager.getInstance().setScreen(((TwlScreen) evt.getGui()).getMainWidget());
+        }
+    }
+    
+    /**
+     * world render event.
+     * @param event
+     */
+    @SubscribeEvent
+    public void onWorldRender(RenderWorldLastEvent event)
+    {
+        onRender(event.getPartialTicks());
+    }
+
+    /**
+     * Rendering
+     * @param partialTicks
+     */
+    public void onRender(float partialTicks)
+    {
+        // TODO enabled check
+//        if(CUIController.isEnable()==false)
+//            return;
+
+        try
+        {
+            GL11.glPushMatrix();
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glDisable(GL11.GL_LIGHT0);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+            try
+            {
+                CameraPos cameraPos = new CameraPos(Minecraft.getMinecraft().getRenderViewEntity(), partialTicks);
+                for (final MarkerInterface marker : this.markers)
+                {
+                    marker.render(cameraPos);
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO logging
+                e.printStackTrace();
+            }
+
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glEnable(GL11.GL_LIGHT0);
+
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glPopMatrix();
+        }
+        catch (Exception ex)
+        {
+            // TODO logging
+            ex.printStackTrace();
         }
     }
     

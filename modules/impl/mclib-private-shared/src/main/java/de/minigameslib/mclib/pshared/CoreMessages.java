@@ -110,4 +110,22 @@ public enum CoreMessages
      */
     QueryFormAnswer,
     
+    /**
+     * Displays a marker
+     * @see DisplayMarkerData
+     */
+    DisplayMarker,
+    
+    /**
+     * Removes a marker
+     * @see RemoveMarkerData
+     */
+    RemoveMarker,
+    
+    /**
+     * Removes all displayed markers
+     * @see ResetMarkersData
+     */
+    ResetMarkers,
+    
 }
