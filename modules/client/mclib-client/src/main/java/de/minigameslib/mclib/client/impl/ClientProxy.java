@@ -24,17 +24,14 @@
 
 package de.minigameslib.mclib.client.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import de.minigameslib.mclib.client.impl.gui.TwlManager;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
-import de.minigameslib.mclib.client.impl.markers.BlockMarker;
-import de.minigameslib.mclib.client.impl.markers.CuboidMarker;
-import de.minigameslib.mclib.client.impl.markers.MarkerColor;
 import de.minigameslib.mclib.client.impl.markers.MarkerInterface;
 import de.minigameslib.mclib.client.impl.util.CameraPos;
 import net.minecraft.client.Minecraft;
@@ -60,7 +57,7 @@ public class ClientProxy
     private static final KeyBinding KEY_BINDING = new KeyBinding("Sample GUI", Keyboard.KEY_M, "MINIGAMES"); //$NON-NLS-1$ //$NON-NLS-2$
     
     /** block markers. */
-    private final List<MarkerInterface> markers = new ArrayList<>();
+    private final Map<String, MarkerInterface> markers = new ConcurrentHashMap<>();
     
     /**
      * Constructor.
@@ -80,32 +77,32 @@ public class ClientProxy
         if (mc.thePlayer != null && mc.theWorld != null && KEY_BINDING.isPressed())
         {
             // set the marker
-            if (this.markers.size() == 2)
-            {
-                this.markers.clear();
-            }
-            else if (this.markers.size() == 0)
-            {
-                final int x = (int) Math.floor(mc.thePlayer.posX);
-                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
-                final int z = (int) Math.floor(mc.thePlayer.posZ);
-                if (MclibMod.TRACE)
-                {
-                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                }
-                this.markers.add(new BlockMarker(x, y, z, MarkerColor.YELLOW));
-            }
-            else
-            {
-                final int x = (int) Math.floor(mc.thePlayer.posX);
-                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
-                final int z = (int) Math.floor(mc.thePlayer.posZ);
-                if (MclibMod.TRACE)
-                {
-                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                }
-                this.markers.add(new CuboidMarker(x, y, z, x + 5, y + 5, z + 5, MarkerColor.BLUE));
-            }
+//            if (this.markers.size() == 2)
+//            {
+//                this.markers.clear();
+//            }
+//            else if (this.markers.size() == 0)
+//            {
+//                final int x = (int) Math.floor(mc.thePlayer.posX);
+//                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
+//                final int z = (int) Math.floor(mc.thePlayer.posZ);
+//                if (MclibMod.TRACE)
+//                {
+//                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//                }
+//                this.markers.add(new BlockMarker(x, y, z, MarkerColor.YELLOW));
+//            }
+//            else
+//            {
+//                final int x = (int) Math.floor(mc.thePlayer.posX);
+//                final int y = (int) Math.floor(mc.thePlayer.posY) - 1;
+//                final int z = (int) Math.floor(mc.thePlayer.posZ);
+//                if (MclibMod.TRACE)
+//                {
+//                    System.out.println("Adding marker at " + x + "/" + y + "/" + z); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//                }
+//                this.markers.add(new CuboidMarker(x, y, z, x + 5, y + 5, z + 5, MarkerColor.BLUE));
+//            }
         }
     }
     
@@ -153,7 +150,7 @@ public class ClientProxy
             try
             {
                 CameraPos cameraPos = new CameraPos(Minecraft.getMinecraft().getRenderViewEntity(), partialTicks);
-                for (final MarkerInterface marker : this.markers)
+                for (final MarkerInterface marker : this.markers.values().toArray(new MarkerInterface[0]))
                 {
                     marker.render(cameraPos);
                 }
@@ -176,6 +173,31 @@ public class ClientProxy
             // TODO logging
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * @param markerId
+     * @param marker
+     */
+    public void setMarker(String markerId, MarkerInterface marker)
+    {
+        this.markers.put(markerId, marker);
+    }
+
+    /**
+     * @param markerId
+     */
+    public void removeMarker(String markerId)
+    {
+        this.markers.remove(markerId);
+    }
+
+    /**
+     * 
+     */
+    public void resetMarkers()
+    {
+        this.markers.clear();
     }
     
 }

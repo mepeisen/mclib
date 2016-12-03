@@ -40,6 +40,9 @@ import de.minigameslib.mclib.client.impl.gui.widgets.FormFieldInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormQueryWidgetInterface;
 import de.minigameslib.mclib.client.impl.gui.widgets.FormWindow;
 import de.minigameslib.mclib.client.impl.gui.widgets.MultiWidget;
+import de.minigameslib.mclib.client.impl.markers.BlockMarker;
+import de.minigameslib.mclib.client.impl.markers.CuboidMarker;
+import de.minigameslib.mclib.client.impl.markers.MarkerColor;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.ButtonData;
@@ -47,14 +50,19 @@ import de.minigameslib.mclib.pshared.CloseWinData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayErrorData;
 import de.minigameslib.mclib.pshared.DisplayInfoData;
+import de.minigameslib.mclib.pshared.DisplayMarkerData;
 import de.minigameslib.mclib.pshared.DisplayResizableWinData;
 import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.pshared.DisplayYesNoData;
 import de.minigameslib.mclib.pshared.FormData;
+import de.minigameslib.mclib.pshared.MarkerData.BlockMarkerData;
+import de.minigameslib.mclib.pshared.MarkerData.CuboidMarkerData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormAnswerData;
+import de.minigameslib.mclib.pshared.RemoveMarkerData;
+import de.minigameslib.mclib.pshared.ResetMarkersData;
 import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.pshared.WidgetData;
 import de.minigameslib.mclib.pshared.WidgetData.ListButton;
@@ -115,7 +123,58 @@ public class MclibCoreHandler implements ComHandler
         {
             this.queryAnswer(context, message.getData().getFragment(QueryFormAnswerData.class, "data")); //$NON-NLS-1$
         }
+        else if (key.equals(CoreMessages.DisplayMarker.name()))
+        {
+            this.displayMarker(context, message.getData().getFragment(DisplayMarkerData.class, "data")); //$NON-NLS-1$
+        }
+        else if (key.equals(CoreMessages.RemoveMarker.name()))
+        {
+            this.removeMarker(context, message.getData().getFragment(RemoveMarkerData.class, "data")); //$NON-NLS-1$
+        }
+        else if (key.equals(CoreMessages.ResetMarkers.name()))
+        {
+            this.resetMarkers(context, message.getData().getFragment(ResetMarkersData.class, "data")); //$NON-NLS-1$
+        }
         // otherwise silently ignore the invalid message.
+    }
+    
+    /**
+     * @param context
+     * @param fragment
+     */
+    private void displayMarker(MessageContext context, DisplayMarkerData fragment)
+    {
+        final String markerId = fragment.getMarkerId();
+        if (fragment.getMarker().getBlock() != null)
+        {
+            final BlockMarkerData data = fragment.getMarker().getBlock();
+            final BlockMarker marker = new BlockMarker(data.getX(), data.getY(), data.getZ(), MarkerColor.BLUE);
+            MclibMod.clientProxy.setMarker(markerId, marker);
+        }
+        else if (fragment.getMarker().getCuboid() != null)
+        {
+            final CuboidMarkerData data = fragment.getMarker().getCuboid();
+            final CuboidMarker marker = new CuboidMarker(data.getX1(), data.getY1(), data.getZ1(), data.getX2(), data.getY2(), data.getZ2(), MarkerColor.BLUE);
+            MclibMod.clientProxy.setMarker(markerId, marker);
+        }
+    }
+    
+    /**
+     * @param context
+     * @param fragment
+     */
+    private void removeMarker(MessageContext context, RemoveMarkerData fragment)
+    {
+        MclibMod.clientProxy.removeMarker(fragment.getMarkerId());
+    }
+    
+    /**
+     * @param context
+     * @param fragment
+     */
+    private void resetMarkers(MessageContext context, ResetMarkersData fragment)
+    {
+        MclibMod.clientProxy.resetMarkers();
     }
 
     /**
