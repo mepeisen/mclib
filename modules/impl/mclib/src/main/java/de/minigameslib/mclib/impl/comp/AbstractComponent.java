@@ -74,7 +74,10 @@ public abstract class AbstractComponent
         this.registry = registry;
         this.configFile = config;
         this.owner = owner;
-        this.config = YamlConfiguration.loadConfiguration(config);
+        if (config != null)
+        {
+            this.config = YamlConfiguration.loadConfiguration(config);
+        }
     }
     
     /**
@@ -107,7 +110,10 @@ public abstract class AbstractComponent
     {
         this.setWorldChunks(Collections.emptySet());
         this.deleted = true;
-        this.configFile.delete();
+        if (this.configFile != null)
+        {
+            this.configFile.delete();
+        }
         this.owner.onDelete(this);
     }
     

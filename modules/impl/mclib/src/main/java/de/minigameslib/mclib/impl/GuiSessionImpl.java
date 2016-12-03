@@ -53,7 +53,10 @@ import de.minigameslib.mclib.api.gui.GuiType;
 import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McFunction;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -69,12 +72,18 @@ import de.minigameslib.mclib.pshared.CloseWinData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.DisplayErrorData;
 import de.minigameslib.mclib.pshared.DisplayInfoData;
+import de.minigameslib.mclib.pshared.DisplayMarkerData;
 import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.pshared.DisplayYesNoData;
 import de.minigameslib.mclib.pshared.FormData;
+import de.minigameslib.mclib.pshared.MarkerData;
+import de.minigameslib.mclib.pshared.MarkerData.BlockMarkerData;
+import de.minigameslib.mclib.pshared.MarkerData.CuboidMarkerData;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
+import de.minigameslib.mclib.pshared.RemoveMarkerData;
+import de.minigameslib.mclib.pshared.ResetMarkersData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -813,6 +822,135 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 this.player.sendToClient(MclibCommunication.ClientServerCore, section);
             }
         }
+    }
+    
+    /**
+     * sgui impl
+     */
+    private static final class SGuiMarker implements SGuiMarkerInterface
+    {
+        
+        /** marker uuid. */
+        private UUID markerId;
+        
+        /** the player. */
+        private McPlayerInterface player;
+
+        /**
+         * Constructor.
+         * @param player
+         * @param markerId
+         */
+        public SGuiMarker(McPlayerInterface player, UUID markerId)
+        {
+            this.player = player;
+            this.markerId = markerId;
+        }
+
+        @Override
+        public void remove() throws McException
+        {
+            final RemoveMarkerData data = new RemoveMarkerData();
+            data.setMarkerId(this.markerId.toString());
+            final DataSection section = new MemoryDataSection();
+            section.set("KEY", CoreMessages.RemoveMarker.name()); //$NON-NLS-1$
+            data.write(section.createSection("data")); //$NON-NLS-1$
+            this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        }
+
+        @Override
+        public void updateLabel(LocalizedMessageInterface label, Serializable... args) throws McException
+        {
+            // TODO support marker labels
+        }
+        
+    }
+
+    @Override
+    public SGuiMarkerInterface sguiShowMarker(ComponentInterface component, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        // TODO fill plugin and type id
+        data.getMarker().setBlock(new BlockMarkerData());
+        data.getMarker().getBlock().setX(component.getLocation().getBlockX());
+        data.getMarker().getBlock().setY(component.getLocation().getBlockY());
+        data.getMarker().getBlock().setZ(component.getLocation().getBlockZ());
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+
+    @Override
+    public SGuiMarkerInterface sguiShowMarker(SignInterface sign, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        // TODO fill plugin and type id
+        data.getMarker().setBlock(new BlockMarkerData());
+        data.getMarker().getBlock().setX(sign.getLocation().getBlockX());
+        data.getMarker().getBlock().setY(sign.getLocation().getBlockY());
+        data.getMarker().getBlock().setZ(sign.getLocation().getBlockZ());
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+
+    @Override
+    public SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        data.getMarker().setCuboid(new CuboidMarkerData());
+        data.getMarker().getCuboid().setX1(zone.getCuboid().getLowLoc().getBlockX());
+        data.getMarker().getCuboid().setY1(zone.getCuboid().getLowLoc().getBlockY());
+        data.getMarker().getCuboid().setZ1(zone.getCuboid().getLowLoc().getBlockZ());
+        data.getMarker().getCuboid().setX2(zone.getCuboid().getHighLoc().getBlockX());
+        data.getMarker().getCuboid().setY2(zone.getCuboid().getHighLoc().getBlockY());
+        data.getMarker().getCuboid().setZ2(zone.getCuboid().getHighLoc().getBlockZ());
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+
+    @Override
+    public void sguiRemoveAllMarkers() throws McException
+    {
+        final ResetMarkersData data = new ResetMarkersData();
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.RemoveMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
     }
     
 }

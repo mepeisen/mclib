@@ -40,16 +40,26 @@ public interface ZoneHandlerInterface extends Configurable
      * 
      * @param zone
      *            zone taht was created.
+     * @throws McException thrown if the zone has errors.
      */
-    void onCreate(ZoneInterface zone);
+    void onCreate(ZoneInterface zone) throws McException;
     
     /**
      * Invoked upon re-loading a component from config (after server restart). It is invoked after the config was loaded.
      * 
      * @param zone
      *            zone that was resumed.
+     * @throws McException thrown if the zone has errors.
      */
-    void onResume(ZoneInterface zone);
+    void onResume(ZoneInterface zone) throws McException;
+    
+    /**
+     * Invoked upon pausing (plugin disabling, shutdown)
+     * 
+     * @param zone
+     *            zone hat is paused.
+     */
+    void onPause(ZoneInterface zone);
     
     /**
      * Checks if the zone can be deleted

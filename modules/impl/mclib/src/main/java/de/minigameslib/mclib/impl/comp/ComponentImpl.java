@@ -29,6 +29,7 @@ import java.io.File;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
@@ -67,6 +68,14 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     {
         return this.id;
     }
+    
+    @Override
+    public void readData(ConfigurationSection coreSection)
+    {
+        // TODO should we re-read the id?
+        // the id is already read from registry.yml
+        this.handler.readFromConfig(coreSection.getConfigurationSection("handler")); //$NON-NLS-1$
+    }
 
     @Override
     protected void saveData(ConfigurationSection coreSection)
@@ -80,11 +89,20 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     {
         if (this.deleted)
         {
-            // TODO error
+            throw new McException(CommonMessages.AlreadyDeleted);
         }
         this.handler.canDelete();
         super.delete();
         this.handler.onDelete();
+    }
+
+    /**
+     * Returns the handler.
+     * @return handler
+     */
+    public ComponentHandlerInterface getHandler()
+    {
+        return this.handler;
     }
     
 }

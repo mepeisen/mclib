@@ -117,5 +117,16 @@ class EnumServiceImpl implements EnumServiceInterface
             return s == null ? Collections.emptySet() : s.stream().filter(o -> clazz.isInstance(o)).map(o -> clazz.cast(o)).collect(Collectors.toSet());
         }
     }
+
+    @Override
+    public <T> Set<T> getEnumValues(Class<T> clazz)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            final Set<T> result = new HashSet<>();
+            this.enumsByPlugin.values().forEach(s -> s.stream().filter(e -> clazz.isInstance(e)).map(e -> clazz.cast(e)).forEach(result::add));
+            return result;
+        }
+    }
     
 }

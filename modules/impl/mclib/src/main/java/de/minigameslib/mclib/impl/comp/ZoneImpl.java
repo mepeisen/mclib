@@ -28,8 +28,10 @@ import java.io.File;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.Cuboid;
+import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
@@ -40,56 +42,67 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
 {
     
+    /** zone id. */
+    private final ZoneId id;
+    
+    /** zone handler. */
+    private final ZoneHandlerInterface handler;
+    
     /**
      * @param registry
      * @param cuboid
+     * @param id 
+     * @param handler 
      * @param config 
      * @param owner 
      */
-    public ZoneImpl(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner)
+    public ZoneImpl(ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner)
     {
         super(registry, cuboid, config, owner);
-        // TODO Auto-generated constructor stub
+        this.id = id;
+        this.handler = handler;
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ZoneInterface#getZoneId()
-     */
     @Override
     public ZoneIdInterface getZoneId()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.id;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ZoneInterface#delete()
-     */
     @Override
     public void delete() throws McException
     {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.ZoneInterface#saveConfig()
-     */
-    @Override
-    public void saveConfig() throws McException
-    {
-        // TODO Auto-generated method stub
-        
+        if (this.deleted)
+        {
+            throw new McException(CommonMessages.AlreadyDeleted);
+        }
+        this.handler.canDelete();
+        super.delete();
+        this.handler.onDelete();
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.impl.comp.AbstractCuboidComponent#saveData(org.bukkit.configuration.ConfigurationSection)
-     */
     @Override
     protected void saveData(ConfigurationSection coreSection)
     {
-        // TODO Auto-generated method stub
-        
+        this.id.writeToConfig(coreSection.createSection("id")); //$NON-NLS-1$
+        this.handler.writeToConfig(coreSection.createSection("handler")); //$NON-NLS-1$
+    }
+    
+    @Override
+    public void readData(ConfigurationSection coreSection)
+    {
+        // TODO should we re-read the id?
+        // the id is already read from registry.yml
+        this.handler.readFromConfig(coreSection.getConfigurationSection("handler")); //$NON-NLS-1$
+    }
+
+    /**
+     * Returns the handler
+     * @return handler
+     */
+    public ZoneHandlerInterface getHandler()
+    {
+        return this.handler;
     }
     
 }

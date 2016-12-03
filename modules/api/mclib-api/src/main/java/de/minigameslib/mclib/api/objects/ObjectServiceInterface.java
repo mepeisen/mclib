@@ -32,6 +32,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
 
@@ -51,6 +52,113 @@ public interface ObjectServiceInterface
     static ObjectServiceInterface instance()
     {
         return ObjectServiceCache.get();
+    }
+    
+    // handler registrations
+    
+    /**
+     * Registers a component handler.
+     * @param type
+     * @param handler
+     * @throws McException 
+     */
+    <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException;
+    
+    /**
+     * Registers an entity handler.
+     * @param type
+     * @param handler
+     * @throws McException 
+     */
+    <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException;
+    
+    /**
+     * Registers a sign handler.
+     * @param type
+     * @param handler
+     * @throws McException 
+     */
+    <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException;
+    
+    /**
+     * Registers a zone handler.
+     * @param type
+     * @param handler
+     * @throws McException 
+     */
+    <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException;
+    
+    /**
+     * Tries to resume objects.
+     * @param plugin
+     * @return report of resuming components.
+     */
+    ResumeReport resumeObjects(Plugin plugin);
+    
+    /**
+     * The report during resumes.
+     */
+    interface ResumeReport
+    {
+        
+        /**
+         * checks if the object can be loaded successful
+         * @return {@code true} if the objects are loaded successful
+         */
+        boolean isOk();
+        
+        /**
+         * Returns the list of broken components.
+         * @return broken components
+         */
+        Iterable<ComponentIdInterface> getBrokenComponents();
+        
+        /**
+         * Returns the list of broken entities.
+         * @return broken entities
+         */
+        Iterable<EntityIdInterface> getBrokenEntities();
+        
+        /**
+         * Returns the list of broken signs.
+         * @return broken signs
+         */
+        Iterable<SignIdInterface> getBrokenSigns();
+        
+        /**
+         * Returns the list of broken zones.
+         * @return broken zones
+         */
+        Iterable<ZoneIdInterface> getBrokenZones();
+        
+        /**
+         * Returns the exception that was caught during component loading
+         * @param id the component id of the broken component
+         * @return caught exception
+         */
+        McException getException(ComponentIdInterface id);
+        
+        /**
+         * Returns the exception that was caught during entity loading
+         * @param id the entity id of the broken entity
+         * @return caught exception
+         */
+        McException getException(EntityIdInterface id);
+        
+        /**
+         * Returns the exception that was caught during sign loading
+         * @param id the sign id of the broken sign
+         * @return caught exception
+         */
+        McException getException(SignIdInterface id);
+        
+        /**
+         * Returns the exception that was caught during zone loading
+         * @param id the zone id of the broken zone
+         * @return caught exception
+         */
+        McException getException(ZoneIdInterface id);
+        
     }
     
     // player api
@@ -121,12 +229,14 @@ public interface ObjectServiceInterface
      * @param location
      *            the initial location of the component.
      * @param handler
-     *            handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this component within configuration files and restore during server restart
      * @return created component
      * @throws McException
      *             thrown if the component could not be created
      */
-    ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler) throws McException;
+    ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException;
     
     // entity api
     
@@ -157,12 +267,14 @@ public interface ObjectServiceInterface
      * @param entity
      *            the bukkit entity.
      * @param handler
-     *            handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this component within configuration files and restore during server restart
      * @return created entity
      * @throws McException
      *             thrown if the entity could not be created
      */
-    EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler) throws McException;
+    EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException;
     
     // sign api
     
@@ -213,12 +325,14 @@ public interface ObjectServiceInterface
      * @param sign
      *            the bukkit sign
      * @param handler
-     *            handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this component within configuration files and restore during server restart
      * @return created sign
      * @throws McException
      *             thrown if the sign could not be created
      */
-    SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler) throws McException;
+    SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException;
     
     // zone api
     
@@ -359,11 +473,13 @@ public interface ObjectServiceInterface
      * @param cuboid
      *            the initial location of the zone.
      * @param handler
-     *            handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this component within configuration files and restore during server restart
      * @return created zone
      * @throws McException
      *             thrown if the zone could not be created
      */
-    ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler) throws McException;
+    ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException;
     
 }

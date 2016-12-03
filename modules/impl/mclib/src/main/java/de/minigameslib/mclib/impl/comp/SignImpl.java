@@ -26,11 +26,12 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 
-import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.objects.ComponentIdInterface;
+import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
 
@@ -41,56 +42,71 @@ import de.minigameslib.mclib.api.objects.SignInterface;
 public class SignImpl extends AbstractLocationComponent implements SignInterface
 {
     
+    /** the bukkit sign. */
+    private final Sign sign;
+    
+    /** the sign id. */
+    private final SignId id;
+    
+    /** the sign handler. */
+    private final SignHandlerInterface handler;
+    
     /**
      * @param registry
-     * @param location
+     * @param sign 
+     * @param id 
+     * @param handler 
      * @param config 
      * @param owner 
      */
-    public SignImpl(ComponentRegistry registry, Location location, File config, ComponentOwner owner)
+    public SignImpl(ComponentRegistry registry, Sign sign, SignId id, SignHandlerInterface handler, File config, ComponentOwner owner)
     {
-        super(registry, location, config, owner);
-        // TODO Auto-generated constructor stub
+        super(registry, sign == null ? null : sign.getLocation(), config, owner);
+        this.sign = sign;
+        this.id = id;
+        this.handler = handler;
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.SignInterface#getSignId()
-     */
     @Override
     public SignIdInterface getSignId()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.id;
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.SignInterface#delete()
-     */
     @Override
     public void delete() throws McException
     {
-        // TODO Auto-generated method stub
-        
+        if (this.deleted)
+        {
+            throw new McException(CommonMessages.AlreadyDeleted);
+        }
+        this.handler.canDelete();
+        super.delete();
+        this.handler.onDelete();
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.SignInterface#saveConfig()
-     */
+    
     @Override
-    public void saveConfig() throws McException
+    public void readData(ConfigurationSection coreSection)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO should we re-read the id?
+        // the id is already read from registry.yml
+        this.handler.readFromConfig(coreSection.getConfigurationSection("handler")); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.impl.comp.AbstractLocationComponent#saveData(org.bukkit.configuration.ConfigurationSection)
-     */
     @Override
     protected void saveData(ConfigurationSection coreSection)
     {
-        // TODO Auto-generated method stub
-        
+        this.id.writeToConfig(coreSection.createSection("id")); //$NON-NLS-1$
+        this.handler.writeToConfig(coreSection.createSection("handler")); //$NON-NLS-1$
+    }
+
+    /**
+     * Returns the handler.
+     * @return handler.
+     */
+    public SignHandlerInterface getHandler()
+    {
+        return this.handler;
     }
     
 }

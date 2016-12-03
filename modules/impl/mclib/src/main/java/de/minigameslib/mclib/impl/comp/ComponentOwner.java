@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.impl.comp;
 
+import de.minigameslib.mclib.api.McException;
+
 /**
  * Helper interface for component owners.
  * 
@@ -35,7 +37,8 @@ public interface ComponentOwner
     /**
      * Notify about deletion of a component.
      * @param component
+     * @throws McException 
      */
-    void onDelete(AbstractComponent component);
+    void onDelete(AbstractComponent component) throws McException;
     
 }

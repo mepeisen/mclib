@@ -45,6 +45,17 @@ public interface McLibInterface extends McContext
     }
     
     /**
+     * the first api version, all versions up to first release, includes minecraft versions up to 1.11.
+     */
+    int APIVERSION_1_0_0 = 10000;
+    
+    /**
+     * Returns the api version of MCLIB.
+     * @return api version.
+     */
+    int getApiVersion();
+    
+    /**
      * Returns the minecraft version the server is running.
      * 
      * @return minecraft version.

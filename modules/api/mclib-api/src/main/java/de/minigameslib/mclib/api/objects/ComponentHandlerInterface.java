@@ -42,16 +42,26 @@ public interface ComponentHandlerInterface extends Configurable
      * 
      * @param component
      *            component that is created.
+     * @throws McException thrown if the component has errors.
      */
-    void onCreate(ComponentInterface component);
+    void onCreate(ComponentInterface component) throws McException;
     
     /**
      * Invoked upon re-loading a component from config (after server restart). It is invoked after the config was loaded.
      * 
      * @param component
      *            component hat is resumed.
+     * @throws McException thrown if the component has errors.
      */
-    void onResume(ComponentInterface component);
+    void onResume(ComponentInterface component) throws McException;
+    
+    /**
+     * Invoked upon pausing (plugin disabling, shutdown)
+     * 
+     * @param component
+     *            component hat is paused.
+     */
+    void onPause(ComponentInterface component);
     
     /**
      * Checks if the component can be deleted

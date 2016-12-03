@@ -63,8 +63,27 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
     public AbstractCuboidComponent(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner)
     {
         super(registry, config, owner);
-        this.cuboid = cuboid == null ? null : cuboid;
+        this.cuboid = cuboid;
         this.changeLocs();
+    }
+    
+    /**
+     * reads the file config.
+     * 
+     * @throws McException
+     */
+    public void readConfig() throws McException
+    {
+        if (this.config != null)
+        {
+            final ConfigurationSection core = this.config.getConfigurationSection("core"); //$NON-NLS-1$
+            if (core != null)
+            {
+                this.cuboid = new Cuboid();
+                this.cuboid.readFromConfig(core.createSection("location")); //$NON-NLS-1$
+                this.readData(core);
+            }
+        }
     }
     
     /**
@@ -74,17 +93,20 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      */
     public void saveConfig() throws McException
     {
-        final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
-        this.cuboid.writeToConfig(core.createSection("location")); //$NON-NLS-1$
-        this.saveData(core);
-        try
+        if (this.config != null)
         {
-            this.config.save(this.configFile);
-        }
-        catch (IOException e)
-        {
-            // TODO Report exception
-            e.printStackTrace();
+            final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
+            this.cuboid.writeToConfig(core.createSection("location")); //$NON-NLS-1$
+            this.saveData(core);
+            try
+            {
+                this.config.save(this.configFile);
+            }
+            catch (IOException e)
+            {
+                // TODO Report exception
+                e.printStackTrace();
+            }
         }
     }
     
@@ -94,6 +116,13 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * @param coreSection
      */
     protected abstract void saveData(ConfigurationSection coreSection);
+    
+    /**
+     * Read core data from config.
+     * 
+     * @param coreSection
+     */
+    protected abstract void readData(ConfigurationSection coreSection);
     
     /**
      * Changes the locations depending on the given cuboid.
@@ -137,6 +166,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      */
     public void setCuboid(Cuboid cub) throws McException
     {
+        // TODO notify sgui
         if (this.deleted)
         {
             // TODO throw exception

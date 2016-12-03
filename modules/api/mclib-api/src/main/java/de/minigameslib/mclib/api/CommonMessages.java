@@ -304,4 +304,127 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment({"Smart gui/ client mod not installed."})
     NoSmartGui,
     
+    /**
+     * Error that a plugin object type is broken. Indicates code errors.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * <li>String: The type name</li>
+     * <li>String: The enumeration class name</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s)", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error that a plugin object type is broken"},
+            args = {
+                    @MessageComment.Argument({"The plugin name."}),
+                    @MessageComment.Argument({"The type name."}),
+                    @MessageComment.Argument({"The enumeration class name."})
+            })
+    BrokenObjectType,
+    
+    /**
+     * Error that a plugin object type is broken. Indicates code errors.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * <li>String: The type name</li>
+     * <li>String: The enumeration class name</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not an enum)", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error that a plugin object type is broken"},
+            args = {
+                    @MessageComment.Argument({"The plugin name."}),
+                    @MessageComment.Argument({"The type name."}),
+                    @MessageComment.Argument({"The enumeration class name."})
+            })
+    BrokenObjectTypeNotAnEnum,
+    
+    /**
+     * Error that a plugin object type is broken. Indicates code errors.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * <li>String: The type name</li>
+     * <li>String: The enumeration class name</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not registered)", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error that a plugin object type is broken"},
+            args = {
+                    @MessageComment.Argument({"The plugin name."}),
+                    @MessageComment.Argument({"The type name."}),
+                    @MessageComment.Argument({"The enumeration class name."})
+            })
+    BrokenObjectTypeEnumNotRegistered,
+    
+    /**
+     * Error that a plugin object type is broken. Indicates code errors.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * <li>String: The type name</li>
+     * <li>String: The enumeration class name</li>
+     * <li>String: The exception message</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s, exception message: %4$s)", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Error that a plugin object type is broken"},
+            args = {
+                    @MessageComment.Argument({"The plugin name."}),
+                    @MessageComment.Argument({"The type name."}),
+                    @MessageComment.Argument({"The enumeration class name."}),
+                    @MessageComment.Argument({"The exception message."})
+            })
+    BrokenObjectTypeEnumException,
+    
+    /**
+     * Plugin is loaded twice.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Plugin %1$s loads twice", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Plugin is loaded twice."},
+            args = {
+                    @MessageComment.Argument({"The plugin name."})
+            })
+    PluginLoadedTwice,
+    
+    /**
+     * Plugin not loaded.
+     * <p>Arguments:</p>
+     * 
+     * <ol>
+     * <li>String: The plugin name</li>
+     * </ol>
+     */
+    @LocalizedMessage(defaultMessage = "Plugin %1$s is not loaded", severity = MessageSeverityType.Error)
+    @MessageComment(
+            value = {"Plugin is not loaded."},
+            args = {
+                    @MessageComment.Argument({"The plugin name."})
+            })
+    PluginNotLoaded,
+    
+    /**
+     * Element already deleted error.
+     * 
+     * <p>No arguments.</p>
+     */
+    @LocalizedMessage(defaultMessage = "Object already deleted.", severity = MessageSeverityType.Error)
+    @MessageComment({"Element already deleted error."})
+    AlreadyDeleted,
+    
 }

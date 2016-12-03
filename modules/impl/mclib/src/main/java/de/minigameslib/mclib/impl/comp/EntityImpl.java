@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 
@@ -63,6 +64,15 @@ public class EntityImpl implements EntityInterface
     {
         // TODO Auto-generated method stub
         
+    }
+
+    /**
+     * @return
+     */
+    public EntityHandlerInterface getHandler()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

@@ -170,7 +170,13 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     
     /** the known handlers. */
     private final Map<String, List<CommunicationEndpointId>>               endpointPlugins = new ConcurrentHashMap<>();
-    
+
+    @Override
+    public int getApiVersion()
+    {
+        return APIVERSION_1_0_0;
+    }
+
     @Override
     public void onEnable()
     {
@@ -351,6 +357,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     public Set<Enum<?>> getEnumValues(Plugin plugin)
     {
         return this.enumService.getEnumValues(plugin);
+    }
+
+    @Override
+    public <T> Set<T> getEnumValues(Class<T> clazz)
+    {
+        return this.enumService.getEnumValues(clazz);
     }
     
     @Override
@@ -568,6 +580,36 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     // objects api
+
+    @Override
+    public <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException
+    {
+        this.objectsManager.register(type, handler);
+    }
+
+    @Override
+    public <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException
+    {
+        this.objectsManager.register(type, handler);
+    }
+
+    @Override
+    public <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException
+    {
+        this.objectsManager.register(type, handler);
+    }
+
+    @Override
+    public <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException
+    {
+        this.objectsManager.register(type, handler);
+    }
+
+    @Override
+    public ResumeReport resumeObjects(Plugin plugin)
+    {
+        return this.objectsManager.resumeObjects(plugin);
+    }
     
     @Override
     public ComponentInterface findComponent(Location location)
@@ -588,9 +630,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler) throws McException
+    public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException
     {
-        return this.objectsManager.createComponent(type, location, handler);
+        return this.objectsManager.createComponent(type, location, handler, persist);
     }
     
     @Override
@@ -606,9 +648,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler) throws McException
+    public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException
     {
-        return this.objectsManager.createEntity(type, entity, handler);
+        return this.objectsManager.createEntity(type, entity, handler, persist);
     }
     
     @Override
@@ -636,9 +678,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler) throws McException
+    public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException
     {
-        return this.objectsManager.createSign(type, sign, handler);
+        return this.objectsManager.createSign(type, sign, handler, persist);
     }
     
     @Override
@@ -684,9 +726,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler) throws McException
+    public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException
     {
-        return this.objectsManager.createZone(type, cuboid, handler);
+        return this.objectsManager.createZone(type, cuboid, handler, persist);
     }
     
     @Override

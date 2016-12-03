@@ -30,7 +30,10 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.shared.api.com.DataSection;
@@ -246,5 +249,79 @@ public interface GuiSessionInterface extends Configurable
      *             thrown if player has no smart gui.
      */
     SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable titleArgs[], boolean closable, McRunnable closeAction) throws McException;
+    
+    /**
+     * Creates a new marker and displays it on client.
+     * 
+     * @param component
+     *            the component to display.
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(ComponentInterface component, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
+     * Creates a new marker and displays it on client.
+     * 
+     * @param sign
+     *            the sign to display.
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(SignInterface sign, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
+     * Creates a new marker and displays it on client.
+     * 
+     * @param zone
+     *            the component to display.
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
+     * Removes all markers from sgui
+     * 
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    void sguiRemoveAllMarkers() throws McException;
+    
+    /**
+     * Common sgui marker interface.
+     */
+    interface SGuiMarkerInterface
+    {
+        
+        /**
+         * Removes the marker
+         * 
+         * @throws McException
+         *             thrown if player has no smart gui.
+         */
+        void remove() throws McException;
+        
+        /**
+         * Updates the marker label
+         * 
+         * @param label
+         * @param args
+         * 
+         * @throws McException
+         *             thrown if player has no smart gui.
+         */
+        void updateLabel(LocalizedMessageInterface label, Serializable... args) throws McException;
+        
+    }
     
 }

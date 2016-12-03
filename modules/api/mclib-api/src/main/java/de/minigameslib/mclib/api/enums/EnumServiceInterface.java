@@ -74,6 +74,17 @@ public interface EnumServiceInterface
     Plugin getPlugin(Enum<?> enumValue);
     
     /**
+     * Returns the enumeration values implementing given interface class.
+     * 
+     * @param clazz
+     *            class/interface for filtering the enum values
+     * @param <T>
+     *            class param
+     * @return enumeration values
+     */
+    <T> Set<T> getEnumValues(Class<T> clazz);
+    
+    /**
      * Returns the enumeration values of given plugin.
      * 
      * @param plugin

@@ -39,16 +39,26 @@ public interface EntityHandlerInterface
      * 
      * @param entity
      *            entity that is created.
+     * @throws McException thrown if the entity has errors.
      */
-    void onCreate(EntityInterface entity);
+    void onCreate(EntityInterface entity) throws McException;
     
     /**
      * Invoked upon re-loading an entity from config (after server restart). It is invoked after the config was loaded.
      * 
      * @param entity
      *            entity that is resumed
+     * @throws McException thrown if the entity has errors.
      */
-    void onResume(EntityInterface entity);
+    void onResume(EntityInterface entity) throws McException;
+    
+    /**
+     * Invoked upon pausing (plugin disabling, shutdown)
+     * 
+     * @param entity
+     *            entity hat is paused.
+     */
+    void onPause(EntityInterface entity);
     
     /**
      * Checks if the entity can be deleted

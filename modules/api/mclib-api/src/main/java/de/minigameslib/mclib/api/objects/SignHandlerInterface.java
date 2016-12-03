@@ -40,16 +40,26 @@ public interface SignHandlerInterface extends Configurable
      * 
      * @param sign
      *            sign that was created.
+     * @throws McException thrown if the sign has errors.
      */
-    void onCreate(SignInterface sign);
+    void onCreate(SignInterface sign) throws McException;
     
     /**
      * Invoked upon re-loading a sign from config (after server restart). It is invoked after the config was loaded.
      * 
      * @param sign
      *            sign that was resumed
+     * @throws McException thrown if the sign has errors.
      */
-    void onResume(SignInterface sign);
+    void onResume(SignInterface sign) throws McException;
+    
+    /**
+     * Invoked upon pausing (plugin disabling, shutdown)
+     * 
+     * @param sign
+     *            sign hat is paused.
+     */
+    void onPause(SignInterface sign);
     
     /**
      * Checks if the sign can be deleted

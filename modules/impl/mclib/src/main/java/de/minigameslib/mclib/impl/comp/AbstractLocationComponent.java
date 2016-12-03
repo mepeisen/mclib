@@ -30,7 +30,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 import de.minigameslib.mclib.api.McException;
@@ -66,23 +68,51 @@ public abstract class AbstractLocationComponent extends AbstractComponent
     }
     
     /**
+     * reads the file config.
+     * 
+     * @throws McException
+     */
+    public void readConfig() throws McException
+    {
+        if (this.config != null)
+        {
+            final ConfigurationSection core = this.config.getConfigurationSection("core"); //$NON-NLS-1$
+            if (core != null)
+            {
+                final int x = core.getInt("location.x"); //$NON-NLS-1$
+                final int y = core.getInt("location.y"); //$NON-NLS-1$
+                final int z = core.getInt("location.z"); //$NON-NLS-1$
+                final World world = Bukkit.getWorld("location.world"); //$NON-NLS-1$
+                this.setLocation(new Location(world, x, y, z));
+                this.readData(core);
+            }
+        }
+    }
+    
+    /**
      * Saves the file config.
      * 
      * @throws McException
      */
     public void saveConfig() throws McException
     {
-        final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
-        core.set("location", this.location); //$NON-NLS-1$
-        this.saveData(core);
-        try
+        if (this.config != null)
         {
-            this.config.save(this.configFile);
-        }
-        catch (IOException e)
-        {
-            // TODO Report exception
-            e.printStackTrace();
+            final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
+            core.set("location.x", this.location.getBlockX()); //$NON-NLS-1$
+            core.set("location.y", this.location.getBlockY()); //$NON-NLS-1$
+            core.set("location.z", this.location.getBlockZ()); //$NON-NLS-1$
+            core.set("location.world", this.location.getWorld().getName()); //$NON-NLS-1$
+            this.saveData(core);
+            try
+            {
+                this.config.save(this.configFile);
+            }
+            catch (IOException e)
+            {
+                // TODO Report exception
+                e.printStackTrace();
+            }
         }
     }
     
@@ -92,6 +122,13 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * @param coreSection
      */
     protected abstract void saveData(ConfigurationSection coreSection);
+    
+    /**
+     * Reads core data from config.
+     * 
+     * @param coreSection
+     */
+    protected abstract void readData(ConfigurationSection coreSection);
     
     /**
      * Changes the locations depending on the given cuboid.
@@ -129,6 +166,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      */
     public void setLocation(Location loc) throws McException
     {
+        // TODO notify sgui
         if (this.deleted)
         {
             // TODO throw exception

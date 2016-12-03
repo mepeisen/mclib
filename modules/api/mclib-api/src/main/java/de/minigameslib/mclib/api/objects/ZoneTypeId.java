@@ -31,6 +31,11 @@ package de.minigameslib.mclib.api.objects;
  * Inherit this interface in your enumeration classes.
  * </p>
  * 
+ * <p>
+ * IMPLEMENTATION HINT: The plugin name and the enumeration value name are used to identify this type.
+ * If you change them the components get broken.
+ * </p>
+ * 
  * @author mepeisen
  */
 public interface ZoneTypeId
