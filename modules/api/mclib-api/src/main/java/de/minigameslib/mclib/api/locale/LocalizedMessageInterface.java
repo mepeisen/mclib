@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.locale;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
@@ -92,8 +93,14 @@ public interface LocalizedMessageInterface extends Serializable
     {
         try
         {
-            final LocalizedMessage msg = this.getClass().getDeclaredField(((Enum<?>) this).name()).getAnnotation(LocalizedMessage.class);
-            return msg == null ? MessageSeverityType.Information : msg.severity();
+            final Field enumField = this.getClass().getDeclaredField(((Enum<?>) this).name());
+            final LocalizedMessage msg = enumField.getAnnotation(LocalizedMessage.class);
+            if (msg != null)
+            {
+                return msg.severity();
+            }
+            final LocalizedMessageList msgList = enumField.getAnnotation(LocalizedMessageList.class);
+            return msgList.severity();
         }
         catch (NoSuchFieldException ex)
         {

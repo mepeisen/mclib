@@ -163,5 +163,11 @@ public @interface LocalizedMessageList
      * @return predefined list of messages.
      */
     String[] adminMessages() default {};
+
+    /**
+     * Returns the message severity.
+     * @return message severity.
+     */
+    MessageSeverityType severity() default MessageSeverityType.Information;
     
 }

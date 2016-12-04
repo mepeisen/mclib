@@ -427,4 +427,14 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment({"Element already deleted error."})
     AlreadyDeleted,
     
+    /**
+     * Common internal error we do not pass to normal users.
+     */
+    @LocalizedMessage(
+            defaultMessage = "Internal error.",
+            defaultAdminMessage = "Internal error. Error message: %1$s",
+            severity = MessageSeverityType.Error)
+    @MessageComment(value = "Common internal error we do not pass to normal users.", args = {@MessageComment.Argument({"Error text (only meant to be seen by admins)"})})
+    InternalError,
+    
 }
