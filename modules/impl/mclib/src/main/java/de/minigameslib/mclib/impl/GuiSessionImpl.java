@@ -948,7 +948,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         final ResetMarkersData data = new ResetMarkersData();
         final DataSection section = new MemoryDataSection();
-        section.set("KEY", CoreMessages.RemoveMarker.name()); //$NON-NLS-1$
+        section.set("KEY", CoreMessages.ResetMarkers.name()); //$NON-NLS-1$
         data.write(section.createSection("data")); //$NON-NLS-1$
         this.player.sendToClient(MclibCommunication.ClientServerCore, section);
     }
