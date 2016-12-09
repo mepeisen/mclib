@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src/main/nms">
+		<attributes>
+			<attribute name="FROM_GRADLE_MODEL" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="java">
 		<attributes>
 			<attribute name="FROM_GRADLE_MODEL" value="true"/>

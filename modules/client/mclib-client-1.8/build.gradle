@@ -1,3 +1,9 @@
+def buildTime() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMddHHmmss')
+	return formattedDate
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -11,14 +17,24 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
-    dependencies {
+    /*dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-    }
+    }*/
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+// apply plugin: 'net.minecraftforge.gradle.forge'
+
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
+}
     
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+group = "de.minigameslib.mclib.client"
+version = "0.0.1.${buildTime()}"
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 repositories {
     maven {
@@ -32,7 +48,7 @@ archivesBaseName = "mclib-client-1.8"
 sourceSets {
     main {
         java {
-            srcDirs = ['../mclib-client/src/main/java']
+            srcDirs = ['../mclib-client/src/main/java', 'src/main/nms']
         }
         resources {
             srcDirs = ['../mclib-client/src/main/resources']
@@ -42,7 +58,7 @@ sourceSets {
 
 minecraft {
     runDir = "run"
-    version = "1.8-11.14.4.1577"
+    version = "1.8-11.14.4.1563"
     mappings = "snapshot_20141130"
     replaceIn "MclibMod.java"
     replace "VERSIONNUMBER", project.version

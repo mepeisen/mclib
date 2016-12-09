@@ -1,3 +1,9 @@
+def buildTime() {
+	def date = new Date()
+	def formattedDate = date.format('yyyyMMddHHmmss')
+	return formattedDate
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -12,13 +18,19 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
     
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+group = "de.minigameslib.mclib.client"
+version = "0.0.1.${buildTime()}"
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 repositories {
     maven {
@@ -32,7 +44,7 @@ archivesBaseName = "mclib-client-1.8.9"
 sourceSets {
     main {
         java {
-            srcDirs = ['../mclib-client/src/main/java']
+            srcDirs = ['../mclib-client/src/main/java', 'src/main/nms']
         }
         resources {
             srcDirs = ['../mclib-client/src/main/resources']

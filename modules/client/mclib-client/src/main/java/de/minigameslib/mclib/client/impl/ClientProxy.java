@@ -34,6 +34,7 @@ import de.minigameslib.mclib.client.impl.gui.TwlManager;
 import de.minigameslib.mclib.client.impl.gui.TwlScreen;
 import de.minigameslib.mclib.client.impl.markers.MarkerInterface;
 import de.minigameslib.mclib.client.impl.util.CameraPos;
+import de.minigameslib.mclib.client.nms.MclibClientNms;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -113,9 +114,9 @@ public class ClientProxy
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent evt)
     {
-        if (evt.getGui() instanceof TwlScreen)
+        if (MclibClientNms.getGui(evt) instanceof TwlScreen)
         {
-            TwlManager.getInstance().setScreen(((TwlScreen) evt.getGui()).getMainWidget());
+            TwlManager.getInstance().setScreen(((TwlScreen) MclibClientNms.getGui(evt)).getMainWidget());
         }
     }
     
@@ -126,7 +127,7 @@ public class ClientProxy
     @SubscribeEvent
     public void onWorldRender(RenderWorldLastEvent event)
     {
-        onRender(event.getPartialTicks());
+        onRender(MclibClientNms.getPartialTicks(event));
     }
 
     /**
