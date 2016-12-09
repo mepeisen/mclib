@@ -26,6 +26,9 @@ package de.minigameslib.mclib.api;
 
 import java.util.Locale;
 
+import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+
 /**
  * Base interface for Minigame Common library.
  * 
@@ -93,5 +96,27 @@ public interface McLibInterface extends McContext
      * @param enabled {@code true} if the library debugging is enabled.
      */
     void setDebug(boolean enabled);
+    
+    // communication
+    
+    /**
+     * Sends given data to all clients.
+     *
+     * @param endpoint
+     * @param data
+     * 
+     * @throws IllegalStateException
+     */
+    void broadcastClients(CommunicationEndpointId endpoint, DataSection... data);
+    
+    /**
+     * Sends given data to all other servers within bungee network.
+     *
+     * @param endpoint
+     * @param data
+     * 
+     * @throws IllegalStateException
+     */
+    void broadcastServers(CommunicationEndpointId endpoint, DataSection... data);
     
 }

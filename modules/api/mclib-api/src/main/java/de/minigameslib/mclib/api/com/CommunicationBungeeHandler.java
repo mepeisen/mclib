@@ -24,7 +24,7 @@
 
 package de.minigameslib.mclib.api.com;
 
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -34,19 +34,19 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * @author mepeisen
  *
  */
-public interface CommunicationServerHandler
+public interface CommunicationBungeeHandler
 {
     
     /**
      * Handles incoming traffic.
      * 
-     * @param player
-     *            player sending the traffic.
+     * @param server
+     *            server sending the traffic.
      * @param id
      *            the unique id of the endpoint
      * @param data
      *            the incomming data
      */
-    void handleIncomming(McPlayerInterface player, CommunicationEndpointId id, DataSection data);
+    void handleIncomming(BungeeServerInterface server, CommunicationEndpointId id, DataSection data);
     
 }

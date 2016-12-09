@@ -54,7 +54,7 @@ public interface ServerCommunicationServiceInterface extends CommunicationEndpoi
     void removeAllCommunicationEndpoints(Plugin plugin);
     
     /**
-     * Registers a handler for given communication endpoint.
+     * Registers a handler for given communication endpoint for sending messages between servers and clients.
      * 
      * @param plugin
      *            owning plugin
@@ -63,6 +63,18 @@ public interface ServerCommunicationServiceInterface extends CommunicationEndpoi
      * @param handler
      *            server handler.
      */
-    void registerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationServerHandler handler);
+    void registerPeerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationPeerHandler handler);
+    
+    /**
+     * Registers a handler for given communication endpoint for sending messages between bungee servers.
+     * 
+     * @param plugin
+     *            owning plugin
+     * @param id
+     *            endpoint id.
+     * @param handler
+     *            server handler.
+     */
+    void registerBungeeHandler(Plugin plugin, CommunicationEndpointId id, CommunicationBungeeHandler handler);
     
 }

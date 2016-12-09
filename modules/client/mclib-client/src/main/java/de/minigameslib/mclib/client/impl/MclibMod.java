@@ -117,6 +117,7 @@ public class MclibMod implements CommunicationServiceInterface
      */
     public void registerCommunicationEndpoint(CommunicationEndpointId id, ComHandler handler)
     {
+        // TODO Check if no other client can hack and send us messages.
         synchronized (this.endpoints)
         {
             Map<String, CommunicationEndpointId> map = this.endpoints.get(id.getClass().getName());

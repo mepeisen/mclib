@@ -55,4 +55,11 @@ public enum McCoreConfig implements ConfigurationValueInterface
     @ConfigComment({"Flag to activate/deactivate debugging output."})
     Debug,
     
+    /**
+     * Name of this server within bungee cord networks
+     */
+    @ConfigurationString(defaultValue = "myself")
+    @ConfigComment({"Name of this server within bungeecord networks"})
+    BungeeServerName,
+    
 }

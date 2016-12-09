@@ -27,13 +27,18 @@ package de.minigameslib.mclib.impl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -56,6 +61,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -71,7 +77,10 @@ import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
-import de.minigameslib.mclib.api.com.CommunicationServerHandler;
+import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
+import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
+import de.minigameslib.mclib.api.com.CommunicationBungeeHandler;
+import de.minigameslib.mclib.api.com.CommunicationPeerHandler;
 import de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
@@ -129,54 +138,92 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  * @author mepeisen
  */
 public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface,
-        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener
+        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface
 {
     
     /**
      * plugin channel for messages between servers and clients
      */
-    private static final String MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc"; //$NON-NLS-1$
-
+    private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                    //$NON-NLS-1$
+    
+    /**
+     * plugin channel for messages between bungee servers
+     */
+    private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                    //$NON-NLS-1$
+    
+    /**
+     * plugin channel for BungeeCord
+     */
+    private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                  //$NON-NLS-1$
+    
     /** the overall minecraft server versioon. */
-    private static final MinecraftVersionsType                             SERVER_VERSION  = MclibPlugin.getServerVersion();
+    private static final MinecraftVersionsType                           SERVER_VERSION                 = MclibPlugin.getServerVersion();
     
     /** context helper. */
-    private final McContextImpl                                            context         = new McContextImpl();
+    private final McContextImpl                                          context                        = new McContextImpl();
     
     /** enum service helper. */
-    private final EnumServiceImpl                                          enumService     = new EnumServiceImpl();
+    private final EnumServiceImpl                                        enumService                    = new EnumServiceImpl();
     
     /**
      * messages configuration per plugin.
      */
-    private final Map<Plugin, MessagesConfigInterface>                     messages        = new HashMap<>();
+    private final Map<Plugin, MessagesConfigInterface>                   messages                       = new HashMap<>();
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, ConfigInterface>                             configurations  = new HashMap<>();
+    private final Map<Plugin, ConfigInterface>                           configurations                 = new HashMap<>();
     
     /** the player registry. */
-    PlayerRegistry                                                         players;
+    PlayerRegistry                                                       players;
     
     /** the objects manager. */
-    private ObjectsManager                                                 objectsManager;
+    private ObjectsManager                                               objectsManager;
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>>        endpoints       = new HashMap<>();
+    private final Map<String, Map<String, CommunicationEndpointId>>      peerEndpoints                  = new HashMap<>();
     
     /** the known handlers. */
-    private final Map<CommunicationEndpointId, CommunicationServerHandler> handlers        = new ConcurrentHashMap<>();
+    private final Map<CommunicationEndpointId, CommunicationPeerHandler> peerHandlers                   = new ConcurrentHashMap<>();
     
     /** the known handlers. */
-    private final Map<String, List<CommunicationEndpointId>>               endpointPlugins = new ConcurrentHashMap<>();
-
+    private final Map<String, List<CommunicationEndpointId>>             peerEndpointPlugins            = new ConcurrentHashMap<>();
+    
+    /** the known endpoints. */
+    private final Map<String, Map<String, CommunicationEndpointId>>      bungeeEndpoints                = new HashMap<>();
+    
+    /** the known handlers. */
+    final Map<CommunicationEndpointId, CommunicationBungeeHandler>       bungeeHandlers                 = new ConcurrentHashMap<>();
+    
+    /** the known handlers. */
+    private final Map<String, List<CommunicationEndpointId>>             bungeeEndpointPlugins          = new ConcurrentHashMap<>();
+    
+    /** type of endpoints: true is a client endpoint, false a server endpoint */
+    private final Map<CommunicationEndpointId, Boolean>                  endpointTypes                  = new HashMap<>();
+    
+    /** the current bungee server (myself) */
+    private final LocalBungeeServer                                      currentBungee                  = new LocalBungeeServer();
+    
+    /** the known other bungee servers from network. */
+    private final Map<String, BungeeServerInterface>                     bungeeServers                  = new HashMap<>();
+    
+    /**
+     * queue for bungee messages.
+     */
+    final Queue<Consumer<Player>>                                        bungeeQueue                    = new ConcurrentLinkedQueue<>();
+    
+    /**
+     * the get servers ping.
+     */
+    private GetServersPing                                               serversPing;
+    
     @Override
     public int getApiVersion()
     {
         return APIVERSION_1_0_0;
     }
-
+    
     @Override
     public void onEnable()
     {
@@ -231,6 +278,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         
@@ -252,12 +300,56 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(AnvilManagerInterface.class), this);
         
         // communication endpoints
-        this.registerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
+        this.registerPeerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
         
         // network
-      //sc = s[erver]c[client] (both directions)
+        // sc = s[erver]c[client] (both directions)
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
         Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
+        // bc = b[ungee]c[oord]
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL, this);
+        // bungeecord
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
+        
+        final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("GetServer"); //$NON-NLS-1$
+        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out.toByteArray()));
+        
+        this.serversPing = new GetServersPing();
+        this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
+    }
+    
+    /**
+     * The get servers ping.
+     * 
+     * @author mepeisen
+     */
+    private final class GetServersPing extends BukkitRunnable
+    {
+        
+        /**
+         * Constructor.
+         */
+        public GetServersPing()
+        {
+            // empty.
+        }
+        
+        @Override
+        public void run()
+        {
+            final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
+            if (onlPlayers.size() > 0)
+            {
+                // bungee cord ensures this is not send to the client.
+                final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
+                out2.writeUTF("GetServers"); //$NON-NLS-1$
+                onlPlayers.iterator().next().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out2.toByteArray());
+            }
+        }
+        
     }
     
     @Override
@@ -267,8 +359,15 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         this.removeAllCommunicationEndpoints(this);
         Bukkit.getServicesManager().unregisterAll(this);
         
+        this.serversPing.cancel();
+        this.serversPing = null;
+        
         Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL);
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL, this);
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
     }
     
     /**
@@ -358,7 +457,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     {
         return this.enumService.getEnumValues(plugin);
     }
-
+    
     @Override
     public <T> Set<T> getEnumValues(Class<T> clazz)
     {
@@ -502,6 +601,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
         ping.write(section.createSection("data")); //$NON-NLS-1$
         this.getPlayer(evt.getPlayer()).sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        while (!this.bungeeQueue.isEmpty())
+        {
+            this.bungeeQueue.poll().accept(evt.getPlayer());
+        }
     }
     
     /**
@@ -580,31 +684,31 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     // objects api
-
+    
     @Override
     public <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException
     {
         this.objectsManager.register(type, handler);
     }
-
+    
     @Override
     public <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException
     {
         this.objectsManager.register(type, handler);
     }
-
+    
     @Override
     public <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException
     {
         this.objectsManager.register(type, handler);
     }
-
+    
     @Override
     public <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException
     {
         this.objectsManager.register(type, handler);
     }
-
+    
     @Override
     public ResumeReport resumeObjects(Plugin plugin)
     {
@@ -744,23 +848,46 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public void registerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationServerHandler handler)
+    public void registerPeerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationPeerHandler handler)
     {
-        synchronized (this.endpoints)
+        synchronized (this.peerEndpoints)
         {
-            Map<String, CommunicationEndpointId> map = this.endpoints.get(id.getClass().getName());
+            Map<String, CommunicationEndpointId> map = this.peerEndpoints.get(id.getClass().getName());
             if (map == null)
             {
                 map = new HashMap<>();
-                this.endpoints.put(id.getClass().getName(), map);
+                this.peerEndpoints.put(id.getClass().getName(), map);
             }
             if (map.containsKey(id))
             {
                 throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
             }
             map.put(id.name(), id);
-            this.handlers.put(id, handler);
-            this.endpointPlugins.computeIfAbsent(plugin.getName(), k -> new ArrayList<>()).add(id);
+            this.peerHandlers.put(id, handler);
+            this.peerEndpointPlugins.computeIfAbsent(plugin.getName(), k -> new ArrayList<>()).add(id);
+            this.endpointTypes.put(id, Boolean.TRUE);
+        }
+    }
+    
+    @Override
+    public void registerBungeeHandler(Plugin plugin, CommunicationEndpointId id, CommunicationBungeeHandler handler)
+    {
+        synchronized (this.bungeeEndpoints)
+        {
+            Map<String, CommunicationEndpointId> map = this.bungeeEndpoints.get(id.getClass().getName());
+            if (map == null)
+            {
+                map = new HashMap<>();
+                this.bungeeEndpoints.put(id.getClass().getName(), map);
+            }
+            if (map.containsKey(id))
+            {
+                throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
+            }
+            map.put(id.name(), id);
+            this.bungeeHandlers.put(id, handler);
+            this.bungeeEndpointPlugins.computeIfAbsent(plugin.getName(), k -> new ArrayList<>()).add(id);
+            this.endpointTypes.put(id, Boolean.FALSE);
         }
     }
     
@@ -771,11 +898,31 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
      * @param name
      * @return endpoint or {@code null} if it does not exist.
      */
-    private CommunicationEndpointId getEndpoint(String clazz, String name)
+    private CommunicationEndpointId getPeerEndpoint(String clazz, String name)
     {
-        synchronized (this.endpoints)
+        synchronized (this.peerEndpoints)
         {
-            final Map<String, CommunicationEndpointId> map = this.endpoints.get(clazz);
+            final Map<String, CommunicationEndpointId> map = this.peerEndpoints.get(clazz);
+            if (map != null)
+            {
+                return map.get(name);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the endpoint for given class and element
+     * 
+     * @param clazz
+     * @param name
+     * @return endpoint or {@code null} if it does not exist.
+     */
+    private CommunicationEndpointId getServerEndpoint(String clazz, String name)
+    {
+        synchronized (this.bungeeEndpoints)
+        {
+            final Map<String, CommunicationEndpointId> map = this.bungeeEndpoints.get(clazz);
             if (map != null)
             {
                 return map.get(name);
@@ -785,14 +932,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public void send(CommunicationEndpointId id, DataSection... data)
+    public void broadcastClients(CommunicationEndpointId id, DataSection... data)
     {
-        final McPlayerInterface player = this.getCurrentPlayer();
-        if (player == null)
-        {
-            this.getLogger().fine("Trying to send data to unknown player (invalid context)"); //$NON-NLS-1$
-        }
-        else if (data != null)
+        if (data != null)
         {
             for (final DataSection section : data)
             {
@@ -802,55 +944,211 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
                 byte[] bytes = out.toByteArray();
                 if (this.getLogger().isLoggable(Level.FINEST))
                 {
-                    this.getLogger().finest("Sending NetMessage to player " + player.getPlayerUUID() + "\n" + Arrays.toString(bytes)); //$NON-NLS-1$ //$NON-NLS-2$
+                    this.getLogger().finest("Sending NetMessage to all players\n" + Arrays.toString(bytes)); //$NON-NLS-1$
                 }
-                player.getBukkitPlayer().sendPluginMessage(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, bytes);
+                // TODO find a way to broadcast to all players connected to any server in bungee cord network
+                Bukkit.getServer().sendPluginMessage(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, bytes);
             }
+        }
+    }
+    
+    @Override
+    public void broadcastServers(CommunicationEndpointId id, DataSection... data)
+    {
+        if (data != null)
+        {
+            for (final DataSection section : data)
+            {
+                // TODO only works if both servers have online players
+                // TODO if target servers do not have online players the messages should be queued by bungeecord.
+                // TODO ensure that we are really within bungeecord environments, else this will be sent to clients (not good)
+                final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
+                final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out2.writeUTF("Forward"); //$NON-NLS-1$
+                out2.writeUTF("ALL"); //$NON-NLS-1$
+                out2.writeUTF(MCLIB_SERVER_TO_SERVER_CHANNEL);
+                out.writeByte(0);
+                new NetMessage(id, section).toBytes(out);
+                byte[] bytes = out.toByteArray();
+                if (this.getLogger().isLoggable(Level.FINEST))
+                {
+                    this.getLogger().finest("Sending NetMessage to all servers\n" + Arrays.toString(bytes)); //$NON-NLS-1$
+                }
+                out2.writeShort(bytes.length);
+                out2.write(bytes);
+                final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
+                if (onlPlayers.size() > 0)
+                {
+                    // bungee cord ensures this is not send to the client.
+                    onlPlayers.iterator().next().sendPluginMessage(this, BUNGEECORD_CHANNEL, bytes);
+                }
+                else
+                {
+                    this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, bytes));
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void send(CommunicationEndpointId id, DataSection... data)
+    {
+        // check if we have a server-to-server endpoint or server-to-client endpoint
+        if (this.endpointTypes.get(id))
+        {
+            // server to player
+            final McPlayerInterface player = this.getCurrentPlayer();
+            if (player == null)
+            {
+                this.getLogger().fine("Trying to send data to unknown player (invalid context)"); //$NON-NLS-1$
+            }
+            else if (data != null)
+            {
+                for (final DataSection section : data)
+                {
+                    final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                    out.writeByte(0);
+                    new NetMessage(id, section).toBytes(out);
+                    byte[] bytes = out.toByteArray();
+                    if (this.getLogger().isLoggable(Level.FINEST))
+                    {
+                        this.getLogger().finest("Sending NetMessage to player " + player.getPlayerUUID() + "\n" + Arrays.toString(bytes)); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    player.getBukkitPlayer().sendPluginMessage(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, bytes);
+                }
+            }
+        }
+        else
+        {
+            // server to server means: broadcast to everyone
+            this.broadcastServers(id, data);
         }
     }
     
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] buf)
     {
-        final McPlayerInterface mcp = this.getPlayer(player);
-        try
+        if (channel.equals(BUNGEECORD_CHANNEL))
         {
-            this.runInNewContext(() -> {
-                this.setContext(McPlayerInterface.class, mcp);
-                final NetMessage msg = new NetMessage();
-                final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
-                if (input.readByte() == 0) // forge NetMessage byte code.
+            // TODO ensure this comes from bungee
+            final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
+            final String sub = input.readUTF();
+            if (sub.equals("GetServer")) //$NON-NLS-1$
+            {
+                final String serverName = input.readUTF();
+                McCoreConfig.BungeeServerName.setString(serverName);
+                McCoreConfig.BungeeServerName.saveConfig();
+            }
+            else if (sub.equals("GetServers")) //$NON-NLS-1$
+            {
+                String[] serverList = input.readUTF().split(", "); //$NON-NLS-1$
+                final String myself = this.currentBungee.getName();
+                synchronized (this.bungeeServers)
                 {
-                    msg.fromBytes(input, this::getEndpoint);
+                    final Set<String> failed = new HashSet<>(this.bungeeServers.keySet());
+                    for (final String serverName : serverList)
+                    {
+                        if (!serverName.equals(myself))
+                        {
+                            if (!failed.remove(serverName))
+                            {
+                                this.bungeeServers.put(serverName, new RemoteBungeeServer(serverName));
+                            }
+                        }
+                    }
+                    failed.forEach(this.bungeeServers::remove);
+                }
+            }
+        }
+        else if (channel.equals(MCLIB_SERVER_TO_CLIENT_CHANNEL))
+        {
+            // TODO ensure this comes from client
+            // message from client
+            final McPlayerInterface mcp = this.getPlayer(player);
+            try
+            {
+                this.runInNewContext(() -> {
+                    this.setContext(McPlayerInterface.class, mcp);
+                    final NetMessage msg = new NetMessage();
+                    final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
+                    if (input.readByte() == 0) // forge NetMessage byte code.
+                    {
+                        msg.fromBytes(input, this::getPeerEndpoint);
+                        
+                        if (msg.getEndpoint() != null)
+                        {
+                            final CommunicationPeerHandler handler = this.peerHandlers.get(msg.getEndpoint());
+                            if (handler != null)
+                            {
+                                handler.handleIncomming(mcp, msg.getEndpoint(), msg.getData());
+                            }
+                        }
+                    }
+                });
+            }
+            catch (McException ex)
+            {
+                this.getLogger().log(Level.WARNING, "Problems handling client message", ex); //$NON-NLS-1$
+            }
+        }
+        else if (channel.equals(MCLIB_SERVER_TO_SERVER_CHANNEL))
+        {
+            // TODO ensure this comes from bungee
+            // message from bungee network
+            final NetMessage msg = new NetMessage();
+            final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
+            if (input.readByte() == 1) // forge NetMessage byte code.
+            {
+                final String sendingServer = input.readUTF();
+                final String receivingServer = input.readUTF();
+                final String myName = BungeeServiceInterface.instance().getCurrent().getName();
+                if (myName.equals(receivingServer) || "*".equals(receivingServer)) //$NON-NLS-1$
+                {
+                    msg.fromBytes(input, this::getServerEndpoint);
                     
                     if (msg.getEndpoint() != null)
                     {
-                        final CommunicationServerHandler handler = this.handlers.get(msg.getEndpoint());
-                        handler.handleIncomming(mcp, msg.getEndpoint(), msg.getData());
+                        final CommunicationBungeeHandler handler = this.bungeeHandlers.get(msg.getEndpoint());
+                        if (handler != null)
+                        {
+                            final BungeeServerInterface sender = BungeeServiceInterface.instance().getServer(sendingServer);
+                            handler.handleIncomming(sender, msg.getEndpoint(), msg.getData());
+                        }
                     }
                 }
-            });
-        }
-        catch (@SuppressWarnings("unused") McException ex)
-        {
-            // TODO Logging?
+            }
         }
     }
     
     @Override
     public void removeAllCommunicationEndpoints(Plugin plugin)
     {
-        synchronized (this.endpoints)
+        synchronized (this.peerEndpoints)
         {
-            final List<CommunicationEndpointId> ids = this.endpointPlugins.get(plugin.getName());
+            final List<CommunicationEndpointId> ids = this.peerEndpointPlugins.get(plugin.getName());
             if (ids != null)
             {
                 for (final CommunicationEndpointId id : ids)
                 {
-                    this.handlers.remove(id);
-                    this.endpoints.get(id.getClass().getName()).remove(id.name());
+                    this.peerHandlers.remove(id);
+                    this.peerEndpoints.get(id.getClass().getName()).remove(id.name());
+                    this.endpointTypes.remove(id);
                 }
-                this.endpointPlugins.remove(plugin.getName());
+                this.peerEndpointPlugins.remove(plugin.getName());
+            }
+        }
+        synchronized (this.bungeeEndpoints)
+        {
+            final List<CommunicationEndpointId> ids = this.bungeeEndpointPlugins.get(plugin.getName());
+            if (ids != null)
+            {
+                for (final CommunicationEndpointId id : ids)
+                {
+                    this.bungeeHandlers.remove(id);
+                    this.bungeeEndpoints.get(id.getClass().getName()).remove(id.name());
+                    this.endpointTypes.remove(id);
+                }
+                this.bungeeEndpointPlugins.remove(plugin.getName());
             }
         }
     }
@@ -908,7 +1206,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     /**
      * Communication handler for incoming network traffic-
      */
-    private class MclibCoreHandler implements CommunicationServerHandler
+    private class MclibCoreHandler implements CommunicationPeerHandler
     {
         
         /**
@@ -925,24 +1223,24 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             // silently drop invalid messages.
             if (!section.contains("KEY")) //$NON-NLS-1$
                 return;
-
+            
             try
             {
                 final String key = section.getString("KEY"); //$NON-NLS-1$
                 if (key.equals(CoreMessages.ActionPerformed.name()))
                 {
                     // forward to smart gui
-                    ((McPlayerImpl)player).parseActionPerformed(section.getFragment(ActionPerformedData.class, "data")); //$NON-NLS-1$
+                    ((McPlayerImpl) player).parseActionPerformed(section.getFragment(ActionPerformedData.class, "data")); //$NON-NLS-1$
                 }
                 else if (key.equals(CoreMessages.WinClosed.name()))
                 {
                     // forward to smart gui
-                    ((McPlayerImpl)player).parseWinClosed(section.getFragment(WinClosedData.class, "data")); //$NON-NLS-1$
+                    ((McPlayerImpl) player).parseWinClosed(section.getFragment(WinClosedData.class, "data")); //$NON-NLS-1$
                 }
                 else if (key.equals(CoreMessages.QueryFormRequest.name()))
                 {
                     // client has the mod installed.
-                    ((McPlayerImpl)player).parseFormRequest(section.getFragment(QueryFormRequestData.class, "data")); //$NON-NLS-1$
+                    ((McPlayerImpl) player).parseFormRequest(section.getFragment(QueryFormRequestData.class, "data")); //$NON-NLS-1$
                 }
                 else if (key.equals(CoreMessages.Pong.name()))
                 {
@@ -953,7 +1251,136 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             }
             catch (McException e)
             {
-                // TODO Logging? Reporting error?
+                MclibPlugin.this.getLogger().log(Level.WARNING, "Problems handling client core message", e); //$NON-NLS-1$
+            }
+        }
+        
+    }
+    
+    @Override
+    public BungeeServerInterface getCurrent()
+    {
+        return this.currentBungee;
+    }
+    
+    @Override
+    public BungeeServerInterface getServer(String name)
+    {
+        synchronized (this.bungeeServers)
+        {
+            return this.bungeeServers.get(name);
+        }
+    }
+    
+    @Override
+    public Iterable<BungeeServerInterface> getServers()
+    {
+        synchronized (this.bungeeServers)
+        {
+            return new ArrayList<>(this.bungeeServers.values());
+        }
+    }
+    
+    /**
+     * The local bungee server (myself).
+     */
+    private final class LocalBungeeServer implements BungeeServerInterface
+    {
+        
+        /**
+         * Constructor
+         */
+        public LocalBungeeServer()
+        {
+            // empty
+        }
+        
+        @Override
+        public String getName()
+        {
+            return McCoreConfig.BungeeServerName.getString();
+        }
+        
+        @Override
+        public void send(CommunicationEndpointId id, DataSection... data)
+        {
+            // loop back
+            if (data != null)
+            {
+                final CommunicationBungeeHandler handler = MclibPlugin.this.bungeeHandlers.get(id);
+                if (handler != null)
+                {
+                    for (final DataSection section : data)
+                    {
+                        handler.handleIncomming(this, id, section);
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    /**
+     * The remote bungee server (available through bungeecord).
+     */
+    private final class RemoteBungeeServer implements BungeeServerInterface
+    {
+        
+        /** bungee coord name. */
+        private String name;
+        
+        /**
+         * Constructor
+         * 
+         * @param name
+         */
+        public RemoteBungeeServer(String name)
+        {
+            this.name = name;
+        }
+        
+        @Override
+        public String getName()
+        {
+            return this.name;
+        }
+        
+        @Override
+        public void send(CommunicationEndpointId id, DataSection... data)
+        {
+            // loop back
+            if (data != null)
+            {
+                for (final DataSection section : data)
+                {
+                    // TODO only works if both servers have online players
+                    // TODO if target servers do not have online players the messages should be queued by bungeecord.
+                    // TODO ensure that we are really within bungeecord environments, else this will be sent to clients (not good)
+                    final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
+                    final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                    out2.writeUTF("Forward"); //$NON-NLS-1$
+                    out2.writeUTF(this.name);
+                    out2.writeUTF(MCLIB_SERVER_TO_SERVER_CHANNEL);
+                    out.writeByte(0);
+                    new NetMessage(id, section).toBytes(out);
+                    byte[] bytes = out.toByteArray();
+                    if (MclibPlugin.this.getLogger().isLoggable(Level.FINEST))
+                    {
+                        MclibPlugin.this.getLogger().finest("Sending NetMessage to server " + this.name + "\n" + Arrays.toString(bytes)); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    out2.writeShort(bytes.length);
+                    out2.write(bytes);
+                    final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
+                    if (onlPlayers.size() > 0)
+                    {
+                        // bungee cord ensures this is not send to the client.
+                        onlPlayers.iterator().next().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, bytes);
+                    }
+                    else
+                    {
+                        MclibPlugin.this.bungeeQueue.add(p -> p.sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, bytes));
+                    }
+                }
             }
         }
         
