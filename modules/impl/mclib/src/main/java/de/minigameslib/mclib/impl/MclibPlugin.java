@@ -316,6 +316,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         final ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("GetServer"); //$NON-NLS-1$
         this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out.toByteArray()));
+        final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
+        out2.writeUTF("GetServers"); //$NON-NLS-1$
+        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out2.toByteArray()));
         
         this.serversPing = new GetServersPing();
         this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
@@ -592,7 +595,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
-        Bukkit.getServicesManager().load(NmsFactory.class).create(PlayerManagerInterface.class).registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        // TODO Why do we need to register bungeecord here???
+        // TODO Disable Server-To-Server and BungeeCord in Non-BungeeCord environments
+        final PlayerManagerInterface playerManager = Bukkit.getServicesManager().load(NmsFactory.class).create(PlayerManagerInterface.class);
+        playerManager.registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        playerManager.registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_SERVER_CHANNEL);
+        playerManager.registerChannelEx(evt.getPlayer(), BUNGEECORD_CHANNEL);
         this.players.onPlayerJoin(evt);
         
         // try to ping the client mod.
