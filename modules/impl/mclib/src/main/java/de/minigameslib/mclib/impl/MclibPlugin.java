@@ -1329,10 +1329,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         @Override
         public void transferPlayer(McPlayerInterface player)
         {
-            final ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("Connect"); //$NON-NLS-1$
-            out.writeUTF(this.getName());
-            player.getBukkitPlayer().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out.toByteArray());
+            // TODO for remote players support teleport to myself
         }
         
     }
@@ -1404,7 +1401,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         @Override
         public void transferPlayer(McPlayerInterface player)
         {
-            // TODO for remote players support teleport to myself
+            final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("Connect"); //$NON-NLS-1$
+            out.writeUTF(this.getName());
+            player.getBukkitPlayer().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out.toByteArray());
         }
         
     }
