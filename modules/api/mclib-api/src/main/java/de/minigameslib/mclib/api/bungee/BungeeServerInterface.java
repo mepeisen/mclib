@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api.bungee;
 
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -48,5 +49,11 @@ public interface BungeeServerInterface
      * @param data
      */
     void send(CommunicationEndpointId id, DataSection... data);
+    
+    /**
+     * Transfers player to given server
+     * @param player player to be transferred
+     */
+    void transferPlayer(McPlayerInterface player);
     
 }
