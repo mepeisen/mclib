@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.objects;
 
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 
 import de.minigameslib.mclib.api.McException;
 
@@ -75,5 +76,12 @@ public interface SignInterface
      *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
+    
+    /**
+     * Returns the bukkit sign.
+     * 
+     * @return bukkit sign.
+     */
+    Sign getBukkitSign();
     
 }

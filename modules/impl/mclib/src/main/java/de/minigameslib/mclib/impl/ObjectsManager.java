@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -400,14 +401,23 @@ class ObjectsManager implements ComponentOwner
                 {
                     // init
                     final SignHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    // TODO how to reconnect to bukkit sign?
                     final SignImpl impl = new SignImpl(this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
                     impl.readConfig();
-                    handler.onResume(impl);
+                    // research sign
+                    final Block block = impl.getLocation().getBlock();
+                    if (block instanceof Sign)
+                    {
+                        impl.setSign((Sign) block);
+                        handler.onResume(impl);
                     
-                    // store data
-                    this.signsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.TRUE);
-                    this.signs.put(id, impl);
+                        // store data
+                        this.signsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.TRUE);
+                        this.signs.put(id, impl);
+                    }
+                    else
+                    {
+                        throw new McException(CommonMessages.SignNotFoundError);
+                    }
                 }
                 catch (McException ex)
                 {

@@ -36,42 +36,31 @@ import de.minigameslib.mclib.api.objects.EntityInterface;
 public class EntityImpl implements EntityInterface
 {
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.EntityInterface#getEntityId()
-     */
     @Override
     public EntityIdInterface getEntityId()
     {
-        // TODO Auto-generated method stub
+        // TODO support entities
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.EntityInterface#delete()
-     */
     @Override
     public void delete() throws McException
     {
-        // TODO Auto-generated method stub
-        
+        // TODO support entities
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.EntityInterface#saveConfig()
-     */
     @Override
     public void saveConfig() throws McException
     {
-        // TODO Auto-generated method stub
-        
+        // TODO support entities
     }
 
     /**
-     * @return
+     * @return handler
      */
     public EntityHandlerInterface getHandler()
     {
-        // TODO Auto-generated method stub
+        // TODO support entities
         return null;
     }
     

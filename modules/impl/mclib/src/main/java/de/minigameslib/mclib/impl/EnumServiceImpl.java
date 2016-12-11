@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.bukkit.plugin.Plugin;
@@ -42,6 +44,9 @@ import de.minigameslib.mclib.api.enums.EnumServiceInterface;
  */
 class EnumServiceImpl implements EnumServiceInterface
 {
+    
+    /** logging. */
+    private static final Logger LOGGER = Logger.getLogger(EnumServiceImpl.class.getName());
     
     /** enumeration values, listed by plugin. */
     private final Map<Plugin, Set<Enum<?>>> enumsByPlugin = new HashMap<>();
@@ -59,7 +64,7 @@ class EnumServiceImpl implements EnumServiceInterface
             {
                 if (this.pluginsByEnum.containsKey(ev))
                 {
-                    // TODO Logging
+                    LOGGER.log(Level.SEVERE, "Duplicate registration of enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
                     throw new IllegalStateException("Duplicate registration of enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 this.pluginsByEnum.put(ev, plugin);

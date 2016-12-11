@@ -425,7 +425,7 @@ public enum CommonMessages implements LocalizedMessageInterface
      */
     @LocalizedMessage(defaultMessage = "Object already deleted.", severity = MessageSeverityType.Error)
     @MessageComment({"Element already deleted error."})
-    AlreadyDeleted,
+    AlreadyDeletedError,
     
     /**
      * Common internal error we do not pass to normal users.
@@ -436,5 +436,14 @@ public enum CommonMessages implements LocalizedMessageInterface
             severity = MessageSeverityType.Error)
     @MessageComment(value = "Common internal error we do not pass to normal users.", args = {@MessageComment.Argument({"Error text (only meant to be seen by admins)"})})
     InternalError,
+    
+    /**
+     * Sign was not found.
+     */
+    @LocalizedMessage(
+            defaultMessage = "Sign not found.",
+            severity = MessageSeverityType.Error)
+    @MessageComment(value = "Error if sign was not found.")
+    SignNotFoundError,
     
 }

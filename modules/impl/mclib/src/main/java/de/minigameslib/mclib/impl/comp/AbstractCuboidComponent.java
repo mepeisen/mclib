@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.Cuboid;
 
@@ -104,8 +105,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
             }
             catch (IOException e)
             {
-                // TODO Report exception
-                e.printStackTrace();
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
             }
         }
     }
@@ -169,7 +169,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
         // TODO notify sgui
         if (this.deleted)
         {
-            // TODO throw exception
+            throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.saveConfig();
         this.cuboid = cub == null ? null : cub;

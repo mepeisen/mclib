@@ -26,6 +26,8 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -43,7 +45,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
 {
     
     /** the bukkit sign. */
-    private final Sign sign;
+    private Sign sign;
     
     /** the sign id. */
     private final SignId id;
@@ -78,7 +80,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     {
         if (this.deleted)
         {
-            throw new McException(CommonMessages.AlreadyDeleted);
+            throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
         super.delete();
@@ -107,6 +109,36 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     public SignHandlerInterface getHandler()
     {
         return this.handler;
+    }
+
+    /**
+     * Sets the sign
+     * @param block
+     */
+    public void setSign(Sign block)
+    {
+        this.sign = block;
+    }
+
+    @Override
+    public Sign getBukkitSign()
+    {
+        return this.sign;
+    }
+
+    @Override
+    public void setLocation(Location loc) throws McException
+    {
+        final Block block = loc.getBlock();
+        if (block instanceof Sign)
+        {
+            this.sign = (Sign) block;
+            super.setLocation(loc);
+        }
+        else
+        {
+            throw new McException(CommonMessages.SignNotFoundError);
+        }
     }
     
 }

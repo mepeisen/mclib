@@ -94,20 +94,6 @@ public interface GuiSessionInterface extends Configurable
      */
     McStorage getGuiStorage();
     
-    /**
-     * Returns a gui storage for storing data while the player is logged in.
-     * 
-     * @return gui storage.
-     */
-    McStorage getPlayerSessionStorage();
-    
-    /**
-     * Returns a gui storage for persistent data stored on disk
-     * 
-     * @return gui storage.
-     */
-    McStorage getPlayerPersistentStorage();
-    
     // smart gui
     
     /**

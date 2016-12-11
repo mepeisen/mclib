@@ -1161,54 +1161,29 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         }
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#register(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface,
-     * de.minigameslib.mclib.api.ext.ExtensionInterface)
-     */
     @Override
     public <T extends ExtensionInterface> void register(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO support extensions
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#remove(org.bukkit.plugin.Plugin, de.minigameslib.mclib.api.ext.ExtensionPointInterface,
-     * de.minigameslib.mclib.api.ext.ExtensionInterface)
-     */
     @Override
     public <T extends ExtensionInterface> void remove(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO support extensions
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.ext.ExtensionServiceInterface#getExtensions(de.minigameslib.mclib.api.ext.ExtensionPointInterface)
-     */
     @Override
     public <T extends ExtensionInterface> Iterable<T> getExtensions(ExtensionPointInterface<? extends T> extPoint)
     {
-        // TODO Auto-generated method stub
+        // TODO support extensions
         return null;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface#removeAll(org.bukkit.plugin.Plugin)
-     */
     @Override
     public void removeAllExtensions(Plugin plugin)
     {
-        // TODO Auto-generated method stub
-        
+        // TODO support extensions
     }
     
     /**

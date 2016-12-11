@@ -577,7 +577,7 @@ class McPlayerImpl implements McPlayerInterface
         }
         catch (McException ex)
         {
-            // TODO Logging; should never happen
+            LOGGER.log(Level.WARNING, "Exception sending message to client", ex); //$NON-NLS-1$
         }
     }
     

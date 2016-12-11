@@ -44,6 +44,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
@@ -94,19 +95,19 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  */
 public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, AnvilListener
 {
-
+    
     /** logger. */
-    private static final Logger       LOGGER = Logger.getLogger(GuiSessionImpl.class.getName());
+    private static final Logger       LOGGER         = Logger.getLogger(GuiSessionImpl.class.getName());
     
     /** the current gui type. */
-    private GuiType                   type   = GuiType.None;
+    private GuiType                   type           = GuiType.None;
     
     /** the gui interface. */
     private ClickGuiInterface         gui;
     /** anvil gui interface. */
     private AnvilGuiInterface         agui;
     /** the arena player. */
-    private McPlayerImpl         player;
+    private McPlayerImpl              player;
     /** the current inventory name. */
     private LocalizedMessageInterface currentName;
     /** the current items. */
@@ -122,6 +123,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /** the smart gui helper. */
     private SGuiHelper                smartGui;
+    
+    /** the session storage. */
+    private StorageImpl               sessionStorage = new StorageImpl();
     
     /**
      * Constructor
@@ -164,6 +168,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /**
      * Constructor for smart gui
+     * 
      * @param player
      *            the arena player to be used
      */
@@ -173,7 +178,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player = player;
         this.smartGui = new SGuiHelper();
     }
-
+    
     /**
      * Converts the existing items to item stack.
      * 
@@ -254,40 +259,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player.getBukkitPlayer().closeInventory();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.github.mce.minigames.api.gui.GuiSessionInterface#getGuiStorage()
-     */
     @Override
     public McStorage getGuiStorage()
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.github.mce.minigames.api.gui.GuiSessionInterface#getPlayerSessionStorage()
-     */
-    @Override
-    public McStorage getPlayerSessionStorage()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.github.mce.minigames.api.gui.GuiSessionInterface#getPlayerPersistentStorage()
-     */
-    @Override
-    public McStorage getPlayerPersistentStorage()
-    {
-        // TODO Auto-generated method stub
-        return null;
+        return this.sessionStorage;
     }
     
     @Override
@@ -386,7 +361,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException
+    public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
+            throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -405,7 +381,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
-
+    
     /**
      * Initializes the smart gui.
      */
@@ -420,9 +396,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             this.smartGui = new SGuiHelper();
         }
     }
-
+    
     /**
      * Checks the player for haviong a smart gui.
+     * 
      * @throws McException
      */
     private void checkForSmartGui() throws McException
@@ -434,7 +411,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException
+    public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
+            throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -483,7 +461,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton) throws McException
+    public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
+            GuiButton noButton) throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -506,7 +485,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton, GuiButton cancelButton) throws McException
+    public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
+            GuiButton noButton, GuiButton cancelButton) throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -529,7 +509,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;
     }
-
+    
     @Override
     public SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable, McRunnable closeAction) throws McException
     {
@@ -540,6 +520,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /**
      * smart gui helper
+     * 
      * @author mepeisen
      */
     final class SGuiHelper
@@ -552,6 +533,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /**
          * Creates a new SGUI Impl
+         * 
          * @param closeAction
          * @return SGUI Impl
          */
@@ -565,6 +547,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /**
          * Encodes given message by using players locale
+         * 
          * @param msg
          * @param args
          * @return encoded message
@@ -576,6 +559,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /**
          * Returns the gui session.
+         * 
          * @return gui session
          */
         GuiSessionImpl getGuiSession()
@@ -585,6 +569,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /**
          * Returns the gui with associated key.
+         * 
          * @param id
          * @return gui
          */
@@ -595,6 +580,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /**
          * Removes the gui with associated key
+         * 
          * @param id
          * @return gui
          */
@@ -612,28 +598,29 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             
             /** the registered actions. */
-            private final Map<String, McBiConsumer<SGuiInterface, List<FormData>>> actions = new HashMap<>();
+            private final Map<String, McBiConsumer<SGuiInterface, List<FormData>>>           actions   = new HashMap<>();
             
             /** the registered suppliers. */
             private final Map<String, McFunction<QueryFormRequestData, QueryFormAnswerData>> suppliers = new HashMap<>();
             
             /** the uuid. */
-            private final String uuid;
+            private final String                                                             uuid;
             
             /** the close action. */
-            private final McRunnable closeAction;
-
+            private final McRunnable                                                         closeAction;
+            
             /**
              * Constructor
-             * @param closeAction 
-             * @param uuid 
+             * 
+             * @param closeAction
+             * @param uuid
              */
             public SGuiImpl(String uuid, McRunnable closeAction)
             {
                 this.uuid = uuid;
                 this.closeAction = closeAction;
             }
-
+            
             /**
              * @return the closeAction
              */
@@ -641,7 +628,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             {
                 return this.closeAction;
             }
-
+            
             /**
              * @param button
              */
@@ -658,8 +645,11 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             
             /**
              * Performs given action.
-             * @param actionId action uuid.
-             * @param data from data
+             * 
+             * @param actionId
+             *            action uuid.
+             * @param data
+             *            from data
              * @throws McException
              */
             public void performAction(String actionId, List<FormData> data) throws McException
@@ -673,6 +663,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             
             /**
              * Query data from data suppliers.
+             * 
              * @param data
              * @return data result.
              * @throws McException
@@ -686,7 +677,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 }
                 return null;
             }
-
+            
             @Override
             public void close()
             {
@@ -699,7 +690,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 
                 SGuiHelper.this.remove(this.getUuid());
             }
-
+            
             /**
              * @return the uuid
              */
@@ -707,7 +698,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             {
                 return this.uuid;
             }
-
+            
             /**
              * @param dataSupplier
              * @return unique data supplier id.
@@ -720,9 +711,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             
         }
-
+        
         /**
          * Returns the underlying player
+         * 
          * @return underlying player
          */
         public McPlayerInterface getPlayer()
@@ -734,6 +726,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /**
      * Button data.
+     * 
      * @author mepeisen
      */
     public class GuiButtonImpl extends ButtonData implements GuiButton
@@ -741,7 +734,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         /** the action. */
         private McBiConsumer<SGuiInterface, List<FormData>> action;
-
+        
         /**
          * @return the action
          */
@@ -749,9 +742,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             return this.action;
         }
-
+        
         /**
-         * @param action the action to set
+         * @param action
+         *            the action to set
          */
         public void setAction(McBiConsumer<SGuiInterface, List<FormData>> action)
         {
@@ -759,13 +753,14 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
     }
-
+    
     /**
      * Performs action.
+     * 
      * @param winId
      * @param actionId
-     * @param formData 
-     * @throws McException 
+     * @param formData
+     * @throws McException
      */
     void sguiActionPerformed(String winId, String actionId, List<FormData> formData) throws McException
     {
@@ -778,11 +773,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
         }
     }
-
+    
     /**
      * Performs action.
+     * 
      * @param winId
-     * @throws McException 
+     * @throws McException
      */
     void sguiWinClosed(String winId) throws McException
     {
@@ -797,15 +793,15 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 }
                 catch (McException ex)
                 {
-                    // TODO logging
+                    LOGGER.log(Level.WARNING, "Problems invoke close action", ex); //$NON-NLS-1$
                 }
             }
         }
     }
-
+    
     /**
      * @param fragment
-     * @throws McException 
+     * @throws McException
      */
     void sguiFormRequest(QueryFormRequestData fragment) throws McException
     {
@@ -815,7 +811,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             if (impl != null)
             {
                 final QueryFormAnswerData answer = impl.queryData(fragment);
-
+                
                 final DataSection section = new MemoryDataSection();
                 section.set("KEY", CoreMessages.QueryFormAnswer.name()); //$NON-NLS-1$
                 answer.write(section.createSection("data")); //$NON-NLS-1$
@@ -831,13 +827,14 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         
         /** marker uuid. */
-        private UUID markerId;
+        private UUID              markerId;
         
         /** the player. */
         private McPlayerInterface player;
-
+        
         /**
          * Constructor.
+         * 
          * @param player
          * @param markerId
          */
@@ -846,7 +843,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             this.player = player;
             this.markerId = markerId;
         }
-
+        
         @Override
         public void remove() throws McException
         {
@@ -857,7 +854,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             data.write(section.createSection("data")); //$NON-NLS-1$
             this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         }
-
+        
         @Override
         public void updateLabel(LocalizedMessageInterface label, Serializable... args) throws McException
         {
@@ -865,7 +862,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
     }
-
+    
     @Override
     public SGuiMarkerInterface sguiShowMarker(ComponentInterface component, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
     {
@@ -874,7 +871,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         checkForSmartGui();
         initSmartGui();
         final UUID uuid = UUID.randomUUID();
-
+        
         final DisplayMarkerData data = new DisplayMarkerData();
         data.setMarkerId(uuid.toString());
         data.setMarker(new MarkerData());
@@ -890,7 +887,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         return new SGuiMarker(this.player, uuid);
     }
-
+    
     @Override
     public SGuiMarkerInterface sguiShowMarker(SignInterface sign, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
     {
@@ -899,7 +896,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         checkForSmartGui();
         initSmartGui();
         final UUID uuid = UUID.randomUUID();
-
+        
         final DisplayMarkerData data = new DisplayMarkerData();
         data.setMarkerId(uuid.toString());
         data.setMarker(new MarkerData());
@@ -915,7 +912,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         return new SGuiMarker(this.player, uuid);
     }
-
+    
     @Override
     public SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
     {
@@ -924,7 +921,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         checkForSmartGui();
         initSmartGui();
         final UUID uuid = UUID.randomUUID();
-
+        
         final DisplayMarkerData data = new DisplayMarkerData();
         data.setMarkerId(uuid.toString());
         data.setMarker(new MarkerData());
@@ -942,7 +939,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         
         return new SGuiMarker(this.player, uuid);
     }
-
+    
     @Override
     public void sguiRemoveAllMarkers() throws McException
     {
@@ -951,6 +948,39 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         section.set("KEY", CoreMessages.ResetMarkers.name()); //$NON-NLS-1$
         data.write(section.createSection("data")); //$NON-NLS-1$
         this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+    }
+    
+    /**
+     * Simple implementation of storage map.
+     * 
+     * @author mepeisen
+     */
+    private static final class StorageImpl implements McStorage
+    {
+        
+        /** the underlying data map. */
+        private final Map<Class<?>, Configurable> data = new HashMap<>();
+        
+        /**
+         * Constructor.
+         */
+        public StorageImpl()
+        {
+            // empty
+        }
+        
+        @Override
+        public <T extends Configurable> T get(Class<T> clazz)
+        {
+            return clazz.cast(this.data.get(clazz));
+        }
+        
+        @Override
+        public <T extends Configurable> void set(Class<T> clazz, T value)
+        {
+            this.data.put(clazz, value);
+        }
+        
     }
     
 }

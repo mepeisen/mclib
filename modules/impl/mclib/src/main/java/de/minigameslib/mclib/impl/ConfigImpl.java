@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
@@ -69,6 +71,9 @@ import de.minigameslib.mclib.api.config.ConfigurationValues;
  */
 public class ConfigImpl implements ConfigInterface
 {
+    
+    /** logging. */
+    private static final Logger LOGGER = Logger.getLogger(ConfigImpl.class.getName());
     
     /**
      * The configuration files.
@@ -258,8 +263,7 @@ public class ConfigImpl implements ConfigInterface
                 }
                 catch (IOException e)
                 {
-                    // TODO logging
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "Problems saving config to file " + fobj, e); //$NON-NLS-1$
                 }
             }
             
@@ -277,8 +281,7 @@ public class ConfigImpl implements ConfigInterface
         }
         catch (IOException e)
         {
-            // TODO logging
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Problems saving config to file " + fobj, e); //$NON-NLS-1$
         }
     }
     

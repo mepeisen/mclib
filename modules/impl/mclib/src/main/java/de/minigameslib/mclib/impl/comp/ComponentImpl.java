@@ -89,7 +89,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     {
         if (this.deleted)
         {
-            throw new McException(CommonMessages.AlreadyDeleted);
+            throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
         super.delete();

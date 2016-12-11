@@ -74,7 +74,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     {
         if (this.deleted)
         {
-            throw new McException(CommonMessages.AlreadyDeleted);
+            throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
         super.delete();

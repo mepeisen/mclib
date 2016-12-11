@@ -35,6 +35,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 
 /**
@@ -110,8 +111,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
             }
             catch (IOException e)
             {
-                // TODO Report exception
-                e.printStackTrace();
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
             }
         }
     }
@@ -169,7 +169,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
         // TODO notify sgui
         if (this.deleted)
         {
-            // TODO throw exception
+            throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.saveConfig();
         this.location = loc == null ? null : loc;

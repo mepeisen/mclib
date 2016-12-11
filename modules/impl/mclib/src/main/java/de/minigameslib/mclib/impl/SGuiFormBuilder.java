@@ -27,6 +27,8 @@ package de.minigameslib.mclib.impl;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import de.minigameslib.mclib.api.McException;
@@ -69,6 +71,9 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  */
 public class SGuiFormBuilder implements SGuiFormBuilderInterface
 {
+    
+    /** logging. */
+    private static final Logger LOGGER = Logger.getLogger(SGuiFormBuilder.class.getName());
 
     /** the smart gui. */
     private SGuiHelper smartGui;
@@ -138,7 +143,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         }
         catch (McException ex)
         {
-            // TODO logging, should not happen
+            LOGGER.log(Level.WARNING, "Exception creating button", ex); //$NON-NLS-1$
         }
         return null;
     }
