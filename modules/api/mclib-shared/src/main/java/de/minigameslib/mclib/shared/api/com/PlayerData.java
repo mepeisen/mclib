@@ -33,7 +33,7 @@ import java.util.UUID;
  * 
  * @author mepeisen
  */
-public class PlayerData implements DataFragment
+public class PlayerData implements PlayerDataFragment
 {
     
     /** player uuid. */
@@ -49,6 +49,13 @@ public class PlayerData implements DataFragment
     {
         this.playerUuid = playerUuid;
         this.playerName = playerName;
+    }
+    
+    /**
+     */
+    public PlayerData()
+    {
+        // empty
     }
 
     @Override
@@ -130,17 +137,13 @@ public class PlayerData implements DataFragment
         }
     }
 
-    /**
-     * @return the playerUuid
-     */
+    @Override
     public UUID getPlayerUuid()
     {
         return this.playerUuid;
     }
 
-    /**
-     * @return the playerName
-     */
+    @Override
     public String getPlayerName()
     {
         return this.playerName;

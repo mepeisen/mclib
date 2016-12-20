@@ -32,7 +32,7 @@ import java.util.HashSet;
  * 
  * @author mepeisen
  */
-public class VectorData implements DataFragment
+public class VectorData implements VectorDataFragment
 {
     
     /** x coordinate. */
@@ -52,6 +52,13 @@ public class VectorData implements DataFragment
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    /**
+     */
+    public VectorData()
+    {
+        // empty
     }
 
     @Override
@@ -115,25 +122,19 @@ public class VectorData implements DataFragment
         return result;
     }
 
-    /**
-     * @return the x
-     */
+    @Override
     public double getX()
     {
         return this.x;
     }
 
-    /**
-     * @return the y
-     */
+    @Override
     public double getY()
     {
         return this.y;
     }
 
-    /**
-     * @return the z
-     */
+    @Override
     public double getZ()
     {
         return this.z;

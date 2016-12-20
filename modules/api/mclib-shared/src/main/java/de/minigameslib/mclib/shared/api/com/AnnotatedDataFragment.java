@@ -79,9 +79,9 @@ public abstract class AnnotatedDataFragment implements DataFragment
         
         PRIM_TYPES.addAll(FIELD_TYPES.keySet());
         
-        FIELD_TYPES.put(VectorData.class, PrimitiveFieldType.Vector);
-        FIELD_TYPES.put(PlayerData.class, PrimitiveFieldType.Player);
-        FIELD_TYPES.put(ItemStackData.class, PrimitiveFieldType.ItemStack);
+        FIELD_TYPES.put(VectorDataFragment.class, PrimitiveFieldType.Vector);
+        FIELD_TYPES.put(PlayerDataFragment.class, PrimitiveFieldType.Player);
+        FIELD_TYPES.put(ItemStackDataFragment.class, PrimitiveFieldType.ItemStack);
         FIELD_TYPES.put(ColorData.class, PrimitiveFieldType.Color);
         FIELD_TYPES.put(DataSection.class, PrimitiveFieldType.DataSection);
     }
@@ -257,7 +257,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     {
                         this.primitiveType = PrimitiveFieldType.VectorList;
                     }
-                    else if (ItemStackData.class.equals(listType))
+                    else if (ItemStackDataFragment.class.equals(listType))
                     {
                         this.primitiveType = PrimitiveFieldType.ItemStackList;
                     }
@@ -445,7 +445,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         
         /** item stack list type. */
         @SuppressWarnings("unchecked")
-        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.setFragmentList(name, (List<ItemStackData>)value)),
+        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.setFragmentList(name, (List<ItemStackDataFragment>)value)),
         
         /** primitive map type. */
         Map((name, section) -> section.getMap(name), (name, section, value) -> section.set(name, value)),

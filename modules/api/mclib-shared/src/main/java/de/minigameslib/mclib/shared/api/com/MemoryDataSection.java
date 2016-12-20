@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A memory implementation of a data section.
@@ -43,19 +44,30 @@ public class MemoryDataSection implements DataSection
 {
     
     /** path of this section. */
-    private String path;
+    private String                               path;
     /** name of this section. */
-    private String name;
+    private String                               name;
     /** parent reference. */
-    private MemoryDataSection parent;
+    private MemoryDataSection                    parent;
     
     /** map contents. */
-    private final Map<String, Object> contents = new HashMap<>();
+    private final Map<String, Object>            contents             = new HashMap<>();
+    
+    /** current fragment implementations for interfaces like {@link PlayerDataFragment} */
+    private static final Map<Class<?>, Class<?>> fragmentImpls        = new ConcurrentHashMap<>();
+    
+    /** security flag to prevent fragmentImpls map from being overridden. */
+    private static boolean                       fragmentOverrideLock = false;
     
     /** the primitive types directly supported by DataSection. */
-    static final Set<Class<?>> PRIM_TYPES = new HashSet<>();
+    static final Set<Class<?>>                   PRIM_TYPES           = new HashSet<>();
     
     {
+        // default impls
+        fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
+        fragmentImpls.put(VectorDataFragment.class, VectorData.class);
+        
+        // primitive types.
         PRIM_TYPES.add(String.class);
         PRIM_TYPES.add(Boolean.class);
         PRIM_TYPES.add(boolean.class);
@@ -77,7 +89,43 @@ public class MemoryDataSection implements DataSection
         PRIM_TYPES.add(Character.class);
         PRIM_TYPES.add(char.class);
     }
-
+    
+    /**
+     * Initializes an interface with given implementation class.
+     * 
+     * @param interfaz
+     * @param impl
+     */
+    public static <T extends DataFragment, Q extends T> void initFragmentImplementation(Class<T> interfaz, Class<Q> impl)
+    {
+        if (fragmentOverrideLock)
+        {
+            fragmentImpls.putIfAbsent(interfaz, impl);
+        }
+        else
+        {
+            fragmentImpls.put(interfaz, impl);
+        }
+    }
+    
+    /**
+     * Locks the {@link #initFragmentImplementation(Class, Class)} method to not override already existing implementations.
+     */
+    public static void lockFragmentImplementations()
+    {
+        fragmentOverrideLock = true;
+    }
+    
+    /**
+     * Checks if the fragment override lock was set before.
+     * 
+     * @return {@code true} if method {@link #lockFragmentImplementations()} was called before.
+     */
+    public static boolean isFragmentImplementationLocked()
+    {
+        return fragmentOverrideLock;
+    }
+    
     /**
      * Constructor
      */
@@ -88,9 +136,13 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Constructor
-     * @param path path of this section.
-     * @param name name of this section.
-     * @param parent parent
+     * 
+     * @param path
+     *            path of this section.
+     * @param name
+     *            name of this section.
+     * @param parent
+     *            parent
      */
     private MemoryDataSection(String path, String name, MemoryDataSection parent)
     {
@@ -123,7 +175,7 @@ public class MemoryDataSection implements DataSection
             {
                 if (deep)
                 {
-                    ((MemoryDataSection)entry.getValue()).getValues(true).forEach((key, value) -> result.put(entry.getKey() + '.' + key, value));
+                    ((MemoryDataSection) entry.getValue()).getValues(true).forEach((key, value) -> result.put(entry.getKey() + '.' + key, value));
                 }
             }
             else
@@ -145,7 +197,7 @@ public class MemoryDataSection implements DataSection
         final Object obj = this.contents.get(key.substring(0, indexof));
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).contains(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).contains(key.substring(indexof + 1));
         }
         return false;
     }
@@ -187,7 +239,7 @@ public class MemoryDataSection implements DataSection
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).get(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).get(key.substring(indexof + 1));
         }
         return null;
     }
@@ -199,14 +251,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (obj == null)
+                return defaultValue;
             return obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).get(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).get(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -248,7 +301,7 @@ public class MemoryDataSection implements DataSection
         final Object obj = this.contents.get(key.substring(0, indexof));
         if (obj instanceof MemoryDataSection)
         {
-            ((MemoryDataSection)obj).clear(key.substring(indexof + 1));
+            ((MemoryDataSection) obj).clear(key.substring(indexof + 1));
         }
     }
     
@@ -264,9 +317,9 @@ public class MemoryDataSection implements DataSection
             this.contents.put(key, value);
             return;
         }
-        ((MemoryDataSection)this.createSection(key.substring(0, indexof))).doSet(key.substring(indexof + 1), value);
+        ((MemoryDataSection) this.createSection(key.substring(0, indexof))).doSet(key.substring(indexof + 1), value);
     }
-
+    
     @Override
     public void setPrimitiveList(String key, List<?> newValue)
     {
@@ -280,7 +333,7 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public void setPrimitiveMapList(String key, List<Map<String, ?>> newValue)
+    public <T> void setPrimitiveMapList(String key, List<Map<String, T>> newValue)
     {
         final DataSection child = this.createSection(key);
         int i = 0;
@@ -326,10 +379,10 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public void setPrimitiveListMap(String key, Map<String, List<?>> newValue)
+    public <T> void setPrimitiveListMap(String key, Map<String, List<T>> newValue)
     {
         final DataSection child = this.createSection(key);
-        for (final Map.Entry<String, List<?>> elm : newValue.entrySet())
+        for (final Map.Entry<String, List<T>> elm : newValue.entrySet())
         {
             final DataSection mapchild = child.createSection(elm.getKey());
             int i = 0;
@@ -377,7 +430,7 @@ public class MemoryDataSection implements DataSection
             obj = new MemoryDataSection(this.path == null ? subkey : this.path + '.' + subkey, subkey, this);
             this.contents.put(subkey, obj);
         }
-        return ((MemoryDataSection)obj).createSection(key.substring(indexof + 1));
+        return ((MemoryDataSection) obj).createSection(key.substring(indexof + 1));
     }
     
     @Override
@@ -405,7 +458,7 @@ public class MemoryDataSection implements DataSection
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getSection(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getSection(key.substring(indexof + 1));
         }
         return null;
     }
@@ -423,13 +476,13 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            return (String) obj;
+            return obj instanceof String ? (String) obj : null;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getString(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getString(key.substring(indexof + 1));
         }
         return null;
     }
@@ -454,14 +507,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0;
-            return (Integer) obj;
+            if (!(obj instanceof Number))
+                return 0;
+            return ((Number) obj).intValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getInt(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getInt(key.substring(indexof + 1));
         }
         return 0;
     }
@@ -473,14 +527,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof Number))
+                return defaultValue;
             return (Integer) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getInt(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getInt(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -498,14 +553,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0;
-            return (Byte) obj;
+            if (!(obj instanceof Number))
+                return 0;
+            return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getByte(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getByte(key.substring(indexof + 1));
         }
         return 0;
     }
@@ -517,14 +573,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
-            return (Byte) obj;
+            if (!(obj instanceof Number))
+                return defaultValue;
+            return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getByte(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getByte(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -542,14 +599,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0;
-            return (Short) obj;
+            if (!(obj instanceof Number))
+                return 0;
+            return ((Number) obj).shortValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getShort(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getShort(key.substring(indexof + 1));
         }
         return 0;
     }
@@ -561,14 +619,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
-            return (Short) obj;
+            if (!(obj instanceof Number))
+                return defaultValue;
+            return ((Number) obj).shortValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getShort(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getShort(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -586,14 +645,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0;
+            if (!(obj instanceof Character))
+                return 0;
             return (Character) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getCharacter(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getCharacter(key.substring(indexof + 1));
         }
         return 0;
     }
@@ -605,14 +665,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof Character))
+                return defaultValue;
             return (Character) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getCharacter(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getCharacter(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -630,13 +691,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
+            if (!(obj instanceof LocalDateTime))
+                return null;
             return (LocalDateTime) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDateTime(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getDateTime(key.substring(indexof + 1));
         }
         return null;
     }
@@ -648,14 +711,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof LocalDateTime))
+                return defaultValue;
             return (LocalDateTime) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDateTime(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getDateTime(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -673,13 +737,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
+            if (!(obj instanceof LocalDate))
+                return null;
             return (LocalDate) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDate(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getDate(key.substring(indexof + 1));
         }
         return null;
     }
@@ -691,14 +757,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof LocalDate))
+                return defaultValue;
             return (LocalDate) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDate(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getDate(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -716,13 +783,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
+            if (!(obj instanceof LocalTime))
+                return null;
             return (LocalTime) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getTime(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getTime(key.substring(indexof + 1));
         }
         return null;
     }
@@ -734,14 +803,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof LocalTime))
+                return defaultValue;
             return (LocalTime) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getTime(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getTime(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -759,14 +829,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return false;
+            if (!(obj instanceof Boolean))
+                return false;
             return (Boolean) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getBoolean(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getBoolean(key.substring(indexof + 1));
         }
         return false;
     }
@@ -778,14 +849,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
+            if (!(obj instanceof Boolean))
+                return defaultValue;
             return (Boolean) obj;
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getBoolean(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getBoolean(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -803,14 +875,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0.0d;
-            return (Double) obj;
+            if (!(obj instanceof Number))
+                return 0.0d;
+            return ((Number) obj).doubleValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDouble(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getDouble(key.substring(indexof + 1));
         }
         return 0.0d;
     }
@@ -822,14 +895,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
-            return (Double) obj;
+            if (!(obj instanceof Number))
+                return defaultValue;
+            return ((Number) obj).doubleValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getDouble(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getDouble(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -847,14 +921,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0.0f;
-            return (Float) obj;
+            if (!(obj instanceof Number))
+                return 0.0f;
+            return ((Number) obj).floatValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getFloat(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getFloat(key.substring(indexof + 1));
         }
         return 0.0f;
     }
@@ -866,14 +941,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
-            return (Float) obj;
+            if (!(obj instanceof Number))
+                return defaultValue;
+            return ((Number) obj).floatValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getFloat(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getFloat(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -891,14 +967,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return 0;
-            return (Long) obj;
+            if (!(obj instanceof Number))
+                return 0;
+            return ((Number) obj).longValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getLong(key.substring(indexof + 1));
+            return ((MemoryDataSection) obj).getLong(key.substring(indexof + 1));
         }
         return 0;
     }
@@ -910,14 +987,15 @@ public class MemoryDataSection implements DataSection
         if (indexof == -1)
         {
             final Object obj = this.contents.get(key);
-            if (obj == null) return defaultValue;
-            return (Long) obj;
+            if (!(obj instanceof Number))
+                return defaultValue;
+            return ((Number) obj).longValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);
         if (obj instanceof MemoryDataSection)
         {
-            return ((MemoryDataSection)obj).getLong(key.substring(indexof + 1), defaultValue);
+            return ((MemoryDataSection) obj).getLong(key.substring(indexof + 1), defaultValue);
         }
         return defaultValue;
     }
@@ -960,6 +1038,7 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Safe cast (checks for invalid elements)
+     * 
      * @param clazz
      * @param list
      * @return casted list
@@ -1029,21 +1108,21 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public List<VectorData> getVectorList(String key)
+    public List<VectorDataFragment> getVectorList(String key)
     {
-        return this.getFragmentList(VectorData.class, key);
+        return this.getFragmentList(VectorDataFragment.class, key);
     }
     
     @Override
-    public List<PlayerData> getPlayerList(String key)
+    public List<PlayerDataFragment> getPlayerList(String key)
     {
-        return this.getFragmentList(PlayerData.class, key);
+        return this.getFragmentList(PlayerDataFragment.class, key);
     }
     
     @Override
-    public List<ItemStackData> getItemList(String key)
+    public List<ItemStackDataFragment> getItemList(String key)
     {
-        return this.getFragmentList(ItemStackData.class, key);
+        return this.getFragmentList(ItemStackDataFragment.class, key);
     }
     
     @Override
@@ -1059,9 +1138,6 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getMap(java.lang.String)
-     */
     @Override
     public Map<String, ?> getMap(String key)
     {
@@ -1069,9 +1145,6 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getListMap(java.lang.String)
-     */
     @Override
     public Map<String, List<?>> getListMap(String key)
     {
@@ -1079,9 +1152,6 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getFragmentMap(java.lang.Class, java.lang.String)
-     */
     @Override
     public <T extends DataFragment> Map<String, T> getFragmentMap(Class<T> clazz, String key)
     {
@@ -1089,9 +1159,6 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getFragmentMapList(java.lang.Class, java.lang.String)
-     */
     @Override
     public <T extends DataFragment> List<Map<String, T>> getFragmentMapList(Class<T> clazz, String key)
     {
@@ -1099,9 +1166,6 @@ public class MemoryDataSection implements DataSection
         return null;
     }
     
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.shared.api.com.DataSection#getFragmentListMap(java.lang.Class, java.lang.String)
-     */
     @Override
     public <T extends DataFragment> Map<String, List<T>> getFragmentListMap(Class<T> clazz, String key)
     {
@@ -1126,60 +1190,57 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public VectorData getVector(String key)
+    public VectorDataFragment getVector(String key)
     {
-        return this.getFragment(VectorData.class, key);
+        return this.getFragment(VectorDataFragment.class, key);
     }
     
     @Override
-    public VectorData getVector(String key, VectorData defaultValue)
+    public VectorDataFragment getVector(String key, VectorDataFragment defaultValue)
     {
-        return this.getFragment(VectorData.class, key, defaultValue);
+        return this.getFragment(VectorDataFragment.class, key, defaultValue);
     }
     
     @Override
     public boolean isVectorData(String key)
     {
-        return this.isFragment(VectorData.class, key);
+        return this.isFragment(VectorDataFragment.class, key);
     }
     
     @Override
-    public PlayerData getPlayer(String key)
+    public PlayerDataFragment getPlayer(String key)
     {
-        return this.getFragment(PlayerData.class, key);
+        return this.getFragment(PlayerDataFragment.class, key);
     }
     
     @Override
-    public PlayerData getPlayer(String key, PlayerData defaultValue)
+    public PlayerDataFragment getPlayer(String key, PlayerDataFragment defaultValue)
     {
-        return this.getFragment(PlayerData.class, key, defaultValue);
+        return this.getFragment(PlayerDataFragment.class, key, defaultValue);
     }
     
     @Override
     public boolean isPlayer(String key)
     {
-        return this.isFragment(PlayerData.class, key);
+        return this.isFragment(PlayerDataFragment.class, key);
     }
     
     @Override
-    public ItemStackData getItemStack(String key)
+    public ItemStackDataFragment getItemStack(String key)
     {
-        // TODO This won't work, ItemStackData is an interface :-(
-        return this.getFragment(ItemStackData.class, key);
+        return this.getFragment(ItemStackDataFragment.class, key);
     }
     
     @Override
-    public ItemStackData getItemStack(String key, ItemStackData defaultValue)
+    public ItemStackDataFragment getItemStack(String key, ItemStackDataFragment defaultValue)
     {
-        // TODO This won't work, ItemStackData is an interface :-(
-        return this.getFragment(ItemStackData.class, key, defaultValue);
+        return this.getFragment(ItemStackDataFragment.class, key, defaultValue);
     }
     
     @Override
     public boolean isItemStack(String key)
     {
-        // TODO This won't work, ItemStackData is an interface :-(
-        return this.isFragment(ItemStackData.class, key);
+        return this.isFragment(ItemStackDataFragment.class, key);
     }
     
     @Override
@@ -1225,7 +1286,7 @@ public class MemoryDataSection implements DataSection
         result.read(section);
         return result;
     }
-
+    
     @Override
     public <T extends DataFragment> boolean isFragment(Class<T> clazz, String key)
     {
@@ -1240,6 +1301,7 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Safe create instances of given class
+     * 
      * @param clazz
      * @return new instance
      */
@@ -1247,6 +1309,11 @@ public class MemoryDataSection implements DataSection
     {
         try
         {
+            final Class<?> clazz2 = fragmentImpls.get(clazz);
+            if (clazz2 != null)
+            {
+                return clazz.cast(clazz2.newInstance());
+            }
             return clazz.newInstance();
         }
         catch (InstantiationException | IllegalAccessException e)
@@ -1254,7 +1321,7 @@ public class MemoryDataSection implements DataSection
             throw new IllegalStateException(e);
         }
     }
-
+    
     @Override
     public void setSection(String key, DataSection newValue)
     {

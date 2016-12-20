@@ -134,7 +134,7 @@ public interface DataSection
      * @param key
      * @param newValue
      */
-    void setPrimitiveMapList(String key, List<Map<String, ?>> newValue);
+    <T> void setPrimitiveMapList(String key, List<Map<String, T>> newValue);
     
     /**
      * Sets object for given key
@@ -174,7 +174,7 @@ public interface DataSection
      * @param key
      * @param newValue
      */
-    void setPrimitiveListMap(String key, Map<String, List<?>> newValue);
+    <T> void setPrimitiveListMap(String key, Map<String, List<T>> newValue);
     
     /**
      * Sets object for given key
@@ -561,21 +561,21 @@ public interface DataSection
      * @param key
      * @return value
      */
-    List<VectorData> getVectorList(String key);
+    List<VectorDataFragment> getVectorList(String key);
     
     /**
      * Returns player list value by key
      * @param key
      * @return value
      */
-    List<PlayerData> getPlayerList(String key);
+    List<PlayerDataFragment> getPlayerList(String key);
     
     /**
      * Returns item list value by key
      * @param key
      * @return value
      */
-    List<ItemStackData> getItemList(String key);
+    List<ItemStackDataFragment> getItemList(String key);
     
     /**
      * Returns color list value by key
@@ -642,7 +642,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    VectorData getVector(String key);
+    VectorDataFragment getVector(String key);
     
     /**
      * returns vector by key and default value
@@ -650,7 +650,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    VectorData getVector(String key, VectorData defaultValue);
+    VectorDataFragment getVector(String key, VectorDataFragment defaultValue);
     
     /**
      * Checks if given key has a vector value.
@@ -664,7 +664,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    PlayerData getPlayer(String key);
+    PlayerDataFragment getPlayer(String key);
     
     /**
      * returns vector by key and default value
@@ -672,7 +672,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    PlayerData getPlayer(String key, PlayerData defaultValue);
+    PlayerDataFragment getPlayer(String key, PlayerDataFragment defaultValue);
     
     /**
      * Checks if given key has a player value.
@@ -686,7 +686,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    ItemStackData getItemStack(String key);
+    ItemStackDataFragment getItemStack(String key);
     
     /**
      * returns item stack by key and default value
@@ -694,7 +694,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    ItemStackData getItemStack(String key, ItemStackData defaultValue);
+    ItemStackDataFragment getItemStack(String key, ItemStackDataFragment defaultValue);
     
     /**
      * Checks if given key has an item stack value.

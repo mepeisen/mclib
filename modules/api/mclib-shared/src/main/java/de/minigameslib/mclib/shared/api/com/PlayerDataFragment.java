@@ -24,14 +24,28 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
+import java.util.UUID;
+
 /**
- * An item stack value.
+ * Interface for player data.
  * 
  * @author mepeisen
  */
-public interface ItemStackData extends DataFragment
+public interface PlayerDataFragment extends DataFragment
 {
     
-    // marker only.
+    /**
+     * Returns the unique id of the player for identification.
+     * 
+     * @return the playerUuid
+     */
+    UUID getPlayerUuid();
+    
+    /**
+     * Returns the display name of the player.
+     * 
+     * @return the playerName
+     */
+    String getPlayerName();
     
 }

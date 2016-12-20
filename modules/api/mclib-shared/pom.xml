@@ -3,6 +3,7 @@
   <artifactId>mclib-shared</artifactId>
   
   <name>mclib-shared</name>
+  <description>API and utility classes shared between client and servers</description>
   
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
