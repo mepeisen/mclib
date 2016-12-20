@@ -3,11 +3,7 @@
 <stringAttribute key="bad_container_name" value="\mclib\src\launch"/>
 <listAttribute key="com.mountainminds.eclemma.core.SCOPE_IDS">
 <listEntry value="=mclib-api/src\/main\/resources"/>
-<listEntry value="=spigot-testsupport-api/src\/main\/java"/>
 <listEntry value="=mclib-api/src\/main\/java"/>
-<listEntry value="=spigot-testsupport-api/src\/test\/resources"/>
-<listEntry value="=spigot-testsupport-api/src\/main\/resources"/>
-<listEntry value="=spigot-testsupport-api/src\/test\/java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/mclib-api"/>
