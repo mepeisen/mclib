@@ -354,6 +354,10 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     this.isFragment = true;
                     this.elementType = this.clazz.asSubclass(DataFragment.class);
                 }
+                else
+                {
+                    throw new IllegalStateException("Unsupported value type detected. " + this.clazz); //$NON-NLS-1$
+                }
             }
         }
         
