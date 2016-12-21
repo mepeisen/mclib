@@ -28,11 +28,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 /**
- * Vector data.
+ * Color data.
  * 
  * @author mepeisen
  */
-public class ColorData implements DataFragment
+public class ColorData implements ColorDataFragment
 {
     
     /** red color component. */
@@ -52,6 +52,14 @@ public class ColorData implements DataFragment
         this.red = red;
         this.green = green;
         this.blue = blue;
+    }
+
+    /**
+     * 
+     */
+    public ColorData()
+    {
+        // empty
     }
 
     @Override
@@ -111,25 +119,19 @@ public class ColorData implements DataFragment
         return result;
     }
 
-    /**
-     * @return the red
-     */
+    @Override
     public byte getRed()
     {
         return this.red;
     }
 
-    /**
-     * @return the green
-     */
+    @Override
     public byte getGreen()
     {
         return this.green;
     }
 
-    /**
-     * @return the blue
-     */
+    @Override
     public byte getBlue()
     {
         return this.blue;

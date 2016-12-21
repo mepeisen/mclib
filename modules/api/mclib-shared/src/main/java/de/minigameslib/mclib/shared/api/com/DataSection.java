@@ -476,7 +476,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    List<?> getList(String key);
+    List<?> getPrimitiveList(String key);
     
     /**
      * Returns list value with default by key
@@ -484,7 +484,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    List<?> getList(String key, List<?> defaultValue);
+    List<?> getPrimitiveList(String key, List<?> defaultValue);
     
     /**
      * Checks if given key has a list value.
@@ -582,28 +582,28 @@ public interface DataSection
      * @param key
      * @return value
      */
-    List<ColorData> getColorList(String key);
+    List<ColorDataFragment> getColorList(String key);
     
     /**
      * Returns map list value by key
      * @param key
      * @return value
      */
-    List<Map<String, ?>> getMapList(String key);
+    List<Map<String, ?>> getPrimitiveMapList(String key);
     
     /**
      * Returns map value by key
      * @param key
      * @return value
      */
-    Map<String, ?> getMap(String key);
+    Map<String, ?> getPrimitiveMap(String key);
     
     /**
      * Returns map value by key
      * @param key
      * @return value
      */
-    Map<String, List<?>> getListMap(String key);
+    Map<String, List<?>> getPrimitiveListMap(String key);
     
     /**
      * Returns map value by key
@@ -657,7 +657,7 @@ public interface DataSection
      * @param key
      * @return true if key has a vector value
      */
-    boolean isVectorData(String key);
+    boolean isVector(String key);
     
     /**
      * returns player by key
@@ -708,7 +708,7 @@ public interface DataSection
      * @param key
      * @return value
      */
-    ColorData getColor(String key);
+    ColorDataFragment getColor(String key);
     
     /**
      * returns color by key and default value
@@ -716,7 +716,7 @@ public interface DataSection
      * @param defaultValue
      * @return value
      */
-    ColorData getColor(String key, ColorData defaultValue);
+    ColorDataFragment getColor(String key, ColorDataFragment defaultValue);
     
     /**
      * Checks if given key has a color value.

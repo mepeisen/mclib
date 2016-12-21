@@ -43,9 +43,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
+import de.minigameslib.mclib.shared.api.com.ColorData;
+import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
+import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
+import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.VectorData;
+import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
  * Testing MemoryDataSection
@@ -858,12 +865,12 @@ public class MemoryDataSectionTest
         section.set("FOO.A", 1); //$NON-NLS-1$
         section.set("FOO.B", 2); //$NON-NLS-1$
         section.set("FOO.C", 3); //$NON-NLS-1$
-        final List<?> result = section.getList("FOO"); //$NON-NLS-1$
+        final List<?> result = section.getPrimitiveList("FOO"); //$NON-NLS-1$
         assertEquals(3, result.size());
         assertTrue(result.contains(1));
         assertTrue(result.contains(2));
         assertTrue(result.contains(3));
-        assertNull(section.getList("BAR")); //$NON-NLS-1$
+        assertNull(section.getPrimitiveList("BAR")); //$NON-NLS-1$
     }
     
     /**
@@ -878,12 +885,12 @@ public class MemoryDataSectionTest
         section.set("FOO.A", 1); //$NON-NLS-1$
         section.set("FOO.B", 2); //$NON-NLS-1$
         section.set("FOO.C", 3); //$NON-NLS-1$
-        final List<?> result = section.getList("FOO", list); //$NON-NLS-1$
+        final List<?> result = section.getPrimitiveList("FOO", list); //$NON-NLS-1$
         assertEquals(3, result.size());
         assertTrue(result.contains(1));
         assertTrue(result.contains(2));
         assertTrue(result.contains(3));
-        assertSame(list, section.getList("BAR", list)); //$NON-NLS-1$
+        assertSame(list, section.getPrimitiveList("BAR", list)); //$NON-NLS-1$
     }
     
     /**
@@ -945,6 +952,27 @@ public class MemoryDataSectionTest
      * Simple test case.
      */
     @Test
+    public void testGetPrimitiveMapList()
+    {
+        final List<Map<String, Integer>> maplist = new ArrayList<>();
+        final Map<String, Integer> map1 = new HashMap<>();
+        map1.put("A1", 1); //$NON-NLS-1$
+        map1.put("A2", 2); //$NON-NLS-1$
+        maplist.add(map1);
+        final Map<String, Integer> map2 = new HashMap<>();
+        map2.put("B1", 3); //$NON-NLS-1$
+        map2.put("B2", 4); //$NON-NLS-1$
+        maplist.add(map2);
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setPrimitiveMapList("FOO", maplist); //$NON-NLS-1$
+        assertEquals(maplist, section.getPrimitiveMapList("FOO")); //$NON-NLS-1$
+        assertNull(section.getPrimitiveMapList("BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
     public void testSetPrimitiveListMap()
     {
         final Map<String, List<Integer>> listmap = new HashMap<>();
@@ -968,6 +996,27 @@ public class MemoryDataSectionTest
      * Simple test case.
      */
     @Test
+    public void testGetPrimitiveListMap()
+    {
+        final Map<String, List<Integer>> listmap = new HashMap<>();
+        final List<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(2);
+        listmap.put("A", list1); //$NON-NLS-1$
+        final List<Integer> list2 = new ArrayList<>();
+        list2.add(3);
+        list2.add(4);
+        listmap.put("B", list2); //$NON-NLS-1$
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setPrimitiveListMap("FOO", listmap); //$NON-NLS-1$
+        assertEquals(listmap, section.getPrimitiveListMap("FOO")); //$NON-NLS-1$
+        assertNull(section.getPrimitiveListMap("FOO2")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
     public void testSetPrimitiveMap()
     {
         final Map<String, Integer> map1 = new HashMap<>();
@@ -977,6 +1026,21 @@ public class MemoryDataSectionTest
         section.setPrimitiveMap("FOO", map1); //$NON-NLS-1$
         assertEquals(1, section.getInt("FOO.A1")); //$NON-NLS-1$
         assertEquals(2, section.getInt("FOO.A2")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetPrimitiveMap()
+    {
+        final Map<String, Integer> map1 = new HashMap<>();
+        map1.put("A1", 1); //$NON-NLS-1$
+        map1.put("A2", 2); //$NON-NLS-1$
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setPrimitiveMap("FOO", map1); //$NON-NLS-1$
+        assertEquals(map1, section.getPrimitiveMap("FOO")); //$NON-NLS-1$
+        assertNull(section.getPrimitiveMap("FOO2")); //$NON-NLS-1$
     }
     
     /**
@@ -996,6 +1060,23 @@ public class MemoryDataSectionTest
         assertEquals(player2.getPlayerUuid().toString(), section.getString("FOO.A2.uuid")); //$NON-NLS-1$
         assertEquals(player1.getPlayerName(), section.getString("FOO.A1.name")); //$NON-NLS-1$
         assertEquals(player2.getPlayerName(), section.getString("FOO.A2.name")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetFragmentMap()
+    {
+        final Map<String, PlayerData> map1 = new HashMap<>();
+        final PlayerData player1 = new PlayerData(UUID.randomUUID(), "FooPlayer1"); //$NON-NLS-1$
+        final PlayerData player2 = new PlayerData(UUID.randomUUID(), "FooPlayer2"); //$NON-NLS-1$
+        map1.put("A1", player1); //$NON-NLS-1$
+        map1.put("A2", player2); //$NON-NLS-1$
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setFragmentMap("FOO", map1); //$NON-NLS-1$
+        assertEquals(map1, section.getFragmentMap(PlayerDataFragment.class, "FOO")); //$NON-NLS-1$
+        assertNull(section.getFragmentMap(PlayerDataFragment.class, "FOO2")); //$NON-NLS-1$
     }
     
     /**
@@ -1033,6 +1114,31 @@ public class MemoryDataSectionTest
      * Simple test case.
      */
     @Test
+    public void testGetFragmentListMap()
+    {
+        final Map<String, List<PlayerData>> listmap = new HashMap<>();
+        final List<PlayerData> list1 = new ArrayList<>();
+        final PlayerData player1 = new PlayerData(UUID.randomUUID(), "FooPlayer1"); //$NON-NLS-1$
+        final PlayerData player2 = new PlayerData(UUID.randomUUID(), "FooPlayer2"); //$NON-NLS-1$
+        list1.add(player1);
+        list1.add(player2);
+        listmap.put("A", list1); //$NON-NLS-1$
+        final List<PlayerData> list2 = new ArrayList<>();
+        final PlayerData player3 = new PlayerData(UUID.randomUUID(), "FooPlayer1"); //$NON-NLS-1$
+        final PlayerData player4 = new PlayerData(UUID.randomUUID(), "FooPlayer2"); //$NON-NLS-1$
+        list2.add(player3);
+        list2.add(player4);
+        listmap.put("B", list2); //$NON-NLS-1$
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setFragmentListMap("FOO", listmap); //$NON-NLS-1$
+        assertEquals(listmap, section.getFragmentListMap(PlayerDataFragment.class, "FOO")); //$NON-NLS-1$
+        assertNull(section.getFragmentListMap(PlayerDataFragment.class, "FOO2")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
     public void testSetFragmentMapList()
     {
         final List<Map<String, PlayerData>> maplist = new ArrayList<>();
@@ -1058,6 +1164,31 @@ public class MemoryDataSectionTest
         assertEquals(player2.getPlayerName(), section.getString("FOO.map0.A2.name")); //$NON-NLS-1$
         assertEquals(player3.getPlayerName(), section.getString("FOO.map1.B1.name")); //$NON-NLS-1$
         assertEquals(player4.getPlayerName(), section.getString("FOO.map1.B2.name")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetFragmentMapList()
+    {
+        final List<Map<String, PlayerData>> maplist = new ArrayList<>();
+        final Map<String, PlayerData> map1 = new HashMap<>();
+        final PlayerData player1 = new PlayerData(UUID.randomUUID(), "FooPlayer1"); //$NON-NLS-1$
+        final PlayerData player2 = new PlayerData(UUID.randomUUID(), "FooPlayer2"); //$NON-NLS-1$
+        map1.put("A1", player1); //$NON-NLS-1$
+        map1.put("A2", player2); //$NON-NLS-1$
+        maplist.add(map1);
+        final Map<String, PlayerData> map2 = new HashMap<>();
+        final PlayerData player3 = new PlayerData(UUID.randomUUID(), "FooPlayer1"); //$NON-NLS-1$
+        final PlayerData player4 = new PlayerData(UUID.randomUUID(), "FooPlayer2"); //$NON-NLS-1$
+        map2.put("B1", player3); //$NON-NLS-1$
+        map2.put("B2", player4); //$NON-NLS-1$
+        maplist.add(map2);
+        final MemoryDataSection section = new MemoryDataSection();
+        section.setFragmentMapList("FOO", maplist); //$NON-NLS-1$
+        assertEquals(maplist, section.getFragmentMapList(PlayerDataFragment.class, "FOO")); //$NON-NLS-1$
+        assertNull(section.getFragmentMapList(PlayerDataFragment.class, "FOO2")); //$NON-NLS-1$
     }
     
     /**
@@ -1298,6 +1429,499 @@ public class MemoryDataSectionTest
         section.set("FOO.item1", 2f); //$NON-NLS-1$
         section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
         section.getFloatList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetCharList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0", '1'); //$NON-NLS-1$
+        section.set("FOO.item1", '2'); //$NON-NLS-1$
+        final List<Character> result = section.getCharacterList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains('1'));
+        assertTrue(result.contains('2'));
+        assertNull(section.getCharacterList("BAR")); //$NON-NLS-1$
+        assertNull(section.getCharacterList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetCharListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0", '1'); //$NON-NLS-1$
+        section.set("FOO.item1", '2'); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getCharacterList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetVectorList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final VectorData data1 = new VectorData(1, 2, 3);
+        final VectorData data2 = new VectorData(2, 3, 4);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<VectorDataFragment> result = section.getVectorList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getVectorList("BAR")); //$NON-NLS-1$
+        assertNull(section.getVectorList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetVectorListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final VectorData data1 = new VectorData(1, 2, 3);
+        final VectorData data2 = new VectorData(2, 3, 4);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getVectorList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetVectorListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final VectorData data1 = new VectorData(1, 2, 3);
+        final VectorData data2 = new VectorData(2, 3, 4);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getVectorList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetPlayerList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final PlayerData data1 = new PlayerData(UUID.randomUUID(), "FooPlayer"); //$NON-NLS-1$
+        final PlayerData data2 = new PlayerData(UUID.randomUUID(), "BarPlayer"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<PlayerDataFragment> result = section.getPlayerList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getPlayerList("BAR")); //$NON-NLS-1$
+        assertNull(section.getPlayerList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetPlayerListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final PlayerData data1 = new PlayerData(UUID.randomUUID(), "FooPlayer"); //$NON-NLS-1$
+        final PlayerData data2 = new PlayerData(UUID.randomUUID(), "BarPlayer"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getPlayerList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetPlayerListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final PlayerData data1 = new PlayerData(UUID.randomUUID(), "FooPlayer"); //$NON-NLS-1$
+        final PlayerData data2 = new PlayerData(UUID.randomUUID(), "BarPlayer"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getPlayerList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetColorList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ColorData data1 = new ColorData((byte)1, (byte)2, (byte)3);
+        final ColorData data2 = new ColorData((byte)3, (byte)4, (byte)5);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<ColorDataFragment> result = section.getColorList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getColorList("BAR")); //$NON-NLS-1$
+        assertNull(section.getColorList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetColorListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ColorData data1 = new ColorData((byte)1, (byte)2, (byte)3);
+        final ColorData data2 = new ColorData((byte)3, (byte)4, (byte)5);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getColorList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetColorListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ColorData data1 = new ColorData((byte)1, (byte)2, (byte)3);
+        final ColorData data2 = new ColorData((byte)3, (byte)4, (byte)5);
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getColorList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetItemStackList()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ItemStackUtil.class);
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            final ItemStackUtil data1 = new ItemStackUtil(1);
+            final ItemStackUtil data2 = new ItemStackUtil(2);
+            section.set("FOO.item0", data1); //$NON-NLS-1$
+            section.set("FOO.item1", data2); //$NON-NLS-1$
+            final List<ItemStackDataFragment> result = section.getItemList("FOO"); //$NON-NLS-1$
+            assertEquals(2, result.size());
+            assertTrue(result.contains(data1));
+            assertTrue(result.contains(data2));
+            assertNull(section.getItemList("BAR")); //$NON-NLS-1$
+            assertNull(section.getItemList("FOO.A")); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetItemStackListInvalid()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ItemStackUtil.class);
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            final ItemStackUtil data1 = new ItemStackUtil(1);
+            final ItemStackUtil data2 = new ItemStackUtil(2);
+            section.set("FOO.item0", data1); //$NON-NLS-1$
+            section.set("FOO.item1", data2); //$NON-NLS-1$
+            section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+            section.getItemList("FOO"); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetItemStackListInvalid2()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ItemStackUtil.class);
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            final ItemStackUtil data1 = new ItemStackUtil(1);
+            final ItemStackUtil data2 = new ItemStackUtil(2);
+            section.set("FOO.item0", data1); //$NON-NLS-1$
+            section.set("FOO.item1", data2); //$NON-NLS-1$
+            section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+            section.getItemList("FOO"); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepVectorOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getVector("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isVector("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepVector()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final VectorData data1 = new VectorData(1, 2, 3);
+        final VectorData data2 = new VectorData(2, 3, 4);
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getVector("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getVector("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isVector("FOO")); //$NON-NLS-1$
+        assertTrue(section.isVector("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getVector("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getVector("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getVector("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getVector("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getVector("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getVector("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getVector("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isVector("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isVector("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isVector("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isVector("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepPlayerOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getPlayer("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isPlayer("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepPlayer()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final PlayerData data1 = new PlayerData(UUID.randomUUID(), "Player1"); //$NON-NLS-1$
+        final PlayerData data2 = new PlayerData(UUID.randomUUID(), "Player2"); //$NON-NLS-1$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getPlayer("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getPlayer("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isPlayer("FOO")); //$NON-NLS-1$
+        assertTrue(section.isPlayer("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getPlayer("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getPlayer("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getPlayer("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getPlayer("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getPlayer("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getPlayer("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getPlayer("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isPlayer("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isPlayer("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isPlayer("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isPlayer("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepColorOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getColor("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isColor("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepColor()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ColorData data1 = new ColorData((byte)1, (byte)2, (byte)3);
+        final ColorData data2 = new ColorData((byte)4, (byte)5, (byte)6);
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getColor("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getColor("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isColor("FOO")); //$NON-NLS-1$
+        assertTrue(section.isColor("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getColor("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getColor("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getColor("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getColor("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getColor("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getColor("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getColor("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isColor("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isColor("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isColor("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isColor("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepItemStackOnString()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ItemStackUtil.class);
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+            assertNull(section.getItemStack("FOO.BAR")); //$NON-NLS-1$
+            assertFalse(section.isItemStack("FOO.BAR")); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepItemStack()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ItemStackUtil.class);
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            final ItemStackUtil data1 = new ItemStackUtil(1);
+            final ItemStackUtil data2 = new ItemStackUtil(2);
+            section.set("FOO", data1); //$NON-NLS-1$
+            section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+            section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+            assertEquals(data1, section.getItemStack("FOO")); //$NON-NLS-1$
+            assertEquals(data1, section.getItemStack("FOO1.FOO2")); //$NON-NLS-1$
+            assertTrue(section.isItemStack("FOO")); //$NON-NLS-1$
+            assertTrue(section.isItemStack("FOO1.FOO2")); //$NON-NLS-1$
+            assertNull(section.getItemStack("FOO3")); //$NON-NLS-1$
+            
+            assertEquals(data1, section.getItemStack("FOO", data2)); //$NON-NLS-1$
+            assertEquals(data1, section.getItemStack("FOO1.FOO2", data2)); //$NON-NLS-1$
+            
+            assertEquals(data2, section.getItemStack("FOO1", data2)); //$NON-NLS-1$
+            assertEquals(data2, section.getItemStack("FOO.FOO2", data2)); //$NON-NLS-1$
+            assertEquals(data2, section.getItemStack("FOO1.FOO3", data2)); //$NON-NLS-1$
+            assertEquals(data2, section.getItemStack("FOO3", data2)); //$NON-NLS-1$
+            assertFalse(section.isItemStack("FOO1")); //$NON-NLS-1$
+            assertFalse(section.isItemStack("FOO.FOO2")); //$NON-NLS-1$
+            assertFalse(section.isItemStack("FOO1.FOO3")); //$NON-NLS-1$
+            assertFalse(section.isItemStack("FOO3")); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
     }
     
 }

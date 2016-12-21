@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -66,6 +67,7 @@ public class MemoryDataSection implements DataSection
         // default impls
         fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
         fragmentImpls.put(VectorDataFragment.class, VectorData.class);
+        fragmentImpls.put(ColorDataFragment.class, ColorData.class);
         
         // primitive types.
         PRIM_TYPES.add(String.class);
@@ -337,9 +339,10 @@ public class MemoryDataSection implements DataSection
     {
         final DataSection child = this.createSection(key);
         int i = 0;
+        final int size = newValue.size();
         for (final Map<String, ?> elm : newValue)
         {
-            final DataSection mapchild = child.createSection("map" + i); //$NON-NLS-1$
+            final DataSection mapchild = child.createSection(getIndexedKey(i, size, "map")); //$NON-NLS-1$
             elm.forEach(mapchild::set);
             i++;
         }
@@ -350,12 +353,26 @@ public class MemoryDataSection implements DataSection
     {
         final DataSection child = this.createSection(key);
         int i = 0;
+        final int size = newValue.size();
         for (final T elm : newValue)
         {
-            final DataSection fragmentSection = child.createSection("item" + i); //$NON-NLS-1$
+            final DataSection fragmentSection = child.createSection(getIndexedKey(i, size, "item")); //$NON-NLS-1$
             elm.write(fragmentSection);
             i++;
         }
+    }
+    
+    /**
+     * Returns an indexed key filled with nulls for better sorting.
+     * @param i
+     * @param size
+     * @param prefix
+     * @return index string key
+     */
+    private String getIndexedKey(int i, int size, String prefix)
+    {
+        final int digits = String.valueOf(size).length();
+        return prefix + String.format("%0" + digits + "d", i); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     @Override
@@ -1007,13 +1024,13 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public List<?> getList(String key)
+    public List<?> getPrimitiveList(String key)
     {
         final DataSection child = this.getSection(key);
         if (child != null)
         {
             final List<Object> result = new ArrayList<>();
-            for (final String ckey : child.getKeys(false))
+            for (final String ckey : new TreeSet<>(child.getKeys(false)))
             {
                 result.add(child.get(ckey));
             }
@@ -1023,9 +1040,9 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public List<?> getList(String key, List<?> defaultValue)
+    public List<?> getPrimitiveList(String key, List<?> defaultValue)
     {
-        final List<?> result = this.getList(key);
+        final List<?> result = this.getPrimitiveList(key);
         return result == null ? defaultValue : result;
     }
     
@@ -1056,55 +1073,55 @@ public class MemoryDataSection implements DataSection
     @Override
     public List<String> getStringList(String key)
     {
-        return this.safeListCast(String.class, this.getList(key));
+        return this.safeListCast(String.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Integer> getIntegerList(String key)
     {
-        return this.safeListCast(Integer.class, this.getList(key));
+        return this.safeListCast(Integer.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Boolean> getBooleanList(String key)
     {
-        return this.safeListCast(Boolean.class, this.getList(key));
+        return this.safeListCast(Boolean.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Double> getDoubleList(String key)
     {
-        return this.safeListCast(Double.class, this.getList(key));
+        return this.safeListCast(Double.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Float> getFloatList(String key)
     {
-        return this.safeListCast(Float.class, this.getList(key));
+        return this.safeListCast(Float.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Long> getLongList(String key)
     {
-        return this.safeListCast(Long.class, this.getList(key));
+        return this.safeListCast(Long.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Byte> getByteList(String key)
     {
-        return this.safeListCast(Byte.class, this.getList(key));
+        return this.safeListCast(Byte.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Character> getCharacterList(String key)
     {
-        return this.safeListCast(Character.class, this.getList(key));
+        return this.safeListCast(Character.class, this.getPrimitiveList(key));
     }
     
     @Override
     public List<Short> getShortList(String key)
     {
-        return this.safeListCast(Short.class, this.getList(key));
+        return this.safeListCast(Short.class, this.getPrimitiveList(key));
     }
     
     @Override
@@ -1126,50 +1143,95 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public List<ColorData> getColorList(String key)
+    public List<ColorDataFragment> getColorList(String key)
     {
-        return this.getFragmentList(ColorData.class, key);
+        return this.getFragmentList(ColorDataFragment.class, key);
     }
     
     @Override
-    public List<Map<String, ?>> getMapList(String key)
+    public List<Map<String, ?>> getPrimitiveMapList(String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<Map<String, ?>> result = new ArrayList<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.add(child.getPrimitiveMap(subkey));
+            }
+            return result;
+        }
         return null;
     }
     
     @Override
-    public Map<String, ?> getMap(String key)
+    public Map<String, ?> getPrimitiveMap(String key)
     {
-        // TODO Auto-generated method stub
-        return null;
+        final DataSection section = this.getSection(key);
+        return section == null ? null : section.getValues(false);
     }
     
     @Override
-    public Map<String, List<?>> getListMap(String key)
+    public Map<String, List<?>> getPrimitiveListMap(String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String,List<?>> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getPrimitiveList(subkey));
+            }
+            return result;
+        }
         return null;
     }
     
     @Override
     public <T extends DataFragment> Map<String, T> getFragmentMap(Class<T> clazz, String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String, T> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getFragment(clazz, subkey));
+            }
+            return result;
+        }
         return null;
     }
     
     @Override
     public <T extends DataFragment> List<Map<String, T>> getFragmentMapList(Class<T> clazz, String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<Map<String, T>> result = new ArrayList<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.add(child.getFragmentMap(clazz, subkey));
+            }
+            return result;
+        }
         return null;
     }
     
     @Override
     public <T extends DataFragment> Map<String, List<T>> getFragmentListMap(Class<T> clazz, String key)
     {
-        // TODO Auto-generated method stub
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String,List<T>> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getFragmentList(clazz, subkey));
+            }
+            return result;
+        }
         return null;
     }
     
@@ -1180,9 +1242,14 @@ public class MemoryDataSection implements DataSection
         if (child != null)
         {
             final List<T> result = new ArrayList<>();
-            for (final String ckey : child.getKeys(false))
+            for (final String ckey : new TreeSet<>(child.getKeys(false)))
             {
-                result.add(child.getFragment(clazz, ckey));
+                final T fragment = child.getFragment(clazz, ckey);
+                if (fragment == null)
+                {
+                    throw new ClassCastException("Invalid data fragment."); //$NON-NLS-1$
+                }
+                result.add(fragment);
             }
             return result;
         }
@@ -1202,7 +1269,7 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public boolean isVectorData(String key)
+    public boolean isVector(String key)
     {
         return this.isFragment(VectorDataFragment.class, key);
     }
@@ -1244,21 +1311,21 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
-    public ColorData getColor(String key)
+    public ColorDataFragment getColor(String key)
     {
-        return this.getFragment(ColorData.class, key);
+        return this.getFragment(ColorDataFragment.class, key);
     }
     
     @Override
-    public ColorData getColor(String key, ColorData defaultValue)
+    public ColorDataFragment getColor(String key, ColorDataFragment defaultValue)
     {
-        return this.getFragment(ColorData.class, key, defaultValue);
+        return this.getFragment(ColorDataFragment.class, key, defaultValue);
     }
     
     @Override
     public boolean isColor(String key)
     {
-        return this.isFragment(ColorData.class, key);
+        return this.isFragment(ColorDataFragment.class, key);
     }
     
     @Override
@@ -1270,6 +1337,10 @@ public class MemoryDataSection implements DataSection
             return null;
         }
         final T result = this.safeCreate(clazz);
+        if (!result.test(section))
+        {
+            throw new ClassCastException("Invalid data fragment."); //$NON-NLS-1$
+        }
         result.read(section);
         return result;
     }
@@ -1283,6 +1354,10 @@ public class MemoryDataSection implements DataSection
             return defaultValue;
         }
         final T result = this.safeCreate(clazz);
+        if (!result.test(section))
+        {
+            return defaultValue;
+        }
         result.read(section);
         return result;
     }

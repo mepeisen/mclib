@@ -128,6 +128,7 @@ public class PlayerData implements PlayerDataFragment
     {
         try
         {
+            if (str == null) return false;
             UUID.fromString(str);
             return true;
         }
