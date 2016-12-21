@@ -47,6 +47,7 @@ import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.shared.api.com.ColorData;
 import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
@@ -1922,6 +1923,102 @@ public class MemoryDataSectionTest
             map.clear();
             map.putAll(oldMap);
         }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testSetSection()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO1.BAR", 1); //$NON-NLS-1$
+        section.set("FOO2.BAR", 2); //$NON-NLS-1$
+        section.set("FOO.BAR3", 3); //$NON-NLS-1$
+        section.set("FOO.BAR4", 4); //$NON-NLS-1$
+        final MemoryDataSection section2 = new MemoryDataSection();
+        section2.setSection("NEW", section); //$NON-NLS-1$
+        section.set("FOO.BAR3", 5); //$NON-NLS-1$
+        
+        assertEquals(1, section2.getInt("NEW.FOO1.BAR")); //$NON-NLS-1$
+        assertEquals(2, section2.getInt("NEW.FOO2.BAR")); //$NON-NLS-1$
+        assertEquals(3, section2.getInt("NEW.FOO.BAR3")); //$NON-NLS-1$
+        assertEquals(4, section2.getInt("NEW.FOO.BAR4")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testFragmentImplLock()
+    {
+        // save current internal state
+        boolean oldLock = Whitebox.getInternalState(MemoryDataSection.class, "fragmentOverrideLock"); //$NON-NLS-1$
+        final Map<Class<?>, Class<?>> oldMap = new HashMap<>(Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls")); //$NON-NLS-1$
+        try
+        {
+            // prepare
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+            
+            // test
+            final MemoryDataSection section = new MemoryDataSection();
+            final PlayerData src = new PlayerData(UUID.randomUUID(), "Player"); //$NON-NLS-1$
+            section.set("FOO", src); //$NON-NLS-1$
+            assertFalse(MemoryDataSection.isFragmentImplementationLocked());
+            
+            assertTrue(section.getFragment(PlayerDataFragment.class, "FOO") instanceof PlayerData); //$NON-NLS-1$
+            
+            MemoryDataSection.initFragmentImplementation(PlayerDataFragment.class, PlayerData1.class);
+            assertTrue(section.getFragment(PlayerDataFragment.class, "FOO") instanceof PlayerData1); //$NON-NLS-1$
+            
+            MemoryDataSection.lockFragmentImplementations();
+            assertTrue(MemoryDataSection.isFragmentImplementationLocked());
+            MemoryDataSection.initFragmentImplementation(PlayerDataFragment.class, PlayerData2.class);
+            assertTrue(section.getFragment(PlayerDataFragment.class, "FOO") instanceof PlayerData1); //$NON-NLS-1$
+        }
+        finally
+        {
+            // restore internal state
+            Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", oldLock); //$NON-NLS-1$
+            final Map<Class<?>, Class<?>> map = Whitebox.getInternalState(MemoryDataSection.class, "fragmentImpls"); //$NON-NLS-1$
+            map.clear();
+            map.putAll(oldMap);
+        }
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testInvalidFragment()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR", 1); //$NON-NLS-1$
+        section.getFragment(InvalidFragment.class, "FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test helper
+     */
+    public static class PlayerData1 extends PlayerData
+    {
+        // empty
+    }
+    
+    /**
+     * Test helper
+     */
+    public static class PlayerData2 extends PlayerData
+    {
+        // empty
+    }
+    
+    /**
+     * Test helper
+     */
+    private static abstract class InvalidFragment implements DataFragment
+    {
+        // empty
     }
     
 }
