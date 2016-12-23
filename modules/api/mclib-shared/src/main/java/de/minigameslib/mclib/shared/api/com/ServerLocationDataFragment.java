@@ -24,28 +24,54 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
-import java.util.UUID;
-
 /**
- * Interface for player data.
+ * World location fragment.
  * 
  * @author mepeisen
  */
-public interface PlayerDataFragment extends DataFragment
+public interface ServerLocationDataFragment extends DataFragment
 {
+
+    /**
+     * Returns the x coordinate
+     * @return the x
+     */
+    double getX();
+
+    /**
+     * Returns the y coordinate
+     * @return the y
+     */
+    double getY();
+
+    /**
+     * Returns the z coordinate
+     * @return the z
+     */
+    double getZ();
     
     /**
-     * Returns the unique id of the player for identification.
-     * 
-     * @return the playerUuid
+     * The yaw.
+     * @return yaw.
      */
-    UUID getPlayerUUID();
+    float getYaw();
     
     /**
-     * Returns the display name of the player.
-     * 
-     * @return the playerName
+     * The pitch.
+     * @return pitch.
      */
-    String getDisplayName();
+    float getPitch();
+    
+    /**
+     * Name of the world.
+     * @return name of the world.
+     */
+    String getWorld();
+
+    /**
+     * Name of the server.
+     * @return name of the server.
+     */
+    String getName();
     
 }

@@ -580,5 +580,33 @@ class McPlayerImpl implements McPlayerInterface
             LOGGER.log(Level.WARNING, "Exception sending message to client", ex); //$NON-NLS-1$
         }
     }
+
+    @Override
+    public String getDisplayName()
+    {
+        final Player bukkit = this.getBukkitPlayer();
+        return bukkit == null ? this.getOfflinePlayer().getName() : bukkit.getDisplayName();
+    }
+
+    @Override
+    public void read(DataSection section)
+    {
+        // we do not read this directly. Instead a proxy is used.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void write(DataSection section)
+    {
+        section.set("uuid", this.getPlayerUUID().toString()); //$NON-NLS-1$
+        section.set("name", this.getDisplayName()); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        // we do not read this directly. Instead a proxy is used.
+        return false;
+    }
     
 }

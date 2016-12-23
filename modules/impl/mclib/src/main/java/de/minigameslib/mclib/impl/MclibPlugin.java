@@ -114,6 +114,7 @@ import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
+import de.minigameslib.mclib.impl.com.PlayerProxy;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
@@ -131,6 +132,7 @@ import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
+import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 
 /**
  * Main spigot plugin class for MCLIB.
@@ -218,6 +220,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
      */
     private GetServersPing                                               serversPing;
     
+    static
+    {
+        if (MemoryDataSection.isFragmentImplementationLocked())
+        {
+            throw new IllegalStateException("Invalid class initialization"); //$NON-NLS-1$
+        }
+        MemoryDataSection.initFragmentImplementation(PlayerDataFragment.class, PlayerProxy.class);
+        MemoryDataSection.initFragmentImplementation(McPlayerInterface.class, PlayerProxy.class);
+        MemoryDataSection.lockFragmentImplementations();
+    }
+
     @Override
     public int getApiVersion()
     {

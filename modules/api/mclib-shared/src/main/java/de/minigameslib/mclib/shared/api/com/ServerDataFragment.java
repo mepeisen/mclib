@@ -24,28 +24,18 @@
 
 package de.minigameslib.mclib.shared.api.com;
 
-import java.util.UUID;
-
 /**
- * Interface for player data.
+ * Server fragment.
  * 
  * @author mepeisen
  */
-public interface PlayerDataFragment extends DataFragment
+public interface ServerDataFragment extends DataFragment
 {
-    
+
     /**
-     * Returns the unique id of the player for identification.
-     * 
-     * @return the playerUuid
+     * Name of the server.
+     * @return name of the server.
      */
-    UUID getPlayerUUID();
-    
-    /**
-     * Returns the display name of the player.
-     * 
-     * @return the playerName
-     */
-    String getDisplayName();
+    String getName();
     
 }

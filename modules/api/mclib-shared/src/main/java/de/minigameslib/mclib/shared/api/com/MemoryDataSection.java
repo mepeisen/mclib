@@ -68,6 +68,11 @@ public class MemoryDataSection implements DataSection
         fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
         fragmentImpls.put(VectorDataFragment.class, VectorData.class);
         fragmentImpls.put(ColorDataFragment.class, ColorData.class);
+        fragmentImpls.put(BlockLocationDataFragment.class, BlockLocationData.class);
+        fragmentImpls.put(LocationDataFragment.class, LocationData.class);
+        fragmentImpls.put(ServerDataFragment.class, ServerData.class);
+        fragmentImpls.put(ServerBlockLocationDataFragment.class, ServerBlockLocationData.class);
+        fragmentImpls.put(ServerLocationDataFragment.class, ServerLocationData.class);
         
         // primitive types.
         PRIM_TYPES.add(String.class);
@@ -1149,6 +1154,36 @@ public class MemoryDataSection implements DataSection
     }
     
     @Override
+    public List<ServerDataFragment> getServerList(String key)
+    {
+        return this.getFragmentList(ServerDataFragment.class, key);
+    }
+    
+    @Override
+    public List<LocationDataFragment> getLocationList(String key)
+    {
+        return this.getFragmentList(LocationDataFragment.class, key);
+    }
+    
+    @Override
+    public List<BlockLocationDataFragment> getBlockLocationList(String key)
+    {
+        return this.getFragmentList(BlockLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public List<ServerLocationDataFragment> getServerLocationList(String key)
+    {
+        return this.getFragmentList(ServerLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public List<ServerBlockLocationDataFragment> getServerBlockLocationList(String key)
+    {
+        return this.getFragmentList(ServerBlockLocationDataFragment.class, key);
+    }
+    
+    @Override
     public List<Map<String, ?>> getPrimitiveMapList(String key)
     {
         final DataSection child = this.getSection(key);
@@ -1326,6 +1361,96 @@ public class MemoryDataSection implements DataSection
     public boolean isColor(String key)
     {
         return this.isFragment(ColorDataFragment.class, key);
+    }
+    
+    @Override
+    public LocationDataFragment getLocation(String key)
+    {
+        return this.getFragment(LocationDataFragment.class, key);
+    }
+    
+    @Override
+    public LocationDataFragment getLocation(String key, LocationDataFragment defaultValue)
+    {
+        return this.getFragment(LocationDataFragment.class, key, defaultValue);
+    }
+    
+    @Override
+    public boolean isLocation(String key)
+    {
+        return this.isFragment(LocationDataFragment.class, key);
+    }
+    
+    @Override
+    public BlockLocationDataFragment getBlockLocation(String key)
+    {
+        return this.getFragment(BlockLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public BlockLocationDataFragment getBlockLocation(String key, BlockLocationDataFragment defaultValue)
+    {
+        return this.getFragment(BlockLocationDataFragment.class, key, defaultValue);
+    }
+    
+    @Override
+    public boolean isBlockLocation(String key)
+    {
+        return this.isFragment(BlockLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerLocationDataFragment getServerLocation(String key)
+    {
+        return this.getFragment(ServerLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerLocationDataFragment getServerLocation(String key, ServerLocationDataFragment defaultValue)
+    {
+        return this.getFragment(ServerLocationDataFragment.class, key, defaultValue);
+    }
+    
+    @Override
+    public boolean isServerLocation(String key)
+    {
+        return this.isFragment(ServerLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerBlockLocationDataFragment getServerBlockLocation(String key)
+    {
+        return this.getFragment(ServerBlockLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerBlockLocationDataFragment getServerBlockLocation(String key, ServerBlockLocationDataFragment defaultValue)
+    {
+        return this.getFragment(ServerBlockLocationDataFragment.class, key, defaultValue);
+    }
+    
+    @Override
+    public boolean isServerBlockLocation(String key)
+    {
+        return this.isFragment(ServerBlockLocationDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerDataFragment getServer(String key)
+    {
+        return this.getFragment(ServerDataFragment.class, key);
+    }
+    
+    @Override
+    public ServerDataFragment getServer(String key, ServerDataFragment defaultValue)
+    {
+        return this.getFragment(ServerDataFragment.class, key, defaultValue);
+    }
+    
+    @Override
+    public boolean isServer(String key)
+    {
+        return this.isFragment(ServerDataFragment.class, key);
     }
     
     @Override

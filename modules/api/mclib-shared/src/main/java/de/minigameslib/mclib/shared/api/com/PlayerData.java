@@ -139,13 +139,13 @@ public class PlayerData implements PlayerDataFragment
     }
 
     @Override
-    public UUID getPlayerUuid()
+    public UUID getPlayerUUID()
     {
         return this.playerUuid;
     }
 
     @Override
-    public String getPlayerName()
+    public String getDisplayName()
     {
         return this.playerName;
     }

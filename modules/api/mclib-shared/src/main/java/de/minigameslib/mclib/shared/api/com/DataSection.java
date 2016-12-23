@@ -585,6 +585,41 @@ public interface DataSection
     List<ColorDataFragment> getColorList(String key);
     
     /**
+     * Returns server list value by key
+     * @param key
+     * @return value
+     */
+    List<ServerDataFragment> getServerList(String key);
+    
+    /**
+     * Returns server location list value by key
+     * @param key
+     * @return value
+     */
+    List<ServerLocationDataFragment> getServerLocationList(String key);
+    
+    /**
+     * Returns server block location list value by key
+     * @param key
+     * @return value
+     */
+    List<ServerBlockLocationDataFragment> getServerBlockLocationList(String key);
+    
+    /**
+     * Returns location list value by key
+     * @param key
+     * @return value
+     */
+    List<LocationDataFragment> getLocationList(String key);
+    
+    /**
+     * Returns block location list value by key
+     * @param key
+     * @return value
+     */
+    List<BlockLocationDataFragment> getBlockLocationList(String key);
+    
+    /**
      * Returns map list value by key
      * @param key
      * @return value
@@ -658,6 +693,116 @@ public interface DataSection
      * @return true if key has a vector value
      */
     boolean isVector(String key);
+    
+    /**
+     * returns block location by key
+     * @param key
+     * @return value
+     */
+    BlockLocationDataFragment getBlockLocation(String key);
+    
+    /**
+     * returns block location by key and default value
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    BlockLocationDataFragment getBlockLocation(String key, BlockLocationDataFragment defaultValue);
+    
+    /**
+     * Checks if given key has a block location value.
+     * @param key
+     * @return true if key has a block location value
+     */
+    boolean isBlockLocation(String key);
+    
+    /**
+     * returns location by key
+     * @param key
+     * @return value
+     */
+    LocationDataFragment getLocation(String key);
+    
+    /**
+     * returns location by key and default value
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    LocationDataFragment getLocation(String key, LocationDataFragment defaultValue);
+    
+    /**
+     * Checks if given key has a location value.
+     * @param key
+     * @return true if key has a location value
+     */
+    boolean isLocation(String key);
+    
+    /**
+     * returns block location by key
+     * @param key
+     * @return value
+     */
+    ServerBlockLocationDataFragment getServerBlockLocation(String key);
+    
+    /**
+     * returns block location by key and default value
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    ServerBlockLocationDataFragment getServerBlockLocation(String key, ServerBlockLocationDataFragment defaultValue);
+    
+    /**
+     * Checks if given key has a block location value.
+     * @param key
+     * @return true if key has a block location value
+     */
+    boolean isServerBlockLocation(String key);
+    
+    /**
+     * returns server location by key
+     * @param key
+     * @return value
+     */
+    ServerLocationDataFragment getServerLocation(String key);
+    
+    /**
+     * returns location by key and default value
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    ServerLocationDataFragment getServerLocation(String key, ServerLocationDataFragment defaultValue);
+    
+    /**
+     * Checks if given key has a location value.
+     * @param key
+     * @return true if key has a location value
+     */
+    boolean isServerLocation(String key);
+    
+    /**
+     * returns server location by key
+     * @param key
+     * @return value
+     */
+    ServerDataFragment getServer(String key);
+    
+    /**
+     * returns server by key and default value
+     * @param key
+     * @param defaultValue
+     * @return value
+     */
+    ServerDataFragment getServer(String key, ServerDataFragment defaultValue);
+    
+    /**
+     * Checks if given key has a server value.
+     * @param key
+     * @return true if key has a server value
+     */
+    boolean isServer(String key);
     
     /**
      * returns player by key

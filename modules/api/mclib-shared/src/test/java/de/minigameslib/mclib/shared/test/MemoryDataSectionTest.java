@@ -45,18 +45,28 @@ import java.util.UUID;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import de.minigameslib.mclib.shared.api.com.BlockLocationData;
+import de.minigameslib.mclib.shared.api.com.BlockLocationDataFragment;
 import de.minigameslib.mclib.shared.api.com.ColorData;
 import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import de.minigameslib.mclib.shared.api.com.LocationData;
+import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.ServerBlockLocationData;
+import de.minigameslib.mclib.shared.api.com.ServerBlockLocationDataFragment;
+import de.minigameslib.mclib.shared.api.com.ServerData;
+import de.minigameslib.mclib.shared.api.com.ServerDataFragment;
+import de.minigameslib.mclib.shared.api.com.ServerLocationData;
+import de.minigameslib.mclib.shared.api.com.ServerLocationDataFragment;
 import de.minigameslib.mclib.shared.api.com.VectorData;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
- * Testing MemoryDataSection
+ * Testing {@link MemoryDataSection}
  * 
  * @author mepeisen
  */
@@ -792,8 +802,8 @@ public class MemoryDataSectionTest
         final PlayerData player = new PlayerData(UUID.randomUUID(), "FooPlayer"); //$NON-NLS-1$
         section.set("player", player); //$NON-NLS-1$
         section.set("foo.player", player); //$NON-NLS-1$
-        assertEquals(player.getPlayerUuid().toString(), section.get("player.uuid")); //$NON-NLS-1$
-        assertEquals(player.getPlayerUuid().toString(), section.get("foo.player.uuid")); //$NON-NLS-1$
+        assertEquals(player.getPlayerUUID().toString(), section.get("player.uuid")); //$NON-NLS-1$
+        assertEquals(player.getPlayerUUID().toString(), section.get("foo.player.uuid")); //$NON-NLS-1$
         assertEquals("FooPlayer", section.get("player.name")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("FooPlayer", section.get("foo.player.name")); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -826,8 +836,8 @@ public class MemoryDataSectionTest
         final PlayerData player = new PlayerData(UUID.randomUUID(), "FooPlayer"); //$NON-NLS-1$
         section.set("player", player); //$NON-NLS-1$
         section.set("foo.player", player); //$NON-NLS-1$
-        assertEquals(player.getPlayerUuid().toString(), section.get("player.uuid")); //$NON-NLS-1$
-        assertEquals(player.getPlayerUuid().toString(), section.get("foo.player.uuid")); //$NON-NLS-1$
+        assertEquals(player.getPlayerUUID().toString(), section.get("player.uuid")); //$NON-NLS-1$
+        assertEquals(player.getPlayerUUID().toString(), section.get("foo.player.uuid")); //$NON-NLS-1$
         assertEquals("FooPlayer", section.get("player.name")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("FooPlayer", section.get("foo.player.name")); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -1057,10 +1067,10 @@ public class MemoryDataSectionTest
         map1.put("A2", player2); //$NON-NLS-1$
         final MemoryDataSection section = new MemoryDataSection();
         section.setFragmentMap("FOO", map1); //$NON-NLS-1$
-        assertEquals(player1.getPlayerUuid().toString(), section.getString("FOO.A1.uuid")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerUuid().toString(), section.getString("FOO.A2.uuid")); //$NON-NLS-1$
-        assertEquals(player1.getPlayerName(), section.getString("FOO.A1.name")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerName(), section.getString("FOO.A2.name")); //$NON-NLS-1$
+        assertEquals(player1.getPlayerUUID().toString(), section.getString("FOO.A1.uuid")); //$NON-NLS-1$
+        assertEquals(player2.getPlayerUUID().toString(), section.getString("FOO.A2.uuid")); //$NON-NLS-1$
+        assertEquals(player1.getDisplayName(), section.getString("FOO.A1.name")); //$NON-NLS-1$
+        assertEquals(player2.getDisplayName(), section.getString("FOO.A2.name")); //$NON-NLS-1$
     }
     
     /**
@@ -1101,14 +1111,14 @@ public class MemoryDataSectionTest
         listmap.put("B", list2); //$NON-NLS-1$
         final MemoryDataSection section = new MemoryDataSection();
         section.setFragmentListMap("FOO", listmap); //$NON-NLS-1$
-        assertEquals(player1.getPlayerUuid().toString(), section.getString("FOO.A.item0.uuid")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerUuid().toString(), section.getString("FOO.A.item1.uuid")); //$NON-NLS-1$
-        assertEquals(player3.getPlayerUuid().toString(), section.getString("FOO.B.item0.uuid")); //$NON-NLS-1$
-        assertEquals(player4.getPlayerUuid().toString(), section.getString("FOO.B.item1.uuid")); //$NON-NLS-1$
-        assertEquals(player1.getPlayerName(), section.getString("FOO.A.item0.name")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerName(), section.getString("FOO.A.item1.name")); //$NON-NLS-1$
-        assertEquals(player3.getPlayerName(), section.getString("FOO.B.item0.name")); //$NON-NLS-1$
-        assertEquals(player4.getPlayerName(), section.getString("FOO.B.item1.name")); //$NON-NLS-1$
+        assertEquals(player1.getPlayerUUID().toString(), section.getString("FOO.A.item0.uuid")); //$NON-NLS-1$
+        assertEquals(player2.getPlayerUUID().toString(), section.getString("FOO.A.item1.uuid")); //$NON-NLS-1$
+        assertEquals(player3.getPlayerUUID().toString(), section.getString("FOO.B.item0.uuid")); //$NON-NLS-1$
+        assertEquals(player4.getPlayerUUID().toString(), section.getString("FOO.B.item1.uuid")); //$NON-NLS-1$
+        assertEquals(player1.getDisplayName(), section.getString("FOO.A.item0.name")); //$NON-NLS-1$
+        assertEquals(player2.getDisplayName(), section.getString("FOO.A.item1.name")); //$NON-NLS-1$
+        assertEquals(player3.getDisplayName(), section.getString("FOO.B.item0.name")); //$NON-NLS-1$
+        assertEquals(player4.getDisplayName(), section.getString("FOO.B.item1.name")); //$NON-NLS-1$
     }
     
     /**
@@ -1157,14 +1167,14 @@ public class MemoryDataSectionTest
         maplist.add(map2);
         final MemoryDataSection section = new MemoryDataSection();
         section.setFragmentMapList("FOO", maplist); //$NON-NLS-1$
-        assertEquals(player1.getPlayerUuid().toString(), section.getString("FOO.map0.A1.uuid")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerUuid().toString(), section.getString("FOO.map0.A2.uuid")); //$NON-NLS-1$
-        assertEquals(player3.getPlayerUuid().toString(), section.getString("FOO.map1.B1.uuid")); //$NON-NLS-1$
-        assertEquals(player4.getPlayerUuid().toString(), section.getString("FOO.map1.B2.uuid")); //$NON-NLS-1$
-        assertEquals(player1.getPlayerName(), section.getString("FOO.map0.A1.name")); //$NON-NLS-1$
-        assertEquals(player2.getPlayerName(), section.getString("FOO.map0.A2.name")); //$NON-NLS-1$
-        assertEquals(player3.getPlayerName(), section.getString("FOO.map1.B1.name")); //$NON-NLS-1$
-        assertEquals(player4.getPlayerName(), section.getString("FOO.map1.B2.name")); //$NON-NLS-1$
+        assertEquals(player1.getPlayerUUID().toString(), section.getString("FOO.map0.A1.uuid")); //$NON-NLS-1$
+        assertEquals(player2.getPlayerUUID().toString(), section.getString("FOO.map0.A2.uuid")); //$NON-NLS-1$
+        assertEquals(player3.getPlayerUUID().toString(), section.getString("FOO.map1.B1.uuid")); //$NON-NLS-1$
+        assertEquals(player4.getPlayerUUID().toString(), section.getString("FOO.map1.B2.uuid")); //$NON-NLS-1$
+        assertEquals(player1.getDisplayName(), section.getString("FOO.map0.A1.name")); //$NON-NLS-1$
+        assertEquals(player2.getDisplayName(), section.getString("FOO.map0.A2.name")); //$NON-NLS-1$
+        assertEquals(player3.getDisplayName(), section.getString("FOO.map1.B1.name")); //$NON-NLS-1$
+        assertEquals(player4.getDisplayName(), section.getString("FOO.map1.B2.name")); //$NON-NLS-1$
     }
     
     /**
@@ -1613,6 +1623,251 @@ public class MemoryDataSectionTest
      * Simple test case.
      */
     @Test
+    public void testGetServerList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerData data1 = new ServerData("foo"); //$NON-NLS-1$
+        final ServerData data2 = new ServerData("bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<ServerDataFragment> result = section.getServerList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getServerList("BAR")); //$NON-NLS-1$
+        assertNull(section.getServerList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerData data1 = new ServerData("foo"); //$NON-NLS-1$
+        final ServerData data2 = new ServerData("bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerData data1 = new ServerData("foo"); //$NON-NLS-1$
+        final ServerData data2 = new ServerData("bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetLocationList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final LocationData data1 = new LocationData(1, 2, 3, 4, 5, "foo"); //$NON-NLS-1$
+        final LocationData data2 = new LocationData(1, 2, 3, 4, 5, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<LocationDataFragment> result = section.getLocationList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getLocationList("BAR")); //$NON-NLS-1$
+        assertNull(section.getLocationList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetLocationListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final LocationData data1 = new LocationData(1, 2, 3, 4, 5, "foo"); //$NON-NLS-1$
+        final LocationData data2 = new LocationData(1, 2, 3, 4, 5, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetLocationListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final LocationData data1 = new LocationData(1, 2, 3, 4, 5, "foo"); //$NON-NLS-1$
+        final LocationData data2 = new LocationData(1, 2, 3, 4, 5, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetBlockLocationList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final BlockLocationData data1 = new BlockLocationData(1, 2, 3, "foo"); //$NON-NLS-1$
+        final BlockLocationData data2 = new BlockLocationData(1, 2, 3, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<BlockLocationDataFragment> result = section.getBlockLocationList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getBlockLocationList("BAR")); //$NON-NLS-1$
+        assertNull(section.getBlockLocationList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetBlockLocationListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final BlockLocationData data1 = new BlockLocationData(1, 2, 3, "foo"); //$NON-NLS-1$
+        final BlockLocationData data2 = new BlockLocationData(1, 2, 3, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getBlockLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetBlockLocationListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final BlockLocationData data1 = new BlockLocationData(1, 2, 3, "foo"); //$NON-NLS-1$
+        final BlockLocationData data2 = new BlockLocationData(1, 2, 3, "bar"); //$NON-NLS-1$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getBlockLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetServerLocationList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerLocationData data1 = new ServerLocationData(1, 2, 3, 4, 5, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerLocationData data2 = new ServerLocationData(1, 2, 3, 4, 5, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<ServerLocationDataFragment> result = section.getServerLocationList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getServerLocationList("BAR")); //$NON-NLS-1$
+        assertNull(section.getServerLocationList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerLocationListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerLocationData data1 = new ServerLocationData(1, 2, 3, 4, 5, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerLocationData data2 = new ServerLocationData(1, 2, 3, 4, 5, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerLocationListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerLocationData data1 = new ServerLocationData(1, 2, 3, 4, 5, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerLocationData data2 = new ServerLocationData(1, 2, 3, 4, 5, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetServerBlockLocationList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerBlockLocationData data1 = new ServerBlockLocationData(1, 2, 3, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerBlockLocationData data2 = new ServerBlockLocationData(1, 2, 3, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        final List<ServerBlockLocationDataFragment> result = section.getServerBlockLocationList("FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(data1));
+        assertTrue(result.contains(data2));
+        assertNull(section.getServerBlockLocationList("BAR")); //$NON-NLS-1$
+        assertNull(section.getServerBlockLocationList("FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerBlockLocationListInvalid()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerBlockLocationData data1 = new ServerBlockLocationData(1, 2, 3, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerBlockLocationData data2 = new ServerBlockLocationData(1, 2, 3, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerBlockLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test(expected = ClassCastException.class)
+    public void testGetServerBlockLocationListInvalid2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerBlockLocationData data1 = new ServerBlockLocationData(1, 2, 3, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerBlockLocationData data2 = new ServerBlockLocationData(1, 2, 3, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0", data1); //$NON-NLS-1$
+        section.set("FOO.item1", data2); //$NON-NLS-1$
+        section.set("FOO.item2.BAR", "A"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getServerBlockLocationList("FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
     public void testGetItemStackList()
     {
         // save current internal state
@@ -1842,6 +2097,221 @@ public class MemoryDataSectionTest
         assertFalse(section.isColor("FOO.FOO2")); //$NON-NLS-1$
         assertFalse(section.isColor("FOO1.FOO3")); //$NON-NLS-1$
         assertFalse(section.isColor("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServerOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getServer("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isServer("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServer()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerData data1 = new ServerData("foo"); //$NON-NLS-1$
+        final ServerData data2 = new ServerData("bar"); //$NON-NLS-1$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getServer("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getServer("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isServer("FOO")); //$NON-NLS-1$
+        assertTrue(section.isServer("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getServer("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getServer("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getServer("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getServer("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServer("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServer("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServer("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isServer("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isServer("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isServer("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isServer("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepLocationOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getLocation("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isLocation("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepLocation()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final LocationData data1 = new LocationData(1, 2, 3, 4, 5, "foo"); //$NON-NLS-1$
+        final LocationData data2 = new LocationData(1, 2, 3, 4, 5, "bar"); //$NON-NLS-1$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getLocation("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isLocation("FOO")); //$NON-NLS-1$
+        assertTrue(section.isLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getLocation("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getLocation("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getLocation("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getLocation("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getLocation("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getLocation("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getLocation("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isLocation("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isLocation("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isLocation("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isLocation("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepBlockLocationOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getBlockLocation("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isBlockLocation("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepBlockLocation()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final BlockLocationData data1 = new BlockLocationData(1, 2, 3, "foo"); //$NON-NLS-1$
+        final BlockLocationData data2 = new BlockLocationData(1, 2, 3, "bar"); //$NON-NLS-1$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getBlockLocation("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getBlockLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isBlockLocation("FOO")); //$NON-NLS-1$
+        assertTrue(section.isBlockLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getBlockLocation("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getBlockLocation("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getBlockLocation("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getBlockLocation("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getBlockLocation("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getBlockLocation("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getBlockLocation("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isBlockLocation("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isBlockLocation("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isBlockLocation("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isBlockLocation("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServerLocationOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getServerLocation("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isServerLocation("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServerLocation()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerLocationData data1 = new ServerLocationData(1, 2, 3, 4, 5, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerLocationData data2 = new ServerLocationData(1, 2, 3, 4, 5, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getServerLocation("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getServerLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isServerLocation("FOO")); //$NON-NLS-1$
+        assertTrue(section.isServerLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getServerLocation("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getServerLocation("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getServerLocation("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getServerLocation("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerLocation("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerLocation("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerLocation("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isServerLocation("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isServerLocation("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isServerLocation("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isServerLocation("FOO3")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServerBlockLocationOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getServerBlockLocation("FOO.BAR")); //$NON-NLS-1$
+        assertFalse(section.isServerBlockLocation("FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepServerBlockLocation()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        final ServerBlockLocationData data1 = new ServerBlockLocationData(1, 2, 3, "foo", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        final ServerBlockLocationData data2 = new ServerBlockLocationData(1, 2, 3, "bar", "server"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO", data1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", data1); //$NON-NLS-1$
+        section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(data1, section.getServerBlockLocation("FOO")); //$NON-NLS-1$
+        assertEquals(data1, section.getServerBlockLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertTrue(section.isServerBlockLocation("FOO")); //$NON-NLS-1$
+        assertTrue(section.isServerBlockLocation("FOO1.FOO2")); //$NON-NLS-1$
+        assertNull(section.getServerBlockLocation("FOO3")); //$NON-NLS-1$
+        
+        assertEquals(data1, section.getServerBlockLocation("FOO", data2)); //$NON-NLS-1$
+        assertEquals(data1, section.getServerBlockLocation("FOO1.FOO2", data2)); //$NON-NLS-1$
+        
+        assertEquals(data2, section.getServerBlockLocation("FOO1", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerBlockLocation("FOO.FOO2", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerBlockLocation("FOO1.FOO3", data2)); //$NON-NLS-1$
+        assertEquals(data2, section.getServerBlockLocation("FOO3", data2)); //$NON-NLS-1$
+        assertFalse(section.isServerBlockLocation("FOO1")); //$NON-NLS-1$
+        assertFalse(section.isServerBlockLocation("FOO.FOO2")); //$NON-NLS-1$
+        assertFalse(section.isServerBlockLocation("FOO1.FOO3")); //$NON-NLS-1$
+        assertFalse(section.isServerBlockLocation("FOO3")); //$NON-NLS-1$
     }
     
     /**

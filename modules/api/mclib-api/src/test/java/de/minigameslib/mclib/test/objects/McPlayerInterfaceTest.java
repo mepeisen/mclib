@@ -259,6 +259,30 @@ public class McPlayerInterfaceTest
         {
             // empty
         }
+
+        @Override
+        public String getDisplayName()
+        {
+            return null;
+        }
+
+        @Override
+        public void read(DataSection section)
+        {
+            // empty
+        }
+
+        @Override
+        public void write(DataSection section)
+        {
+            // empty
+        }
+
+        @Override
+        public boolean test(DataSection section)
+        {
+            return false;
+        }
         
     }
     

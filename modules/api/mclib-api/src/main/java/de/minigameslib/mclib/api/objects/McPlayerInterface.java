@@ -42,13 +42,14 @@ import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 
 /**
  * Interface representing players.
  * 
  * @author mepeisen
  */
-public interface McPlayerInterface
+public interface McPlayerInterface extends PlayerDataFragment
 {
     
     // common methods (player info)
@@ -79,6 +80,7 @@ public interface McPlayerInterface
      * 
      * @return uuid.
      */
+    @Override
     UUID getPlayerUUID();
     
     // localization
