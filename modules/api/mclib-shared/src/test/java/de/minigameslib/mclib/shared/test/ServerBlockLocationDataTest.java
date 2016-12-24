@@ -102,7 +102,7 @@ public class ServerBlockLocationDataTest
     {
         final Map<ServerBlockLocationData, String> map = new HashMap<>();
         map.put(new ServerBlockLocationData(1, 2, 3, "world", "server"), "FOO"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        map.put(new ServerBlockLocationData(1, 2, 3, "world2", "sserver2"), "BAR"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        map.put(new ServerBlockLocationData(1, 2, 3, "world2", "server2"), "BAR"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         map.put(new ServerBlockLocationData(1, 2, 3, null, null), "BAR2"); //$NON-NLS-1$
         assertEquals("FOO", map.get(new ServerBlockLocationData(1, 2, 3, "world", "server"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertEquals("BAR", map.get(new ServerBlockLocationData(1, 2, 3, "world2", "server2"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
