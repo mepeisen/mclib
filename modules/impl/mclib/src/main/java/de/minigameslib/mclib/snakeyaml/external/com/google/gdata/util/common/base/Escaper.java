@@ -37,7 +37,7 @@ import com.google.common.escape.CharEscaperBuilder;
  * 
  * <p>
  * Several popular escapers are defined as constants in the class
- * {@link CharEscapers}. To create your own escapers, use
+ * {@link CharEscaper}. To create your own escapers, use
  * {@link CharEscaperBuilder}, or extend {@link CharEscaper} or
  * {@code UnicodeEscaper}.
  * 

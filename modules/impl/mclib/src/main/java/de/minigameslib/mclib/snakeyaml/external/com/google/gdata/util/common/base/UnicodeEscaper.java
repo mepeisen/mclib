@@ -51,7 +51,7 @@ import com.google.common.escape.CharEscaperBuilder;
  * 
  * <p>
  * Several popular escapers are defined as constants in the class
- * {@link CharEscapers}. To create your own escapers extend this class and
+ * {@link CharEscaper}. To create your own escapers extend this class and
  * implement the {@link #escape(int)} method.
  * 
  * 
@@ -150,7 +150,7 @@ public abstract class UnicodeEscaper implements Escaper {
      * this method for efficiency by inlining the implementation of
      * {@link #nextEscapeIndex(CharSequence, int, int)} directly. Doing this for
      * {@link PercentEscaper} more than doubled the performance for unescaped
-     * strings (as measured by {@link CharEscapersBenchmark}).
+     * strings (as measured by CharEscapersBenchmark).
      * 
      * @param string
      *            the literal string to be escaped
