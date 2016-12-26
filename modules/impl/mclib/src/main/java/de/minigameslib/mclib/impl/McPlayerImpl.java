@@ -40,10 +40,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -51,7 +47,6 @@ import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
-import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -65,11 +60,13 @@ import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -82,7 +79,7 @@ class McPlayerImpl implements McPlayerInterface
 {
     
     /** logger. */
-    static final Logger           LOGGER         = Logger.getLogger(McPlayerImpl.class.getName());
+    static final Logger           LOGGER           = Logger.getLogger(McPlayerImpl.class.getName());
     
     /** players uuid. */
     private UUID                  uuid;
@@ -91,25 +88,25 @@ class McPlayerImpl implements McPlayerInterface
     private String                name;
     
     /** the session storage. */
-    private StorageImpl           sessionStorage = new StorageImpl();
+    private StorageImpl           sessionStorage   = new StorageImpl();
     
     /** persistent player configuration. */
-    private MclibPlayersConfig    config = new MclibPlayersConfig();
+    private MclibPlayersConfig    config           = new MclibPlayersConfig();
     
     /** persistent storage file. */
-    FileConfiguration             persistentStorage;
+    YmlFile                       persistentStorage;
     
     /** persistent storage file. */
     private File                  persistentStorageFile;
     
     /** the persistent storage. */
-    private PersistentStorageImpl pstorage       = new PersistentStorageImpl();
-
+    private PersistentStorageImpl pstorage         = new PersistentStorageImpl();
+    
     /** {@code true} if the client mod is installed. */
-    private boolean hasForgeMod;
-
+    private boolean               hasForgeMod;
+    
     /** list of client extensions that were reported by client mod. */
-    private Set<String> clientExtensions = new HashSet<>();
+    private Set<String>           clientExtensions = new HashSet<>();
     
     /**
      * Constructor
@@ -127,26 +124,26 @@ class McPlayerImpl implements McPlayerInterface
             this.name = player.getName();
         }
         this.persistentStorageFile = persistentStorage;
-        this.persistentStorage = new YamlConfiguration();
+        this.persistentStorage = new YmlFile();
         if (persistentStorage.exists())
         {
             try (final FileReader fr = new FileReader(persistentStorage))
             {
                 this.persistentStorage.load(fr);
             }
-            catch (InvalidConfigurationException | IOException ex)
+            catch (IOException ex)
             {
                 LOGGER.log(Level.WARNING, "Problems loading player storage from file; player uuid " + this.uuid.toString(), ex); //$NON-NLS-1$
             }
         }
         else
         {
-            this.config.writeToConfig(this.persistentStorage.createSection("core")); //$NON-NLS-1$
+            this.config.write(this.persistentStorage.createSection("core")); //$NON-NLS-1$
             this.persistentStorage.createSection("storage"); //$NON-NLS-1$
             this.saveStore();
         }
     }
-
+    
     /**
      * @param fragment
      */
@@ -197,7 +194,7 @@ class McPlayerImpl implements McPlayerInterface
     {
         return this.uuid;
     }
-
+    
     @Override
     public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
     {
@@ -277,7 +274,7 @@ class McPlayerImpl implements McPlayerInterface
     public void setPreferredLocale(Locale locale) throws McException
     {
         this.config.setPreferredLocale(locale);
-        this.config.writeToConfig(this.persistentStorage.createSection("core")); //$NON-NLS-1$
+        this.config.write(this.persistentStorage.createSection("core")); //$NON-NLS-1$
         this.saveStore();
     }
     
@@ -340,15 +337,15 @@ class McPlayerImpl implements McPlayerInterface
         }
         
         @Override
-        public <T extends Configurable> T get(Class<T> clazz)
+        public <T extends DataFragment> T get(Class<T> clazz)
         {
-            final ConfigurationSection section = McPlayerImpl.this.persistentStorage.getConfigurationSection("storage." + clazz.getName()); //$NON-NLS-1$
+            final DataSection section = McPlayerImpl.this.persistentStorage.getSection("storage." + clazz.getName()); //$NON-NLS-1$
             if (section != null)
             {
                 try
                 {
                     final T result = clazz.newInstance();
-                    result.readFromConfig(section);
+                    result.read(section);
                     return result;
                 }
                 catch (InstantiationException | IllegalAccessException ex)
@@ -360,10 +357,10 @@ class McPlayerImpl implements McPlayerInterface
         }
         
         @Override
-        public <T extends Configurable> void set(Class<T> clazz, T value)
+        public <T extends DataFragment> void set(Class<T> clazz, T value)
         {
-            final ConfigurationSection section = McPlayerImpl.this.persistentStorage.createSection("storage." + clazz.getName()); //$NON-NLS-1$
-            value.writeToConfig(section);
+            final DataSection section = McPlayerImpl.this.persistentStorage.createSection("storage." + clazz.getName()); //$NON-NLS-1$
+            value.write(section);
             McPlayerImpl.this.saveStore();
         }
         
@@ -401,7 +398,7 @@ class McPlayerImpl implements McPlayerInterface
     {
         
         /** the underlying data map. */
-        private final Map<Class<?>, Configurable> data = new HashMap<>();
+        private final Map<Class<?>, DataFragment> data = new HashMap<>();
         
         /**
          * Constructor.
@@ -412,13 +409,13 @@ class McPlayerImpl implements McPlayerInterface
         }
         
         @Override
-        public <T extends Configurable> T get(Class<T> clazz)
+        public <T extends DataFragment> T get(Class<T> clazz)
         {
             return clazz.cast(this.data.get(clazz));
         }
         
         @Override
-        public <T extends Configurable> void set(Class<T> clazz, T value)
+        public <T extends DataFragment> void set(Class<T> clazz, T value)
         {
             this.data.put(clazz, value);
         }
@@ -497,13 +494,13 @@ class McPlayerImpl implements McPlayerInterface
         final McStorage storage = this.getSessionStorage();
         storage.set(GuiSessionInterface.class, null);
     }
-
+    
     @Override
     public boolean hasSmartGui()
     {
         return this.hasForgeMod;
     }
-
+    
     @Override
     public GuiSessionInterface openSmartGui() throws McException
     {
@@ -527,44 +524,47 @@ class McPlayerImpl implements McPlayerInterface
         }
         return session;
     }
-
+    
     /**
      * Parse an action performed message
+     * 
      * @param fragment
-     * @throws McException 
+     * @throws McException
      */
     void parseActionPerformed(ActionPerformedData fragment) throws McException
     {
         final String actionId = fragment.getActionId();
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
-        ((GuiSessionImpl)session).sguiActionPerformed(fragment.getWinId(), actionId, fragment.getData());
+        ((GuiSessionImpl) session).sguiActionPerformed(fragment.getWinId(), actionId, fragment.getData());
     }
-
+    
     /**
      * Parse a win closed message
+     * 
      * @param fragment
-     * @throws McException 
+     * @throws McException
      */
     void parseWinClosed(WinClosedData fragment) throws McException
     {
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
-        ((GuiSessionImpl)session).sguiWinClosed(fragment.getWinId());
+        ((GuiSessionImpl) session).sguiWinClosed(fragment.getWinId());
     }
-
+    
     /**
      * Parse a form request message
+     * 
      * @param fragment
-     * @throws McException 
+     * @throws McException
      */
     void parseFormRequest(QueryFormRequestData fragment) throws McException
     {
         final McStorage storage = this.getSessionStorage();
         GuiSessionInterface session = storage.get(GuiSessionInterface.class);
-        ((GuiSessionImpl)session).sguiFormRequest(fragment);
+        ((GuiSessionImpl) session).sguiFormRequest(fragment);
     }
-
+    
     @Override
     public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
     {
@@ -580,28 +580,28 @@ class McPlayerImpl implements McPlayerInterface
             LOGGER.log(Level.WARNING, "Exception sending message to client", ex); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public String getDisplayName()
     {
         final Player bukkit = this.getBukkitPlayer();
         return bukkit == null ? this.getOfflinePlayer().getName() : bukkit.getDisplayName();
     }
-
+    
     @Override
     public void read(DataSection section)
     {
         // we do not read this directly. Instead a proxy is used.
         throw new UnsupportedOperationException();
     }
-
+    
     @Override
     public void write(DataSection section)
     {
         section.set("uuid", this.getPlayerUUID().toString()); //$NON-NLS-1$
         section.set("name", this.getDisplayName()); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {

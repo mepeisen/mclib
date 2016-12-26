@@ -30,6 +30,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +54,7 @@ public class MemoryDataSection implements DataSection
     private MemoryDataSection                    parent;
     
     /** map contents. */
-    private final Map<String, Object>            contents             = new HashMap<>();
+    private final Map<String, Object>            contents             = new LinkedHashMap<>();
     
     /** current fragment implementations for interfaces like {@link PlayerDataFragment} */
     private static final Map<Class<?>, Class<?>> fragmentImpls        = new ConcurrentHashMap<>();
@@ -63,7 +65,7 @@ public class MemoryDataSection implements DataSection
     /** the primitive types directly supported by DataSection. */
     static final Set<Class<?>>                   PRIM_TYPES           = new HashSet<>();
     
-    {
+    static {
         // default impls
         fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
         fragmentImpls.put(VectorDataFragment.class, VectorData.class);
@@ -151,17 +153,29 @@ public class MemoryDataSection implements DataSection
      * @param parent
      *            parent
      */
-    private MemoryDataSection(String path, String name, MemoryDataSection parent)
+    protected MemoryDataSection(String path, String name, MemoryDataSection parent)
     {
         this.path = path;
         this.name = name;
         this.parent = parent;
     }
     
+    /**
+     * Creates a new sub section.
+     * @param path2
+     * @param name2
+     * @param parent2
+     * @return sub section.
+     */
+    protected MemoryDataSection createSection(String path2, String name2, MemoryDataSection parent2)
+    {
+        return new MemoryDataSection(path2, name2, parent2);
+    }
+    
     @Override
     public Set<String> getKeys(boolean deep)
     {
-        final Set<String> result = new HashSet<>();
+        final Set<String> result = new LinkedHashSet<>();
         result.addAll(this.contents.keySet());
         if (deep)
         {
@@ -440,7 +454,7 @@ public class MemoryDataSection implements DataSection
             if (!(obj instanceof MemoryDataSection))
             {
                 // override old primitive value or create the sub section if it was not yet created.
-                obj = new MemoryDataSection(this.path == null ? key : this.path + '.' + key, key, this);
+                obj = this.createSection(this.path == null ? key : this.path + '.' + key, key, this);
                 this.contents.put(key, obj);
             }
             return (DataSection) obj;
@@ -449,7 +463,7 @@ public class MemoryDataSection implements DataSection
         Object obj = this.contents.get(subkey);
         if (!(obj instanceof MemoryDataSection))
         {
-            obj = new MemoryDataSection(this.path == null ? subkey : this.path + '.' + subkey, subkey, this);
+            obj = this.createSection(this.path == null ? subkey : this.path + '.' + subkey, subkey, this);
             this.contents.put(subkey, obj);
         }
         return ((MemoryDataSection) obj).createSection(key.substring(indexof + 1));
@@ -551,7 +565,7 @@ public class MemoryDataSection implements DataSection
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
                 return defaultValue;
-            return (Integer) obj;
+            return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
         final Object obj = this.contents.get(subkey);

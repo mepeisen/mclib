@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Helper class for configuration variables.
@@ -60,7 +60,7 @@ class ConfigurationTool
             }
             final ConfigServiceInterface lib = ConfigServiceCache.get();
             final ConfigInterface minigame = lib.getConfigFromCfg(val);
-            return calculator.supply(val, configs, config, lib, ObjectServiceInterface.instance(), minigame);
+            return calculator.supply(val, configs, config, lib, minigame);
         }
         catch (Exception ex)
         {
@@ -79,7 +79,7 @@ class ConfigurationTool
      */
     static <Ret, Annot extends Annotation> Ret calculate(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueCalculator<Ret, Annot> calculator)
     {
-        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, objsrv, minigame) -> calculator.supply(val, configs, config, lib, objsrv, minigame, path.supply(val, configs, config, lib));
+        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
         return calculate(val, clazz, calc);
     }
     
@@ -95,12 +95,12 @@ class ConfigurationTool
      */
     static <Ret, Annot extends Annotation> Ret calculate(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueCalculator<Ret, Annot> calculator, ValueCalculator<Ret, Annot> defaultValue)
     {
-        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, objsrv, minigame) -> {
+        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, minigame) -> {
             final String spath = path.supply(val, configs, config, lib);
-            Ret res = minigame.getConfig(configs.file()).isSet(spath) ? calculator.supply(val, configs, config, lib, objsrv, minigame, spath) : null;
+            Ret res = minigame.getConfig(configs.file()).contains(spath) ? calculator.supply(val, configs, config, lib, minigame, spath) : null;
             if (res == null)
             {
-                res = defaultValue.supply(val, configs, config, lib, objsrv, minigame, spath);
+                res = defaultValue.supply(val, configs, config, lib, minigame, spath);
             }
             return res;
         };
@@ -117,7 +117,7 @@ class ConfigurationTool
      */
     static <Ret> Ret calculate(ConfigurationValueInterface val, String subpath, ValueCalculator<Ret, ConfigurationSection> calculator)
     {
-        final Calculator<Ret, ConfigurationSection> calc = (val2, configs, config, lib, objsrv, minigame) -> calculator.supply(val, configs, config, lib, objsrv, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
+        final Calculator<Ret, ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
         return calculate(val, ConfigurationSection.class, calc);
     }
     
@@ -134,14 +134,14 @@ class ConfigurationTool
     static <Ret, Annot extends Annotation> Ret[] calculateList(ConfigurationValueInterface val, Class<Annot> clazz, Class<Ret> retClazz, PathCalculator<Annot> path, ArrayValueCalculator<Ret, Annot> calculator)
     {
         @SuppressWarnings("unchecked")
-        final Calculator<Ret[], Annot> calc = (val2, configs, config, lib, objsrv, minigame) -> {
-            final org.bukkit.configuration.ConfigurationSection section = minigame.getConfig(configs.file()).getConfigurationSection(path.supply(val, configs, config, lib));
+        final Calculator<Ret[], Annot> calc = (val2, configs, config, lib, minigame) -> {
+            final DataSection section = minigame.getConfig(configs.file()).getSection(path.supply(val, configs, config, lib));
             final List<Ret> list = new ArrayList<>();
             if (section != null)
             {
                 for (final String key : section.getKeys(false))
                 {
-                    list.add(calculator.supply(val, configs, config, lib, objsrv, minigame, section, key));
+                    list.add(calculator.supply(val, configs, config, lib, minigame, section, key));
                 }
             }
             return list.toArray((Ret[]) Array.newInstance(retClazz, list.size()));
@@ -161,14 +161,14 @@ class ConfigurationTool
     static <Ret> Ret[] calculateList(ConfigurationValueInterface val, String subpath, Class<Ret> retClazz, ArrayValueCalculator<Ret, ConfigurationSection> calculator)
     {
         @SuppressWarnings("unchecked")
-        final Calculator<Ret[], ConfigurationSection> calc = (val2, configs, config, lib, objsrv, minigame) -> {
-            final org.bukkit.configuration.ConfigurationSection section = minigame.getConfig(configs.file()).getConfigurationSection(sectionPath().supply(val, configs, config, lib) + '.' + subpath);
+        final Calculator<Ret[], ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> {
+            final DataSection section = minigame.getConfig(configs.file()).getSection(sectionPath().supply(val, configs, config, lib) + '.' + subpath);
             final List<Ret> list = new ArrayList<>();
             if (section != null)
             {
                 for (final String key : section.getKeys(false))
                 {
-                    list.add(calculator.supply(val, configs, config, lib, objsrv, minigame, section, key));
+                    list.add(calculator.supply(val, configs, config, lib, minigame, section, key));
                 }
             }
             return list.toArray((Ret[]) Array.newInstance(retClazz, list.size()));
@@ -195,7 +195,7 @@ class ConfigurationTool
             }
             final ConfigServiceInterface lib = ConfigServiceCache.get();
             final ConfigInterface minigame = lib.getConfigFromCfg(val);
-            consumer.apply(val, configs, config, lib, ObjectServiceInterface.instance(), minigame);
+            consumer.apply(val, configs, config, lib, minigame);
         }
         catch (Exception ex)
         {
@@ -213,7 +213,7 @@ class ConfigurationTool
      */
     static <Annot extends Annotation> void consume(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueConsumer<Annot> consumer)
     {
-        final Consumer<Annot> calc = (val2, configs, config, lib, objsrv, minigame) -> consumer.apply(val, configs, config, lib, objsrv, minigame, path.supply(val, configs, config, lib));
+        final Consumer<Annot> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
         consume(val, clazz, calc);
     }
     
@@ -227,7 +227,7 @@ class ConfigurationTool
     static void consume(ConfigurationValueInterface val, String subpath, ValueConsumer<ConfigurationSection> consumer)
     {
         final Class<ConfigurationSection> clazz = ConfigurationSection.class;
-        final Consumer<ConfigurationSection> calc = (val2, configs, config, lib, objsrv, minigame) -> consumer.apply(val, configs, config, lib, objsrv, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
+        final Consumer<ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
         consume(val, clazz, calc);
     }
     
@@ -242,8 +242,8 @@ class ConfigurationTool
      */
     static <T, Annot extends Annotation> void consumeList(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, T[] value, ArrayValueConsumer<T, Annot> consumer)
     {
-        final ValueConsumer<Annot> vconsumer = (val2, configs, config, lib, objsrv, minigame, spath) -> {
-            org.bukkit.configuration.ConfigurationSection section = minigame.getConfig(configs.file()).getConfigurationSection(spath);
+        final ValueConsumer<Annot> vconsumer = (val2, configs, config, lib, minigame, spath) -> {
+            DataSection section = minigame.getConfig(configs.file()).getSection(spath);
             if (section == null)
             {
                 section = minigame.getConfig(configs.file()).createSection(spath);
@@ -255,7 +255,7 @@ class ConfigurationTool
             int i = 0;
             for (T v : value)
             {
-                consumer.apply(val, configs, config, lib, objsrv, minigame, section, "e" + i, v); //$NON-NLS-1$
+                consumer.apply(val, configs, config, lib, minigame, section, "e" + i, v); //$NON-NLS-1$
                 i++;
             }
         };
@@ -273,8 +273,8 @@ class ConfigurationTool
      */
     static <T> void consumeList(ConfigurationValueInterface val, String subpath, T[] value, ArrayValueConsumer<T, ConfigurationSection> consumer)
     {
-        final ValueConsumer<ConfigurationSection> vconsumer = (val2, configs, config, lib, objsrv, minigame, spath) -> {
-            org.bukkit.configuration.ConfigurationSection section = minigame.getConfig(configs.file()).getConfigurationSection(spath);
+        final ValueConsumer<ConfigurationSection> vconsumer = (val2, configs, config, lib, minigame, spath) -> {
+            DataSection section = minigame.getConfig(configs.file()).getSection(spath);
             if (section == null)
             {
                 section = minigame.getConfig(configs.file()).createSection(spath);
@@ -286,7 +286,7 @@ class ConfigurationTool
             int i = 0;
             for (T v : value)
             {
-                consumer.apply(val, configs, config, lib, objsrv, minigame, section, "e" + i, v); //$NON-NLS-1$
+                consumer.apply(val, configs, config, lib, minigame, section, "e" + i, v); //$NON-NLS-1$
                 i++;
             }
         };
@@ -623,12 +623,11 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv
          * @param minigame
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
@@ -651,13 +650,12 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv 
          * @param minigame
          * @param path
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame, String path) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
@@ -680,14 +678,13 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv 
          * @param minigame
          * @param section
          * @param key
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame, org.bukkit.configuration.ConfigurationSection section, String key) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, DataSection section, String key) throws Exception;
         
     }
     
@@ -732,11 +729,10 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv 
          * @param minigame
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
@@ -757,12 +753,11 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv 
          * @param minigame
          * @param path
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame, String path) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
@@ -785,14 +780,13 @@ class ConfigurationTool
          * @param configs
          * @param config
          * @param lib
-         * @param objsrv 
          * @param minigame
          * @param section
          * @param path
          * @param element
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ObjectServiceInterface objsrv, ConfigInterface minigame, org.bukkit.configuration.ConfigurationSection section, String path, T element)
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, DataSection section, String path, T element)
                 throws Exception;
         
     }

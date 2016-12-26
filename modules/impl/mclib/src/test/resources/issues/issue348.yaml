@@ -1,0 +1,6 @@
+foo:
+  - &foo !!de.minigameslib.mclib.snakeyaml.issues.issue348.model.Foo ["foo"]
+bar:
+  - &bar !!de.minigameslib.mclib.snakeyaml.issues.issue348.model.Bar [*foo]
+baz:
+  - &baz !!de.minigameslib.mclib.snakeyaml.issues.issue348.model.Baz [*bar]

@@ -28,7 +28,6 @@ import java.io.Serializable;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
-import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -36,6 +35,7 @@ import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -43,7 +43,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * 
  * @author mepeisen
  */
-public interface GuiSessionInterface extends Configurable
+public interface GuiSessionInterface extends DataFragment
 {
     
     /**

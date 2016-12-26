@@ -31,12 +31,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.junit.Test;
 
 import de.minigameslib.mclib.api.locale.LocalizedConfigLine;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * test case for {@link LocalizedConfigLine}
@@ -58,7 +57,7 @@ public class LocalizedConfigLineTest
     }
     
     /**
-     * Tests {@link LocalizedConfigLine#writeToConfig(org.bukkit.configuration.ConfigurationSection)} and {@link LocalizedConfigLine#readFromConfig(org.bukkit.configuration.ConfigurationSection)}
+     * Tests {@link LocalizedConfigLine#write(de.minigameslib.mclib.shared.api.com.DataSection)}
      */
     @Test
     public void testConfig()
@@ -69,8 +68,8 @@ public class LocalizedConfigLineTest
         line.setAdminMessages(Locale.ENGLISH, new String[]{"foo3", "bar3"}); //$NON-NLS-1$ //$NON-NLS-2$
         line.setAdminMessages(Locale.GERMAN, new String[]{});
         
-        final ConfigurationSection section = new MemoryConfiguration();
-        line.writeToConfig(section);
+        final MemoryDataSection section = new MemoryDataSection();
+        line.write(section);
         
         assertEquals("en", section.getString("default_locale")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(2, section.getStringList("user.en").size()); //$NON-NLS-1$
@@ -85,7 +84,7 @@ public class LocalizedConfigLineTest
         assertEquals(0, section.getStringList("admin.de").size()); //$NON-NLS-1$
         
         final LocalizedConfigLine line2 = new LocalizedConfigLine();
-        line2.readFromConfig(section);
+        line2.read(section);
         
         assertArrayEquals(new String[]{"foo", "bar"}, line2.toUserMessageLine(Locale.ENGLISH)); //$NON-NLS-1$ //$NON-NLS-2$
         assertArrayEquals(new String[]{"foo2", "bar2"}, line2.toUserMessageLine(Locale.GERMAN)); //$NON-NLS-1$ //$NON-NLS-2$

@@ -1,0 +1,6 @@
+org.apache.commons.lang.UnhandledException@ while parsing a block mapping
+    at de.minigameslib.mclib.snakeyaml.parser.ParserImpl$ParseBlockMappingKey.produce(ParserImpl.java@575)
+    at de.minigameslib.mclib.snakeyaml.parser.ParserImpl.peekEvent(ParserImpl.java@162)
+    at de.minigameslib.mclib.snakeyaml.parser.ParserImpl.checkEvent(ParserImpl.java@147)
+    at de.minigameslib.mclib.snakeyaml.composer.Composer.composeMappingNode(Composer.java@227)
+    at de.minigameslib.mclib.snakeyaml.composer.Composer.composeNode(Composer.java@159)

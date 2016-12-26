@@ -31,12 +31,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.junit.Test;
 
 import de.minigameslib.mclib.api.locale.LocalizedConfigString;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * test case for {@link LocalizedConfigString}
@@ -58,7 +57,7 @@ public class LocalizedConfigStringTest
     }
     
     /**
-     * Tests {@link LocalizedConfigString#writeToConfig(org.bukkit.configuration.ConfigurationSection)} and {@link LocalizedConfigString#readFromConfig(org.bukkit.configuration.ConfigurationSection)}
+     * Tests {@link LocalizedConfigString#write(de.minigameslib.mclib.shared.api.com.DataSection)}
      */
     @Test
     public void testConfig()
@@ -69,8 +68,8 @@ public class LocalizedConfigStringTest
         line.setAdminMessage(Locale.ENGLISH, "foo3"); //$NON-NLS-1$
         line.setAdminMessage(Locale.GERMAN, ""); //$NON-NLS-1$
         
-        final ConfigurationSection section = new MemoryConfiguration();
-        line.writeToConfig(section);
+        final MemoryDataSection section = new MemoryDataSection();
+        line.write(section);
         
         assertEquals("en", section.getString("default_locale")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("foo", section.getString("user.en")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -79,7 +78,7 @@ public class LocalizedConfigStringTest
         assertEquals("", section.getString("admin.de")); //$NON-NLS-1$ //$NON-NLS-2$
         
         final LocalizedConfigString line2 = new LocalizedConfigString();
-        line2.readFromConfig(section);
+        line2.read(section);
         
         assertEquals("foo", line2.toUserMessage(Locale.ENGLISH)); //$NON-NLS-1$
         assertEquals("foo2", line2.toUserMessage(Locale.GERMAN)); //$NON-NLS-1$

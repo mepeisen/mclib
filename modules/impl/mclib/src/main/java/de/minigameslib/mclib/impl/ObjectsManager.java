@@ -39,15 +39,11 @@ import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
@@ -79,6 +75,9 @@ import de.minigameslib.mclib.impl.comp.SignImpl;
 import de.minigameslib.mclib.impl.comp.WorldChunk;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.comp.ZoneImpl;
+import de.minigameslib.mclib.impl.yml.YmlFile;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * A helper class managing plugin objects.
@@ -162,8 +161,9 @@ class ObjectsManager implements ComponentOwner
      * Constructor.
      * 
      * @param dataFolder
+     * @throws McException 
      */
-    public ObjectsManager(File dataFolder)
+    public ObjectsManager(File dataFolder) throws McException
     {
         this.dataFolder = dataFolder;
         this.componentsFolder = new File(this.dataFolder, "components"); //$NON-NLS-1$
@@ -190,24 +190,32 @@ class ObjectsManager implements ComponentOwner
      * @param map
      * @param factory
      * @param folder
+     * @throws McException 
      */
-    private <T extends Configurable> void loadRegistry(Map<String, Map<T, Boolean>> map, Supplier<T> factory, File folder)
+    private <T extends DataFragment> void loadRegistry(Map<String, Map<T, Boolean>> map, Supplier<T> factory, File folder) throws McException
     {
         final File file = new File(folder, "registry.yml"); //$NON-NLS-1$
         if (file.exists())
         {
-            final FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            for (final String pluginName : config.getKeys(false))
+            try
             {
-                final Map<T, Boolean> idmap = map.computeIfAbsent(pluginName, k -> new HashMap<>());
-                final ConfigurationSection pluginSection = config.getConfigurationSection(pluginName);
-                for (final String idkey : pluginSection.getKeys(false))
+                final YmlFile config = new YmlFile(file);
+                for (final String pluginName : config.getKeys(false))
                 {
-                    final ConfigurationSection section = pluginSection.getConfigurationSection(idkey);
-                    final T id = factory.get();
-                    id.readFromConfig(section);
-                    idmap.put(id, Boolean.TRUE);
+                    final Map<T, Boolean> idmap = map.computeIfAbsent(pluginName, k -> new HashMap<>());
+                    final DataSection pluginSection = config.getSection(pluginName);
+                    for (final String idkey : pluginSection.getKeys(false))
+                    {
+                        final DataSection section = pluginSection.getSection(idkey);
+                        final T id = factory.get();
+                        id.read(section);
+                        idmap.put(id, Boolean.TRUE);
+                    }
                 }
+            }
+            catch (IOException ex)
+            {
+                throw new McException(CommonMessages.InternalError, ex, ex.getMessage());
             }
         }
     }
@@ -664,18 +672,18 @@ class ObjectsManager implements ComponentOwner
      * @param map
      * @throws McException
      */
-    private <T extends Configurable> void saveIdList(File folder, Map<String, Map<T, Boolean>> map) throws McException
+    private <T extends DataFragment> void saveIdList(File folder, Map<String, Map<T, Boolean>> map) throws McException
     {
-        final FileConfiguration fileConfig = new YamlConfiguration();
+        final YmlFile fileConfig = new YmlFile();
         map.forEach((k, v) -> {
-            final ConfigurationSection section = fileConfig.createSection(k);
+            final DataSection section = fileConfig.createSection(k);
             int i = 0;
             for (final Map.Entry<T, Boolean> data : v.entrySet())
             {
                 if (data.getValue())
                 {
                     i++;
-                    data.getKey().writeToConfig(section.createSection("item" + i)); //$NON-NLS-1$
+                    data.getKey().write(section.createSection("item" + i)); //$NON-NLS-1$
                 }
             }
         });

@@ -25,14 +25,14 @@
 package de.minigameslib.mclib.api.objects;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * A zone handler is declared by another plugin; while zone creation it is used to store custom data.
  * 
  * @author mepeisen
  */
-public interface ZoneHandlerInterface extends Configurable
+public interface ZoneHandlerInterface extends DataFragment
 {
     
     /**

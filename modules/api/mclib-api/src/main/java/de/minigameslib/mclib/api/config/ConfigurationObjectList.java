@@ -30,6 +30,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import de.minigameslib.mclib.shared.api.com.DataFragment;
+
 /**
  * A single configuration value.
  * 
@@ -56,6 +58,6 @@ public @interface ConfigurationObjectList
      * 
      * @return class of the configurable object.
      */
-    Class<? extends Configurable> clazz();
+    Class<? extends DataFragment> clazz();
     
 }

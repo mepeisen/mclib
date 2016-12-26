@@ -24,14 +24,14 @@
 
 package de.minigameslib.mclib.api.objects;
 
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * Marker interface for unique zone ids.
  * 
  * @author mepeisen
  */
-public interface ZoneIdInterface extends Configurable
+public interface ZoneIdInterface extends DataFragment
 {
     
     // marker only

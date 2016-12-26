@@ -24,14 +24,14 @@
 
 package de.minigameslib.mclib.api.objects;
 
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * Marker interface for unique component ids.
  * 
  * @author mepeisen
  */
-public interface ComponentIdInterface extends Configurable
+public interface ComponentIdInterface extends DataFragment
 {
     
     // marker only

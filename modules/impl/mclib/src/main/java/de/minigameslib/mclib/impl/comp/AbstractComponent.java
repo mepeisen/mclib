@@ -25,14 +25,14 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
  * Base class for all minigame components.
@@ -49,7 +49,7 @@ public abstract class AbstractComponent
     private final Set<WorldChunk> currentChunks = new HashSet<>();
     
     /** the file config. */
-    protected FileConfiguration config;
+    protected YmlFile config;
     
     /** the config file. */
     protected File configFile;
@@ -68,15 +68,23 @@ public abstract class AbstractComponent
      * @param config
      *            the file config.
      *            @param owner the owning component
+     * @throws McException 
      */
-    public AbstractComponent(ComponentRegistry registry, File config, ComponentOwner owner)
+    public AbstractComponent(ComponentRegistry registry, File config, ComponentOwner owner) throws McException
     {
         this.registry = registry;
         this.configFile = config;
         this.owner = owner;
         if (config != null)
         {
-            this.config = YamlConfiguration.loadConfiguration(config);
+            try
+            {
+                this.config = new YmlFile(config);
+            }
+            catch (IOException e)
+            {
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
+            }
         }
     }
     

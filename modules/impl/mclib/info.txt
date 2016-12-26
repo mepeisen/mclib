@@ -1,0 +1,8 @@
+This project contains a patched copy of snakeyml.
+snakeyaml comes with Apache license. See snakeyml.LICENSE.txt
+The patch was contributed to original repos via pull request.
+
+To get access to this patches version we need to provide it
+with our own package name. Spigot has it's own yml version
+shipped with spigot jar. We won't be able to access our own
+patchesd version using the default classpath.

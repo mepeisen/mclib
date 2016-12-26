@@ -36,12 +36,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.api.objects.Cuboid;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 
 /**
@@ -335,7 +334,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#readFromConfig(org.bukkit.configuration.ConfigurationSection)} and {@link Cuboid#writeToConfig(org.bukkit.configuration.ConfigurationSection)}
+     * Tests  {@link Cuboid#read(de.minigameslib.mclib.shared.api.com.DataSection)}
      */
     @Test
     public void testConfigurable()
@@ -343,9 +342,9 @@ public class CuboidTest
         final World world = mock(World.class);
         when(world.getName()).thenReturn("foo"); //$NON-NLS-1$
         final Cuboid cub = new Cuboid(new Location(world, 1, 2, 3), new Location(world, 5, 6, 7));
-        final ConfigurationSection section = new MemoryConfiguration();
+        final MemoryDataSection section = new MemoryDataSection();
         
-        cub.writeToConfig(section);
+        cub.write(section);
         
         assertEquals("foo", section.getString("World")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(1, section.getInt("X1")); //$NON-NLS-1$
@@ -360,7 +359,7 @@ public class CuboidTest
         when(server.getWorld("foo")).thenReturn(world); //$NON-NLS-1$
         
         final Cuboid cub2 = new Cuboid();
-        cub2.readFromConfig(section);
+        cub2.read(section);
         
         assertEquals("foo", cub2.getWorld().getName()); //$NON-NLS-1$
         assertEquals(1, cub2.getLowLoc().getBlockX());
@@ -377,7 +376,7 @@ public class CuboidTest
     @Test(expected = IllegalArgumentException.class)
     public void testConfigurableInvalid()
     {
-        new Cuboid().readFromConfig(new MemoryConfiguration());
+        new Cuboid().read(new MemoryDataSection());
     }
     
 }

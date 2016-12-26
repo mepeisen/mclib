@@ -1,0 +1,7 @@
+list:
+- !!de.minigameslib.mclib.snakeyaml.issues.issue61.GenericListBeanTest$Bean
+  name: foo
+  number: 0
+- !!de.minigameslib.mclib.snakeyaml.issues.issue61.GenericListBeanTest$Bean
+  name: bar
+  number: 3

@@ -37,14 +37,12 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
-import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
@@ -85,6 +83,7 @@ import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.RemoveMarkerData;
 import de.minigameslib.mclib.pshared.ResetMarkersData;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -214,13 +213,19 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public void readFromConfig(ConfigurationSection section)
+    public void read(DataSection section)
     {
         throw new UnsupportedOperationException();
     }
     
     @Override
-    public void writeToConfig(ConfigurationSection section)
+    public void write(DataSection section)
+    {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public boolean test(DataSection section)
     {
         throw new UnsupportedOperationException();
     }
@@ -959,7 +964,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         
         /** the underlying data map. */
-        private final Map<Class<?>, Configurable> data = new HashMap<>();
+        private final Map<Class<?>, DataFragment> data = new HashMap<>();
         
         /**
          * Constructor.
@@ -970,13 +975,13 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
         @Override
-        public <T extends Configurable> T get(Class<T> clazz)
+        public <T extends DataFragment> T get(Class<T> clazz)
         {
             return clazz.cast(this.data.get(clazz));
         }
         
         @Override
-        public <T extends Configurable> void set(Class<T> clazz, T value)
+        public <T extends DataFragment> void set(Class<T> clazz, T value)
         {
             this.data.put(clazz, value);
         }

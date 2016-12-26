@@ -26,23 +26,20 @@ package de.minigameslib.mclib.impl.player;
 
 import java.util.Locale;
 
-import org.bukkit.configuration.ConfigurationSection;
-
-import de.minigameslib.mclib.api.config.Configurable;
-import de.minigameslib.mclib.impl.McCoreConfig;
+import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
  * Players persistent data.
  * 
  * @author mepeisen
  */
-public class MclibPlayersConfig implements Configurable
+public class MclibPlayersConfig extends AnnotatedDataFragment
 {
     
     /** the preferred locale. */
-    private Locale preferredLocale = Locale.ENGLISH;
-    
-    // TODO refactor with abstract base class reading fields with annotations.
+    @PersistentField
+    protected Locale preferredLocale = Locale.ENGLISH;
 
     /**
      * @return the preferredLocale
@@ -58,18 +55,6 @@ public class MclibPlayersConfig implements Configurable
     public void setPreferredLocale(Locale preferredLocale)
     {
         this.preferredLocale = preferredLocale;
-    }
-
-    @Override
-    public void readFromConfig(ConfigurationSection section)
-    {
-        this.preferredLocale = new Locale(section.getString("PreferredLocale", McCoreConfig.DefaultLocale.getString())); //$NON-NLS-1$
-    }
-
-    @Override
-    public void writeToConfig(ConfigurationSection section)
-    {
-        section.set("PreferredLocale", this.preferredLocale == null ? null : this.preferredLocale.getLanguage()); //$NON-NLS-1$
     }
     
 }

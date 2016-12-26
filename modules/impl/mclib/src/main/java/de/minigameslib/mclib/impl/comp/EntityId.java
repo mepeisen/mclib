@@ -26,9 +26,8 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.util.UUID;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
@@ -67,7 +66,7 @@ public class EntityId implements EntityIdInterface
     }
 
     @Override
-    public void readFromConfig(ConfigurationSection section)
+    public void read(DataSection section)
     {
         this.pluginName = section.getString("plugin"); //$NON-NLS-1$
         this.type = section.getString("type"); //$NON-NLS-1$
@@ -75,11 +74,38 @@ public class EntityId implements EntityIdInterface
     }
     
     @Override
-    public void writeToConfig(ConfigurationSection section)
+    public void write(DataSection section)
     {
         section.set("plugin", this.pluginName); //$NON-NLS-1$
         section.set("type", this.type); //$NON-NLS-1$
         section.set("uuid", this.uuid.toString()); //$NON-NLS-1$
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        return section.isString("plugin") //$NON-NLS-1$
+                && section.isString("type") //$NON-NLS-1$
+                && section.isString("uuid") //$NON-NLS-1$
+                && isUUID(section.getString("uuid")); //$NON-NLS-1$
+    }
+
+    /**
+     * @param str
+     * @return true if this is a uuid
+     */
+    private boolean isUUID(String str)
+    {
+        try
+        {
+            if (str == null) return false;
+            UUID.fromString(str);
+            return true;
+        }
+        catch (@SuppressWarnings("unused") IllegalArgumentException ex)
+        {
+            return false;
+        }
     }
 
     /**

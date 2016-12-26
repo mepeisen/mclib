@@ -24,14 +24,14 @@
 
 package de.minigameslib.mclib.api.objects;
 
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * Marker interface for unique sign ids.
  * 
  * @author mepeisen
  */
-public interface SignIdInterface extends Configurable
+public interface SignIdInterface extends DataFragment
 {
     
     // marker only

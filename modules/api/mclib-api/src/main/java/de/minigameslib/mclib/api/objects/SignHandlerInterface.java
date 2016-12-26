@@ -25,14 +25,14 @@
 package de.minigameslib.mclib.api.objects;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * A sign handler is declared by another plugin; while sign creation it is used to store custom data.
  * 
  * @author mepeisen
  */
-public interface SignHandlerInterface extends Configurable
+public interface SignHandlerInterface extends DataFragment
 {
     
     /**

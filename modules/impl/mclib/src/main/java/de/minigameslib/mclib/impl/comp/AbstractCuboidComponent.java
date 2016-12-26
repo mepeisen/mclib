@@ -31,12 +31,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.Cuboid;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Base class for all cuboid components.
@@ -60,8 +60,9 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      *            the config file
      * @param owner
      *            the component owner
+     * @throws McException 
      */
-    public AbstractCuboidComponent(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner)
+    public AbstractCuboidComponent(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner) throws McException
     {
         super(registry, config, owner);
         this.cuboid = cuboid;
@@ -77,11 +78,11 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
     {
         if (this.config != null)
         {
-            final ConfigurationSection core = this.config.getConfigurationSection("core"); //$NON-NLS-1$
+            final DataSection core = this.config.getSection("core"); //$NON-NLS-1$
             if (core != null)
             {
                 this.cuboid = new Cuboid();
-                this.cuboid.readFromConfig(core.createSection("location")); //$NON-NLS-1$
+                this.cuboid.read(core.createSection("location")); //$NON-NLS-1$
                 this.readData(core);
             }
         }
@@ -96,8 +97,8 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
     {
         if (this.config != null)
         {
-            final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
-            this.cuboid.writeToConfig(core.createSection("location")); //$NON-NLS-1$
+            final DataSection core = this.config.createSection("core"); //$NON-NLS-1$
+            this.cuboid.write(core.createSection("location")); //$NON-NLS-1$
             this.saveData(core);
             try
             {
@@ -115,14 +116,14 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * 
      * @param coreSection
      */
-    protected abstract void saveData(ConfigurationSection coreSection);
+    protected abstract void saveData(DataSection coreSection);
     
     /**
      * Read core data from config.
      * 
      * @param coreSection
      */
-    protected abstract void readData(ConfigurationSection coreSection);
+    protected abstract void readData(DataSection coreSection);
     
     /**
      * Changes the locations depending on the given cuboid.

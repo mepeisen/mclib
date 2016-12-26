@@ -24,7 +24,7 @@
 
 package de.minigameslib.mclib.api.config;
 
-import org.bukkit.configuration.ConfigurationSection;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Common configuration interface.
@@ -41,7 +41,7 @@ public interface ConfigInterface
      *            configuration file name.
      * @return the configuration file.
      */
-    ConfigurationSection getConfig(String file);
+    DataSection getConfig(String file);
     
     /**
      * Saves the configuration for given file.

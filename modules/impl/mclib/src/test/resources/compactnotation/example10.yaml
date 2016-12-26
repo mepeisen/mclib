@@ -1,0 +1,5 @@
+something:
+ - de.minigameslib.mclib.snakeyaml.extensions.compactnotation.Container(t7, id=id7): { name: child7 }
+ - de.minigameslib.mclib.snakeyaml.extensions.compactnotation.Container(t9, id=id9): { name: child9 }
+ - de.minigameslib.mclib.snakeyaml.extensions.compactnotation.Container(t10, id=id10): { name: child10 }
+

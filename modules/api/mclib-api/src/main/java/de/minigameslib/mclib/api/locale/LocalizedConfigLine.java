@@ -31,16 +31,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
-
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * A localized string placed within configuration files (not from messages.yml).
  * 
  * @author mepeisen
  */
-public class LocalizedConfigLine implements Configurable, LocalizedMessageInterface
+public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterface
 {
     
     /**
@@ -108,7 +107,7 @@ public class LocalizedConfigLine implements Configurable, LocalizedMessageInterf
     }
     
     @Override
-    public void readFromConfig(ConfigurationSection section)
+    public void read(DataSection section)
     {
         if (section.contains("default_locale")) //$NON-NLS-1$
         {
@@ -117,7 +116,7 @@ public class LocalizedConfigLine implements Configurable, LocalizedMessageInterf
         this.userStrings.clear();
         if (section.contains("user")) //$NON-NLS-1$
         {
-            for (final String key : section.getConfigurationSection("user").getKeys(false)) //$NON-NLS-1$
+            for (final String key : section.getSection("user").getKeys(false)) //$NON-NLS-1$
             {
                 final Locale locale = new Locale(key, ""); //$NON-NLS-1$
                 this.userStrings.put(locale, section.getStringList("user." + key)); //$NON-NLS-1$
@@ -126,7 +125,7 @@ public class LocalizedConfigLine implements Configurable, LocalizedMessageInterf
         this.adminStrings.clear();
         if (section.contains("admin")) //$NON-NLS-1$
         {
-            for (final String key : section.getConfigurationSection("admin").getKeys(false)) //$NON-NLS-1$
+            for (final String key : section.getSection("admin").getKeys(false)) //$NON-NLS-1$
             {
                 final Locale locale = new Locale(key, ""); //$NON-NLS-1$
                 this.adminStrings.put(locale, section.getStringList("admin." + key)); //$NON-NLS-1$
@@ -135,17 +134,23 @@ public class LocalizedConfigLine implements Configurable, LocalizedMessageInterf
     }
     
     @Override
-    public void writeToConfig(ConfigurationSection section)
+    public void write(DataSection section)
     {
         section.set("default_locale", this.defaultLocale.toString()); //$NON-NLS-1$
         for (final Map.Entry<Locale, List<String>> userStr : this.userStrings.entrySet())
         {
-            section.set("user." + userStr.getKey().toString(), userStr.getValue()); //$NON-NLS-1$
+            section.setPrimitiveList("user." + userStr.getKey().toString(), userStr.getValue()); //$NON-NLS-1$
         }
         for (final Map.Entry<Locale, List<String>> userStr : this.adminStrings.entrySet())
         {
-            section.set("admin." + userStr.getKey().toString(), userStr.getValue()); //$NON-NLS-1$
+            section.setPrimitiveList("admin." + userStr.getKey().toString(), userStr.getValue()); //$NON-NLS-1$
         }
+    }
+    
+    @Override
+    public boolean test(DataSection section)
+    {
+        return true;
     }
     
     @Override

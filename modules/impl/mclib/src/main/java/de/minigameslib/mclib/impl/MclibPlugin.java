@@ -82,8 +82,10 @@ import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
 import de.minigameslib.mclib.api.com.CommunicationBungeeHandler;
 import de.minigameslib.mclib.api.com.CommunicationPeerHandler;
 import de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface;
+import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
+import de.minigameslib.mclib.api.config.ConfigVectorData;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.ext.ExtensionInterface;
@@ -129,10 +131,12 @@ import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
 import de.minigameslib.mclib.pshared.WinClosedData;
+import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
  * Main spigot plugin class for MCLIB.
@@ -228,6 +232,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         }
         MemoryDataSection.initFragmentImplementation(PlayerDataFragment.class, PlayerProxy.class);
         MemoryDataSection.initFragmentImplementation(McPlayerInterface.class, PlayerProxy.class);
+        MemoryDataSection.initFragmentImplementation(ColorDataFragment.class, ConfigColorData.class);
+        // TODO MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ConfigItemStackData.class);
+        MemoryDataSection.initFragmentImplementation(VectorDataFragment.class, ConfigVectorData.class);
         MemoryDataSection.lockFragmentImplementations();
     }
 
@@ -305,7 +312,15 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
         
-        this.objectsManager = new ObjectsManager(this.getDataFolder());
+        try
+        {
+            this.objectsManager = new ObjectsManager(this.getDataFolder());
+        }
+        catch (McException ex)
+        {
+            // TODO what do we do at this point?
+            //      having no object manager will cause a dead plugin at all
+        }
         
         // nms event listeners
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);

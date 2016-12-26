@@ -24,7 +24,7 @@
 
 package de.minigameslib.mclib.api;
 
-import de.minigameslib.mclib.api.config.Configurable;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * The minigame storage can be used on various objects (for example players) to store temporary or persistent data.
@@ -43,7 +43,7 @@ public interface McStorage
      * @param <T>
      *            Configurable object class
      */
-    <T extends Configurable> T get(Class<T> clazz);
+    <T extends DataFragment> T get(Class<T> clazz);
     
     /**
      * Sets a storage variable.
@@ -55,6 +55,6 @@ public interface McStorage
      * @param <T>
      *            Configurable object class
      */
-    <T extends Configurable> void set(Class<T> clazz, T value);
+    <T extends DataFragment> void set(Class<T> clazz, T value);
     
 }

@@ -36,11 +36,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Color;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationBoolList;
@@ -63,6 +61,7 @@ import de.minigameslib.mclib.api.config.ConfigurationString;
 import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
  * Implementation of configuration file support.
@@ -78,7 +77,7 @@ public class ConfigImpl implements ConfigInterface
     /**
      * The configuration files.
      */
-    private final Map<String, FileConfiguration>           configurations = new HashMap<>();
+    private final Map<String, YmlFile>           configurations = new HashMap<>();
     
     /**
      * The default configurations.
@@ -108,7 +107,7 @@ public class ConfigImpl implements ConfigInterface
     }
     
     @Override
-    public ConfigurationSection getConfig(String file)
+    public YmlFile getConfig(String file)
     {
         return this.getConfigEx(file);
     }
@@ -118,7 +117,7 @@ public class ConfigImpl implements ConfigInterface
      * @param file
      * @return file config
      */
-    FileConfiguration getConfigEx(String file)
+    YmlFile getConfigEx(String file)
     {
         if (file.contains("/") || file.contains("..") || file.contains(":") || file.contains("\\")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         {
@@ -130,16 +129,25 @@ public class ConfigImpl implements ConfigInterface
         }
         
         return this.configurations.computeIfAbsent(file, (f) -> {
-            FileConfiguration fileConfig = null;
+            YmlFile fileConfig = null;
             final File fobj = new File(this.plugin.getDataFolder(), file);
-            if (file.equals("config.yml")) //$NON-NLS-1$
+            try
             {
-                fileConfig = this.plugin.getConfig();
+                fileConfig = new YmlFile(fobj);
             }
-            else
+            catch (IOException e1)
             {
-                fileConfig = YamlConfiguration.loadConfiguration(fobj);
+                throw new IllegalStateException("error loading config", e1); //$NON-NLS-1$
             }
+            // TODO maybe a special behaviour for config.yml to hold it in sync with plugin.getConfig?
+//            if (file.equals("config.yml")) //$NON-NLS-1$
+//            {
+//                fileConfig = this.plugin.getConfig();
+//            }
+//            else
+//            {
+//                fileConfig = new YmlFile(fobj);
+//            }
             
             final List<ConfigurationValueInterface> list = this.defaultConfigs.get(file);
             if (list != null)
@@ -156,99 +164,102 @@ public class ConfigImpl implements ConfigInterface
                             throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
                         }
                         
-                        if (field.getAnnotation(ConfigurationBool.class) != null)
+                        if (!fileConfig.contains(cfg.path()))
                         {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationBool.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationBoolList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationBoolList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationByte.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationByte.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationByteList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationByteList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationCharacter.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationCharacter.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationCharacterList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationCharacterList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationDouble.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationDouble.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationDoubleList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationDoubleList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationFloat.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationFloat.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationFloatList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationFloatList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationInt.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationInt.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationIntList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationIntList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationLong.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationLong.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationLongList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationLongList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationShort.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationShort.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationShortList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationShortList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationString.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), field.getAnnotation(ConfigurationString.class).defaultValue());
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationStringList.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationStringList.class).defaultValue()));
-                        }
-                        
-                        if (field.getAnnotation(ConfigurationColor.class) != null)
-                        {
-                            fileConfig.addDefault(cfg.path(), Color.fromRGB((field.getAnnotation(ConfigurationColor.class).defaultRgb())));
+                            if (field.getAnnotation(ConfigurationBool.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationBool.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationBoolList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationBoolList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationByte.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationByte.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationByteList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationByteList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationCharacter.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationCharacter.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationCharacterList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationCharacterList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationDouble.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationDouble.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationDoubleList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationDoubleList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationFloat.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationFloat.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationFloatList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationFloatList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationInt.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationInt.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationIntList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationIntList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationLong.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationLong.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationLongList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationLongList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationShort.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationShort.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationShortList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationShortList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationString.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationString.class).defaultValue());
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationStringList.class) != null)
+                            {
+                                fileConfig.setPrimitiveList(cfg.path(), Arrays.asList(field.getAnnotation(ConfigurationStringList.class).defaultValue()));
+                            }
+                            
+                            if (field.getAnnotation(ConfigurationColor.class) != null)
+                            {
+                                fileConfig.set(cfg.path(), ConfigColorData.fromBukkitColor(Color.fromRGB((field.getAnnotation(ConfigurationColor.class).defaultRgb()))));
+                            }
                         }
                     }
                     catch (NoSuchFieldException ex)
@@ -256,7 +267,6 @@ public class ConfigImpl implements ConfigInterface
                         throw new IllegalStateException(ex);
                     }
                 }
-                fileConfig.options().copyDefaults(true);
                 try
                 {
                     fileConfig.save(fobj);

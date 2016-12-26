@@ -30,10 +30,10 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 
-import de.minigameslib.mclib.api.config.Configurable;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Modified by:
@@ -43,7 +43,7 @@ import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
  *         Original version by:
  * @author Pandemoneus - https://github.com/Pandemoneus
  */
-public final class Cuboid implements Configurable
+public final class Cuboid implements DataFragment
 {
     /** high points. */
     private Location highPoints;
@@ -352,18 +352,30 @@ public final class Cuboid implements Configurable
     }
     
     @Override
-    public void readFromConfig(ConfigurationSection section)
+    public void read(DataSection section)
     {
         this.load(section.getValues(false));
     }
     
     @Override
-    public void writeToConfig(ConfigurationSection section)
+    public void write(DataSection section)
     {
         for (final Map.Entry<String, Object> entry : this.save().entrySet())
         {
             section.set(entry.getKey(), entry.getValue());
         }
+    }
+    
+    @Override
+    public boolean test(DataSection section)
+    {
+        return section.isString("World") //$NON-NLS-1$
+                && section.isInt("X1") //$NON-NLS-1$
+                && section.isInt("X2") //$NON-NLS-1$
+                && section.isInt("Y1") //$NON-NLS-1$
+                && section.isInt("Y2") //$NON-NLS-1$
+                && section.isInt("Z1") //$NON-NLS-1$
+                && section.isInt("Z2"); //$NON-NLS-1$
     }
     
     /**

@@ -26,14 +26,13 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.Cuboid;
 import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
@@ -55,8 +54,9 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
      * @param handler 
      * @param config 
      * @param owner 
+     * @throws McException 
      */
-    public ZoneImpl(ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner)
+    public ZoneImpl(ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
         super(registry, cuboid, config, owner);
         this.id = id;
@@ -82,18 +82,18 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     }
 
     @Override
-    protected void saveData(ConfigurationSection coreSection)
+    protected void saveData(DataSection coreSection)
     {
-        this.id.writeToConfig(coreSection.createSection("id")); //$NON-NLS-1$
-        this.handler.writeToConfig(coreSection.createSection("handler")); //$NON-NLS-1$
+        this.id.write(coreSection.createSection("id")); //$NON-NLS-1$
+        this.handler.write(coreSection.createSection("handler")); //$NON-NLS-1$
     }
     
     @Override
-    public void readData(ConfigurationSection coreSection)
+    public void readData(DataSection coreSection)
     {
         // TODO should we re-read the id?
         // the id is already read from registry.yml
-        this.handler.readFromConfig(coreSection.getConfigurationSection("handler")); //$NON-NLS-1$
+        this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
 
     /**

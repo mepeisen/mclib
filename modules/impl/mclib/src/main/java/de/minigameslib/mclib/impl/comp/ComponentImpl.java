@@ -27,13 +27,13 @@ package de.minigameslib.mclib.impl.comp;
 import java.io.File;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
@@ -55,8 +55,9 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
      * @param handler
      * @param config
      * @param owner 
+     * @throws McException 
      */
-    public ComponentImpl(ComponentRegistry registry, Location location, ComponentId id, ComponentHandlerInterface handler, File config, ComponentOwner owner)
+    public ComponentImpl(ComponentRegistry registry, Location location, ComponentId id, ComponentHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
         super(registry, location, config, owner);
         this.id = id;
@@ -70,18 +71,18 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     }
     
     @Override
-    public void readData(ConfigurationSection coreSection)
+    public void readData(DataSection coreSection)
     {
         // TODO should we re-read the id?
         // the id is already read from registry.yml
-        this.handler.readFromConfig(coreSection.getConfigurationSection("handler")); //$NON-NLS-1$
+        this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
 
     @Override
-    protected void saveData(ConfigurationSection coreSection)
+    protected void saveData(DataSection coreSection)
     {
-        this.id.writeToConfig(coreSection.createSection("id")); //$NON-NLS-1$
-        this.handler.writeToConfig(coreSection.createSection("handler")); //$NON-NLS-1$
+        this.id.write(coreSection.createSection("id")); //$NON-NLS-1$
+        this.handler.write(coreSection.createSection("handler")); //$NON-NLS-1$
     }
 
     @Override

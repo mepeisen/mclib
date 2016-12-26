@@ -33,10 +33,10 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * Base class for all single location components.
@@ -59,9 +59,10 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * @param config
      *            the config file
      * @param owner
-     *            the component owner
+     *            the component owner 
+     * @throws McException 
      */
-    public AbstractLocationComponent(ComponentRegistry registry, Location location, File config, ComponentOwner owner)
+    public AbstractLocationComponent(ComponentRegistry registry, Location location, File config, ComponentOwner owner) throws McException
     {
         super(registry, config, owner);
         this.location = location == null ? null : location;
@@ -77,7 +78,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
     {
         if (this.config != null)
         {
-            final ConfigurationSection core = this.config.getConfigurationSection("core"); //$NON-NLS-1$
+            final DataSection core = this.config.getSection("core"); //$NON-NLS-1$
             if (core != null)
             {
                 final int x = core.getInt("location.x"); //$NON-NLS-1$
@@ -99,7 +100,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
     {
         if (this.config != null)
         {
-            final ConfigurationSection core = this.config.createSection("core"); //$NON-NLS-1$
+            final DataSection core = this.config.createSection("core"); //$NON-NLS-1$
             core.set("location.x", this.location.getBlockX()); //$NON-NLS-1$
             core.set("location.y", this.location.getBlockY()); //$NON-NLS-1$
             core.set("location.z", this.location.getBlockZ()); //$NON-NLS-1$
@@ -121,14 +122,14 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * 
      * @param coreSection
      */
-    protected abstract void saveData(ConfigurationSection coreSection);
+    protected abstract void saveData(DataSection coreSection);
     
     /**
      * Reads core data from config.
      * 
      * @param coreSection
      */
-    protected abstract void readData(ConfigurationSection coreSection);
+    protected abstract void readData(DataSection coreSection);
     
     /**
      * Changes the locations depending on the given cuboid.
