@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.locale;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
@@ -299,7 +300,18 @@ public interface LocalizedMessageInterface extends Serializable
      */
     default DynamicListArg toListArg(int startLine, int lineLimit, Serializable... args)
     {
-        return (loc, isAdmin) -> isAdmin ? this.toAdminMessageLine(loc, args) : this.toUserMessageLine(loc, args);
+        return (loc, isAdmin) -> {
+            final String[] list = isAdmin ? this.toAdminMessageLine(loc, args) : this.toUserMessageLine(loc, args);
+            if (list == null)
+            {
+                return null;
+            }
+            if (list.length <= startLine)
+            {
+                return new String[0];
+            }
+            return Arrays.copyOfRange(list, startLine, Math.min(startLine + lineLimit, list.length));
+        };
     }
     
     /**

@@ -76,6 +76,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
                     return;
                 }
                 new HelpCommandHandler(sub).handle(command.consumeArgs(1));
+                return;
             }
         }
         super.handle(command);
@@ -174,8 +175,9 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
     }
 
     /**
-     * @param command
-     * @return
+     * Filters sub commands by checking for visibility.
+     * @param command the command to check for visible sub commands
+     * @return the visible sub commands
      */
     private Stream<Entry<String, SubCommandHandlerInterface>> getVisibleCommands(CommandInterface command)
     {
