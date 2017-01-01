@@ -26,63 +26,279 @@ package de.minigameslib.mclib.impl.yml;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import de.minigameslib.mclib.snakeyaml.DumperOptions.FlowStyle;
 import de.minigameslib.mclib.snakeyaml.Yaml;
+import de.minigameslib.mclib.snakeyaml.constructor.Construct;
+import de.minigameslib.mclib.snakeyaml.constructor.Constructor;
+import de.minigameslib.mclib.snakeyaml.error.YAMLException;
+import de.minigameslib.mclib.snakeyaml.nodes.MappingNode;
+import de.minigameslib.mclib.snakeyaml.nodes.Node;
+import de.minigameslib.mclib.snakeyaml.nodes.NodeTuple;
+import de.minigameslib.mclib.snakeyaml.nodes.ScalarNode;
+import de.minigameslib.mclib.snakeyaml.nodes.Tag;
+import de.minigameslib.mclib.snakeyaml.representer.Represent;
+import de.minigameslib.mclib.snakeyaml.representer.Representer;
 
 /**
  * File config.
+ * 
  * @author mepeisen
  */
 public class YmlFile extends YmlCommentableSection
 {
     
     /** yaml. */
-    private final Yaml yml = new Yaml();
+    private final Yaml yml = new Yaml(new MyConstructor(), new MyRepresenter());
     
     /**
-     * Constructor
+     * Constructor to create an empty root section.
      */
     public YmlFile()
     {
-        // TODO
+        // empty
     }
     
     /**
-     * Constructor
+     * Constructor to read from existing file.
+     * 
      * @param file
      * @throws IOException
      */
     public YmlFile(File file) throws IOException
     {
-        // TODO
+        try (final FileReader io = new FileReader(file))
+        {
+            this.load(io);
+        }
+    }
+    
+    /**
+     * Reads a file into this config.
+     * 
+     * @param fr
+     * @throws IOException
+     */
+    public void load(FileReader fr) throws IOException
+    {
+        final MyCommentMap map = (MyCommentMap) this.yml.load(fr);
+        this.load(map);
     }
     
     /**
      * Saves config to file.
+     * 
      * @param file
      * @throws IOException
      */
     public void saveFile(File file) throws IOException
     {
-        // TODO
+        try (final FileWriter fow = new FileWriter(file))
+        {
+            final MyCommentMap data = new MyCommentMap();
+            this.store(data);
+            this.yml.dump(data, fow);
+        }
     }
-
+    
     /**
-     * @param configFile
+     * Customized constructor for analyzing the yaml nodes.
+     * 
+     * @author mepeisen
      */
-    public void save(File configFile) throws IOException
+    private static final class MyConstructor extends Constructor
     {
-        // TODO Auto-generated method stub
+        
+        /**
+         * Constructor
+         */
+        public MyConstructor()
+        {
+            this.yamlConstructors.put(Tag.MAP, new MyMapConstruct());
+        }
+        
+        @Override
+        protected MyCommentMap createDefaultMap()
+        {
+            return new MyCommentMap();
+        }
+        
+        @Override
+        protected void constructMapping2ndStep(MappingNode node, Map<Object, Object> mapping)
+        {
+            super.constructMapping2ndStep(node, mapping);
+            
+            List<NodeTuple> nodeValue = node.getValue();
+            for (NodeTuple tuple : nodeValue)
+            {
+                Node keyNode = tuple.getKeyNode();
+                Object key = constructObject(keyNode);
+                if (keyNode.getPreComments() != null && !keyNode.getPreComments().isEmpty())
+                {
+                    if (keyNode.isTwoStepsConstruction())
+                    {
+                        throw new YAMLException("Comments on 2steps-construction not yet supported."); //$NON-NLS-1$
+                    }
+                    ((MyCommentMap) mapping).keyComments.put(key, node.getPreComments().toArray(new String[node.getPreComments().size()]));
+                }
+            }
+        }
+        
+        /**
+         * Constructor for maps.
+         * 
+         * @author mepeisen
+         */
+        public class MyMapConstruct implements Construct
+        {
+            
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public Object construct(Node node)
+            {
+                MyCommentMap result = null;
+                if (node.isTwoStepsConstruction())
+                {
+                    result = createDefaultMap();
+                }
+                else
+                {
+                    result = (MyCommentMap) constructMapping((MappingNode) node);
+                }
+                if (node.getPreComments() != null && node.getPreComments().size() > 0)
+                {
+                    result.mapLevelComments = node.getPreComments().toArray(new String[node.getPreComments().size()]);
+                }
+                return result;
+            }
+            
+            @Override
+            @SuppressWarnings("unchecked")
+            public void construct2ndStep(Node node, Object object)
+            {
+                if (node.isTwoStepsConstruction())
+                {
+                    constructMapping2ndStep((MappingNode) node, (Map<Object, Object>) object);
+                }
+                else
+                {
+                    throw new YAMLException("Unexpected recursive mapping structure. Node: " + node); //$NON-NLS-1$
+                }
+            }
+        }
         
     }
-
+    
     /**
-     * @param fr
+     * Representer to build yaml with comments.
+     * @author mepeisen
      */
-    public void load(FileReader fr) throws IOException
+    private static final class MyRepresenter extends Representer
     {
-        // TODO Auto-generated method stub
+        
+        /**
+         * Constructor.
+         */
+        public MyRepresenter()
+        {
+            this.representers.put(MyCommentMap.class, new RepresentCommentMap());
+        }
+        
+        /**
+         * Helper to represent the comment map.
+         */
+        public class RepresentCommentMap implements Represent
+        {
+            
+            @Override
+            public Node representData(Object data)
+            {
+                MyCommentMap map = (MyCommentMap) data;
+                final MappingNode mappingNode = (MappingNode) representMapping(Tag.MAP, map, Boolean.FALSE);
+                if (map.mapLevelComments != null)
+                {
+                    mappingNode.setPreComments(Arrays.asList(map.mapLevelComments));
+                }
+                return mappingNode;
+            }
+        }
+        
+        @Override
+        protected Node representMapping(Tag tag, Map<?, ?> mapping, Boolean flowStyle)
+        {
+            List<NodeTuple> value = new ArrayList<>(mapping.size());
+            MappingNode node = new MappingNode(tag, value, flowStyle);
+            this.representedObjects.put(this.objectToRepresent, node);
+            boolean bestStyle = true;
+            for (Map.Entry<?, ?> entry : mapping.entrySet())
+            {
+                Node nodeKey = representData(entry.getKey());
+                Node nodeValue = representData(entry.getValue());
+                if (!(nodeKey instanceof ScalarNode && ((ScalarNode) nodeKey).getStyle() == null))
+                {
+                    bestStyle = false;
+                }
+                if (!(nodeValue instanceof ScalarNode && ((ScalarNode) nodeValue).getStyle() == null))
+                {
+                    bestStyle = false;
+                }
+                value.add(new NodeTuple(nodeKey, nodeValue));
+                
+                if (mapping instanceof MyCommentMap)
+                {
+                    final String[] comment = ((MyCommentMap) mapping).keyComments.get(entry.getKey());
+                    if (comment != null)
+                    {
+                        nodeKey.setPreComments(Arrays.asList(comment));
+                    }
+                }
+            }
+            if (flowStyle == null)
+            {
+                if (this.defaultFlowStyle != FlowStyle.AUTO)
+                {
+                    node.setFlowStyle(this.defaultFlowStyle.getStyleBoolean());
+                }
+                else
+                {
+                    node.setFlowStyle(bestStyle);
+                }
+            }
+            return node;
+        }
+        
+    }
+    
+    /**
+     * Sample class for saving comments.
+     */
+    protected static final class MyCommentMap extends LinkedHashMap<Object, Object>
+    {
+        /** the comments preceding the map. */
+        public String[]              mapLevelComments;
+        
+        /** the comments on key level. */
+        public Map<Object, String[]> keyComments;
+        
+        /**
+         * serial version uid.
+         */
+        private static final long    serialVersionUID = -8759792473880471350L;
+        
+        /**
+         * Constructor
+         */
+        public MyCommentMap()
+        {
+            // empty
+        }
         
     }
     

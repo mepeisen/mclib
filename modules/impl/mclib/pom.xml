@@ -90,6 +90,12 @@
         	<artifactId>${project.artifactId}-nms-1.11</artifactId>
         	<version>${project.version}</version>
         </dependency>
+        
+	  	<dependency>
+	  		<groupId>de.minigameslib.mclib</groupId>
+	  		<artifactId>snakeyaml-mclib</artifactId>
+	  		<version>1.18-SNAPSHOT</version>
+	  	</dependency>
   </dependencies>
   
   <dependencyManagement>
@@ -126,6 +132,7 @@
 							<artifactSet>
 								<includes>
 									<include>de.minigameslib.mclib:mclib*</include>
+									<include>de.minigameslib.mclib:snakeyaml*</include>
 								</includes>
 							</artifactSet>
 						</configuration>

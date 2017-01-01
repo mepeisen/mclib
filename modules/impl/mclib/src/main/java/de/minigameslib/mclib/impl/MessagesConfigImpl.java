@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McLibInterface;
@@ -42,6 +40,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageList;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
  * Implementation of messages config interface
@@ -52,10 +51,12 @@ class MessagesConfigImpl implements MessagesConfigInterface
 {
     
     // TODO check if there are messages that are not needed any more.
-    // remove them from file.
+    // remove them from file. But be aware of path variable substitution.
+    
+    // TODO support data versions and migrations
     
     /** the file configuration. */
-    private FileConfiguration               config      = null;
+    private YmlFile                         config      = null;
     /** the yml file. */
     private File                            file        = null;
     /** the java plugin. */
@@ -82,7 +83,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     @Override
     public String getString(Locale locale, String path, String defaultValue)
     {
-        final FileConfiguration config1 = this.getConfig();
+        final YmlFile config1 = this.getConfig();
         String result = config1.getString(path + ".user." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
@@ -98,7 +99,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     @Override
     public String getAdminString(Locale locale, String path, String defaultValue)
     {
-        final FileConfiguration config1 = this.getConfig();
+        final YmlFile config1 = this.getConfig();
         String result = config1.getString(path + ".admin." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
@@ -114,7 +115,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     @Override
     public String[] getStringList(Locale locale, String path, String[] defaultValue)
     {
-        final FileConfiguration config1 = this.getConfig();
+        final YmlFile config1 = this.getConfig();
         List<String> result = config1.getStringList(path + ".user." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
@@ -130,7 +131,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
     @Override
     public String[] getAdminStringList(Locale locale, String path, String[] defaultValue)
     {
-        final FileConfiguration config1 = this.getConfig();
+        final YmlFile config1 = this.getConfig();
         List<String> result = config1.getStringList(path + ".admin." + (locale == null ? McLibInterface.instance().getDefaultLocale().toString() : locale.toString())); //$NON-NLS-1$
         if (result == null)
         {
@@ -148,11 +149,18 @@ class MessagesConfigImpl implements MessagesConfigInterface
      * 
      * @return file configuration.
      */
-    FileConfiguration getConfig()
+    YmlFile getConfig()
     {
         if (this.config == null)
         {
-            this.reloadConfig();
+            try
+            {
+                this.reloadConfig();
+            }
+            catch (final IOException ex)
+            {
+                this.plugin.getLogger().log(Level.WARNING, "Cannot reload messages configuration", ex); //$NON-NLS-1$
+            }
         }
         return this.config;
     }
@@ -168,7 +176,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
         }
         try
         {
-            this.getConfig().save(this.file);
+            this.getConfig().saveFile(this.file);
         }
         catch (final IOException ex)
         {
@@ -178,14 +186,16 @@ class MessagesConfigImpl implements MessagesConfigInterface
     
     /**
      * Reloads the configuration file.
+     * @throws IOException 
      */
-    void reloadConfig()
+    void reloadConfig() throws IOException
     {
+        // TODO support comments.
         if (this.file == null)
         {
             this.file = new File(this.plugin.getDataFolder(), "messages.yml"); //$NON-NLS-1$
         }
-        this.config = YamlConfiguration.loadConfiguration(this.file);
+        this.config = new YmlFile(this.file);
         
         // add the defaults.
         for (final LocalizedMessageInterface msg : this.defaults)
@@ -203,21 +213,24 @@ class MessagesConfigImpl implements MessagesConfigInterface
                 if (valueDef == null && listDef != null)
                 {
                     final String path = clazzDef.value() + "." + ((Enum<?>) msg).name(); //$NON-NLS-1$
-                    this.config.addDefault(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
-                    this.config.addDefault(path + ".user." + clazzDef.defaultLocale(), Arrays.asList(listDef.value())); //$NON-NLS-1$
-                    if (listDef.adminMessages().length > 0)
+                    if (!this.config.contains(path))
                     {
-                        this.config.addDefault(path + ".admin." + clazzDef.defaultLocale(), Arrays.asList(listDef.adminMessages())); //$NON-NLS-1$
+                        this.config.set(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
+                        this.config.set(path + ".user." + clazzDef.defaultLocale(), Arrays.asList(listDef.value())); //$NON-NLS-1$
+                        if (listDef.adminMessages().length > 0)
+                        {
+                            this.config.set(path + ".admin." + clazzDef.defaultLocale(), Arrays.asList(listDef.adminMessages())); //$NON-NLS-1$
+                        }
                     }
                 }
                 else if (valueDef != null)
                 {
                     final String path = clazzDef.value() + "." + ((Enum<?>) msg).name(); //$NON-NLS-1$
-                    this.config.addDefault(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
-                    this.config.addDefault(path + ".user." + clazzDef.defaultLocale(), valueDef.defaultMessage()); //$NON-NLS-1$
+                    this.config.set(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
+                    this.config.set(path + ".user." + clazzDef.defaultLocale(), valueDef.defaultMessage()); //$NON-NLS-1$
                     if (valueDef.defaultAdminMessage().length() > 0)
                     {
-                        this.config.addDefault(path + ".admin." + clazzDef.defaultLocale(), valueDef.defaultAdminMessage()); //$NON-NLS-1$
+                        this.config.set(path + ".admin." + clazzDef.defaultLocale(), valueDef.defaultAdminMessage()); //$NON-NLS-1$
                     }
                 }
             }
@@ -227,7 +240,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
             }
         }
         
-        this.config.options().copyDefaults(true);
+        this.config.saveFile(this.file);
         this.saveConfig();
     }
     

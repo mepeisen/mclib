@@ -163,7 +163,7 @@ class McPlayerImpl implements McPlayerInterface
     {
         try
         {
-            this.persistentStorage.save(this.persistentStorageFile);
+            this.persistentStorage.saveFile(this.persistentStorageFile);
         }
         catch (IOException ex)
         {

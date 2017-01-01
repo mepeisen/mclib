@@ -689,7 +689,7 @@ class ObjectsManager implements ComponentOwner
         });
         try
         {
-            fileConfig.save(new File(folder, "registry.yml")); //$NON-NLS-1$
+            fileConfig.saveFile(new File(folder, "registry.yml")); //$NON-NLS-1$
         }
         catch (IOException ex)
         {

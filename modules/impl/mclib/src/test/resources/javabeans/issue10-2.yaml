@@ -1,9 +1,0 @@
-dataSources:
-- &id001
-  name: null
-- !!de.minigameslib.mclib.snakeyaml.issues.issue10.JDBCDataSource
-  name: null
-  parent: *id001
-  password: null
-  url: null
-  username: null

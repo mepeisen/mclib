@@ -39,6 +39,7 @@ import org.bukkit.Color;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.config.ConfigColorData;
+import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationBoolList;
@@ -61,6 +62,7 @@ import de.minigameslib.mclib.api.config.ConfigurationString;
 import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
+import de.minigameslib.mclib.impl.yml.YmlCommentableSection;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
@@ -70,6 +72,11 @@ import de.minigameslib.mclib.impl.yml.YmlFile;
  */
 public class ConfigImpl implements ConfigInterface
 {
+    
+    // TODO check if there are config options that are not needed any more.
+    // remove them from file. But be aware of path variable substitution.
+    
+    // TODO support data versions and migrations
     
     /** logging. */
     private static final Logger LOGGER = Logger.getLogger(ConfigImpl.class.getName());
@@ -158,14 +165,19 @@ public class ConfigImpl implements ConfigInterface
                     {
                         final ConfigurationValues clazzDef = cfg.getClass().getAnnotation(ConfigurationValues.class);
                         final Field field = cfg.getClass().getDeclaredField(((Enum<?>) cfg).name());
-                        // final ConfigurationValue valueDef = .getAnnotation(LocalizedMessage.class);
                         if (clazzDef == null)
                         {
                             throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
                         }
                         
+                        if (field.getAnnotation(ConfigComment.class) != null)
+                        {
+                            this.applyConfigComment(fileConfig, cfg.path(), field.getAnnotation(ConfigComment.class));
+                        }
+                        
                         if (!fileConfig.contains(cfg.path()))
                         {
+                            
                             if (field.getAnnotation(ConfigurationBool.class) != null)
                             {
                                 fileConfig.set(cfg.path(), field.getAnnotation(ConfigurationBool.class).defaultValue());
@@ -269,7 +281,7 @@ public class ConfigImpl implements ConfigInterface
                 }
                 try
                 {
-                    fileConfig.save(fobj);
+                    fileConfig.saveFile(fobj);
                 }
                 catch (IOException e)
                 {
@@ -281,13 +293,41 @@ public class ConfigImpl implements ConfigInterface
         });
     }
     
+    /**
+     * Applys a configuration comment for given file config and path name
+     * @param fileConfig
+     * @param path
+     * @param annotation
+     */
+    private void applyConfigComment(YmlCommentableSection fileConfig, String path, ConfigComment annotation)
+    {
+        int indexof = path.lastIndexOf('.');
+        if (indexof == -1)
+        {
+            if (fileConfig.getComment(path) == null)
+            {
+                fileConfig.setComment(path, annotation.value());
+            }
+        }
+        else
+        {
+            final String subkey = path.substring(0, indexof);
+            final YmlCommentableSection child = (YmlCommentableSection) fileConfig.createSection(subkey);
+            final String subkey2 = path.substring(indexof + 1);
+            if (child.getComment(subkey2) == null)
+            {
+                child.setComment(subkey2, annotation.value());
+            }
+        }
+    }
+
     @Override
     public void saveConfig(String file)
     {
         final File fobj = new File(this.plugin.getDataFolder(), file);
         try
         {
-            this.getConfigEx(file).save(fobj);
+            this.getConfigEx(file).saveFile(fobj);
         }
         catch (IOException e)
         {

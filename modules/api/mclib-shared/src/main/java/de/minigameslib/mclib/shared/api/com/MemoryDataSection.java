@@ -1544,4 +1544,12 @@ public class MemoryDataSection implements DataSection
         newValue.getValues(true).forEach(section::set);
     }
     
+    /**
+     * Clears all content.
+     */
+    protected void clearAll()
+    {
+        this.contents.clear();
+    }
+    
 }

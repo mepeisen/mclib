@@ -1,4 +1,0 @@
-!!de.minigameslib.mclib.snakeyaml.issues.issue55.Blog
-posts:
-- {text: Dummy, title: Test}
-- {text: Creative, title: Highly}

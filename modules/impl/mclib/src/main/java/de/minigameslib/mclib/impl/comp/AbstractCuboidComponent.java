@@ -102,7 +102,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
             this.saveData(core);
             try
             {
-                this.config.save(this.configFile);
+                this.config.saveFile(this.configFile);
             }
             catch (IOException e)
             {

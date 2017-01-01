@@ -27,6 +27,8 @@ package de.minigameslib.mclib.impl.yml;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.minigameslib.mclib.impl.yml.YmlFile.MyCommentMap;
+import de.minigameslib.mclib.shared.api.com.CommentableDataSection;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -35,13 +37,18 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  * 
  * @author mepeisen
  */
-public class YmlCommentableSection extends MemoryDataSection
+public class YmlCommentableSection extends MemoryDataSection implements CommentableDataSection
 {
     
     /**
      * comments for yml nodes.
      */
     private Map<String, String[]> comments = new HashMap<>();
+    
+    /**
+     * The comments on map level.
+     */
+    private String[] mapComments;
 
     /**
      * Constructor
@@ -66,6 +73,131 @@ public class YmlCommentableSection extends MemoryDataSection
     protected MemoryDataSection createSection(String path2, String name2, MemoryDataSection parent2)
     {
         return new YmlCommentableSection(path2, name2, parent2);
+    }
+    
+    @Override
+    protected void clearAll()
+    {
+        super.clearAll();
+        this.comments.clear();
+        this.mapComments = null;
+    }
+    
+    /**
+     * Loads data from given comment map
+     * @param map
+     */
+    protected void load(MyCommentMap map)
+    {
+        this.clearAll();
+        for (final Map.Entry<Object, Object> entry : map.entrySet())
+        {
+            final String strKey = entry.getKey().toString();
+            if (entry.getValue() instanceof MyCommentMap)
+            {
+                ((YmlCommentableSection)this.createSection(strKey)).load((MyCommentMap) entry.getValue());
+            }
+            else
+            {
+                this.set(strKey, entry.getValue());
+            }
+            if (map.keyComments != null && map.keyComments.containsKey(entry.getKey()))
+            {
+                this.comments.put(strKey, removeCommentChar(map.keyComments.get(entry.getKey())));
+            }
+        }
+        this.mapComments = removeCommentChar(map.mapLevelComments);
+    }
+    
+    /**
+     * @param strings
+     * @return string array
+     */
+    private String[] removeCommentChar(String[] strings)
+    {
+        if (strings == null)
+        {
+            return null;
+        }
+        final String[] dest = new String[strings.length];
+        for (int i = dest.length -1; i >= 0; i--)
+        {
+            final String src = strings[i];
+            if (src.startsWith("# ")) //$NON-NLS-1$
+            {
+                dest[i] = src.substring(2);
+            }
+            else if (src.startsWith("#")) //$NON-NLS-1$
+            {
+                dest[i] = src.substring(1);
+            }
+            else
+            {
+                dest[i] = src;
+            }
+        }
+        return dest;
+    }
+
+    /**
+     * Stores data to given comment map
+     * @param map
+     */
+    protected void store(MyCommentMap map)
+    {
+        map.mapLevelComments = addCommentChar(this.mapComments);
+        for (final String key : this.getKeys(false))
+        {
+            final Object value = this.get(key);
+            if (value instanceof YmlCommentableSection)
+            {
+                final MyCommentMap child = new MyCommentMap();
+                map.put(key, child);
+                ((YmlCommentableSection) value).store(child);
+            }
+            else
+            {
+                map.put(key, value);
+                if (this.comments.containsKey(key))
+                {
+                    if (map.keyComments == null)
+                    {
+                        map.keyComments = new HashMap<>();
+                    }
+                    map.keyComments.put(key, addCommentChar(this.comments.get(key)));
+                }
+            }
+        }
+    }
+    
+    /**
+     * @param strings
+     * @return string array
+     */
+    private String[] addCommentChar(String[] strings)
+    {
+        if (strings == null)
+        {
+            return null;
+        }
+        final String[] dest = new String[strings.length];
+        for (int i = dest.length -1; i >= 0; i--)
+        {
+            final String src = strings[i];
+            if (src.startsWith("# ")) //$NON-NLS-1$
+            {
+                dest[i] = src;
+            }
+            else if (src.startsWith("#")) //$NON-NLS-1$
+            {
+                dest[i] = "# " + src.substring(1); //$NON-NLS-1$
+            }
+            else
+            {
+                dest[i] = "# " + src; //$NON-NLS-1$
+            }
+        }
+        return dest;
     }
     
     /**
@@ -137,6 +269,45 @@ public class YmlCommentableSection extends MemoryDataSection
             return;
         }
         ((YmlCommentableSection) this.createSection(key.substring(0, indexof))).doSetComment(key.substring(indexof + 1), value);
+    }
+
+    @Override
+    public String[] getSectionComments()
+    {
+        return this.mapComments;
+    }
+
+    @Override
+    public void setSectionComments(String[] commentLines)
+    {
+        this.mapComments = commentLines;
+    }
+
+    @Override
+    public String[] getValueComments(String key)
+    {
+        if (key.indexOf('.') != -1)
+        {
+            throw new IllegalArgumentException("key must not contain '.'"); //$NON-NLS-1$
+        }
+        return this.comments.get(key);
+    }
+
+    @Override
+    public void setValueComments(String key, String[] commentLines)
+    {
+        if (key.indexOf('.') != -1)
+        {
+            throw new IllegalArgumentException("key must not contain '.'"); //$NON-NLS-1$
+        }
+        if (commentLines == null)
+        {
+            this.comments.remove(key);
+        }
+        else
+        {
+            this.comments.put(key, commentLines);
+        }
     }
     
 }
