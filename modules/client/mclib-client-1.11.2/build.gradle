@@ -39,15 +39,25 @@ repositories {
     }
 }
 
-archivesBaseName = "mclib-client"
-
+archivesBaseName = "mclib-client-1.11.2"
 
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', 'src/main/nms']
+            srcDirs = ['../mclib-client/src/main/java', 'src/main/nms']
+        }
+        resources {
+            srcDirs = ['../mclib-client/src/main/resources']
         }
     }
+}
+
+minecraft {
+    runDir = "run"
+    version = "1.11.2-13.20.0.2201"
+    mappings = "snapshot_20161220"
+    replaceIn "MclibMod.java"
+    replace "VERSIONNUMBER", project.version
 }
 
 processResources {
@@ -66,17 +76,9 @@ processResources {
 
 }
 
-minecraft {
-    runDir = "run"
-    version = "1.11.2-13.20.0.2201"
-    mappings = "snapshot_20161220"
-    replaceIn "MclibMod.java"
-    replace "VERSIONNUMBER", project.version
-}
-
 dependencies {
     compile "xpp3:xpp3:1.1.4c"
-    compile files('src/lib/twl/TWL.jar')
+    compile files('../mclib-client/src/lib/twl/TWL.jar')
     
     compile "de.minigameslib.mclib:mclib-shared:0.0.1-SNAPSHOT"
     compile "de.minigameslib.mclib:mclib-private-shared:0.0.1-SNAPSHOT"
@@ -88,5 +90,5 @@ task fatJar(type: Jar) {
     from { zipTree(jar.archivePath) }
 }
 
-task runLatest(dependsOn: [runClient]) {
+task run1_11(dependsOn: [runClient]) {
 }

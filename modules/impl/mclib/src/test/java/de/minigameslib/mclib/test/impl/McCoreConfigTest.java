@@ -22,41 +22,27 @@
 
 */
 
-package de.minigameslib.mclib.client.nms;
+package de.minigameslib.mclib.test.impl;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import org.junit.Test;
+
+import de.minigameslib.mclib.impl.McCoreConfig;
+import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * Nms helper class.
- * 
+ * Test case for {@link McCoreConfig}
  * @author mepeisen
  */
-public class MclibClientNms
+public class McCoreConfigTest
 {
     
-    public static GuiScreen getGui(GuiOpenEvent evt)
+    /**
+     * Testing for code coverage
+     */
+    @Test
+    public void testMe()
     {
-        return evt.getGui();
-    }
-    
-    public static float getPartialTicks(RenderWorldLastEvent evt)
-    {
-        return evt.getPartialTicks();
-    }
-    
-    public static EntityPlayerSP getPlayer(Minecraft mc)
-    {
-        return mc.thePlayer;
-    }
-    
-    public static WorldClient getWorld(Minecraft mc)
-    {
-        return mc.theWorld;
+        CommonTestUtil.testEnumClass(McCoreConfig.class);
     }
     
 }

@@ -75,7 +75,7 @@ public class ClientProxy
     @SubscribeEvent
     public void onKey(KeyInputEvent evt)
     {
-        if (mc.thePlayer != null && mc.theWorld != null && KEY_BINDING.isPressed())
+        if (MclibClientNms.getPlayer(mc) != null && MclibClientNms.getWorld(mc) != null && KEY_BINDING.isPressed())
         {
             // set the marker
 //            if (this.markers.size() == 2)

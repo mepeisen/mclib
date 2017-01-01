@@ -24,7 +24,10 @@
 
 package de.minigameslib.mclib.client.nms;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
@@ -44,6 +47,16 @@ public class MclibClientNms
     public static float getPartialTicks(RenderWorldLastEvent evt)
     {
         return evt.getPartialTicks();
+    }
+    
+    public static EntityPlayerSP getPlayer(Minecraft mc)
+    {
+        return mc.thePlayer;
+    }
+    
+    public static WorldClient getWorld(Minecraft mc)
+    {
+        return mc.theWorld;
     }
     
 }
