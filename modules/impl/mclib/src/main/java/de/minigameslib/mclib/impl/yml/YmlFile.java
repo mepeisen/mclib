@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,6 +147,10 @@ public class YmlFile extends YmlCommentableSection
                     {
                         throw new YAMLException("Comments on 2steps-construction not yet supported."); //$NON-NLS-1$
                     }
+                    if (((MyCommentMap)mapping).keyComments == null)
+                    {
+                        ((MyCommentMap)mapping).keyComments = new HashMap<>();
+                    }
                     ((MyCommentMap) mapping).keyComments.put(key, node.getPreComments().toArray(new String[node.getPreComments().size()]));
                 }
             }
@@ -251,7 +256,7 @@ public class YmlFile extends YmlCommentableSection
                 }
                 value.add(new NodeTuple(nodeKey, nodeValue));
                 
-                if (mapping instanceof MyCommentMap)
+                if (mapping instanceof MyCommentMap && ((MyCommentMap) mapping).keyComments != null)
                 {
                     final String[] comment = ((MyCommentMap) mapping).keyComments.get(entry.getKey());
                     if (comment != null)
