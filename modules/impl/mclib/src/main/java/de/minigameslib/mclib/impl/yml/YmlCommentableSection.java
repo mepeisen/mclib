@@ -90,6 +90,9 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     protected void load(MyCommentMap map)
     {
         this.clearAll();
+        // null mp --> empty file
+        if (map == null) return;
+        
         for (final Map.Entry<Object, Object> entry : map.entrySet())
         {
             final String strKey = entry.getKey().toString();
