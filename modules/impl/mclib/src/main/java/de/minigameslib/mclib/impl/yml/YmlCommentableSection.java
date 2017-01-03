@@ -92,6 +92,9 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
         this.clearAll();
         // null mp --> empty file
         if (map == null) return;
+        boolean isFirst = true;
+        boolean isFirstCommentSet = false;
+        String firstKey = null;
         
         for (final Map.Entry<Object, Object> entry : map.entrySet())
         {
@@ -108,8 +111,20 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
             {
                 this.comments.put(strKey, removeCommentChar(map.keyComments.get(entry.getKey())));
             }
+            // TODO work around current snakeyaml bug to associate comments with first map key
+            if (isFirst)
+            {
+                isFirst = false;
+                isFirstCommentSet = this.comments.containsKey(strKey);
+                firstKey = strKey;
+            }
         }
         this.mapComments = removeCommentChar(map.mapLevelComments);
+        if (this.mapComments != null && !isFirstCommentSet)
+        {
+            this.comments.put(firstKey, this.mapComments);
+            this.mapComments = null;
+        }
     }
     
     /**

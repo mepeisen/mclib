@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.test.impl.yml;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -35,6 +36,7 @@ import org.junit.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
+import de.minigameslib.mclib.impl.yml.YmlCommentableSection;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
@@ -49,9 +51,9 @@ public class YmlFileTest
     private static final String FILE_1 =
             "# basic comment\n" //$NON-NLS-1$
             + "config:\n" //$NON-NLS-1$
-            + "#other comment\n" //$NON-NLS-1$
+            + "# other comment\n" //$NON-NLS-1$
             + "  other: 123\n" //$NON-NLS-1$
-            + "#third comment\n" //$NON-NLS-1$
+            + "# third comment\n" //$NON-NLS-1$
             + "  third: 234\n"; //$NON-NLS-1$
     
     /**
@@ -70,6 +72,33 @@ public class YmlFileTest
         
         assertEquals(123, file.get("config.other")); //$NON-NLS-1$
         assertEquals(234, file.get("config.third")); //$NON-NLS-1$
+        
+        assertArrayEquals(new String[]{"basic comment"}, file.getComment("config")); //$NON-NLS-1$ //$NON-NLS-2$
+        final YmlCommentableSection section = (YmlCommentableSection) file.getSection("config"); //$NON-NLS-1$
+        assertArrayEquals(new String[]{"other comment"}, section.getComment("other")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertArrayEquals(new String[]{"third comment"}, section.getComment("third")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    /**
+     * Writes yml to file.
+     * @throws IOException
+     */
+    public void writeFile() throws IOException
+    {
+        final File temp = File.createTempFile("config", "yml"); //$NON-NLS-1$ //$NON-NLS-2$
+        temp.deleteOnExit();
+        
+        final YmlFile file = new YmlFile();
+        file.set("config.other", 123); //$NON-NLS-1$
+        file.set("config.third", 234); //$NON-NLS-1$
+        file.setSectionComments(new String[]{"basic comment"}); //$NON-NLS-1$
+        final YmlCommentableSection section = (YmlCommentableSection) file.getSection("config"); //$NON-NLS-1$
+        section.setComment("other", new String[]{"basic comment"}); //$NON-NLS-1$ //$NON-NLS-2$
+        section.setComment("third", new String[]{"basic comment"}); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        file.saveFile(temp);
+        final String content = Files.toString(temp, Charsets.UTF_8);
+        assertEquals(FILE_1, content);
     }
     
 }

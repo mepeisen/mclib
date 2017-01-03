@@ -64,7 +64,7 @@ public class YmlFile extends YmlCommentableSection
      */
     public YmlFile()
     {
-        // empty
+        this.yml.setSkipComments(false);
     }
     
     /**
@@ -75,6 +75,7 @@ public class YmlFile extends YmlCommentableSection
      */
     public YmlFile(File file) throws IOException
     {
+        this();
         try (final FileReader io = new FileReader(file))
         {
             this.load(io);
@@ -151,7 +152,7 @@ public class YmlFile extends YmlCommentableSection
                     {
                         ((MyCommentMap)mapping).keyComments = new HashMap<>();
                     }
-                    ((MyCommentMap) mapping).keyComments.put(key, node.getPreComments().toArray(new String[node.getPreComments().size()]));
+                    ((MyCommentMap) mapping).keyComments.put(key, keyNode.getPreComments().toArray(new String[keyNode.getPreComments().size()]));
                 }
             }
         }
