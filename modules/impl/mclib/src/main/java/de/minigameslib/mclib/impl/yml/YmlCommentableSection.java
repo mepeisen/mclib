@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.yml;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.minigameslib.mclib.impl.yml.YmlFile.MyCommentMap;
@@ -102,6 +103,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
             if (entry.getValue() instanceof MyCommentMap)
             {
                 ((YmlCommentableSection)this.createSection(strKey)).load((MyCommentMap) entry.getValue());
+            }
+            else if (entry.getValue() instanceof List<?>)
+            {
+                this.setPrimitiveList(strKey, (List<?>) entry.getValue());
             }
             else
             {
