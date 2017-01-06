@@ -39,14 +39,14 @@ public class MclibPlayersConfig extends AnnotatedDataFragment
     
     /** the preferred locale. */
     @PersistentField
-    protected Locale preferredLocale = Locale.ENGLISH;
+    protected String preferredLocale = null;
 
     /**
      * @return the preferredLocale
      */
     public Locale getPreferredLocale()
     {
-        return this.preferredLocale;
+        return this.preferredLocale == null ? null : new Locale(this.preferredLocale);
     }
 
     /**
@@ -54,7 +54,7 @@ public class MclibPlayersConfig extends AnnotatedDataFragment
      */
     public void setPreferredLocale(Locale preferredLocale)
     {
-        this.preferredLocale = preferredLocale;
+        this.preferredLocale = preferredLocale == null ? null : preferredLocale.toString();
     }
     
 }
