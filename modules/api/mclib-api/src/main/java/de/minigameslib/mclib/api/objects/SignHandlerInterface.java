@@ -74,4 +74,14 @@ public interface SignHandlerInterface extends DataFragment
      */
     void onDelete();
     
+    /**
+     * Checks if is is safe to create the given sign on the same location.
+     * @param handler
+     * @throws McException
+     */
+    default void checkCreation(SignHandlerInterface handler) throws McException
+    {
+        // empty.
+    }
+    
 }

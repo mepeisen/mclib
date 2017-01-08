@@ -91,6 +91,7 @@ import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
@@ -830,7 +831,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public Iterable<ZoneInterface> findZones(Location location)
+    public Collection<ZoneInterface> findZones(Location location)
     {
         return this.objectsManager.findZones(location);
     }
@@ -842,7 +843,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public Iterable<ZoneInterface> findZonesWithoutY(Location location)
+    public Collection<ZoneInterface> findZonesWithoutY(Location location)
     {
         return this.objectsManager.findZonesWithoutY(location);
     }
@@ -854,7 +855,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     }
     
     @Override
-    public Iterable<ZoneInterface> findZonesWithoutYD(Location location)
+    public Collection<ZoneInterface> findZonesWithoutYD(Location location)
     {
         return this.objectsManager.findZonesWithoutYD(location);
     }
@@ -870,10 +871,132 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     {
         return this.objectsManager.createZone(type, cuboid, handler, persist);
     }
+
+    @Override
+    public Collection<ComponentInterface> findComponents(Location location)
+    {
+        return this.objectsManager.findComponents(location);
+    }
+
+    @Override
+    public Collection<ComponentInterface> findComponents(Block block)
+    {
+        return this.objectsManager.findComponents(block.getLocation());
+    }
+
+    @Override
+    public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
+    {
+        return this.objectsManager.findComponents(type);
+    }
+
+    @Override
+    public Collection<EntityInterface> findEntities(Entity entity)
+    {
+        return this.objectsManager.findEntities(entity);
+    }
+
+    @Override
+    public Collection<EntityInterface> findEntities(EntityTypeId... type)
+    {
+        return this.objectsManager.findEntities(type);
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(Location location)
+    {
+        return this.objectsManager.findSigns(location);
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(Block block)
+    {
+        return this.objectsManager.findSigns(block.getLocation());
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(Sign sign)
+    {
+        return this.objectsManager.findSigns(sign.getLocation());
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(SignTypeId... type)
+    {
+        return this.objectsManager.findSigns(type);
+    }
+
+    @Override
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
+    {
+        return this.objectsManager.findZone(cuboid, mode);
+    }
+
+    @Override
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZone(cuboid, mode, type);
+    }
+
+    @Override
+    public ZoneInterface findZone(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZone(location, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
+    {
+        return this.objectsManager.findZones(cuboid, mode);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZones(cuboid, mode, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZones(location, type);
+    }
+
+    @Override
+    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZoneWithoutY(location, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZonesWithoutY(location, type);
+    }
+
+    @Override
+    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZoneWithoutYD(location, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
+    {
+        return this.objectsManager.findZonesWithoutYD(location, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> findZones(ZoneTypeId... type)
+    {
+        return this.objectsManager.findZones(type);
+    }
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
+        // TODO mclib rawcommand
+        
         // if (command.getName().equals("mclib"))
         // {
         // MyCommandHandler.onCommand(sender, command, label, args);
@@ -1410,6 +1533,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             player.getBukkitPlayer().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out.toByteArray());
         }
         
+    }
+
+    @Override
+    public RawMessageInterface createRaw()
+    {
+        return new RawMessage();
     }
     
 }

@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import java.util.Collection;
+
 import org.bukkit.Location;
 
 import de.minigameslib.mclib.api.McException;
@@ -103,5 +105,69 @@ public interface ZoneInterface
      *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
+    
+    /**
+     * Returns the child zones.
+     * 
+     * @return child zones
+     */
+    Collection<ZoneInterface> getChildZones();
+    
+    /**
+     * Returns the child zones.
+     * 
+     * @param type
+     *            type filter
+     * @return child zones
+     */
+    Collection<ZoneInterface> getChildZones(ZoneTypeId... type);
+    
+    /**
+     * Returns the parent zones.
+     * 
+     * @return parent zones
+     */
+    Collection<ZoneInterface> getParentZones();
+    
+    /**
+     * Returns the parent zones.
+     * 
+     * @param type
+     *            type filter
+     * @return child zones
+     */
+    Collection<ZoneInterface> getParentZones(ZoneTypeId... type);
+    
+    /**
+     * Returns the matching zones.
+     * 
+     * @return matching zones
+     */
+    Collection<ZoneInterface> getMatchingZones();
+    
+    /**
+     * Returns the matching zones.
+     * 
+     * @param type
+     *            type filter
+     * @return child zones
+     */
+    Collection<ZoneInterface> getMatchingZones(ZoneTypeId... type);
+    
+    /**
+     * Returns the overlapping zones.
+     * 
+     * @return overlapping zones
+     */
+    Collection<ZoneInterface> getOverlappingZones();
+    
+    /**
+     * Returns the overlapping zones.
+     * 
+     * @param type
+     *            type filter
+     * @return child zones
+     */
+    Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type);
     
 }

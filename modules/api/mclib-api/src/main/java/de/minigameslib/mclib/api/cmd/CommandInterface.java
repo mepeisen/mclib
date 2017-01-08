@@ -206,4 +206,19 @@ public interface CommandInterface
         getPlayer().when(p -> !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[] { command });
     }
     
+    /**
+     * Checks for given permission (or operator flag) and if player does not have permission throws a MinigameException.
+     * 
+     * @param perm
+     *            permission to check
+     * @param command
+     *            command name for error message
+     * @throws McException
+     *             thrown if the command sender does not have the permission.
+     */
+    default void permOpThrowException(PermissionsInterface perm, String command) throws McException
+    {
+        getPlayer().when(p -> !this.isOp() && !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[] { command });
+    }
+    
 }

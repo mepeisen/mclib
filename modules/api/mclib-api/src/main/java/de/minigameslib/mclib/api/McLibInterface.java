@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api;
 
 import java.util.Locale;
 
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -54,6 +55,7 @@ public interface McLibInterface extends McContext
     
     /**
      * Returns the api version of MCLIB.
+     * 
      * @return api version.
      */
     int getApiVersion();
@@ -93,7 +95,8 @@ public interface McLibInterface extends McContext
     /**
      * Sets the debug flag.
      * 
-     * @param enabled {@code true} if the library debugging is enabled.
+     * @param enabled
+     *            {@code true} if the library debugging is enabled.
      */
     void setDebug(boolean enabled);
     
@@ -118,5 +121,12 @@ public interface McLibInterface extends McContext
      * @throws IllegalStateException
      */
     void broadcastServers(CommunicationEndpointId endpoint, DataSection... data);
+    
+    /**
+     * Creates a new raw message that can be sent to clients.
+     * 
+     * @return raw message
+     */
+    RawMessageInterface createRaw();
     
 }

@@ -94,4 +94,14 @@ public interface ComponentHandlerInterface extends DataFragment
      */
     void onLocationChange(Location newValue);
     
+    /**
+     * Checks if is is safe to create the given component on the same location.
+     * @param handler
+     * @throws McException
+     */
+    default void checkCreation(ComponentHandlerInterface handler) throws McException
+    {
+        // empty.
+    }
+    
 }

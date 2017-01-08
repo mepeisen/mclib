@@ -204,6 +204,59 @@ public final class Cuboid implements DataFragment
     }
     
     /**
+     * Checks if this cuboid is a child of given cuboid.
+     * 
+     * <p>
+     * This will return {@code false} if the zones are matching (equals returns true).
+     * </p>
+     * 
+     * @param possibleParent
+     * @return {@code true} if {@code possibleParent} is the parent of this cuboid
+     */
+    public boolean isChild(Cuboid possibleParent)
+    {
+        if (equals(this.getWorld(), possibleParent.getWorld()) && this.lowPoints != null && possibleParent.lowPoints != null && this.highPoints != null && possibleParent.highPoints != null)
+        {
+            return child0(possibleParent) && !equals0(possibleParent);
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if this cuboid is a parent of given cuboid.
+     * 
+     * <p>
+     * This will return {@code false} if the zones are matching (equals returns true).
+     * </p>
+     * 
+     * @param possibleChild
+     * @return {@code true} if {@code possibleChild} is the child of this cuboid
+     */
+    public boolean isParent(Cuboid possibleChild)
+    {
+        if (equals(this.getWorld(), possibleChild.getWorld()) && this.lowPoints != null && possibleChild.lowPoints != null && this.highPoints != null && possibleChild.highPoints != null)
+        {
+            return parent0(possibleChild) && !equals0(possibleChild);
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if this cuboid is sharing sdome locations with given cuboid but is neither parent nor child.
+     * 
+     * @param cuboid
+     * @return {@code true} if {@code cuboid} shares location with this cuboid
+     */
+    public boolean isOverlapping(Cuboid cuboid)
+    {
+        if (equals(this.getWorld(), cuboid.getWorld()) && this.lowPoints != null && cuboid.lowPoints != null && this.highPoints != null && cuboid.highPoints != null)
+        {
+            return !equals0(cuboid) && !child0(cuboid) && !parent0(cuboid) && shared0(cuboid);
+        }
+        return false;
+    }
+    
+    /**
      * Determines a random location inside the cuboid and returns it.
      * 
      * @return a random location within the cuboid
@@ -401,6 +454,142 @@ public final class Cuboid implements DataFragment
         return new StringBuilder(this.getWorld() == null ? "null" : this.getWorld().getName()).append(",").append(this.lowPoints.getBlockX()).append(",").append(this.lowPoints.getBlockY()).append(",") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 .append(this.lowPoints.getBlockZ())
                 .append(",").append(this.highPoints.getBlockX()).append(",").append(this.highPoints.getBlockY()).append(",").append(this.highPoints.getBlockZ()).toString(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.highPoints == null || this.highPoints.getWorld() == null) ? 0 : this.highPoints.getWorld().getName().hashCode());
+        result = prime * result + ((this.lowPoints == null) ? 0 : this.lowPoints.getBlockX());
+        result = prime * result + ((this.lowPoints == null) ? 0 : this.lowPoints.getBlockY());
+        result = prime * result + ((this.lowPoints == null) ? 0 : this.lowPoints.getBlockZ());
+        result = prime * result + ((this.highPoints == null) ? 0 : this.highPoints.getBlockX());
+        result = prime * result + ((this.highPoints == null) ? 0 : this.highPoints.getBlockY());
+        result = prime * result + ((this.highPoints == null) ? 0 : this.highPoints.getBlockZ());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cuboid other = (Cuboid) obj;
+        
+        if (!equals(this.getWorld(), other.getWorld()))
+        {
+            return false;
+        }
+        
+        if (!equals(this.lowPoints, other.lowPoints))
+            return false;
+        
+        if (!equals(this.highPoints, other.highPoints))
+            return false;
+        
+        return true;
+    }
+
+    /**
+     * Checks for the locations having the same block coordinates.
+     * @param a
+     * @param b
+     * @return {@code true} if the locations have same block locations
+     */
+    private boolean equals(Location a, Location b)
+    {
+        if (a == null)
+        {
+            if (b != null)
+                return false;
+        }
+        else if (b == null)
+            return false;
+        else
+            return a.getBlockX() == b.getBlockX() && a.getBlockY() == b.getBlockY() && a.getBlockZ() == b.getBlockZ();
+        return true;
+    }
+
+    /**
+     * Checks for the worlds are the same.
+     * @param a
+     * @param b
+     * @return {@code true} if the worlds are the same
+     */
+    private boolean equals(World a, World b)
+    {
+        if (a == null)
+        {
+            if (b != null)
+                return false;
+        }
+        else if (b == null)
+            return false;
+        else
+        {
+            final String worldA = a.getName();
+            final String worldB = b.getName();
+            if (worldA == null)
+            {
+                if (worldB != null)
+                    return false;
+            }
+            else if (worldB == null)
+                return false;
+            else {
+                return worldA.equals(worldB);
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * checks equality of locations
+     * @param cuboid
+     * @return {@code true} if locations are equal
+     */
+    private boolean equals0(Cuboid cuboid)
+    {
+        return this.lowPoints.getBlockX() == cuboid.lowPoints.getBlockX() &&  this.lowPoints.getBlockY() == cuboid.lowPoints.getBlockY() && this.lowPoints.getBlockZ() == cuboid.lowPoints.getBlockZ()
+                && this.highPoints.getBlockX() == cuboid.highPoints.getBlockX() &&  this.highPoints.getBlockY() == cuboid.highPoints.getBlockY() && this.highPoints.getBlockZ() == cuboid.highPoints.getBlockZ();
+    }
+    
+    /**
+     * checks parent/child
+     * @param possibleParent
+     * @return {@code true} if given cuboid is a parent
+     */
+    private boolean child0(Cuboid possibleParent)
+    {
+        return this.lowPoints.getBlockX() >= possibleParent.lowPoints.getBlockX() &&  this.lowPoints.getBlockY() >= possibleParent.lowPoints.getBlockY() && this.lowPoints.getBlockZ() >= possibleParent.lowPoints.getBlockZ()
+                && this.highPoints.getBlockX() <= possibleParent.highPoints.getBlockX() &&  this.highPoints.getBlockY() <= possibleParent.highPoints.getBlockY() && this.highPoints.getBlockZ() <= possibleParent.highPoints.getBlockZ();
+    }
+    
+    /**
+     * checks parent/child
+     * @param possibleChild
+     * @return {@code true} if given cuboid is a child
+     */
+    private boolean parent0(Cuboid possibleChild)
+    {
+        return this.lowPoints.getBlockX() <= possibleChild.lowPoints.getBlockX() &&  this.lowPoints.getBlockY() <= possibleChild.lowPoints.getBlockY() && this.lowPoints.getBlockZ() <= possibleChild.lowPoints.getBlockZ()
+                && this.highPoints.getBlockX() >= possibleChild.highPoints.getBlockX() &&  this.highPoints.getBlockY() >= possibleChild.highPoints.getBlockY() && this.highPoints.getBlockZ() >= possibleChild.highPoints.getBlockZ();
+    }
+    
+    /**
+     * checks shared locations
+     * @param cuboid
+     * @return {@code true} if given cuboid shares locations
+     */
+    private boolean shared0(Cuboid cuboid)
+    {
+        return this.containsLoc(cuboid.lowPoints) || this.containsLoc(cuboid.highPoints) || cuboid.containsLoc(this.lowPoints) || cuboid.containsLoc(this.highPoints);
     }
     
 }

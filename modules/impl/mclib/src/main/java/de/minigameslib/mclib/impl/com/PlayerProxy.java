@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.com;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.bukkit.OfflinePlayer;
@@ -35,10 +36,12 @@ import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
@@ -182,6 +185,54 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
     {
         this.target.sendToClient(endpoint, data);
+    }
+
+    @Override
+    public void sendRaw(RawMessageInterface raw) throws McException
+    {
+        this.target.sendRaw(raw);
+    }
+
+    @Override
+    public boolean isInsideZone(ZoneInterface zone)
+    {
+        return this.target.isInsideZone(zone);
+    }
+
+    @Override
+    public boolean isInsideRandomZone(ZoneInterface... zone)
+    {
+        return this.target.isInsideRandomZone(zone);
+    }
+
+    @Override
+    public boolean isInsideAllZones(ZoneInterface... zone)
+    {
+        return this.target.isInsideAllZones(zone);
+    }
+
+    @Override
+    public ZoneInterface getZone(ZoneTypeId... type)
+    {
+        return this.target.getZone(type);
+    }
+
+    @Override
+    public boolean isInsideRandomZone(ZoneTypeId... type)
+    {
+        return this.target.isInsideRandomZone(type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getZones()
+    {
+        return this.target.getZones();
+    }
+
+    @Override
+    public Collection<ZoneInterface> getZones(ZoneTypeId... type)
+    {
+        return this.target.getZones();
     }
     
 }

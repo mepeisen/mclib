@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -51,9 +52,11 @@ import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.GuiType;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
@@ -261,13 +264,6 @@ class McPlayerImpl implements McPlayerInterface
     public Locale getPreferredLocale()
     {
         return this.config.getPreferredLocale();
-    }
-    
-    @Override
-    public ZoneInterface getZone()
-    {
-        // TODO Support zones
-        return null;
     }
     
     @Override
@@ -607,6 +603,93 @@ class McPlayerImpl implements McPlayerInterface
     {
         // we do not read this directly. Instead a proxy is used.
         return false;
+    }
+    
+    @Override
+    public ZoneInterface getZone()
+    {
+        // TODO Support zones
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#sendRaw(de.minigameslib.mclib.api.gui.RawMessageInterface)
+     */
+    @Override
+    public void sendRaw(RawMessageInterface raw) throws McException
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideZone(de.minigameslib.mclib.api.objects.ZoneInterface)
+     */
+    @Override
+    public boolean isInsideZone(ZoneInterface zone)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneInterface[])
+     */
+    @Override
+    public boolean isInsideRandomZone(ZoneInterface... zone)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideAllZones(de.minigameslib.mclib.api.objects.ZoneInterface[])
+     */
+    @Override
+    public boolean isInsideAllZones(ZoneInterface... zone)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
+     */
+    @Override
+    public ZoneInterface getZone(ZoneTypeId... type)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
+     */
+    @Override
+    public boolean isInsideRandomZone(ZoneTypeId... type)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones()
+     */
+    @Override
+    public Collection<ZoneInterface> getZones()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones(de.minigameslib.mclib.api.objects.ZoneTypeId[])
+     */
+    @Override
+    public Collection<ZoneInterface> getZones(ZoneTypeId... type)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

@@ -44,6 +44,8 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 public class SignImpl extends AbstractLocationComponent implements SignInterface
 {
     
+    // TODO fetch sign break events
+    
     /** the bukkit sign. */
     private Sign sign;
     

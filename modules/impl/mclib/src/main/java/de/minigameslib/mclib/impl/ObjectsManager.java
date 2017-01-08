@@ -26,15 +26,20 @@ package de.minigameslib.mclib.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -54,6 +59,7 @@ import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface.ResumeReport;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
@@ -934,7 +940,7 @@ class ObjectsManager implements ComponentOwner
      * @param location
      * @return zone or {@code null} if it was not found
      */
-    public Iterable<ZoneInterface> findZonesWithoutYD(Location location)
+    public Collection<ZoneInterface> findZonesWithoutYD(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYD(location))
                 .collect(Collectors.toList());
@@ -955,7 +961,7 @@ class ObjectsManager implements ComponentOwner
      * @param location
      * @return zone or {@code null} if it was not found
      */
-    public Iterable<ZoneInterface> findZonesWithoutY(Location location)
+    public Collection<ZoneInterface> findZonesWithoutY(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutY(location))
                 .collect(Collectors.toList());
@@ -976,7 +982,7 @@ class ObjectsManager implements ComponentOwner
      * @param location
      * @return zone or {@code null} if it was not found
      */
-    public Iterable<ZoneInterface> findZones(Location location)
+    public Collection<ZoneInterface> findZones(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLoc(location))
                 .collect(Collectors.toList());
@@ -1038,7 +1044,7 @@ class ObjectsManager implements ComponentOwner
      */
     private void onDelete(ZoneImpl zone) throws McException
     {
-        final ZoneId id = (ZoneId) zone.getZoneId();
+        final ZoneId id = zone.getZoneId();
         final Boolean persistent = this.zonesByPlugin.get(id.getPluginName()).remove(id);
         this.zones.remove(id);
         if (persistent)
@@ -1061,6 +1067,327 @@ class ObjectsManager implements ComponentOwner
         {
             this.saveIdList(this.signsFolder, this.signsByPlugin);
         }
+    }
+
+    /**
+     * @param location
+     * @return components list
+     */
+    public Collection<ComponentInterface> findComponents(Location location)
+    {
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
+                .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param type
+     * @return components list
+     */
+    public Collection<ComponentInterface> findComponents(ComponentTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ComponentTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<ComponentInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) -> {
+            final Map<ComponentId, Boolean> map = this.componentsByPlugin.get(plugin);
+            if (map != null) {
+                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
+            }
+        });
+        
+        return result;
+    }
+
+    /**
+     * @param entity
+     * @return entities
+     */
+    public Collection<EntityInterface> findEntities(Entity entity)
+    {
+        // TODO entity support
+        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+    }
+
+    /**
+     * @param type
+     * @return entities
+     */
+    public Collection<EntityInterface> findEntities(EntityTypeId[] type)
+    {
+        // TODO entity support
+        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+    }
+
+    /**
+     * @param location
+     * @return collection
+     */
+    public Collection<SignInterface> findSigns(Location location)
+    {
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c)
+                .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param type
+     * @return collection
+     */
+    public Collection<SignInterface> findSigns(SignTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final SignTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<SignInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) -> {
+            final Map<SignId, Boolean> map = this.signsByPlugin.get(plugin);
+            if (map != null) {
+                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
+            }
+        });
+        
+        return result;
+    }
+    
+    /**
+     * Returns a stream for all chunks in given cuboid
+     * @param cuboid
+     * @return stream
+     */
+    private Stream<AbstractComponent> fetchForCuboid(Cuboid cuboid)
+    {
+        Stream<AbstractComponent> result = Stream.empty();
+        final WorldChunk lowChunk = new WorldChunk(cuboid.getLowLoc());
+        final WorldChunk highChunk = new WorldChunk(cuboid.getHighLoc());
+        for (int x = lowChunk.getX(); x <= highChunk.getX(); x++)
+        {
+            for (int z = lowChunk.getZ(); z < lowChunk.getZ(); z++)
+            {
+                final WorldChunk chunk = new WorldChunk(lowChunk.getServerName(), lowChunk.getServerName(), x, z);
+                result = Stream.concat(result, this.registry.fetch(chunk).stream());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param mode
+     * @return test function
+     */
+    private BiPredicate<ZoneImpl, Cuboid> getTester(CuboidMode mode)
+    {
+        switch (mode)
+        {
+            case FindMatching:
+                return (z, c) -> z.getCuboid().equals(c);
+            case FindChildren:
+                return (z, c) -> z.getCuboid().isChild(c);
+            case FindParents:
+                return (z, c) -> z.getCuboid().isParent(c);
+            case FindOverlapping:
+                return (z, c) -> z.getCuboid().isOverlapping(c);
+            default:
+                break;
+        }
+        return null;
+    }
+
+    /**
+     * @param cuboid
+     * @param mode
+     * @return collection
+     */
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
+    {
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> tester.test(z, cuboid)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+
+    /**
+     * @param cuboid
+     * @param mode
+     * @param type
+     * @return collection
+     */
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(z -> tester.test(z, cuboid)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return collection
+     */
+    public ZoneInterface findZone(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+
+    /**
+     * @param cuboid
+     * @param mode
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
+    {
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param cuboid
+     * @param mode
+     * @param type
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return zone
+     */
+    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return zone
+     */
+    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLocWithoutYD(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+
+    /**
+     * @param location
+     * @param type
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+                .filter(c -> c.getCuboid().containsLocWithoutYD(location)).collect(Collectors.toList());
+    }
+
+    /**
+     * @param type
+     * @return collection
+     */
+    public Collection<ZoneInterface> findZones(ZoneTypeId[] type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<ZoneInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) -> {
+            final Map<ZoneId, Boolean> map = this.zonesByPlugin.get(plugin);
+            if (map != null) {
+                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
+            }
+        });
+        
+        return result;
     }
     
 }

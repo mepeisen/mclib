@@ -56,7 +56,7 @@ public interface AnvilGuiInterface
      * @param input
      *            the string input
      * @throws McException
-     *             thrown if the strng input is not accepted by this gui
+     *             thrown if the string input is not accepted by this gui
      */
     void onInput(String input) throws McException;
     

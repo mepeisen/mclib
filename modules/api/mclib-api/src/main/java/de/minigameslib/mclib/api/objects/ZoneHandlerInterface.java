@@ -92,4 +92,15 @@ public interface ZoneHandlerInterface extends DataFragment
      */
     void onCuboidChange(Cuboid newValue);
     
+    /**
+     * Checks if is is safe to create the given zone that shares locations.
+     * @param cuboid The cuboid of the new zone
+     * @param handler
+     * @throws McException
+     */
+    default void checkCreation(Cuboid cuboid, ZoneHandlerInterface handler) throws McException
+    {
+        // empty.
+    }
+    
 }

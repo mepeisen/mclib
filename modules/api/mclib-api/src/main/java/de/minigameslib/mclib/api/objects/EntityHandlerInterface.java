@@ -72,4 +72,14 @@ public interface EntityHandlerInterface
      * Invoked upon deletion of the entity.
      */
     void onDelete();
+    
+    /**
+     * Checks if is is safe to create the given entity for same bukkit entity.
+     * @param handler
+     * @throws McException
+     */
+    default void checkCreation(EntityHandlerInterface handler) throws McException
+    {
+        // empty.
+    }
 }

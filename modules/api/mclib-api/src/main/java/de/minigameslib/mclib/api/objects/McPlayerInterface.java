@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.objects;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -36,6 +37,7 @@ import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
@@ -207,6 +209,16 @@ public interface McPlayerInterface extends PlayerDataFragment
     GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException;
     
     /**
+     * Sends a raw message to player; can be used to create chat hovers or clickable chat texts.
+     * 
+     * @param raw a raw message
+     * 
+     * @throws McException
+     *             thrown if the player is not online.
+     */
+    void sendRaw(RawMessageInterface raw) throws McException;
+    
+    /**
      * Opens a smart gui session.
      * 
      * @return gui session; use the sgui commands to control the client smart gui.
@@ -221,9 +233,70 @@ public interface McPlayerInterface extends PlayerDataFragment
     /**
      * Returns the zone this player is currently in.
      * 
+     * <p>
+     * This will always be the last zone the player entered if the player is within multiple zones.
+     * If the players leaves this zones the framework will check if he is still inside another zone
+     * and will return that zone. If the player is still inside multiple zones when leaving the
+     * returned zone will be random.
+     * </p>
+     * 
      * @return zone or {@code null} if this player is currently not within any zone.
      */
     ZoneInterface getZone();
+    
+    /**
+     * Checks if the player is within given zone.
+     * @param zone
+     * @return {@code true} if player is inside given zone.
+     */
+    boolean isInsideZone(ZoneInterface zone);
+    
+    /**
+     * Checks if the player is inside at least one of the given zones.
+     * @param zone
+     * @return {@code true} if player is at least inside one of the given zones.
+     */
+    boolean isInsideRandomZone(ZoneInterface... zone);
+    
+    /**
+     * Checks if the player is inside every of the given zones.
+     * @param zone
+     * @return {@code true} if player is inside of the given zones.
+     */
+    boolean isInsideAllZones(ZoneInterface... zone);
+    
+    /**
+     * Returns a zone the player is within and that is of given type.
+     * 
+     * <p>
+     * This method returns the "primary zone". If the zones are overlapping this may be
+     * a random  
+     * </p>
+     * 
+     * @param type
+     * @return the zone or {@code null} if no matching zone was found.
+     */
+    ZoneInterface getZone(ZoneTypeId... type);
+    
+    /**
+     * Checks if the player is inside at least one of the given zones of given type.
+     * @param type
+     * @return {@code true} if player is at least inside one of the given zones.
+     */
+    boolean isInsideRandomZone(ZoneTypeId... type);
+    
+    /**
+     * Returns the zone the player is within.
+     * @return zone list
+     */
+    Collection<ZoneInterface> getZones();
+    
+    /**
+     * Returns the zone of given types the player is within
+     * @param type
+     * @return zone list
+     */
+    Collection<ZoneInterface> getZones(ZoneTypeId... type);
     
     // stubbing
     

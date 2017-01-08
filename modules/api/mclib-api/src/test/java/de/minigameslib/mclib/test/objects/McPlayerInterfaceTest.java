@@ -29,6 +29,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -41,9 +43,11 @@ import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
@@ -282,6 +286,54 @@ public class McPlayerInterfaceTest
         public boolean test(DataSection section)
         {
             return false;
+        }
+
+        @Override
+        public void sendRaw(RawMessageInterface raw) throws McException
+        {
+            // empty
+        }
+
+        @Override
+        public boolean isInsideZone(ZoneInterface z)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isInsideRandomZone(ZoneInterface... z)
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isInsideAllZones(ZoneInterface... z)
+        {
+            return false;
+        }
+
+        @Override
+        public ZoneInterface getZone(ZoneTypeId... type)
+        {
+            return null;
+        }
+
+        @Override
+        public boolean isInsideRandomZone(ZoneTypeId... type)
+        {
+            return false;
+        }
+
+        @Override
+        public Collection<ZoneInterface> getZones()
+        {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Collection<ZoneInterface> getZones(ZoneTypeId... type)
+        {
+            return Collections.emptyList();
         }
         
     }

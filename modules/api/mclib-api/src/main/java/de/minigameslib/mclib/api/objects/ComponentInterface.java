@@ -76,4 +76,10 @@ public interface ComponentInterface
      */
     void saveConfig() throws McException;
     
+    /**
+     * Returns the handler.
+     * @return associated handler.
+     */
+    ComponentHandlerInterface getHandler();
+    
 }

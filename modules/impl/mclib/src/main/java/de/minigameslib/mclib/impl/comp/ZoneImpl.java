@@ -25,18 +25,20 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.util.Collection;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.Cuboid;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
 import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
-import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
- *
  */
 public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
 {
@@ -64,7 +66,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     }
 
     @Override
-    public ZoneIdInterface getZoneId()
+    public ZoneId getZoneId()
     {
         return this.id;
     }
@@ -103,6 +105,54 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     public ZoneHandlerInterface getHandler()
     {
         return this.handler;
+    }
+
+    @Override
+    public Collection<ZoneInterface> getChildZones()
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindChildren);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getChildZones(ZoneTypeId... type)
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindChildren, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getParentZones()
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindParents);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getParentZones(ZoneTypeId... type)
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindParents, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getMatchingZones()
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindMatching);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getMatchingZones(ZoneTypeId... type)
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindMatching, type);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getOverlappingZones()
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping);
+    }
+
+    @Override
+    public Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type)
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping, type);
     }
     
 }
