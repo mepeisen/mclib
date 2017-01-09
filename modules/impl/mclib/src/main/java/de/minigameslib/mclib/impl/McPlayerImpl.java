@@ -28,6 +28,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,9 +64,13 @@ import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.TrueStub;
+import de.minigameslib.mclib.impl.RawMessage.RawAction;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
+import de.minigameslib.mclib.nms.api.ChatSystemInterface;
+import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.pshared.QueryFormRequestData;
@@ -71,6 +78,7 @@ import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import net.jodah.expiringmap.ExpiringMap;
 
 /**
  * Implementation of arena players.
@@ -110,6 +118,9 @@ class McPlayerImpl implements McPlayerInterface
     
     /** list of client extensions that were reported by client mod. */
     private Set<String>           clientExtensions = new HashSet<>();
+    
+    /** the raw actions. */
+    private final ExpiringMap<UUID, McRunnable> rawActions = ExpiringMap.builder().variableExpiration().build();
     
     /**
      * Constructor
@@ -613,16 +624,6 @@ class McPlayerImpl implements McPlayerInterface
     }
 
     /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#sendRaw(de.minigameslib.mclib.api.gui.RawMessageInterface)
-     */
-    @Override
-    public void sendRaw(RawMessageInterface raw) throws McException
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideZone(de.minigameslib.mclib.api.objects.ZoneInterface)
      */
     @Override
@@ -690,6 +691,22 @@ class McPlayerImpl implements McPlayerInterface
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void sendRaw(RawMessageInterface raw) throws McException
+    {
+        final RawMessage message = (RawMessage) raw;
+        final String json = message.toJson(this);
+        
+        for (final Map.Entry<UUID, RawAction> action : message.actions.entrySet())
+        {
+            final long seconds = ChronoUnit.SECONDS.between(LocalDateTime.now(), action.getValue().getExpires());
+            this.rawActions.put(action.getKey(), action.getValue().getHandler(), seconds, TimeUnit.SECONDS);
+        }
+        
+        Bukkit.getServicesManager().load(NmsFactory.class).create(ChatSystemInterface.class).sendMessage(this.getBukkitPlayer(), json);
+        
     }
     
 }

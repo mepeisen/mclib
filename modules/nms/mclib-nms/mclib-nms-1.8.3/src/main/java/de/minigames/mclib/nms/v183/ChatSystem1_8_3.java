@@ -27,11 +27,15 @@ package de.minigames.mclib.nms.v183;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R2.util.CraftChatMessage;
+import org.bukkit.entity.Player;
 
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
 import net.minecraft.server.v1_8_R2.IChatBaseComponent;
 import net.minecraft.server.v1_8_R2.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R2.Packet;
+import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
 
 /**
  * Implementation of chat system.
@@ -46,6 +50,13 @@ public class ChatSystem1_8_3 implements ChatSystemInterface
     {
         final IChatBaseComponent[] components = CraftChatMessage.fromString(src, true);
         return Arrays.asList(components).stream().map(c -> ChatSerializer.a(c)).collect(Collectors.joining(", ", "{ \"text\": \"\", \"extra\":[ ", " ] }")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    @Override
+    public void sendMessage(Player player, String json)
+    {
+        final Packet<?> packet = new PacketPlayOutChat(ChatSerializer.a(json));
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
     
 }

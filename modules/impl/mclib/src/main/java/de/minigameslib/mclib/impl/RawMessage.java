@@ -59,7 +59,7 @@ public class RawMessage implements RawMessageInterface
     /**
      * Raw actions
      */
-    private Map<UUID, RawAction> actions = new HashMap<>();
+    protected Map<UUID, RawAction> actions = new HashMap<>();
     
     /**
      * Converts this message to raw json text.

@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import org.bukkit.entity.Player;
+
 /**
  * Helper for accessing chat nms classes.
  * 
@@ -38,5 +40,12 @@ public interface ChatSystemInterface
      * @return json text
      */
     String toJson(String src);
+    
+    /**
+     * Sends raw message to client
+     * @param player
+     * @param json
+     */
+    void sendMessage(Player player, String json);
     
 }
