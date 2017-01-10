@@ -75,8 +75,11 @@ public class SpigotServer
             case Local:
                 switch (spigotServerConfig.getServerVersion())
                 {
-                    case V1_11:
+                    case V1_11_2:
                     case Latest:
+                        this.manager = new Nms111ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
+                        break;
+                    case V1_11:
                         this.manager = new Nms111ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_10_2:
@@ -180,6 +183,12 @@ public class SpigotServer
         {
             case Latest:
             default:
+            case V1_11_2:
+                version = "1.11.2-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
+            case V1_11:
+                version = "1.11-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
             case V1_10_2:
                 version = "1.10.2-R0.1-SNAPSHOT"; //$NON-NLS-1$
                 break;
