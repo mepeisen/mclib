@@ -708,5 +708,32 @@ class McPlayerImpl implements McPlayerInterface
         Bukkit.getServicesManager().load(NmsFactory.class).create(ChatSystemInterface.class).sendMessage(this.getBukkitPlayer(), json);
         
     }
+
+    /**
+     * Performs a raw command passed from mclib console command
+     * @param commandUuid
+     */
+    public void onRawCommand(UUID commandUuid)
+    {
+        final McRunnable runnable = this.rawActions.get(commandUuid);
+        if (runnable == null)
+        {
+            // TODO report error
+        }
+        else
+        {
+            try
+            {
+                McLibInterface.instance().runInNewContext(() -> {
+                    McLibInterface.instance().setContext(McPlayerInterface.class, this);
+                    runnable.run();
+                });
+            }
+            catch (McException ex)
+            {
+                this.sendMessage(ex.getErrorMessage(), ex.getArgs());
+            }
+        }
+    }
     
 }

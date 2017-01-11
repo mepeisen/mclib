@@ -28,35 +28,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import de.minigameslib.mclib.api.CommonMessages;
-import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
-import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
 /**
  * @author mepeisen
  *
  */
-public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener, Listener
+public class MclibTestPlugin extends JavaPlugin implements Listener
 {
 
     @Override
     public void onEnable()
     {
         EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class); // test
-        
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, "mclib-channel");
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, "mclib-channel", this);
         
         Bukkit.getPluginManager().registerEvents(this, this);
     }
@@ -72,37 +61,9 @@ public class MclibTestPlugin extends JavaPlugin implements PluginMessageListener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-            try
-            {
-                ConfigServiceInterface.instance().runInNewContext(() -> {
-                    ConfigServiceInterface.instance().setContext(McPlayerInterface.class, player);
-                    
-                    final SGuiFormBuilderInterface form = player.openSmartGui().sguiForm(
-                            CommonMessages.HelpShortDescription, null,
-                            false,
-                            null);
-                    form.addText(2, CommonMessages.HelpShortDescription)
-                        .addTextInput(CommonMessages.HelpShortDescription, null, "foo", "bar", true)
-                        .addSubmitButton(CommonMessages.HelpShortDescription, null, (gui, data) -> System.out.println(data))
-                        .addCancelButton(CommonMessages.HelpShortDescription, null, null)
-                        .display();
-                });
-            }
-            catch (McException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            // MyCommandHandler.onCommand(sender, command, label, args);
+            // TODO
         }
         return super.onCommand(sender, command, label, args);
-    }
-
-    @Override
-    public void onPluginMessageReceived(String arg0, Player arg1, byte[] arg2)
-    {
-        System.out.println("PONG received.");
     }
     
     @EventHandler

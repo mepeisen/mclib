@@ -995,14 +995,23 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        // TODO mclib rawcommand
-        
-        // if (command.getName().equals("mclib"))
-        // {
-        // MyCommandHandler.onCommand(sender, command, label, args);
-        // }
-        // return super.onCommand(sender, command, label, args);
-        // TODO commands
+        if (command.getName().equals("mclib")) //$NON-NLS-1$
+        {
+            if (args != null && args.length == 2 && args[0].equals("rawcommand") && sender instanceof Player) //$NON-NLS-1$
+            {
+                final McPlayerImpl player = this.players.getPlayer((Player) sender);
+                try
+                {
+                    final UUID uuid = UUID.fromString(args[1]);
+                    player.onRawCommand(uuid);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    // TODO report error
+                }
+            }
+            // TODO Command impl
+        }
         return false;
     }
     
