@@ -50,6 +50,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -62,6 +63,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -79,6 +81,7 @@ import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
 import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
+import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.com.CommunicationBungeeHandler;
 import de.minigameslib.mclib.api.com.CommunicationPeerHandler;
 import de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface;
@@ -1548,6 +1551,48 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     public RawMessageInterface createRaw()
     {
         return new RawMessage();
+    }
+
+    @Override
+    public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTask(plugin, task);
+    }
+
+    @Override
+    public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskAsynchronously(plugin, task);
+    }
+
+    @Override
+    public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLater(plugin, delay, task);
+    }
+
+    @Override
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
+    }
+
+    @Override
+    public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskTimer(plugin, delay, period, task);
+    }
+
+    @Override
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
+    }
+
+    @Override
+    public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
+    {
+        this.context.runInNewContext(event, command, player, zone, component, runnable);
     }
     
 }

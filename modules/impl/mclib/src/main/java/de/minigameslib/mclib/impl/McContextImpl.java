@@ -31,13 +31,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 
@@ -53,7 +59,7 @@ class McContextImpl implements McContext
     private final Map<Class<?>, List<ContextHandlerInterface<?>>> handlers = new HashMap<>();
     
     /** the thread local storage. */
-    private final ThreadLocal<TLD> tls = ThreadLocal.withInitial(() -> new TLD());
+    final ThreadLocal<TLD> tls = ThreadLocal.withInitial(() -> new TLD());
     
     /** context resolve helper. */
     private final List<ContextResolverInterface> resolvers = new ArrayList<>();
@@ -69,6 +75,8 @@ class McContextImpl implements McContext
     public <T> T getContext(Class<T> clazz)
     {
         final TLD data = this.tls.get();
+        if (clazz == Event.class) return clazz.cast(data.event);
+        if (clazz == CommandInterface.class) return clazz.cast(data.command);
         if (data.containsKey(clazz))
         {
             return (T) data.get(clazz);
@@ -113,7 +121,18 @@ class McContextImpl implements McContext
     public <T> void setContext(Class<T> clazz, T value)
     {
         final TLD data = this.tls.get();
-        data.put(clazz, value);
+        if (clazz == Event.class)
+        {
+            data.event = (Event) value;
+        }
+        else if (clazz == CommandInterface.class)
+        {
+            data.command = (CommandInterface) value;
+        }
+        else
+        {
+            data.put(clazz, value);
+        }
     }
     
     @Override
@@ -146,6 +165,28 @@ class McContextImpl implements McContext
             if (result != null) return result;
         }
         return "?"; //$NON-NLS-1$
+    }
+
+    @Override
+    public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
+    {
+        final TLD old = this.tls.get();
+        final TLD tld = new TLD();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = command;
+            tld.event = event;
+            runnable.run();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
     }
     
     @Override
@@ -279,6 +320,73 @@ class McContextImpl implements McContext
     }
     
     /**
+     * @author mepeisen
+     *
+     */
+    private final class MyRunnable extends BukkitRunnable
+    {
+        /**
+         * 
+         */
+        private final AtomicReference<BukkitTask> result;
+        /**
+         * 
+         */
+        private final Map<Class<?>, Object>       data;
+        /**
+         * 
+         */
+        private final ContextRunnable task;
+        
+        /**
+         * @param result
+         * @param data
+         * @param task
+         */
+        protected MyRunnable(AtomicReference<BukkitTask> result, Map<Class<?>, Object> data, ContextRunnable task)
+        {
+            this.result = result;
+            this.data = data;
+            this.task = task;
+        }
+        
+        @Override
+        public void run()
+        {
+            final TLD old = McContextImpl.this.tls.get();
+            final TLD tld = new TLD();
+            McContextImpl.this.tls.set(tld);
+            try
+            {
+                tld.clear();
+                tld.putAll(this.data);
+                tld.command = old.command;
+                tld.event = old.event;
+                this.task.run(this.result.get());
+            }
+            catch (McException e)
+            {
+                final McPlayerInterface player = McContextImpl.this.getCurrentPlayer();
+                if (player == null)
+                {
+                    // TODO Logging
+                }
+                else
+                {
+                    player.sendMessage(e.getErrorMessage(), e.getArgs());
+                }
+            }
+            finally
+            {
+                McContextImpl.this.tls.set(old);
+                tld.clear();
+                tld.command = null;
+                tld.event = null;
+            }
+        }
+    }
+
+    /**
      * thread local data
      */
     private static final class TLD extends HashMap<Class<?>, Object>
@@ -304,6 +412,66 @@ class McContextImpl implements McContext
         {
             // empty
         }
+    }
+
+    @Override
+    public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTask(plugin));
+        return result.get();
+    }
+
+    @Override
+    public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTaskAsynchronously(plugin));
+        return result.get();
+    }
+
+    @Override
+    public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTaskLater(plugin, delay));
+        return result.get();
+    }
+
+    @Override
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTaskLaterAsynchronously(plugin, delay));
+        return result.get();
+    }
+
+    @Override
+    public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTaskTimer(plugin, delay, period));
+        return result.get();
+    }
+
+    @Override
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        final Map<Class<?>, Object> data = new HashMap<>(this.tls.get());
+        final AtomicReference<BukkitTask> result = new AtomicReference<>();
+        final BukkitRunnable runnable = new MyRunnable(result, data, task);
+        result.set(runnable.runTaskTimerAsynchronously(plugin, delay, period));
+        return result.get();
     }
     
 }

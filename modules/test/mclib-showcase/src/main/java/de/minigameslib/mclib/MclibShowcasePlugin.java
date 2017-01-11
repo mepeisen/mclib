@@ -24,12 +24,20 @@
 
 package de.minigameslib.mclib;
 
+import java.time.LocalDateTime;
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.locale.Messages;
@@ -70,6 +78,29 @@ public class MclibShowcasePlugin extends JavaPlugin implements Listener
     {
     	final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer(evt.getPlayer());
     	evt.setJoinMessage(player.encodeMessage(Messages.WelcomeMessage)[0]);
+    	
+    	try
+    	{
+        	McLibInterface.instance().runInNewContext(null, null, player, null, null, () -> {
+        	    McLibInterface.instance().runTaskLater(this, 40, task -> {
+        	        final RawMessageInterface raw = McLibInterface.instance().createRaw();
+                    raw.addHandler(Messages.StartShoecase_ClickHere, null, MclibShowcasePlugin.this::onStartShowcase, LocalDateTime.now().plusMinutes(10));
+                    McLibInterface.instance().getCurrentPlayer().sendRaw(raw);
+        	    });
+        	});
+    	}
+        catch (McException e)
+        {
+            MclibShowcasePlugin.this.getLogger().log(Level.WARNING, "problems sending raw message", e); //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Starts the showcase
+     */
+    protected void onStartShowcase()
+    {
+        // TODO
     }
 
 }

@@ -29,6 +29,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageComment.Argument;
+import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
  * Localized messages
@@ -48,5 +49,19 @@ public enum Messages implements LocalizedMessageInterface
             "Welcome message"},
         args = {@Argument({"Players display name."})})
     WelcomeMessage,
+    
+    /**
+     * Click here text
+     */
+    @LocalizedMessage(defaultMessage = LocalizedMessage.BOLD + LocalizedMessage.UNDERLINE  + "Click HERE", severity = MessageSeverityType.Success)
+    @MessageComment(value = {"Click here text"})
+    StartShoecase_ClickHere,
+    
+    /**
+     * Starting showcase text
+     */
+    @LocalizedMessage(defaultMessage = " to start the showcase", severity = MessageSeverityType.Information)
+    @MessageComment(value = {"Starting showcase text"})
+    StartShoecase_ToStartShowcase,
     
 }
