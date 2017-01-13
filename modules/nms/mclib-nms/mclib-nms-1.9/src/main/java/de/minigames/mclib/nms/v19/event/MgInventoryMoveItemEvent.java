@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 import de.minigameslib.mclib.api.event.McInventoryMoveItemEvent;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
@@ -45,7 +46,20 @@ public class MgInventoryMoveItemEvent extends AbstractMinigameEvent<InventoryMov
      */
     public MgInventoryMoveItemEvent(InventoryMoveItemEvent event)
     {
-        super(event, ObjectServiceInterface.instance().getPlayer((Player) event.getInitiator().getViewers().get(0))); // TODO correct to invoke get(0)?
+        super(event, getPlayer(event));
+    }
+
+    /**
+     * @param event
+     * @return player
+     */
+    private static McPlayerInterface getPlayer(InventoryMoveItemEvent event)
+    {
+        if (event.getInitiator() != null && event.getInitiator().getViewers().size() > 0)
+        {
+            return ObjectServiceInterface.instance().getPlayer((Player) event.getInitiator().getViewers().get(0)); // TODO correct to invoke get(0)?
+        }
+        return null;
     }
     
 }
