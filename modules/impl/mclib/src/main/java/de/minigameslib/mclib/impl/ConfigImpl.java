@@ -140,7 +140,14 @@ public class ConfigImpl implements ConfigInterface
             final File fobj = new File(this.plugin.getDataFolder(), file);
             try
             {
-                fileConfig = new YmlFile(fobj);
+                if (fobj.exists())
+                {
+                    fileConfig = new YmlFile(fobj);
+                }
+                else
+                {
+                    fileConfig = new YmlFile();
+                }
             }
             catch (IOException e1)
             {

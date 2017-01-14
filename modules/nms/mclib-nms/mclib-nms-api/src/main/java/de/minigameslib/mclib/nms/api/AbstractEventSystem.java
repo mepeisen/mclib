@@ -44,15 +44,11 @@ import de.minigameslib.mclib.api.mcevent.EntityCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.EntityDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.EntityDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.EntityEnteredZoneEvent;
-import de.minigameslib.mclib.api.mcevent.EntityEntersZoneEvent;
-import de.minigameslib.mclib.api.mcevent.EntityLeavesZoneEvent;
 import de.minigameslib.mclib.api.mcevent.EntityLeftZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerCloseGuiEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerDisplayGuiPageEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerEnteredZoneEvent;
-import de.minigameslib.mclib.api.mcevent.PlayerEntersZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerGuiClickEvent;
-import de.minigameslib.mclib.api.mcevent.PlayerLeavesZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerLeftZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerOpenGuiEvent;
 import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
@@ -102,15 +98,11 @@ public abstract class AbstractEventSystem implements EventSystemInterface
         this.registerHandler(EntityDeletedEvent.class, (evt) -> new MgEntityDeletedEvent(evt));
         this.registerHandler(EntityDeleteEvent.class, (evt) -> new MgEntityDeleteEvent(evt));
         this.registerHandler(EntityEnteredZoneEvent.class, (evt) -> new MgEntityEnteredZoneEvent(evt));
-        this.registerHandler(EntityEntersZoneEvent.class, (evt) -> new MgEntityEntersZoneEvent(evt));
-        this.registerHandler(EntityLeavesZoneEvent.class, (evt) -> new MgEntityLeavesZoneEvent(evt));
         this.registerHandler(EntityLeftZoneEvent.class, (evt) -> new MgEntityLeftZoneEvent(evt));
         this.registerHandler(PlayerCloseGuiEvent.class, (evt) -> new MgPlayerCloseGuiEvent(evt));
         this.registerHandler(PlayerDisplayGuiPageEvent.class, (evt) -> new MgPlayerDisplayGuiPageEvent(evt));
         this.registerHandler(PlayerEnteredZoneEvent.class, (evt) -> new MgPlayerEnteredZoneEvent(evt));
-        this.registerHandler(PlayerEntersZoneEvent.class, (evt) -> new MgPlayerEntersZoneEvent(evt));
         this.registerHandler(PlayerGuiClickEvent.class, (evt) -> new MgPlayerGuiClickEvent(evt));
-        this.registerHandler(PlayerLeavesZoneEvent.class, (evt) -> new MgPlayerLeavesZoneEvent(evt));
         this.registerHandler(PlayerLeftZoneEvent.class, (evt) -> new MgPlayerLeftZoneEvent(evt));
         this.registerHandler(PlayerOpenGuiEvent.class, (evt) -> new MgPlayerOpenGuiEvent(evt));
         this.registerHandler(SignCreatedEvent.class, (evt) -> new MgSignCreatedEvent(evt));
@@ -172,30 +164,6 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     }
     
     /**
-     * Event handler for EntityEntersZoneEvent event.
-     * 
-     * @param evt
-     *            the event to be passed.
-     */
-    @EventHandler
-    public void onEntityEntersZoneEvent(EntityEntersZoneEvent evt)
-    {
-        this.getHandler(EntityEntersZoneEvent.class).handle(evt);
-    }
-    
-    /**
-     * Event handler for EntityLeavesZoneEvent event.
-     * 
-     * @param evt
-     *            the event to be passed.
-     */
-    @EventHandler
-    public void onEntityLeavesZoneEvent(EntityLeavesZoneEvent evt)
-    {
-        this.getHandler(EntityLeavesZoneEvent.class).handle(evt);
-    }
-    
-    /**
      * Event handler for EntityLeftZoneEvent event.
      * 
      * @param evt
@@ -217,30 +185,6 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     public void onPlayerEnteredZoneEvent(PlayerEnteredZoneEvent evt)
     {
         this.getHandler(PlayerEnteredZoneEvent.class).handle(evt);
-    }
-    
-    /**
-     * Event handler for PlayerEntersZoneEvent event.
-     * 
-     * @param evt
-     *            the event to be passed.
-     */
-    @EventHandler
-    public void onPlayerEntersZoneEvent(PlayerEntersZoneEvent evt)
-    {
-        this.getHandler(PlayerEntersZoneEvent.class).handle(evt);
-    }
-    
-    /**
-     * Event handler for PlayerLeavesZoneEvent event.
-     * 
-     * @param evt
-     *            the event to be passed.
-     */
-    @EventHandler
-    public void onPlayerLeavesZoneEvent(PlayerLeavesZoneEvent evt)
-    {
-        this.getHandler(PlayerLeavesZoneEvent.class).handle(evt);
     }
     
     /**

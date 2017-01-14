@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -36,6 +37,10 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocatedEvent;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
@@ -101,8 +106,20 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
+        
+        final SignDeleteEvent deleteEvent = new SignDeleteEvent(this);
+        Bukkit.getPluginManager().callEvent(deleteEvent);
+        if (deleteEvent.isCancelled())
+        {
+            throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
+        }
+        
         super.delete();
         this.handler.onDelete();
+        this.eventBus.clear();
+
+        final SignDeletedEvent deletedEvent = new SignDeletedEvent(this);
+        Bukkit.getPluginManager().callEvent(deletedEvent);
     }
     
     @Override
@@ -150,8 +167,19 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         final Block block = loc.getBlock();
         if (block instanceof Sign)
         {
+            final Location old = this.location;
+            final SignRelocateEvent relocateEvent = new SignRelocateEvent(this, old, loc);
+            Bukkit.getPluginManager().callEvent(relocateEvent);
+            if (relocateEvent.isCancelled())
+            {
+                throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
+            }
+            
             this.sign = (Sign) block;
             super.setLocation(loc);
+            
+            final SignRelocatedEvent relocatedEvent = new SignRelocatedEvent(this, old, loc);
+            Bukkit.getPluginManager().callEvent(relocatedEvent);
         }
         else
         {

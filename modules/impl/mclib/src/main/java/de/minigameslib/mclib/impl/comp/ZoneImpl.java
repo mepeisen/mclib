@@ -27,6 +27,7 @@ package de.minigameslib.mclib.impl.comp;
 import java.io.File;
 import java.util.Collection;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
@@ -34,15 +35,19 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
 import de.minigameslib.mclib.api.objects.Cuboid;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
-import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.impl.EventBus;
-import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
+import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -95,8 +100,37 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
+        
+        final ZoneDeleteEvent deleteEvent = new ZoneDeleteEvent(this);
+        Bukkit.getPluginManager().callEvent(deleteEvent);
+        if (deleteEvent.isCancelled())
+        {
+            throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
+        }
+        
         super.delete();
         this.handler.onDelete();
+        this.eventBus.clear();
+        
+        final ZoneDeletedEvent deletedEvent = new ZoneDeletedEvent(this);
+        Bukkit.getPluginManager().callEvent(deletedEvent);
+    }
+
+    @Override
+    public void setCuboid(Cuboid cub) throws McException
+    {
+        final Cuboid old = this.cuboid;
+        final ZoneRelocateEvent relocateEvent = new ZoneRelocateEvent(this, old, cub);
+        Bukkit.getPluginManager().callEvent(relocateEvent);
+        if (relocateEvent.isCancelled())
+        {
+            throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
+        }
+        
+        super.setCuboid(cub);
+        
+        final ZoneRelocatedEvent relocatedEvent = new ZoneRelocatedEvent(this, old, cub);
+        Bukkit.getPluginManager().callEvent(relocatedEvent);
     }
 
     @Override

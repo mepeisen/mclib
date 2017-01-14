@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -34,6 +35,10 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
@@ -101,6 +106,23 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     }
 
     @Override
+    public void setLocation(Location loc) throws McException
+    {
+        final Location old = this.location;
+        final ComponentRelocateEvent relocateEvent = new ComponentRelocateEvent(this, old, loc);
+        Bukkit.getPluginManager().callEvent(relocateEvent);
+        if (relocateEvent.isCancelled())
+        {
+            throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
+        }
+        
+        super.setLocation(loc);
+        
+        final ComponentRelocatedEvent relocatedEvent = new ComponentRelocatedEvent(this, old, loc);
+        Bukkit.getPluginManager().callEvent(relocatedEvent);
+    }
+
+    @Override
     public void delete() throws McException
     {
         if (this.deleted)
@@ -108,9 +130,20 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
         this.handler.canDelete();
+        
+        final ComponentDeleteEvent deleteEvent = new ComponentDeleteEvent(this);
+        Bukkit.getPluginManager().callEvent(deleteEvent);
+        if (deleteEvent.isCancelled())
+        {
+            throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
+        }
+        
         super.delete();
         this.handler.onDelete();
         this.eventBus.clear();
+        
+        final ComponentDeletedEvent deletedEvent = new ComponentDeletedEvent(this);
+        Bukkit.getPluginManager().callEvent(deletedEvent);
     }
 
     /**

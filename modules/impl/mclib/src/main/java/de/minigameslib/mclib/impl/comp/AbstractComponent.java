@@ -79,7 +79,14 @@ public abstract class AbstractComponent
         {
             try
             {
-                this.config = new YmlFile(config);
+                if (config.exists())
+                {
+                    this.config = new YmlFile(config);
+                }
+                else
+                {
+                    this.config = new YmlFile();
+                }
             }
             catch (IOException e)
             {

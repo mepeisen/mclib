@@ -45,8 +45,6 @@ import de.minigameslib.mclib.api.McException;
 public interface ObjectServiceInterface
 {
     
-    // TODO We did not care about duplicate components etc. Multiple components for the same location...
-    
     /**
      * Returns the object services instance.
      * 
@@ -94,6 +92,34 @@ public interface ObjectServiceInterface
      * @throws McException
      */
     <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException;
+    
+    /**
+     * Returns the component type for given id.
+     * @param id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    ComponentTypeId getType(ComponentIdInterface id);
+    
+    /**
+     * Returns the entity type for given id.
+     * @param id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    EntityTypeId getType(EntityIdInterface id);
+    
+    /**
+     * Returns the zone type for given id.
+     * @param id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    ZoneTypeId getType(ZoneIdInterface id);
+    
+    /**
+     * Returns the sign type for given id.
+     * @param id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    SignTypeId getType(SignIdInterface id);
     
     /**
      * Tries to resume objects.

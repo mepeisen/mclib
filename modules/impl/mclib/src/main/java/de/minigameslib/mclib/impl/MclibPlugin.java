@@ -42,13 +42,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -100,25 +95,10 @@ import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
-import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
-import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
-import de.minigameslib.mclib.api.objects.ComponentTypeId;
-import de.minigameslib.mclib.api.objects.Cuboid;
-import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
-import de.minigameslib.mclib.api.objects.EntityIdInterface;
-import de.minigameslib.mclib.api.objects.EntityInterface;
-import de.minigameslib.mclib.api.objects.EntityTypeId;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
-import de.minigameslib.mclib.api.objects.SignHandlerInterface;
-import de.minigameslib.mclib.api.objects.SignIdInterface;
-import de.minigameslib.mclib.api.objects.SignInterface;
-import de.minigameslib.mclib.api.objects.SignTypeId;
-import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
-import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
-import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -151,7 +131,7 @@ import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
  * 
  * @author mepeisen
  */
-public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface,
+public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceInterface, MessageServiceInterface, PermissionServiceInterface,
         McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
 {
     
@@ -300,10 +280,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getPluginManager().registerEvents(this, this);
         
         // public api services
-        Bukkit.getServicesManager().register(EnumServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(EnumServiceInterface.class, this.enumService, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ConfigServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(MessageServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(ObjectServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(PermissionServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(McContext.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
@@ -314,8 +293,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         
         // mclib enumerations
-        this.registerEnumClass(this, CommonMessages.class);
-        this.registerEnumClass(this, McCoreConfig.class);
+        this.enumService.registerEnumClass(this, CommonMessages.class);
+        this.enumService.registerEnumClass(this, McCoreConfig.class);
         
         // nms services
         final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
@@ -327,10 +306,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         
         try
         {
-            this.objectsManager = new ObjectsManager(this.getDataFolder());
+            this.objectsManager = new ObjectsManager(this.getDataFolder(), this.players);
+            Bukkit.getServicesManager().register(ObjectServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
         }
         catch (McException ex)
         {
+            this.getLogger().log(Level.SEVERE, "Problems creating objects manager", ex); //$NON-NLS-1$
             // TODO what do we do at this point?
             //      having no object manager will cause a dead plugin at all
         }
@@ -399,7 +380,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     @Override
     public void onDisable()
     {
-        this.unregisterAllEnumerations(this);
+        this.enumService.unregisterAllEnumerations(this);
         this.removeAllCommunicationEndpoints(this);
         Bukkit.getServicesManager().unregisterAll(this);
         
@@ -474,44 +455,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
             // silently ignore
         }
         return MinecraftVersionsType.Unknown;
-    }
-    
-    // enum services
-    
-    @Override
-    public void registerEnumClass(Plugin plugin, Class<? extends Enum<?>> clazz)
-    {
-        this.enumService.registerEnumClass(plugin, clazz);
-    }
-    
-    @Override
-    public void unregisterAllEnumerations(Plugin plugin)
-    {
-        this.enumService.unregisterAllEnumerations(plugin);
-    }
-    
-    @Override
-    public Plugin getPlugin(Enum<?> enumValue)
-    {
-        return this.enumService.getPlugin(enumValue);
-    }
-    
-    @Override
-    public Set<Enum<?>> getEnumValues(Plugin plugin)
-    {
-        return this.enumService.getEnumValues(plugin);
-    }
-    
-    @Override
-    public <T> Set<T> getEnumValues(Class<T> clazz)
-    {
-        return this.enumService.getEnumValues(clazz);
-    }
-    
-    @Override
-    public <T> Set<T> getEnumValues(Plugin plugin, Class<T> clazz)
-    {
-        return this.getEnumValues(plugin, clazz);
     }
     
     // context
@@ -608,25 +551,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         return this.configurations.computeIfAbsent(plugin, (key) -> new ConfigImpl(plugin, this.enumService));
     }
     
-    // object services
-    
-    @Override
-    public McPlayerInterface getPlayer(Player player)
-    {
-        return this.players.getPlayer(player);
-    }
-    
-    @Override
-    public McPlayerInterface getPlayer(OfflinePlayer player)
-    {
-        return this.players.getPlayer(player);
-    }
-    
-    @Override
-    public McPlayerInterface getPlayer(UUID uuid)
-    {
-        return this.players.getPlayer(uuid);
-    }
+    // events
     
     /**
      * Player join event
@@ -649,7 +574,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
         ping.write(section.createSection("data")); //$NON-NLS-1$
-        this.getPlayer(evt.getPlayer()).sendToClient(MclibCommunication.ClientServerCore, section);
+        this.players.getPlayer(evt.getPlayer()).sendToClient(MclibCommunication.ClientServerCore, section);
         
         while (!this.bungeeQueue.isEmpty())
         {
@@ -732,278 +657,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         {
             this.objectsManager.onEnable(evt.getPlugin());
         }
-    }
-    
-    // objects api
-    
-    @Override
-    public <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException
-    {
-        this.objectsManager.register(type, handler);
-    }
-    
-    @Override
-    public <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException
-    {
-        this.objectsManager.register(type, handler);
-    }
-    
-    @Override
-    public <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException
-    {
-        this.objectsManager.register(type, handler);
-    }
-    
-    @Override
-    public <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException
-    {
-        this.objectsManager.register(type, handler);
-    }
-    
-    @Override
-    public ResumeReport resumeObjects(Plugin plugin)
-    {
-        return this.objectsManager.resumeObjects(plugin);
-    }
-    
-    @Override
-    public ComponentInterface findComponent(Location location)
-    {
-        return this.objectsManager.findComponent(location);
-    }
-    
-    @Override
-    public ComponentInterface findComponent(Block block)
-    {
-        return this.findComponent(block.getLocation());
-    }
-    
-    @Override
-    public ComponentInterface findComponent(ComponentIdInterface id)
-    {
-        return this.objectsManager.findComponent(id);
-    }
-    
-    @Override
-    public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException
-    {
-        return this.objectsManager.createComponent(type, location, handler, persist);
-    }
-    
-    @Override
-    public EntityInterface findEntity(Entity entity)
-    {
-        return this.objectsManager.findEntity(entity);
-    }
-    
-    @Override
-    public EntityInterface findEntity(EntityIdInterface id)
-    {
-        return this.objectsManager.findEntity(id);
-    }
-    
-    @Override
-    public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException
-    {
-        return this.objectsManager.createEntity(type, entity, handler, persist);
-    }
-    
-    @Override
-    public SignInterface findSign(Location location)
-    {
-        return this.objectsManager.findSign(location);
-    }
-    
-    @Override
-    public SignInterface findSign(Block block)
-    {
-        return this.objectsManager.findSign(block.getLocation());
-    }
-    
-    @Override
-    public SignInterface findSign(Sign sign)
-    {
-        return this.objectsManager.findSign(sign.getLocation());
-    }
-    
-    @Override
-    public SignInterface findSign(SignIdInterface id)
-    {
-        return this.objectsManager.findSign(id);
-    }
-    
-    @Override
-    public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException
-    {
-        return this.objectsManager.createSign(type, sign, handler, persist);
-    }
-    
-    @Override
-    public ZoneInterface findZone(Location location)
-    {
-        return this.objectsManager.findZone(location);
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZones(Location location)
-    {
-        return this.objectsManager.findZones(location);
-    }
-    
-    @Override
-    public ZoneInterface findZoneWithoutY(Location location)
-    {
-        return this.objectsManager.findZoneWithoutY(location);
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutY(Location location)
-    {
-        return this.objectsManager.findZonesWithoutY(location);
-    }
-    
-    @Override
-    public ZoneInterface findZoneWithoutYD(Location location)
-    {
-        return this.objectsManager.findZoneWithoutYD(location);
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutYD(Location location)
-    {
-        return this.objectsManager.findZonesWithoutYD(location);
-    }
-    
-    @Override
-    public ZoneInterface findZone(ZoneIdInterface id)
-    {
-        return this.objectsManager.findZone(id);
-    }
-    
-    @Override
-    public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException
-    {
-        return this.objectsManager.createZone(type, cuboid, handler, persist);
-    }
-
-    @Override
-    public Collection<ComponentInterface> findComponents(Location location)
-    {
-        return this.objectsManager.findComponents(location);
-    }
-
-    @Override
-    public Collection<ComponentInterface> findComponents(Block block)
-    {
-        return this.objectsManager.findComponents(block.getLocation());
-    }
-
-    @Override
-    public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
-    {
-        return this.objectsManager.findComponents(type);
-    }
-
-    @Override
-    public Collection<EntityInterface> findEntities(Entity entity)
-    {
-        return this.objectsManager.findEntities(entity);
-    }
-
-    @Override
-    public Collection<EntityInterface> findEntities(EntityTypeId... type)
-    {
-        return this.objectsManager.findEntities(type);
-    }
-
-    @Override
-    public Collection<SignInterface> findSigns(Location location)
-    {
-        return this.objectsManager.findSigns(location);
-    }
-
-    @Override
-    public Collection<SignInterface> findSigns(Block block)
-    {
-        return this.objectsManager.findSigns(block.getLocation());
-    }
-
-    @Override
-    public Collection<SignInterface> findSigns(Sign sign)
-    {
-        return this.objectsManager.findSigns(sign.getLocation());
-    }
-
-    @Override
-    public Collection<SignInterface> findSigns(SignTypeId... type)
-    {
-        return this.objectsManager.findSigns(type);
-    }
-
-    @Override
-    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
-    {
-        return this.objectsManager.findZone(cuboid, mode);
-    }
-
-    @Override
-    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZone(cuboid, mode, type);
-    }
-
-    @Override
-    public ZoneInterface findZone(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZone(location, type);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
-    {
-        return this.objectsManager.findZones(cuboid, mode);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZones(cuboid, mode, type);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZones(location, type);
-    }
-
-    @Override
-    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZoneWithoutY(location, type);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZonesWithoutY(location, type);
-    }
-
-    @Override
-    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZoneWithoutYD(location, type);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
-    {
-        return this.objectsManager.findZonesWithoutYD(location, type);
-    }
-
-    @Override
-    public Collection<ZoneInterface> findZones(ZoneTypeId... type)
-    {
-        return this.objectsManager.findZones(type);
     }
     
     @Override
@@ -1246,7 +899,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         {
             // TODO ensure this comes from client
             // message from client
-            final McPlayerInterface mcp = this.getPlayer(player);
+            final McPlayerInterface mcp = this.players.getPlayer(player);
             try
             {
                 this.runInNewContext(() -> {

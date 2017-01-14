@@ -46,6 +46,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -54,6 +56,8 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.McPlayerMoveEvent;
+import de.minigameslib.mclib.api.event.McPlayerTeleportEvent;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
@@ -61,7 +65,10 @@ import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.GuiType;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.mcevent.PlayerEnteredZoneEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerLeftZoneEvent;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
@@ -72,6 +79,7 @@ import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.RawMessage.RawAction;
+import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
@@ -132,6 +140,25 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     private final EventBus                      eventBus         = new EventBus();
     
     /**
+     * the players zone manager
+     */
+    private final ZoneManager                   zoneManager      = new ZoneManager(){
+
+        @Override
+        protected void fireZonesEntered(Set<ZoneId> newZones)
+        {
+            McPlayerImpl.this.fireZonesEntered(newZones);
+        }
+
+        @Override
+        protected void fireZonesLeft(Set<ZoneId> oldZones)
+        {
+            McPlayerImpl.this.fireZonesLeft(oldZones);
+        }
+        
+    };
+    
+    /**
      * Constructor
      * 
      * @param uuid
@@ -164,6 +191,32 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
             this.config.write(this.persistentStorage.createSection("core")); //$NON-NLS-1$
             this.persistentStorage.createSection("storage"); //$NON-NLS-1$
             this.saveStore();
+        }
+    }
+    
+    /**
+     * @param newZones
+     */
+    protected void fireZonesEntered(Set<ZoneId> newZones)
+    {
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        for (final ZoneId id : newZones)
+        {
+            final PlayerEnteredZoneEvent event = new PlayerEnteredZoneEvent(osi.findZone(id), this);
+            Bukkit.getPluginManager().callEvent(event);
+        }
+    }
+    
+    /**
+     * @param oldZones
+     */
+    protected void fireZonesLeft(Set<ZoneId> oldZones)
+    {
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        for (final ZoneId id : oldZones)
+        {
+            final PlayerLeftZoneEvent event = new PlayerLeftZoneEvent(osi.findZone(id), this);
+            Bukkit.getPluginManager().callEvent(event);
         }
     }
     
@@ -493,6 +546,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
         this.clientExtensions.clear();
         // clear handlers
         this.eventBus.clear();
+        this.zoneManager.registerMovement(null);
     }
     
     /**
@@ -502,6 +556,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     {
         // clear session storage
         this.sessionStorage = new StorageImpl();
+        this.zoneManager.registerMovement(null);
     }
     
     /**
@@ -630,92 +685,49 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     @Override
     public ZoneInterface getZone()
     {
-        // TODO Support zones
-        return null;
+        return this.zoneManager.getZone();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideZone(de.minigameslib.mclib.api.objects.ZoneInterface)
-     */
     @Override
     public boolean isInsideZone(ZoneInterface zone)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.zoneManager.isInsideZone(zone);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneInterface[])
-     */
     @Override
     public boolean isInsideRandomZone(ZoneInterface... zone)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.zoneManager.isInsideRandomZone(zone);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideAllZones(de.minigameslib.mclib.api.objects.ZoneInterface[])
-     */
     @Override
     public boolean isInsideAllZones(ZoneInterface... zone)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.zoneManager.isInsideAllZones(zone);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
-     */
     @Override
     public ZoneInterface getZone(ZoneTypeId... type)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.zoneManager.getZone(type);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
-     */
     @Override
     public boolean isInsideRandomZone(ZoneTypeId... type)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.zoneManager.isInsideRandomZone(type);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones()
-     */
     @Override
     public Collection<ZoneInterface> getZones()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.zoneManager.getZones();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones(de.minigameslib.mclib.api.objects.ZoneTypeId[])
-     */
     @Override
     public Collection<ZoneInterface> getZones(ZoneTypeId... type)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.zoneManager.getZones(type);
     }
     
     @Override
@@ -789,6 +801,14 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     @Override
     public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
     {
+        if (eventClass == PlayerMoveEvent.class)
+        {
+            this.zoneManager.registerMovement(((McPlayerMoveEvent)event).getBukkitEvent().getTo());
+        }
+        else if (eventClass == PlayerTeleportEvent.class)
+        {
+            this.zoneManager.registerMovement(((McPlayerTeleportEvent)event).getBukkitEvent().getTo());
+        }
         this.eventBus.handle(eventClass, event);
     }
     

@@ -41,15 +41,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneCreatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
@@ -59,8 +68,8 @@ import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface.ResumeReport;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
@@ -91,7 +100,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * @author mepeisen
  *
  */
-class ObjectsManager implements ComponentOwner
+class ObjectsManager implements ComponentOwner, ObjectServiceInterface
 {
     
     /** target data folder. */
@@ -163,14 +172,19 @@ class ObjectsManager implements ComponentOwner
     /** the loaded plugin sets. To detect duplicate loading. */
     private final Set<String>                                                      loadedPlugins           = new HashSet<>();
     
+    /** the players registry. */
+    private final PlayerRegistry players;
+    
     /**
      * Constructor.
      * 
      * @param dataFolder
+     * @param players 
      * @throws McException 
      */
-    public ObjectsManager(File dataFolder) throws McException
+    public ObjectsManager(File dataFolder, PlayerRegistry players) throws McException
     {
+        this.players = players;
         this.dataFolder = dataFolder;
         this.componentsFolder = new File(this.dataFolder, "components"); //$NON-NLS-1$
         this.signsFolder = new File(this.dataFolder, "signs"); //$NON-NLS-1$
@@ -226,64 +240,35 @@ class ObjectsManager implements ComponentOwner
         }
     }
 
-    /**
-     * Registers a component handler.
-     * 
-     * @param type
-     * @param handler
-     * @throws McException
-     */
+    @Override
     public <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException
     {
         this.componentTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.componentHandlerClasses.put(type, handler);
     }
     
-    /**
-     * Registers an entity handler.
-     * 
-     * @param type
-     * @param handler
-     * @throws McException
-     */
+    @Override
     public <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException
     {
         this.entityTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.entityHandlerClasses.put(type, handler);
     }
     
-    /**
-     * Registers a sign handler.
-     * 
-     * @param type
-     * @param handler
-     * @throws McException
-     */
+    @Override
     public <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException
     {
         this.signTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.signHandlerClasses.put(type, handler);
     }
     
-    /**
-     * Registers a zone handler.
-     * 
-     * @param type
-     * @param handler
-     * @throws McException
-     */
+    @Override
     public <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException
     {
         this.zoneTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.zoneHandlerClasses.put(type, handler);
     }
     
-    /**
-     * Tries to resume objects.
-     * 
-     * @param plugin
-     * @return report of resuming components.
-     */
+    @Override
     public ResumeReport resumeObjects(Plugin plugin)
     {
         final String pluginName = plugin.getName();
@@ -626,10 +611,7 @@ class ObjectsManager implements ComponentOwner
         // maybe in future versions we will do some logic here
     }
     
-    /**
-     * @param location
-     * @return component or {@code null} if it was not found.
-     */
+    @Override
     public ComponentInterface findComponent(Location location)
     {
         final Optional<ComponentImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
@@ -637,23 +619,13 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
     
-    /**
-     * @param id
-     * @return component or {@code null} if it was not found.
-     */
+    @Override
     public ComponentInterface findComponent(ComponentIdInterface id)
     {
         return this.components.get(id);
     }
     
-    /**
-     * @param type
-     * @param location
-     * @param handler
-     * @param persist
-     * @return new component
-     * @throws McException
-     */
+    @Override
     public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException
     {
         final Plugin plugin = this.safeGetPlugin(type.name(), type);
@@ -668,6 +640,12 @@ class ObjectsManager implements ComponentOwner
         
         // init
         final ComponentImpl impl = new ComponentImpl(plugin, this.registry, location, id, handler2, persist ? new File(this.componentsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final ComponentCreateEvent createEvent = new ComponentCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
         handler2.onCreate(impl);
         
         // store data
@@ -680,6 +658,9 @@ class ObjectsManager implements ComponentOwner
             this.saveIdList(this.componentsFolder, this.componentsByPlugin);
             impl.saveConfig();
         }
+        
+        final ComponentCreatedEvent createdEvent = new ComponentCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
         return impl;
     }
     
@@ -776,43 +757,27 @@ class ObjectsManager implements ComponentOwner
         }
     }
     
-    /**
-     * @param entity
-     * @return entity or {@code null} if it was not found
-     */
+    @Override
     public EntityInterface findEntity(Entity entity)
     {
         // TODO entity support
         throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
     }
     
-    /**
-     * @param id
-     * @return entity or {@code null} if it was not found
-     */
+    @Override
     public EntityInterface findEntity(EntityIdInterface id)
     {
         return this.entities.get(id);
     }
     
-    /**
-     * @param type
-     * @param entity
-     * @param handler
-     * @param persist
-     * @return new entity
-     * @throws McException
-     */
+    @Override
     public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException
     {
         // TODO entity support
         throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
     }
     
-    /**
-     * @param location
-     * @return sign or {@code null} if it was not found
-     */
+    @Override
     public SignInterface findSign(Location location)
     {
         final Optional<SignImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
@@ -820,23 +785,13 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
     
-    /**
-     * @param id
-     * @return sign or {@code null} if it was not found
-     */
+    @Override
     public SignInterface findSign(SignIdInterface id)
     {
         return this.signs.get(id);
     }
     
-    /**
-     * @param type
-     * @param sign
-     * @param handler
-     * @param persist
-     * @return new sign
-     * @throws McException
-     */
+    @Override
     public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException
     {
         final Plugin plugin = this.safeGetPlugin(type.name(), type);
@@ -851,6 +806,12 @@ class ObjectsManager implements ComponentOwner
         
         // init
         final SignImpl impl = new SignImpl(plugin, this.registry, sign, id, handler2, persist ? new File(this.signsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final SignCreateEvent createEvent = new SignCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
         handler2.onCreate(impl);
         
         // store data
@@ -863,6 +824,9 @@ class ObjectsManager implements ComponentOwner
             this.saveIdList(this.zonesFolder, this.zonesByPlugin);
             impl.saveConfig();
         }
+        
+        final SignCreatedEvent createdEvent = new SignCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
         return impl;
     }
     
@@ -891,14 +855,7 @@ class ObjectsManager implements ComponentOwner
         }
     }
     
-    /**
-     * @param type
-     * @param cuboid
-     * @param handler
-     * @param persist
-     * @return new zone
-     * @throws McException
-     */
+    @Override
     public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException
     {
         final Plugin plugin = this.safeGetPlugin(type.name(), type);
@@ -913,6 +870,12 @@ class ObjectsManager implements ComponentOwner
         
         // init
         final ZoneImpl impl = new ZoneImpl(plugin, this.registry, cuboid, id, handler2, persist ? new File(this.zonesFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final ZoneCreateEvent createEvent = new ZoneCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
         handler2.onCreate(impl);
         
         // store data
@@ -925,6 +888,9 @@ class ObjectsManager implements ComponentOwner
             this.saveIdList(this.zonesFolder, this.zonesByPlugin);
             impl.saveConfig();
         }
+        
+        final ZoneCreatedEvent createdEvent = new ZoneCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
         return impl;
     }
     
@@ -953,29 +919,20 @@ class ObjectsManager implements ComponentOwner
         }
     }
     
-    /**
-     * @param id
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public ZoneInterface findZone(ZoneIdInterface id)
     {
         return this.zones.get(id);
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public Collection<ZoneInterface> findZonesWithoutYD(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYD(location))
                 .collect(Collectors.toList());
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public ZoneInterface findZoneWithoutYD(Location location)
     {
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
@@ -983,20 +940,14 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public Collection<ZoneInterface> findZonesWithoutY(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutY(location))
                 .collect(Collectors.toList());
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public ZoneInterface findZoneWithoutY(Location location)
     {
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
@@ -1004,20 +955,14 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public Collection<ZoneInterface> findZones(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLoc(location))
                 .collect(Collectors.toList());
     }
     
-    /**
-     * @param location
-     * @return zone or {@code null} if it was not found
-     */
+    @Override
     public ZoneInterface findZone(Location location)
     {
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
@@ -1095,21 +1040,15 @@ class ObjectsManager implements ComponentOwner
         }
     }
 
-    /**
-     * @param location
-     * @return components list
-     */
+    @Override
     public Collection<ComponentInterface> findComponents(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
                 .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
     }
 
-    /**
-     * @param type
-     * @return components list
-     */
-    public Collection<ComponentInterface> findComponents(ComponentTypeId[] type)
+    @Override
+    public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ComponentTypeId typeid : type)
@@ -1128,41 +1067,29 @@ class ObjectsManager implements ComponentOwner
         return result;
     }
 
-    /**
-     * @param entity
-     * @return entities
-     */
+    @Override
     public Collection<EntityInterface> findEntities(Entity entity)
     {
         // TODO entity support
         throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
     }
 
-    /**
-     * @param type
-     * @return entities
-     */
-    public Collection<EntityInterface> findEntities(EntityTypeId[] type)
+    @Override
+    public Collection<EntityInterface> findEntities(EntityTypeId... type)
     {
         // TODO entity support
         throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
     }
 
-    /**
-     * @param location
-     * @return collection
-     */
+    @Override
     public Collection<SignInterface> findSigns(Location location)
     {
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c)
                 .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
     }
 
-    /**
-     * @param type
-     * @return collection
-     */
-    public Collection<SignInterface> findSigns(SignTypeId[] type)
+    @Override
+    public Collection<SignInterface> findSigns(SignTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final SignTypeId typeid : type)
@@ -1224,11 +1151,7 @@ class ObjectsManager implements ComponentOwner
         return null;
     }
 
-    /**
-     * @param cuboid
-     * @param mode
-     * @return collection
-     */
+    @Override
     public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
     {
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
@@ -1237,13 +1160,8 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
 
-    /**
-     * @param cuboid
-     * @param mode
-     * @param type
-     * @return collection
-     */
-    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId[] type)
+    @Override
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1257,12 +1175,8 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return collection
-     */
-    public ZoneInterface findZone(Location location, ZoneTypeId[] type)
+    @Override
+    public ZoneInterface findZone(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1275,11 +1189,7 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
 
-    /**
-     * @param cuboid
-     * @param mode
-     * @return collection
-     */
+    @Override
     public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
     {
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
@@ -1287,13 +1197,8 @@ class ObjectsManager implements ComponentOwner
                 .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
     }
 
-    /**
-     * @param cuboid
-     * @param mode
-     * @param type
-     * @return collection
-     */
-    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId[] type)
+    @Override
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1306,12 +1211,8 @@ class ObjectsManager implements ComponentOwner
                 .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return collection
-     */
-    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId[] type)
+    @Override
+    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1323,12 +1224,8 @@ class ObjectsManager implements ComponentOwner
                 .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return zone
-     */
-    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId[] type)
+    @Override
+    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1341,12 +1238,8 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return collection
-     */
-    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId[] type)
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1358,12 +1251,8 @@ class ObjectsManager implements ComponentOwner
                 .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return zone
-     */
-    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId[] type)
+    @Override
+    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1376,12 +1265,8 @@ class ObjectsManager implements ComponentOwner
         return result.isPresent() ? result.get() : null;
     }
 
-    /**
-     * @param location
-     * @param type
-     * @return collection
-     */
-    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId[] type)
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1393,11 +1278,8 @@ class ObjectsManager implements ComponentOwner
                 .filter(c -> c.getCuboid().containsLocWithoutYD(location)).collect(Collectors.toList());
     }
 
-    /**
-     * @param type
-     * @return collection
-     */
-    public Collection<ZoneInterface> findZones(ZoneTypeId[] type)
+    @Override
+    public Collection<ZoneInterface> findZones(ZoneTypeId... type)
     {
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
@@ -1414,6 +1296,88 @@ class ObjectsManager implements ComponentOwner
         });
         
         return result;
+    }
+
+    @Override
+    public ComponentInterface findComponent(Block block)
+    {
+        return this.findComponent(block.getLocation());
+    }
+
+    @Override
+    public Collection<ComponentInterface> findComponents(Block block)
+    {
+        return this.findComponents(block.getLocation());
+    }
+
+    @Override
+    public SignInterface findSign(Block block)
+    {
+        return this.findSign(block.getLocation());
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(Block block)
+    {
+        return this.findSigns(block.getLocation());
+    }
+
+    @Override
+    public SignInterface findSign(Sign sign)
+    {
+        return this.findSign(sign.getLocation());
+    }
+
+    @Override
+    public Collection<SignInterface> findSigns(Sign sign)
+    {
+        return this.findSigns(sign.getLocation());
+    }
+    
+    @Override
+    public McPlayerInterface getPlayer(Player player)
+    {
+        return this.players.getPlayer(player);
+    }
+    
+    @Override
+    public McPlayerInterface getPlayer(OfflinePlayer player)
+    {
+        return this.players.getPlayer(player);
+    }
+    
+    @Override
+    public McPlayerInterface getPlayer(UUID uuid)
+    {
+        return this.players.getPlayer(uuid);
+    }
+
+    @Override
+    public ComponentTypeId getType(ComponentIdInterface id)
+    {
+        final ComponentId casted = (ComponentId) id;
+        return this.componentTypesByPlugin.containsKey(casted.getPluginName()) ? this.componentTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
+    }
+
+    @Override
+    public EntityTypeId getType(EntityIdInterface id)
+    {
+        final EntityId casted = (EntityId) id;
+        return this.entityTypesByPlugin.containsKey(casted.getPluginName()) ? this.entityTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
+    }
+
+    @Override
+    public ZoneTypeId getType(ZoneIdInterface id)
+    {
+        final ZoneId casted = (ZoneId) id;
+        return this.zoneTypesByPlugin.containsKey(casted.getPluginName()) ? this.zoneTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
+    }
+
+    @Override
+    public SignTypeId getType(SignIdInterface id)
+    {
+        final SignId casted = (SignId) id;
+        return this.signTypesByPlugin.containsKey(casted.getPluginName()) ? this.signTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
     
 }

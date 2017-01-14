@@ -195,7 +195,14 @@ class MessagesConfigImpl implements MessagesConfigInterface
         {
             this.file = new File(this.plugin.getDataFolder(), "messages.yml"); //$NON-NLS-1$
         }
-        this.config = new YmlFile(this.file);
+        if (this.file.exists())
+        {
+            this.config = new YmlFile(this.file);
+        }
+        else
+        {
+            this.config = new YmlFile();
+        }
         
         // add the defaults.
         for (final LocalizedMessageInterface msg : this.defaults)

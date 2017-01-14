@@ -102,6 +102,10 @@ public class YmlFile extends YmlCommentableSection
      */
     public void saveFile(File file) throws IOException
     {
+        if (!file.getParentFile().exists())
+        {
+            file.getParentFile().mkdirs();
+        }
         try (final FileWriter fow = new FileWriter(file))
         {
             final MyCommentMap data = new MyCommentMap();
