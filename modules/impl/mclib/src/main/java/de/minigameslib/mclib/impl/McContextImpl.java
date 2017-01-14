@@ -178,6 +178,9 @@ class McContextImpl implements McContext
             tld.clear();
             tld.command = command;
             tld.event = event;
+            if (player != null) tld.put(McPlayerInterface.class, player);
+            if (zone != null) tld.put(ZoneInterface.class, zone);
+            if (component != null) tld.put(ComponentInterface.class, component);
             runnable.run();
         }
         finally
@@ -224,6 +227,31 @@ class McContextImpl implements McContext
             tld.command = old.command;
             tld.event = old.event;
             runnable.run();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+
+    @Override
+    public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
+    {
+        final TLD old = this.tls.get();
+        final TLD tld = new TLD();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = command;
+            tld.event = event;
+            if (player != null) tld.put(McPlayerInterface.class, player);
+            if (zone != null) tld.put(ZoneInterface.class, zone);
+            if (component != null) tld.put(ComponentInterface.class, component);
+            return runnable.get();
         }
         finally
         {

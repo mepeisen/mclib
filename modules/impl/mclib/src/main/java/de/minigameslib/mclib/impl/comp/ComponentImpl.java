@@ -27,19 +27,26 @@ package de.minigameslib.mclib.impl.comp;
 import java.io.File;
 
 import org.bukkit.Location;
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
  *
  */
-public class ComponentImpl extends AbstractLocationComponent implements ComponentInterface
+public class ComponentImpl extends AbstractLocationComponent implements ComponentInterface, MgEventListener
 {
     
     /** component id. */
@@ -48,7 +55,11 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     /** component handler. */
     private final ComponentHandlerInterface handler;
     
+    /** an event bus to handle events. */
+    private final EventBus                      eventBus         = new EventBus();
+    
     /**
+     * @param plugin
      * @param registry
      * @param location
      * @param id
@@ -57,11 +68,15 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
      * @param owner 
      * @throws McException 
      */
-    public ComponentImpl(ComponentRegistry registry, Location location, ComponentId id, ComponentHandlerInterface handler, File config, ComponentOwner owner) throws McException
+    public ComponentImpl(Plugin plugin, ComponentRegistry registry, Location location, ComponentId id, ComponentHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
         super(registry, location, config, owner);
         this.id = id;
         this.handler = handler;
+        if (this.handler instanceof McListener)
+        {
+            this.eventBus.registerHandlers(plugin, (McListener) this.handler);
+        }
     }
 
     @Override
@@ -95,15 +110,60 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         this.handler.canDelete();
         super.delete();
         this.handler.onDelete();
+        this.eventBus.clear();
     }
 
     /**
-     * Returns the handler.
-     * @return handler
+     * Clears all event registrations
      */
+    public void clearEventRegistrations()
+    {
+        this.eventBus.clear();
+    }
+
+    @Override
     public ComponentHandlerInterface getHandler()
     {
         return this.handler;
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.registerHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
+    }
+    
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        this.eventBus.onDisable(plugin);
     }
     
 }

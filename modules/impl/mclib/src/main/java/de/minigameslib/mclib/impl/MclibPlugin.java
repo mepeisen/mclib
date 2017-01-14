@@ -91,6 +91,8 @@ import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigVectorData;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
@@ -118,12 +120,14 @@ import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 import de.minigameslib.mclib.impl.com.PlayerProxy;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
@@ -148,7 +152,7 @@ import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
  * @author mepeisen
  */
 public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInterface, ConfigServiceInterface, MessageServiceInterface, ObjectServiceInterface, PermissionServiceInterface,
-        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface
+        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
 {
     
     /**
@@ -227,6 +231,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
      * the get servers ping.
      */
     private GetServersPing                                               serversPing;
+    
+    /** the event bus. */
+    private EventBus eventBus = new EventBus();
     
     static
     {
@@ -315,6 +322,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
+        
+        Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
         
         try
         {
@@ -706,6 +715,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
         if (!evt.getPlugin().isEnabled())
         {
             this.objectsManager.onDisable(evt.getPlugin());
+            this.players.onDisable(evt.getPlugin());
+            this.eventBus.onDisable(evt.getPlugin());
         }
     }
     
@@ -1593,6 +1604,42 @@ public class MclibPlugin extends JavaPlugin implements Listener, EnumServiceInte
     public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
     {
         this.context.runInNewContext(event, command, player, zone, component, runnable);
+    }
+
+    @Override
+    public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
+    {
+        return this.context.calculateInNewContext(event, command, player, zone, component, runnable);
+    }
+
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.eventBus.registerHandler(plugin, clazz, handler);
+    }
+
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, handler);
+    }
+
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
     }
     
 }

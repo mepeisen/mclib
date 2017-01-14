@@ -620,6 +620,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 ((MgEventListener) player).handle(this.cls, mgevt);
             }
             
+            // TODO component etc.
             final ZoneInterface arena = mgevt.getZone();
             if (arena instanceof MgEventListener)
             {

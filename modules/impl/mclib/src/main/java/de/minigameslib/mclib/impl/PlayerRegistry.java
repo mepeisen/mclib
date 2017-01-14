@@ -33,6 +33,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -173,6 +174,18 @@ public class PlayerRegistry
             {
                 impl.onPlayerQuit();
             }
+        }
+    }
+
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        for (final McPlayerImpl player : this.players.asMap().values())
+        {
+            player.onDisable(plugin);
         }
     }
     

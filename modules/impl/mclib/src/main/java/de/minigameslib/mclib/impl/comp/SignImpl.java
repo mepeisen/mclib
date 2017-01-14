@@ -29,19 +29,26 @@ import java.io.File;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
  *
  */
-public class SignImpl extends AbstractLocationComponent implements SignInterface
+public class SignImpl extends AbstractLocationComponent implements SignInterface, MgEventListener
 {
     
     // TODO fetch sign break events
@@ -55,7 +62,11 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     /** the sign handler. */
     private final SignHandlerInterface handler;
     
+    /** an event bus to handle events. */
+    private final EventBus                      eventBus         = new EventBus();
+    
     /**
+     * @param plugin 
      * @param registry
      * @param sign 
      * @param id 
@@ -64,12 +75,16 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
      * @param owner 
      * @throws McException 
      */
-    public SignImpl(ComponentRegistry registry, Sign sign, SignId id, SignHandlerInterface handler, File config, ComponentOwner owner) throws McException
+    public SignImpl(Plugin plugin, ComponentRegistry registry, Sign sign, SignId id, SignHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
         super(registry, sign == null ? null : sign.getLocation(), config, owner);
         this.sign = sign;
         this.id = id;
         this.handler = handler;
+        if (this.handler instanceof McListener)
+        {
+            this.eventBus.registerHandlers(plugin, (McListener) this.handler);
+        }
     }
 
     @Override
@@ -142,6 +157,53 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         {
             throw new McException(CommonMessages.SignNotFoundError);
         }
+    }
+
+    /**
+     * Clears all event registrations
+     */
+    public void clearEventRegistrations()
+    {
+        this.eventBus.clear();
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.registerHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
+    }
+    
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        this.eventBus.onDisable(plugin);
     }
     
 }

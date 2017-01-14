@@ -379,7 +379,7 @@ class ObjectsManager implements ComponentOwner
                 {
                     // init
                     final ZoneHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final ZoneImpl impl = new ZoneImpl(this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+                    final ZoneImpl impl = new ZoneImpl(plugin, this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
                     impl.readConfig();
                     handler.onResume(impl);
                     
@@ -415,7 +415,7 @@ class ObjectsManager implements ComponentOwner
                 {
                     // init
                     final SignHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final SignImpl impl = new SignImpl(this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+                    final SignImpl impl = new SignImpl(plugin, this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
                     impl.readConfig();
                     // research sign
                     final Block block = impl.getLocation().getBlock();
@@ -466,7 +466,7 @@ class ObjectsManager implements ComponentOwner
                 {
                     // init
                     final ComponentHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final ComponentImpl impl = new ComponentImpl(this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+                    final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
                     impl.readConfig();
                     handler.onResume(impl);
                     
@@ -575,6 +575,7 @@ class ObjectsManager implements ComponentOwner
             {
                 cmap.forEach((id, persist) -> {
                     final ComponentImpl component = this.components.remove(id);
+                    component.clearEventRegistrations();
                     component.getHandler().onPause(component);
                 });
             }
@@ -583,6 +584,7 @@ class ObjectsManager implements ComponentOwner
             {
                 emap.forEach((id, persist) -> {
                     final EntityImpl entity = this.entities.remove(id);
+                    entity.clearEventRegistrations();
                     entity.getHandler().onPause(entity);
                 });
             }
@@ -591,6 +593,7 @@ class ObjectsManager implements ComponentOwner
             {
                 smap.forEach((id, persist) -> {
                     final SignImpl sign = this.signs.remove(id);
+                    sign.clearEventRegistrations();
                     sign.getHandler().onPause(sign);
                 });
             }
@@ -599,9 +602,15 @@ class ObjectsManager implements ComponentOwner
             {
                 zmap.forEach((id, persist) -> {
                     final ZoneImpl zone = this.zones.remove(id);
+                    zone.clearEventRegistrations();
                     zone.getHandler().onPause(zone);
                 });
             }
+            
+            this.components.values().forEach(c -> c.onDisable(plugin));
+            this.entities.values().forEach(c -> c.onDisable(plugin));
+            this.signs.values().forEach(c -> c.onDisable(plugin));
+            this.zones.values().forEach(c -> c.onDisable(plugin));
             
             // remove plugin
             this.loadedPlugins.remove(pluginName);
@@ -647,17 +656,18 @@ class ObjectsManager implements ComponentOwner
      */
     public ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException
     {
-        final String pluginName = this.safeGetPluginName(type.name(), type);
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
         if (!this.loadedPlugins.contains(pluginName))
         {
-            throw new McException(CommonMessages.PluginLoadedTwice, pluginName);
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
         }
         final ComponentHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
         final UUID uuid = UUID.randomUUID();
         final ComponentId id = new ComponentId(pluginName, type.name(), uuid);
         
         // init
-        final ComponentImpl impl = new ComponentImpl(this.registry, location, id, handler2, persist ? new File(this.componentsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final ComponentImpl impl = new ComponentImpl(plugin, this.registry, location, id, handler2, persist ? new File(this.componentsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
         handler2.onCreate(impl);
         
         // store data
@@ -714,6 +724,20 @@ class ObjectsManager implements ComponentOwner
      */
     private String safeGetPluginName(String name, Object enumValue) throws McException
     {
+        return this.safeGetPlugin(name, enumValue).getName();
+    }
+    
+    /**
+     * safe get plugin from enum.
+     * 
+     * @param name
+     * @param enumValue
+     * @return plugin
+     * @throws McException
+     *             thrown if enum is invalid or not registered
+     */
+    private Plugin safeGetPlugin(String name, Object enumValue) throws McException
+    {
         if (!(enumValue instanceof Enum<?>))
         {
             throw new McException(CommonMessages.BrokenObjectTypeNotAnEnum, "?", name, enumValue.getClass().getName()); //$NON-NLS-1$
@@ -724,7 +748,7 @@ class ObjectsManager implements ComponentOwner
         {
             throw new McException(CommonMessages.BrokenObjectTypeEnumNotRegistered, "?", name, enumValue.getClass().getName()); //$NON-NLS-1$
         }
-        return plugin.getName();
+        return plugin;
     }
     
     /**
@@ -815,17 +839,18 @@ class ObjectsManager implements ComponentOwner
      */
     public SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException
     {
-        final String pluginName = this.safeGetPluginName(type.name(), type);
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
         if (!this.loadedPlugins.contains(pluginName))
         {
-            throw new McException(CommonMessages.PluginLoadedTwice, pluginName);
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
         }
         final SignHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
         final UUID uuid = UUID.randomUUID();
         final SignId id = new SignId(pluginName, type.name(), uuid);
         
         // init
-        final SignImpl impl = new SignImpl(this.registry, sign, id, handler2, persist ? new File(this.signsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final SignImpl impl = new SignImpl(plugin, this.registry, sign, id, handler2, persist ? new File(this.signsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
         handler2.onCreate(impl);
         
         // store data
@@ -876,17 +901,18 @@ class ObjectsManager implements ComponentOwner
      */
     public ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException
     {
-        final String pluginName = this.safeGetPluginName(type.name(), type);
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
         if (!this.loadedPlugins.contains(pluginName))
         {
-            throw new McException(CommonMessages.PluginLoadedTwice, pluginName);
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
         }
         final ZoneHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
         final UUID uuid = UUID.randomUUID();
         final ZoneId id = new ZoneId(pluginName, type.name(), uuid);
         
         // init
-        final ZoneImpl impl = new ZoneImpl(this.registry, cuboid, id, handler2, persist ? new File(this.zonesFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final ZoneImpl impl = new ZoneImpl(plugin, this.registry, cuboid, id, handler2, persist ? new File(this.zonesFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
         handler2.onCreate(impl);
         
         // store data

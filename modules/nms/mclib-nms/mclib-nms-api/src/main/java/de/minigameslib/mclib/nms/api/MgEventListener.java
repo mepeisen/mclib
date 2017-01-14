@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import org.bukkit.event.Event;
+
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 
 /**
@@ -39,6 +41,6 @@ public interface MgEventListener
      * @param eventClass
      * @param event
      */
-    void handle(Class<?> eventClass, MinecraftEvent<?, ?> event);
+    <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event);
     
 }

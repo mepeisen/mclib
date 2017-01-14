@@ -27,11 +27,19 @@ package de.minigameslib.mclib.impl.comp;
 import java.io.File;
 import java.util.Collection;
 
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
+
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.Cuboid;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
+import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
@@ -40,7 +48,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 /**
  * @author mepeisen
  */
-public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
+public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, MgEventListener
 {
     
     /** zone id. */
@@ -49,7 +57,11 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     /** zone handler. */
     private final ZoneHandlerInterface handler;
     
+    /** an event bus to handle events. */
+    private final EventBus                      eventBus         = new EventBus();
+    
     /**
+     * @param plugin 
      * @param registry
      * @param cuboid
      * @param id 
@@ -58,11 +70,15 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
      * @param owner 
      * @throws McException 
      */
-    public ZoneImpl(ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner) throws McException
+    public ZoneImpl(Plugin plugin, ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
         super(registry, cuboid, config, owner);
         this.id = id;
         this.handler = handler;
+        if (this.handler instanceof McListener)
+        {
+            this.eventBus.registerHandlers(plugin, (McListener) this.handler);
+        }
     }
 
     @Override
@@ -153,6 +169,53 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface
     public Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type)
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping, type);
+    }
+
+    /**
+     * Clears all event registrations
+     */
+    public void clearEventRegistrations()
+    {
+        this.eventBus.clear();
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.registerHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
+    }
+    
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        this.eventBus.onDisable(plugin);
     }
     
 }

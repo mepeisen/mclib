@@ -45,12 +45,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -62,6 +66,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -70,6 +75,7 @@ import de.minigameslib.mclib.impl.RawMessage.RawAction;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.PongData;
@@ -86,41 +92,44 @@ import net.jodah.expiringmap.ExpiringMap;
  * @author mepeisen
  *
  */
-class McPlayerImpl implements McPlayerInterface
+class McPlayerImpl implements McPlayerInterface, MgEventListener
 {
     
     /** logger. */
-    static final Logger           LOGGER           = Logger.getLogger(McPlayerImpl.class.getName());
+    static final Logger                         LOGGER           = Logger.getLogger(McPlayerImpl.class.getName());
     
     /** players uuid. */
-    private UUID                  uuid;
+    private UUID                                uuid;
     
     /** the players name. */
-    private String                name;
+    private String                              name;
     
     /** the session storage. */
-    private StorageImpl           sessionStorage   = new StorageImpl();
+    private StorageImpl                         sessionStorage   = new StorageImpl();
     
     /** persistent player configuration. */
-    private MclibPlayersConfig    config           = new MclibPlayersConfig();
+    private MclibPlayersConfig                  config           = new MclibPlayersConfig();
     
     /** persistent storage file. */
-    YmlFile                       persistentStorage;
+    YmlFile                                     persistentStorage;
     
     /** persistent storage file. */
-    private File                  persistentStorageFile;
+    private File                                persistentStorageFile;
     
     /** the persistent storage. */
-    private PersistentStorageImpl pstorage         = new PersistentStorageImpl();
+    private PersistentStorageImpl               pstorage         = new PersistentStorageImpl();
     
     /** {@code true} if the client mod is installed. */
-    private boolean               hasForgeMod;
+    private boolean                             hasForgeMod;
     
     /** list of client extensions that were reported by client mod. */
-    private Set<String>           clientExtensions = new HashSet<>();
+    private Set<String>                         clientExtensions = new HashSet<>();
     
     /** the raw actions. */
-    private final ExpiringMap<UUID, McRunnable> rawActions = ExpiringMap.builder().variableExpiration().build();
+    private final ExpiringMap<UUID, McRunnable> rawActions       = ExpiringMap.builder().variableExpiration().build();
+    
+    /** an event bus to handle events. */
+    private final EventBus                      eventBus         = new EventBus();
     
     /**
      * Constructor
@@ -482,6 +491,8 @@ class McPlayerImpl implements McPlayerInterface
         // clear client information
         this.hasForgeMod = false;
         this.clientExtensions.clear();
+        // clear handlers
+        this.eventBus.clear();
     }
     
     /**
@@ -622,8 +633,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Support zones
         return null;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideZone(de.minigameslib.mclib.api.objects.ZoneInterface)
      */
     @Override
@@ -632,8 +645,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return false;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneInterface[])
      */
     @Override
@@ -642,8 +657,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return false;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideAllZones(de.minigameslib.mclib.api.objects.ZoneInterface[])
      */
     @Override
@@ -652,8 +669,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return false;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
      */
     @Override
@@ -662,8 +681,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return null;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#isInsideRandomZone(de.minigameslib.mclib.api.objects.ZoneTypeId[])
      */
     @Override
@@ -672,8 +693,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return false;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones()
      */
     @Override
@@ -682,8 +705,10 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return null;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see de.minigameslib.mclib.api.objects.McPlayerInterface#getZones(de.minigameslib.mclib.api.objects.ZoneTypeId[])
      */
     @Override
@@ -692,7 +717,7 @@ class McPlayerImpl implements McPlayerInterface
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     @Override
     public void sendRaw(RawMessageInterface raw) throws McException
     {
@@ -708,9 +733,10 @@ class McPlayerImpl implements McPlayerInterface
         Bukkit.getServicesManager().load(NmsFactory.class).create(ChatSystemInterface.class).sendMessage(this.getBukkitPlayer(), json);
         
     }
-
+    
     /**
      * Performs a raw command passed from mclib console command
+     * 
      * @param commandUuid
      */
     public void onRawCommand(UUID commandUuid)
@@ -734,6 +760,45 @@ class McPlayerImpl implements McPlayerInterface
                 this.sendMessage(ex.getErrorMessage(), ex.getArgs());
             }
         }
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.eventBus.registerHandler(plugin, clazz, handler);
+    }
+    
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, handler);
+    }
+    
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
+    }
+    
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        this.eventBus.onDisable(plugin);
     }
     
 }

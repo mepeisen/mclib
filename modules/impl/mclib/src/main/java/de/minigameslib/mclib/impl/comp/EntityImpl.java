@@ -24,17 +24,28 @@
 
 package de.minigameslib.mclib.impl.comp;
 
+import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
+
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.MgEventListener;
 
 /**
  * @author mepeisen
  *
  */
-public class EntityImpl implements EntityInterface
+public class EntityImpl implements EntityInterface, MgEventListener
 {
+    
+    /** an event bus to handle events. */
+    private final EventBus                      eventBus         = new EventBus();
     
     @Override
     public EntityIdInterface getEntityId()
@@ -62,6 +73,53 @@ public class EntityImpl implements EntityInterface
     {
         // TODO support entities
         return null;
+    }
+
+    /**
+     * Clears all event registrations
+     */
+    public void clearEventRegistrations()
+    {
+        this.eventBus.clear();
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.registerHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.registerHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    {
+        this.eventBus.unregisterHandler(plugin, clazz, h);
+    }
+    
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.eventBus.unregisterHandlers(plugin, listener);
+    }
+    
+    @Override
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    {
+        this.eventBus.handle(eventClass, event);
+    }
+    
+    /**
+     * Plugin disable
+     * @param plugin
+     */
+    public void onDisable(Plugin plugin)
+    {
+        this.eventBus.onDisable(plugin);
     }
     
 }

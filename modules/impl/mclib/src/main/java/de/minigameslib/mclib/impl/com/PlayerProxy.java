@@ -30,9 +30,12 @@ import java.util.Locale;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -43,6 +46,7 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
@@ -233,6 +237,30 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     public Collection<ZoneInterface> getZones(ZoneTypeId... type)
     {
         return this.target.getZones();
+    }
+
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.target.registerHandler(plugin, clazz, handler);
+    }
+
+    @Override
+    public void registerHandlers(Plugin plugin, McListener listener)
+    {
+        this.target.registerHandlers(plugin, listener);
+    }
+
+    @Override
+    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    {
+        this.target.unregisterHandler(plugin, clazz, handler);
+    }
+
+    @Override
+    public void unregisterHandlers(Plugin plugin, McListener listener)
+    {
+        this.target.unregisterHandlers(plugin, listener);
     }
     
 }
