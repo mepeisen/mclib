@@ -33,10 +33,10 @@ import de.minigameslib.mclib.api.objects.EntityInterface;
  * 
  * <p>
  * This event can be cancelled. If cancelled the entity will not be created.
+ * </p>
  * 
  * <p>
  * Notice: This event is related to the McLib objects manager. It does not cover the minecraft entities themselves.
- * </p>
  * </p>
  * 
  * @author mepeisen
