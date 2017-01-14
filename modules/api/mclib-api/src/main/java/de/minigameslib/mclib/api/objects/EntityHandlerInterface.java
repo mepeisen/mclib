@@ -25,9 +25,15 @@
 package de.minigameslib.mclib.api.objects;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McEventHandler;
+import de.minigameslib.mclib.api.event.McListener;
 
 /**
  * An entity handler is declared by another plugin; while entity creation it is used to store custom data.
+ * 
+ * <p>
+ * To fetch entity events the handler has to implement {@link McListener} and tag event handler methods with {@link McEventHandler}.
+ * </p>
  * 
  * @author mepeisen
  */

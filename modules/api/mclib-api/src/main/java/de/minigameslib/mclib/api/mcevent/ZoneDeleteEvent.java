@@ -29,7 +29,7 @@ import org.bukkit.event.HandlerList;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
 /**
- * An event fired before a new zone is deleted.
+ * An event fired before an existing zone is deleted.
  * 
  * <p>
  * This event can be cancelled. If cancelled the zone will not be deleted.

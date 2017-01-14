@@ -25,6 +25,12 @@
 package de.minigameslib.mclib.shared.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,8 +43,13 @@ import java.util.Map;
 import org.junit.Test;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
+import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
  * Testing AnnotatedDataFragment
@@ -149,6 +160,408 @@ public class AnnotatedDataFragmentTest
         final MemoryDataSection section = new MemoryDataSection();
         section.set("FOO", data1); //$NON-NLS-1$
         assertEquals(data1, section.getFragment(AllData.class, "FOO")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests reading with final field
+     */
+    @Test
+    public void testFinal()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("d.number", 1); //$NON-NLS-1$
+        // still old value in final. Maybe strange but the more important test is that it does not throw exceptions
+        assertEquals(0, section.getFragment(DataFinal.class, "d").number); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests reading with final field
+     */
+    @Test
+    public void testFinal2()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("d", new DataFinal()); //$NON-NLS-1$
+        assertEquals(0, section.getInt("d.number")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests reading with final field
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testStaticFinal()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("d.number", 1); //$NON-NLS-1$
+        section.getFragment(DataStaticFinal.class, "d"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests reading with final field
+     */
+    @Test
+    public void testStaticFinal2()
+    {
+        // reading static finals with instance is allowed but writing not (see testStaticFinal).
+        // somehow strange
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("d", new DataStaticFinal()); //$NON-NLS-1$
+        assertEquals(0, section.getInt("d.number")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedRefTypeTest1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("data1.int2", 1);  //$NON-NLS-1$
+        assertTrue(new DataRef().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedRefTypeTest2()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("data1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        assertFalse(new DataRef().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedPrimListTypeTest1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("numbers.foo1", 1);  //$NON-NLS-1$
+        assertTrue(new DataPrimList().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentListTypeTest1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1.int2", 1);  //$NON-NLS-1$
+        assertTrue(new DataFragmentList().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentListTypeTest2()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        assertFalse(new DataFragmentList().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentListTypeTest3()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1", 1);  //$NON-NLS-1$
+        assertFalse(new DataFragmentList().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentListTypeTest4()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs", 1);  //$NON-NLS-1$
+        assertFalse(new DataFragmentList().test(data));
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testNestedObject()
+    {
+        new DataObjectList().test(null);
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testNestedObject2()
+    {
+        new DataObject().test(null);
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test
+    public void testNestedVector()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<VectorDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(VectorDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getVectorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataVectorList list = new DataVectorList();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.get(0));
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test
+    public void testNestedVector2()
+    {
+        final DataSection data = mock(DataSection.class);
+        final VectorDataFragment result = mock(VectorDataFragment.class);
+        when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
+        when(data.getVector("ref")).thenReturn(result); //$NON-NLS-1$
+        
+        final DataVector obj = new DataVector();
+        obj.read(data);
+        assertEquals(result, obj.ref);
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test
+    public void testNestedVector3()
+    {
+        final DataSection data = mock(DataSection.class);
+        final VectorDataFragment result = mock(VectorDataFragment.class);
+        
+        final DataVectorList list = new DataVectorList();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedVector4()
+    {
+        final DataSection data = mock(DataSection.class);
+        final VectorDataFragment result = mock(VectorDataFragment.class);
+        
+        final DataVector ref = new DataVector();
+        ref.ref = result;
+        ref.write(data);
+        
+        verify(data, times(1)).set("ref", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedItemStack()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<ItemStackDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(ItemStackDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getItemList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataItemStackList list = new DataItemStackList();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.get(0));
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedItemStack2()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ItemStackDataFragment result = mock(ItemStackDataFragment.class);
+        when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
+        when(data.getItemStack("ref")).thenReturn(result); //$NON-NLS-1$
+        
+        final DataItemStack obj = new DataItemStack();
+        obj.read(data);
+        assertEquals(result, obj.ref);
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedItemStack3()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ItemStackDataFragment result = mock(ItemStackDataFragment.class);
+        
+        final DataItemStackList list = new DataItemStackList();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedItemStack4()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ItemStackDataFragment result = mock(ItemStackDataFragment.class);
+        
+        final DataItemStack ref = new DataItemStack();
+        ref.ref = result;
+        ref.write(data);
+        
+        verify(data, times(1)).set("ref", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
+    public void testNestedColor()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<ColorDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(ColorDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getColorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataColorList list = new DataColorList();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.get(0));
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
+    public void testNestedColor2()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ColorDataFragment result = mock(ColorDataFragment.class);
+        when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
+        when(data.getColor("ref")).thenReturn(result); //$NON-NLS-1$
+        
+        final DataColor obj = new DataColor();
+        obj.read(data);
+        assertEquals(result, obj.ref);
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
+    public void testNestedColor3()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ColorDataFragment result = mock(ColorDataFragment.class);
+        
+        final DataColorList list = new DataColorList();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
+    public void testNestedColor4()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ColorDataFragment result = mock(ColorDataFragment.class);
+        
+        final DataColor ref = new DataColor();
+        ref.ref = result;
+        ref.write(data);
+        
+        verify(data, times(1)).set("ref", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested player
+     */
+    @Test
+    public void testNestedPlayer()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<PlayerDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(PlayerDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getPlayerList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataPlayerList list = new DataPlayerList();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.get(0));
+    }
+    
+    /**
+     * Test nested players
+     */
+    @Test
+    public void testNestedPlayer2()
+    {
+        final DataSection data = mock(DataSection.class);
+        final PlayerDataFragment result = mock(PlayerDataFragment.class);
+        when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
+        when(data.getPlayer("ref")).thenReturn(result); //$NON-NLS-1$
+        
+        final DataPlayer obj = new DataPlayer();
+        obj.read(data);
+        assertEquals(result, obj.ref);
+    }
+    
+    /**
+     * Test nested players
+     */
+    @Test
+    public void testNestedPlayer3()
+    {
+        final DataSection data = mock(DataSection.class);
+        final PlayerDataFragment result = mock(PlayerDataFragment.class);
+        
+        final DataPlayerList list = new DataPlayerList();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested players
+     */
+    @Test
+    public void testNestedPlayer4()
+    {
+        final DataSection data = mock(DataSection.class);
+        final PlayerDataFragment result = mock(PlayerDataFragment.class);
+        
+        final DataPlayer ref = new DataPlayer();
+        ref.ref = result;
+        ref.write(data);
+        
+        verify(data, times(1)).set("ref", result); //$NON-NLS-1$
     }
     
     /**
@@ -389,7 +802,7 @@ public class AnnotatedDataFragmentTest
          * data1
          */
         @PersistentField
-        public Data1 data1;
+        protected Data1 data1;
 
         @Override
         public int hashCode()
@@ -964,6 +1377,202 @@ public class AnnotatedDataFragmentTest
                 return false;
             return true;
         }
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataFinal extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public final int number = 0;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataStaticFinal extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public static final Integer number = 0;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataPrimList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<Integer> numbers = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataFragmentList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<Data1> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataVectorList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<VectorDataFragment> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataItemStackList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<ItemStackDataFragment> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataColorList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<ColorDataFragment> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataPlayerList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<PlayerDataFragment> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataObjectList extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<Object> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataVector extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public VectorDataFragment ref;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataItemStack extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public ItemStackDataFragment ref;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataColor extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public ColorDataFragment ref;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataPlayer extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public PlayerDataFragment ref;
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataObject extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Object ref;
         
     }
     

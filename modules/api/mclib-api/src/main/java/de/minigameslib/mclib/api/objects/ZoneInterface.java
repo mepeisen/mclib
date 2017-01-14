@@ -27,8 +27,12 @@ package de.minigameslib.mclib.api.objects;
 import java.util.Collection;
 
 import org.bukkit.Location;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 
 /**
  * A zone/ cuboid component.
@@ -169,5 +173,37 @@ public interface ZoneInterface
      * @return child zones
      */
     Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type);
+    
+    // event system
+    
+    /**
+     * Register zone related event handlers only active if this zone is involved in events.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Registers an event handler object for events on this zone. Methods tagged with McEventHandler are considered as event handlers.
+     * @param plugin
+     * @param listener
+     */
+    void registerHandlers(Plugin plugin, McListener listener);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param listener
+     */
+    void unregisterHandlers(Plugin plugin, McListener listener);
     
 }

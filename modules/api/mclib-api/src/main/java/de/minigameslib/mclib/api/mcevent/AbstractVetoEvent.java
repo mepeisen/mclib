@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.mcevent;
 
 import java.io.Serializable;
 
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -35,49 +36,59 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
  * 
  * @author mepeisen
  */
-public abstract class AbstractVetoEvent extends Event
+public abstract class AbstractVetoEvent extends Event implements Cancellable
 {
     
     /** the veto flag. */
-    private boolean cancelled;
+    private boolean                   cancelled;
     
     /** the veto reason. */
     private LocalizedMessageInterface vetoReason;
     
     /** message arguments. */
-    private Serializable[] vetoReasonArgs;
-
+    private Serializable[]            vetoReasonArgs;
+    
     /**
      * Returns the veto reason
-     * @return the vetoReason
+     * 
+     * @return the vetoReason; maybe null
      */
     public LocalizedMessageInterface getVetoReason()
     {
         return this.vetoReason;
     }
-
-    /**
-     * Checks if the event was cancelled.
-     * @return the veto flag
-     */
+    
+    @Override
     public boolean isCancelled()
     {
         return this.cancelled;
     }
-
+    
+    @Override
+    public void setCancelled(boolean cancel)
+    {
+        this.cancelled = true;
+        this.vetoReason = null;
+        this.vetoReasonArgs = null;
+    }
+    
     /**
      * Returns the message arguments to format the veto reason message
+     * 
      * @return the vetoReasonArgs
      */
     public Serializable[] getVetoReasonArgs()
     {
         return this.vetoReasonArgs;
     }
-
+    
     /**
      * Sets the event cancelled.
-     * @param reason the reason text.
-     * @param args message arguments
+     * 
+     * @param reason
+     *            the reason text.
+     * @param args
+     *            message arguments
      */
     public void setCancelled(LocalizedMessageInterface reason, Serializable... args)
     {

@@ -24,30 +24,23 @@
 
 package de.minigameslib.mclib;
 
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
-import de.minigameslib.mclib.api.gui.RawMessageInterface;
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.locale.Messages;
+import de.minigameslib.mclib.run.StartShowcase;
 
 /**
  * Showcase plugin class.
  * @author mepeisen
  */
-public class MclibShowcasePlugin extends JavaPlugin implements Listener
+public class MclibShowcasePlugin extends JavaPlugin implements McListener
 {
+    
+    /** start showcase handler. */
+    private StartShowcase startShowcase = new StartShowcase();
 
     /**
      * Constructor.
@@ -56,51 +49,28 @@ public class MclibShowcasePlugin extends JavaPlugin implements Listener
     {
         // empty
     }
+    
+    /**
+     * returns the plugin instance.
+     * @return plugin instance.
+     */
+    public static MclibShowcasePlugin instance()
+    {
+        return JavaPlugin.getPlugin(MclibShowcasePlugin.class);
+    }
 
     @Override
     public void onEnable()
     {
         EnumServiceInterface.instance().registerEnumClass(this, Messages.class);
+        McLibInterface.instance().registerHandlers(this, this.startShowcase);
     }
 
     @Override
     public void onDisable()
     {
+        McLibInterface.instance().unregisterHandlers(this, this.startShowcase);
         EnumServiceInterface.instance().unregisterAllEnumerations(this);
-    }
-    
-    /**
-     * User online event to set display message.
-     * @param evt
-     */
-    @EventHandler
-    public void onUserOnline(PlayerJoinEvent evt)
-    {
-    	final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer(evt.getPlayer());
-    	evt.setJoinMessage(player.encodeMessage(Messages.WelcomeMessage)[0]);
-    	
-    	try
-    	{
-        	McLibInterface.instance().runInNewContext(null, null, player, null, null, () -> {
-        	    McLibInterface.instance().runTaskLater(this, 40, task -> {
-        	        final RawMessageInterface raw = McLibInterface.instance().createRaw();
-                    raw.addHandler(Messages.StartShoecase_ClickHere, null, MclibShowcasePlugin.this::onStartShowcase, LocalDateTime.now().plusMinutes(10));
-                    McLibInterface.instance().getCurrentPlayer().sendRaw(raw);
-        	    });
-        	});
-    	}
-        catch (McException e)
-        {
-            MclibShowcasePlugin.this.getLogger().log(Level.WARNING, "problems sending raw message", e); //$NON-NLS-1$
-        }
-    }
-    
-    /**
-     * Starts the showcase
-     */
-    protected void onStartShowcase()
-    {
-        // TODO
     }
 
 }

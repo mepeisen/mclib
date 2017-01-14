@@ -131,6 +131,25 @@ public interface McContext
     <T> T calculateInNewContext(McSupplier<T> runnable) throws McException;
     
     /**
+     * Runs the code in new context; changes made inside the runnable will be undone.
+     * Sets the given data before calling the runnable
+     * 
+     * @param event the event to set 
+     * @param command the command to set
+     * @param player the player to set
+     * @param zone the zone to set
+     * @param component the component to set
+     * @param runnable
+     *            the runnable to execute.
+     * @return result from runnable
+     * @throws McException
+     *             rethrown from runnable.
+     * @param <T>
+     *            Type of return value
+     */
+    <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException;
+    
+    /**
      * Runs the code but copies all context variables before; changes made inside the runnable will be undone.
      * 
      * @param runnable

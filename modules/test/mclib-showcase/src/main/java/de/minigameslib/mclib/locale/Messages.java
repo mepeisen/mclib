@@ -24,12 +24,14 @@
 
 package de.minigameslib.mclib.locale;
 
+import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageComment.Argument;
-import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.run.SC00001Tasks.Showcase00001CountdownMessages;
+import de.minigameslib.mclib.run.StartShowcase.StartShowcaseMessages;
 
 /**
  * Localized messages
@@ -38,6 +40,7 @@ import de.minigameslib.mclib.api.locale.MessageSeverityType;
  *
  */
 @LocalizedMessages(value="core", defaultLocale = "en")
+@ChildEnum({StartShowcaseMessages.class, Showcase00001CountdownMessages.class})
 public enum Messages implements LocalizedMessageInterface
 {
     
@@ -48,20 +51,6 @@ public enum Messages implements LocalizedMessageInterface
     @MessageComment(value = {
             "Welcome message"},
         args = {@Argument({"Players display name."})})
-    WelcomeMessage,
-    
-    /**
-     * Click here text
-     */
-    @LocalizedMessage(defaultMessage = LocalizedMessage.BOLD + LocalizedMessage.UNDERLINE  + "Click HERE", severity = MessageSeverityType.Success)
-    @MessageComment(value = {"Click here text"})
-    StartShoecase_ClickHere,
-    
-    /**
-     * Starting showcase text
-     */
-    @LocalizedMessage(defaultMessage = " to start the showcase", severity = MessageSeverityType.Information)
-    @MessageComment(value = {"Starting showcase text"})
-    StartShoecase_ToStartShowcase,
+    WelcomeMessage
     
 }

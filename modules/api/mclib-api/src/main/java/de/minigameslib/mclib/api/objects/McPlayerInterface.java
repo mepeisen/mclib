@@ -31,15 +31,23 @@ import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.McContext.ContextRunnable;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
@@ -348,5 +356,235 @@ public interface McPlayerInterface extends PlayerDataFragment
      * @throws IllegalStateException
      */
     void sendToClient(CommunicationEndpointId endpoint, DataSection... data);
+    
+    // event system
+    
+    /**
+     * Register player related event handlers only active if this player is involved in events.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     * @throws IllegalStateException thrown if player is offline
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Registers an event handler object for events on this player. Methods tagged with McEventHandler are considered as event handlers.
+     * @param plugin
+     * @param listener
+     * @throws IllegalStateException thrown if player is offline
+     */
+    void registerHandlers(Plugin plugin, McListener listener);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param listener
+     */
+    void unregisterHandlers(Plugin plugin, McListener listener);
+    
+    /**
+     * Schedules this in the Bukkit scheduler to run on next tick.
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     */
+    default BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTask(plugin, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
+
+    /**
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <p>
+     * Schedules this in the Bukkit scheduler to run asynchronously.
+     * </p>
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalStateException if this was already scheduled
+     */
+    default BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTaskAsynchronously(plugin, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
+
+    /**
+     * Schedules this to run after the specified number of server ticks.
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param delay the ticks to wait before running the task
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     */
+    default BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTaskLater(plugin, delay, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
+
+    /**
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <p>
+     * Schedules this to run asynchronously after the specified number of
+     * server ticks.
+     * </p>
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param delay the ticks to wait before running the task
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     */
+    default BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTaskLaterAsynchronously(plugin, delay, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
+
+    /**
+     * Schedules this to repeatedly run until cancelled, starting after the
+     * specified number of server ticks.
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param delay the ticks to wait before running the task
+     * @param period the ticks to wait between runs
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalStateException if this was already scheduled
+     * @see BukkitScheduler#runTaskTimer(Plugin, Runnable, long, long)
+     */
+    default BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTaskTimer(plugin, delay, period, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
+
+    /**
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
+     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <p>
+     * Schedules this to repeatedly run asynchronously until cancelled,
+     * starting after the specified number of server ticks.
+     * </p>
+     * 
+     * <p>
+     * This method will run the new method with a copy of current context.
+     * <p>
+     *
+     * @param plugin the reference to the plugin scheduling task
+     * @param delay the ticks to wait before running the task for the first
+     *     time
+     * @param period the ticks to wait between runs
+     * @param task the task to be run
+     * @return a BukkitTask that contains the id number
+     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalStateException if this was already scheduled
+     * @see BukkitScheduler#runTaskTimerAsynchronously(Plugin, Runnable, long,
+     *     long)
+     */
+    default BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+                return McLibInterface.instance().runTaskTimerAsynchronously(plugin, delay, period, task);
+            });
+        }
+        catch (McException ex)
+        {
+            // should never happen
+            // TODO Logging
+            return null;
+        }
+    }
     
 }

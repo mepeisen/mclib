@@ -33,6 +33,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocatedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreateEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.EntityEnteredZoneEvent;
 import de.minigameslib.mclib.api.mcevent.EntityEntersZoneEvent;
 import de.minigameslib.mclib.api.mcevent.EntityLeavesZoneEvent;
@@ -45,10 +55,18 @@ import de.minigameslib.mclib.api.mcevent.PlayerGuiClickEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerLeavesZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerLeftZoneEvent;
 import de.minigameslib.mclib.api.mcevent.PlayerOpenGuiEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocatedEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
@@ -73,6 +91,16 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      */
     public AbstractEventSystem()
     {
+        this.registerHandler(ComponentCreatedEvent.class, (evt) -> new MgComponentCreatedEvent(evt));
+        this.registerHandler(ComponentCreateEvent.class, (evt) -> new MgComponentCreateEvent(evt));
+        this.registerHandler(ComponentDeletedEvent.class, (evt) -> new MgComponentDeletedEvent(evt));
+        this.registerHandler(ComponentDeleteEvent.class, (evt) -> new MgComponentDeleteEvent(evt));
+        this.registerHandler(ComponentRelocatedEvent.class, (evt) -> new MgComponentRelocatedEvent(evt));
+        this.registerHandler(ComponentRelocateEvent.class, (evt) -> new MgComponentRelocateEvent(evt));
+        this.registerHandler(EntityCreatedEvent.class, (evt) -> new MgEntityCreatedEvent(evt));
+        this.registerHandler(EntityCreateEvent.class, (evt) -> new MgEntityCreateEvent(evt));
+        this.registerHandler(EntityDeletedEvent.class, (evt) -> new MgEntityDeletedEvent(evt));
+        this.registerHandler(EntityDeleteEvent.class, (evt) -> new MgEntityDeleteEvent(evt));
         this.registerHandler(EntityEnteredZoneEvent.class, (evt) -> new MgEntityEnteredZoneEvent(evt));
         this.registerHandler(EntityEntersZoneEvent.class, (evt) -> new MgEntityEntersZoneEvent(evt));
         this.registerHandler(EntityLeavesZoneEvent.class, (evt) -> new MgEntityLeavesZoneEvent(evt));
@@ -85,12 +113,18 @@ public abstract class AbstractEventSystem implements EventSystemInterface
         this.registerHandler(PlayerLeavesZoneEvent.class, (evt) -> new MgPlayerLeavesZoneEvent(evt));
         this.registerHandler(PlayerLeftZoneEvent.class, (evt) -> new MgPlayerLeftZoneEvent(evt));
         this.registerHandler(PlayerOpenGuiEvent.class, (evt) -> new MgPlayerOpenGuiEvent(evt));
+        this.registerHandler(SignCreatedEvent.class, (evt) -> new MgSignCreatedEvent(evt));
+        this.registerHandler(SignCreateEvent.class, (evt) -> new MgSignCreateEvent(evt));
+        this.registerHandler(SignDeletedEvent.class, (evt) -> new MgSignDeletedEvent(evt));
+        this.registerHandler(SignDeleteEvent.class, (evt) -> new MgSignDeleteEvent(evt));
+        this.registerHandler(SignRelocatedEvent.class, (evt) -> new MgSignRelocatedEvent(evt));
+        this.registerHandler(SignRelocateEvent.class, (evt) -> new MgSignRelocateEvent(evt));
         this.registerHandler(ZoneCreatedEvent.class, (evt) -> new MgZoneCreatedEvent(evt));
         this.registerHandler(ZoneCreateEvent.class, (evt) -> new MgZoneCreateEvent(evt));
         this.registerHandler(ZoneDeletedEvent.class, (evt) -> new MgZoneDeletedEvent(evt));
         this.registerHandler(ZoneDeleteEvent.class, (evt) -> new MgZoneDeleteEvent(evt));
-        // TODO Sign create/delete
-        // TODO Entity create/delete
+        this.registerHandler(ZoneRelocatedEvent.class, (evt) -> new MgZoneRelocatedEvent(evt));
+        this.registerHandler(ZoneRelocateEvent.class, (evt) -> new MgZoneRelocateEvent(evt));
     }
     
     @Override
@@ -222,6 +256,210 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     }
     
     /**
+     * Event handler for ComponentCreatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentCreated(ComponentCreatedEvent evt)
+    {
+        this.getHandler(ComponentCreatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ComponentCreateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentCreate(ComponentCreateEvent evt)
+    {
+        this.getHandler(ComponentCreateEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ComponentDeletedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentDeleted(ComponentDeletedEvent evt)
+    {
+        this.getHandler(ComponentDeletedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ComponentDeleteEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentDelete(ComponentDeleteEvent evt)
+    {
+        this.getHandler(ComponentDeleteEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ComponentRelocatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentRelocated(ComponentRelocatedEvent evt)
+    {
+        this.getHandler(ComponentRelocatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ComponentRelocateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onComponentRelocate(ComponentRelocateEvent evt)
+    {
+        this.getHandler(ComponentRelocateEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for EntityCreatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onEntityCreated(EntityCreatedEvent evt)
+    {
+        this.getHandler(EntityCreatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for EntityCreateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onEntityCreate(EntityCreateEvent evt)
+    {
+        this.getHandler(EntityCreateEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for EntityDeletedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onEntityDeleted(EntityDeletedEvent evt)
+    {
+        this.getHandler(EntityDeletedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for EntityDeleteEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onEntityDelete(EntityDeleteEvent evt)
+    {
+        this.getHandler(EntityDeleteEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignCreatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignCreated(SignCreatedEvent evt)
+    {
+        this.getHandler(SignCreatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignCreateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignCreate(SignCreateEvent evt)
+    {
+        this.getHandler(SignCreateEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignDeletedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignDeleted(SignDeletedEvent evt)
+    {
+        this.getHandler(SignDeletedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignDeleteEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignDelete(SignDeleteEvent evt)
+    {
+        this.getHandler(SignDeleteEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignRelocatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignRelocated(SignRelocatedEvent evt)
+    {
+        this.getHandler(SignRelocatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for SignRelocateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onSignRelocate(SignRelocateEvent evt)
+    {
+        this.getHandler(SignRelocateEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ZoneCreatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onZoneCreated(ZoneCreatedEvent evt)
+    {
+        this.getHandler(ZoneCreatedEvent.class).handle(evt);
+    }
+    
+    /**
      * Event handler for ZoneCreateEvent event.
      * 
      * @param evt
@@ -255,6 +493,30 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     public void onZoneDelete(ZoneDeleteEvent evt)
     {
         this.getHandler(ZoneDeleteEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ZoneRelocatedEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onZoneRelocated(ZoneRelocatedEvent evt)
+    {
+        this.getHandler(ZoneRelocatedEvent.class).handle(evt);
+    }
+    
+    /**
+     * Event handler for ZoneRelocateEvent event.
+     * 
+     * @param evt
+     *            the event to be passed.
+     */
+    @EventHandler
+    public void onZoneRelocate(ZoneRelocateEvent evt)
+    {
+        this.getHandler(ZoneRelocateEvent.class).handle(evt);
     }
     
     /**

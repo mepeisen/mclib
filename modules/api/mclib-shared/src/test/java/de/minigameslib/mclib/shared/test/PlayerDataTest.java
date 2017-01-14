@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.shared.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
 
 /**
@@ -98,6 +100,18 @@ public class PlayerDataTest
         assertEquals("FOO", map.get(new PlayerData(UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef00d"), "Player1"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertEquals("BAR", map.get(new PlayerData(UUID.fromString("38400000-8cf0-11bd-b23e-10b96e4ef003"), "Player2"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertEquals("BAR2", map.get(new PlayerData(null, null))); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests loading with invalid uri
+     */
+    @Test
+    public void testInvalidUri()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("uuid", "abc"); //$NON-NLS-1$ //$NON-NLS-2$
+        data.set("name", "abc"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(new PlayerData().test(data));
     }
     
 }

@@ -57,7 +57,7 @@ public class ZoneCreatedEvent extends Event
     /**
      * Returns the zone that was created
      * 
-     * @return the created arena
+     * @return the created zone
      */
     public ZoneInterface getZone()
     {

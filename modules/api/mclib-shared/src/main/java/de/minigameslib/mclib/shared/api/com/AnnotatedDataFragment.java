@@ -119,7 +119,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
                 catch (Exception e)
                 {
-                    throw new IllegalStateException("error reading field " + name + " of class " + this.getClass(), e); //$NON-NLS-1$ //$NON-NLS-2$
+                    throw new IllegalStateException("error setting field " + name + " of class " + this.getClass(), e); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }
@@ -286,11 +286,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 {
                     final ParameterizedType ptype = (ParameterizedType) field.getGenericType();
                     final Class<?> listType = (Class<?>) ptype.getActualTypeArguments()[0];
-                    if (PRIM_TYPES.contains(listType))
-                    {
-                        this.primitiveType = PrimitiveFieldType.PrimitiveList;
-                    }
-                    else if (VectorDataFragment.class.equals(listType))
+                    if (VectorDataFragment.class.equals(listType))
                     {
                         this.primitiveType = PrimitiveFieldType.VectorList;
                     }
@@ -311,6 +307,10 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         this.isFragmentList = true;
                         this.elementType = listType.asSubclass(DataFragment.class);
                     }
+                    else if (PRIM_TYPES.contains(listType))
+                    {
+                        this.primitiveType = PrimitiveFieldType.PrimitiveList;
+                    } 
                     // TODO support map list etc.
 //                    else if (Map.class.isAssignableFrom(elementType))
 //                    {

@@ -2468,6 +2468,43 @@ public class MemoryDataSectionTest
     }
     
     /**
+     * tests clear all method
+     */
+    @Test
+    public void testClearAll()
+    {
+        final ExtDataSection data = new ExtDataSection();
+        data.set("foo.bar",  "baz"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("baz", data.get("foo.bar")); //$NON-NLS-1$ //$NON-NLS-2$
+        data.clearAll();
+        assertEquals(null, data.get("foo")); //$NON-NLS-1$
+        assertEquals(null, data.get("foo.bar")); //$NON-NLS-1$
+    }
+
+    /**
+     * Test helper
+     * @author mepeisen
+     */
+    private static final class ExtDataSection extends MemoryDataSection
+    {
+
+        /**
+         * 
+         */
+        public ExtDataSection()
+        {
+            // empty
+        }
+
+        @Override
+        public void clearAll()
+        {
+            super.clearAll();
+        }
+        
+    }
+    
+    /**
      * Test helper
      */
     public static class PlayerData1 extends PlayerData

@@ -26,7 +26,12 @@ package de.minigameslib.mclib.api;
 
 import java.util.Locale;
 
+import org.bukkit.plugin.Plugin;
+
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -128,5 +133,40 @@ public interface McLibInterface extends McContext
      * @return raw message
      */
     RawMessageInterface createRaw();
+    
+    // event system
+    
+    /**
+     * Register event handler for given mclib event; simliar to registering single bukkit event handlers.
+     * The McLib event will automatically set the execution context (current player/ zone etc.).
+     * If you use a event class not supported by the spigot version it will log a warning and silently ignore
+     * the registration.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Registers an event handler object. Methods tagged with McEventHandler are considered as event handlers.
+     * @param plugin
+     * @param listener
+     */
+    void registerHandlers(Plugin plugin, McListener listener);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param clazz
+     * @param handler
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    
+    /**
+     * Remove a registered event handler.
+     * @param plugin
+     * @param listener
+     */
+    void unregisterHandlers(Plugin plugin, McListener listener);
     
 }

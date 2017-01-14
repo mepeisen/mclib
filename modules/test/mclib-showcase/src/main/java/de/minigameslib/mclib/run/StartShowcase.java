@@ -24,21 +24,90 @@
 
 package de.minigameslib.mclib.run;
 
-import org.bukkit.scheduler.BukkitRunnable;
+import java.time.LocalDateTime;
+
+import de.minigameslib.mclib.MclibShowcasePlugin;
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.event.McEventHandler;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.McPlayerJoinEvent;
+import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessage;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessages;
+import de.minigameslib.mclib.api.locale.MessageComment;
+import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.locale.Messages;
 
 /**
- * Runnable to display "start showcase".
+ * Handler to display "start showcase".
  * 
  * @author mepeisen
  */
-public class StartShowcase extends BukkitRunnable
+public class StartShowcase implements McListener
 {
     
-    @Override
-    public void run()
+    /** tasks to sing for the user. */
+    private SC00001Tasks sc00001Tasks;
+
+    /**
+     * User online event to set display message.
+     * @param evt
+     */
+    @McEventHandler
+    public void onUserOnline(McPlayerJoinEvent evt)
     {
-        // TODO Auto-generated method stub
+        evt.setJoinMessage(Messages.WelcomeMessage);
         
+        evt.getPlayer().runTaskLater(MclibShowcasePlugin.instance(), 40, task -> {
+                final RawMessageInterface raw = McLibInterface.instance().createRaw();
+                raw.addHandler(StartShowcaseMessages.ClickHere, null, this::onStartShowcase, LocalDateTime.now().plusMinutes(10));
+                raw.addMsg(StartShowcaseMessages.ToStartShowcase);
+                McLibInterface.instance().getCurrentPlayer().sendRaw(raw);
+            });
+        this.sc00001Tasks = new SC00001Tasks(McLibInterface.instance().getCurrentPlayer());
     }
     
+    /**
+     * Starts the showcase
+     */
+    protected void onStartShowcase()
+    {
+        this.sc00001Tasks.cancel();
+        McLibInterface.instance().getCurrentPlayer().sendMessage(StartShowcaseMessages.NiceOne);
+    }
+
+    /**
+     * Localized messages
+     * 
+     * @author mepeisen
+     *
+     */
+    @LocalizedMessages(value="showcase.start", defaultLocale = "en")
+    public enum StartShowcaseMessages implements LocalizedMessageInterface
+    {
+        
+        /**
+         * Click here text
+         */
+        @LocalizedMessage(defaultMessage = LocalizedMessage.BOLD + LocalizedMessage.UNDERLINE  + "Click HERE (within 10 minutes)", severity = MessageSeverityType.Success)
+        @MessageComment(value = {"Click here text"})
+        ClickHere,
+        
+        /**
+         * Starting showcase text
+         */
+        @LocalizedMessage(defaultMessage = " to start the showcase", severity = MessageSeverityType.Information)
+        @MessageComment(value = {"Starting showcase text"})
+        ToStartShowcase,
+        
+        /**
+         * Message text for successful click.
+         */
+        @LocalizedMessage(defaultMessage = "nice one!", severity = MessageSeverityType.Success)
+        @MessageComment(value = {"Message text for successful click."})
+        NiceOne
+        
+    }
+
 }

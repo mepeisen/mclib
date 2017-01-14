@@ -24,7 +24,11 @@
 
 package de.minigameslib.mclib.api.event;
 
+import java.io.Serializable;
+
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
  * Minigame event representation of corresponding bukkit event.
@@ -45,6 +49,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public interface McPlayerJoinEvent extends MinecraftEvent<PlayerJoinEvent, McPlayerJoinEvent>
 {
     
-    // TODO default stubbings
+    /**
+     * Sets the join message
+     * @param msg join message
+     * @param args message arguments
+     */
+    default void setJoinMessage(LocalizedMessageInterface msg, Serializable... args)
+    {
+        this.getBukkitEvent().setJoinMessage(this.getPlayer().encodeMessage(msg, args)[0]);
+    }
     
 }
