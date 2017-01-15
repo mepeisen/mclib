@@ -218,7 +218,7 @@ public interface CommandInterface
      */
     default void permOpThrowException(PermissionsInterface perm, String command) throws McException
     {
-        getPlayer().when(p -> !this.isOp() && !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[] { command });
+        if (!this.isOp()) permThrowException(perm, command);
     }
     
 }
