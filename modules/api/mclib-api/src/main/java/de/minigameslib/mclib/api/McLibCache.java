@@ -34,7 +34,7 @@ import org.bukkit.Bukkit;
 class McLibCache
 {
     
-    /** the enumeration services. */
+    /** the mclib services. */
     private static McLibInterface SERVICES;
     
     /**
