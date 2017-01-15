@@ -223,10 +223,10 @@ class MessagesConfigImpl implements MessagesConfigInterface
                     if (!this.config.contains(path))
                     {
                         this.config.set(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
-                        this.config.set(path + ".user." + clazzDef.defaultLocale(), Arrays.asList(listDef.value())); //$NON-NLS-1$
+                        this.config.setPrimitiveList(path + ".user." + clazzDef.defaultLocale(), Arrays.asList(listDef.value())); //$NON-NLS-1$
                         if (listDef.adminMessages().length > 0)
                         {
-                            this.config.set(path + ".admin." + clazzDef.defaultLocale(), Arrays.asList(listDef.adminMessages())); //$NON-NLS-1$
+                            this.config.setPrimitiveList(path + ".admin." + clazzDef.defaultLocale(), Arrays.asList(listDef.adminMessages())); //$NON-NLS-1$
                         }
                     }
                 }
