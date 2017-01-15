@@ -141,6 +141,7 @@
 									<include>net.jodah:*</include>
 								</includes>
 							</artifactSet>
+							<createSourcesJar>true</createSourcesJar>
 						</configuration>
 					</execution>
 				</executions>
