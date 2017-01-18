@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import org.bukkit.plugin.Plugin;
@@ -32,6 +34,7 @@ import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.shared.api.com.CommentableDataSection;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -168,5 +171,23 @@ public interface McLibInterface extends McContext
      * @param listener
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
+    
+    // support for yml files
+    
+    /**
+     * Reads a yml file into a data section.
+     * @param file
+     * @return yml data file; implements {@link CommentableDataSection}.
+     * @throws IOException
+     */
+    DataSection readYmlFile(File file) throws IOException;
+    
+    /**
+     * Saves given data section into given file.
+     * @param section
+     * @param file
+     * @throws IOException
+     */
+    void saveYmlFile(DataSection section, File file) throws IOException;
     
 }

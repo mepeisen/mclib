@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,6 +105,7 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 import de.minigameslib.mclib.impl.com.PlayerProxy;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
@@ -1293,6 +1295,27 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
     {
         this.eventBus.handle(eventClass, event);
+    }
+
+    @Override
+    public DataSection readYmlFile(File file) throws IOException
+    {
+        return new YmlFile(file);
+    }
+
+    @Override
+    public void saveYmlFile(DataSection section, File file) throws IOException
+    {
+        if (section instanceof YmlFile)
+        {
+            ((YmlFile) section).saveFile(file);
+        }
+        else
+        {
+            final YmlFile yml = new YmlFile();
+            section.getValues(true).forEach(yml::set);
+            yml.saveFile(file);
+        }
     }
     
 }
