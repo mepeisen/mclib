@@ -182,13 +182,53 @@ public interface CommandInterface
     McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException;
     
     /**
-     * Returns a test function to check if the command sender is a player.
+     * Check if the command sender is a player.
      * 
-     * @return predicate to return {@code true} if the command sender is a player.
+     * @return {@code true} if the command sender is a player.
      */
     default boolean isPlayer()
     {
         return this.getSender() instanceof Player;
+    }
+    
+    /**
+     * Check if the command sender is online (a player).
+     * 
+     * @return {@code true} if the command sender is online (a player).
+     */
+    default boolean isOnline()
+    {
+        return isPlayer();
+    }
+    
+    /**
+     * Check if the command sender is on console.
+     * 
+     * @return {@code true} if the command sender is on console.
+     */
+    default boolean isOffline()
+    {
+        return !isPlayer();
+    }
+    
+    /**
+     * Checks for given permission
+     * @param perm
+     * @return {@code true} if command sender does have given permission
+     */
+    default boolean checkPermission(PermissionsInterface perm)
+    {
+        return this.getSender().hasPermission(perm.resolveName());
+    }
+    
+    /**
+     * Checks for given permission or operator flag
+     * @param perm
+     * @return {@code true} if command sender does have given permission or has operator flag
+     */
+    default boolean checkOpPermission(PermissionsInterface perm)
+    {
+        return this.getSender().isOp() || this.checkPermission(perm);
     }
     
     /**
@@ -203,7 +243,7 @@ public interface CommandInterface
      */
     default void permThrowException(PermissionsInterface perm, String command) throws McException
     {
-        getPlayer().when(p -> !p.checkPermission(perm)).thenThrow(CommonMessages.NoPermissionForCommand, (e) -> new Serializable[] { command });
+        if (!this.checkPermission(perm)) throw new McException(CommonMessages.NoPermissionForCommand, command);
     }
     
     /**
@@ -218,7 +258,25 @@ public interface CommandInterface
      */
     default void permOpThrowException(PermissionsInterface perm, String command) throws McException
     {
-        if (!this.isOp()) permThrowException(perm, command);
+        if (!this.checkOpPermission(perm)) throw new McException(CommonMessages.NoPermissionForCommand, command);
+    }
+    
+    /**
+     * Checks if player invoked this command online.
+     * @throws McException thrown if command is invoked on runtime console
+     */
+    default void checkOnline() throws McException
+    {
+        if (!this.isPlayer()) throw new McException(CommonMessages.InvokeIngame);
+    }
+    
+    /**
+     * Checks if player invoked this command on runtime console.
+     * @throws McException thrown if command is invoked online
+     */
+    default void checkOffline() throws McException
+    {
+        if (this.isPlayer()) throw new McException(CommonMessages.InvokeIngame);
     }
     
 }
