@@ -1,6 +1,6 @@
 name: mclib
 main: de.minigameslib.mclib.impl.MclibPlugin
-version: ${project.version}
+version: ${mclib.releaseversion}-${mclib.timestamp}
 authors: [mepeisen]
 
 commands:
