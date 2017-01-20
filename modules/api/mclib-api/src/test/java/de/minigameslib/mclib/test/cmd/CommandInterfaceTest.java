@@ -50,10 +50,8 @@ import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
-import de.minigameslib.mclib.api.util.function.FalseStub;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
-import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * Test case for {@link CommandInterface}.
@@ -124,11 +122,10 @@ public class CommandInterfaceTest
     @Test
     public void testPermThrowExceptionOK() throws McException
     {
-        final McPlayerInterface playerTrue = mock(ArenaPlayer.class);
-        when(playerTrue.checkPermission(anyObject())).thenReturn(true);
-        when(playerTrue.when(anyObject())).thenCallRealMethod();
+        final CommandSender sender = mock(CommandSender.class);
+        when(sender.hasPermission(anyString())).thenReturn(true);
         
-        final Command command = new Command(null, playerTrue, null, null, null);
+        final Command command = new Command(sender, null, null, null, null);
         command.permThrowException(mock(PermissionsInterface.class), null);
     }
     
@@ -139,11 +136,10 @@ public class CommandInterfaceTest
     @Test(expected = McException.class)
     public void testPermThrowExceptionFailed() throws McException
     {
-        final McPlayerInterface playerFalse = mock(ArenaPlayer.class);
-        when(playerFalse.checkPermission(anyObject())).thenReturn(false);
-        when(playerFalse.when(anyObject())).thenCallRealMethod();
+        final CommandSender sender = mock(CommandSender.class);
+        when(sender.hasPermission(anyString())).thenReturn(false);
         
-        final Command command = new Command(null, playerFalse, null, null, null);
+        final Command command = new Command(sender, null, null, null, null);
         command.permThrowException(mock(PermissionsInterface.class), null);
     }
     
@@ -166,25 +162,6 @@ public class CommandInterfaceTest
         command.send(CommonMessages.HelpHeader);
         
         verify(sender, times(1)).sendMessage("§fhelp"); //$NON-NLS-1$
-    }
-    
-    /**
-     * arena player dummy impl.
-     * @author mepeisen
-     */
-    private static abstract class ArenaPlayer implements McPlayerInterface
-    {
-
-        @Override
-        public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
-        {
-            if (test.test(this))
-            {
-                return new TrueStub<>(this);
-            }
-            return new FalseStub<>(this);
-        }
-        
     }
     
     /**
