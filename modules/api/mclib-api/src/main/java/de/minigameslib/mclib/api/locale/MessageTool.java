@@ -68,6 +68,28 @@ class MessageTool
                 builder.append("\n"); //$NON-NLS-1$
                 result[i] = builder.toString();
             }
+            else if (srcelm instanceof LocalizedMessageInterface)
+            {
+                final LocalizedMessageInterface casted = (LocalizedMessageInterface) srcelm;
+                if (casted.isSingleLine())
+                {
+                    result[i] = isAdmin ? casted.toAdminMessage(locale) : casted.toUserMessage(locale);
+                }
+                else
+                {
+                    final StringBuilder builder = new StringBuilder();
+                    for (final String line : isAdmin ? casted.toAdminMessageLine(locale) : casted.toUserMessageLine(locale))
+                    {
+                        if (builder.length() > 0)
+                        {
+                            builder.append("\n"); //$NON-NLS-1$
+                        }
+                        builder.append(line);
+                    }
+                    builder.append("\n"); //$NON-NLS-1$
+                    result[i] = builder.toString();
+                }
+            }
             else
             {
                 result[i] = src[i];
