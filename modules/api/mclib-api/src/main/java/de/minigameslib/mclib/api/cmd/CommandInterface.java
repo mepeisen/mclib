@@ -103,6 +103,19 @@ public interface CommandInterface
     <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException;
     
     /**
+     * Fetches a single string from arguments, removing i from rguments list; throws exception if no arguments are available.
+     * @param errorMessage
+     * @param errorArgs
+     * @return string argument
+     * @throws McException
+     */
+    default String fetchString(LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
+    {
+        if (this.getArgs().length == 0) throw new McException(errorMessage, errorArgs);
+        return this.fetch((cmd, arg) -> arg).get();
+    }
+    
+    /**
      * Returns the command path being used before the arguments.
      * 
      * @return current command path.
