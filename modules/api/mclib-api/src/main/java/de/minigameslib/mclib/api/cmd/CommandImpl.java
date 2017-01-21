@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.cmd;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,6 +37,7 @@ import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.TrueStub;
@@ -66,12 +68,12 @@ public class CommandImpl implements CommandInterface
     /**
      * The original command line arguments.
      */
-    private final String[]        args;
+    private String[]        args;
     
     /**
      * current command path.
      */
-    private final String          commandPath;
+    private String          commandPath;
     
     /**
      * Constructor to create the command.
@@ -167,6 +169,25 @@ public class CommandImpl implements CommandInterface
             return this.getPlayer().getPreferredLocale();
         }
         return McLibInterface.instance().getDefaultLocale();
+    }
+
+    @Override
+    public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
+    {
+        if (this.args.length > 0)
+        {
+            final String currentArg = this.args[0];
+            final String[] args2 = Arrays.copyOfRange(this.args, 1, this.args.length);
+            StringBuilder newPath = new StringBuilder(this.commandPath);
+            newPath.append(' ');
+            newPath.append(this.args[0]);
+            
+            this.args = args2;
+            this.commandPath = newPath.toString();
+            
+            return Optional.ofNullable(mapper.apply(this, currentArg)); 
+        }
+        return Optional.empty();
     }
     
 }

@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.cmd;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -37,6 +38,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 
@@ -91,6 +93,14 @@ public interface CommandInterface
      * @return new command interface containing remaining arguments.
      */
     CommandInterface consumeArgs(int count);
+    
+    /**
+     * Fetches an argument by invoking given mapper, removing the first argument from arguments array.
+     * @param mapper the mapper to map a string argument to given function
+     * @return result of fetching argument; will be empty if there are not enough arguments to be fetched or if mapper returns null.
+     * @throws McException passed exception from mapper function
+     */
+    <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException;
     
     /**
      * Returns the command path being used before the arguments.
@@ -277,6 +287,30 @@ public interface CommandInterface
     default void checkOffline() throws McException
     {
         if (this.isPlayer()) throw new McException(CommonMessages.InvokeIngame);
+    }
+    
+    /**
+     * Checks if at least {@code count} arguments are available.
+     * @param count
+     * @param errorMessage
+     * @param errorArgs
+     * @throws McException thrown if not enough arguments are available
+     */
+    default void checkMinArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
+    {
+        if (this.getArgs().length < count) throw new McException(errorMessage, errorArgs);
+    }
+    
+    /**
+     * Checks if not more than {@code count} arguments are available.
+     * @param count
+     * @param errorMessage
+     * @param errorArgs
+     * @throws McException thrown if there are too many arguments
+     */
+    default void checkMaxArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
+    {
+        if (this.getArgs().length >= count) throw new McException(errorMessage, errorArgs);
     }
     
 }

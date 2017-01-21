@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,6 +51,7 @@ import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 
@@ -252,6 +254,12 @@ public class CommandInterfaceTest
         public McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException
         {
             // dummy
+            return null;
+        }
+
+        @Override
+        public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
+        {
             return null;
         }
         

@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.bukkit.command.CommandSender;
 import org.junit.Test;
@@ -42,6 +43,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.cmd.AbstractPagableCommandHandler;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 
@@ -369,6 +371,12 @@ public class AbstractPagableCommandHandlerTest
         public McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException
         {
             // dummy
+            return null;
+        }
+
+        @Override
+        public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
+        {
             return null;
         }
         

@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -59,6 +60,7 @@ import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.TrueStub;
@@ -405,6 +407,12 @@ public class AbstractCompositeCommandHandlerTest
                 return new TrueStub<>(this);
             }
             return new FalseStub<>(this);
+        }
+
+        @Override
+        public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
+        {
+            return null;
         }
         
     }
