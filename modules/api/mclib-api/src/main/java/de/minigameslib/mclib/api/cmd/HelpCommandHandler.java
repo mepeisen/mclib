@@ -134,7 +134,9 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         {
             return (int) this.getVisibleCommands(command).count();
         }
-        return this.subCommand.getDescription(command).toListArg(command.getCommandPath()).apply(command.getLocale(), command.isOp()).length;
+        final LocalizedMessageInterface description = this.subCommand.getDescription(command);
+        if (description.isSingleLine()) return 1;
+        return description.toListArg(command.getCommandPath()).apply(command.getLocale(), command.isOp()).length;
     }
 
     @Override
@@ -171,7 +173,20 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
             }
             return result.toArray(new Serializable[result.size()]);
         }
-        return this.subCommand.getDescription(command).toListArg(start, count, new Serializable[]{command.getCommandPath()}).apply(command.getLocale(), command.isOp());
+        final LocalizedMessageInterface description = this.subCommand.getDescription(command);
+        if (description.isSingleLine())
+        {
+            if (start == 0)
+            {
+                return new Serializable[]{
+                        description.toArg(
+                                new Serializable[]{command.getCommandPath()}
+                        ).apply(command.getLocale(), command.isOp())
+                    };
+            }
+            return new Serializable[0];
+        }
+        return description.toListArg(start, count, new Serializable[]{command.getCommandPath()}).apply(command.getLocale(), command.isOp());
     }
 
     /**
