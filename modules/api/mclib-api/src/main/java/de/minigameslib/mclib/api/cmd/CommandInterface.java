@@ -323,7 +323,7 @@ public interface CommandInterface
      */
     default void checkMaxArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
-        if (this.getArgs().length >= count) throw new McException(errorMessage, errorArgs);
+        if (this.getArgs().length > count) throw new McException(errorMessage, errorArgs);
     }
     
 }
