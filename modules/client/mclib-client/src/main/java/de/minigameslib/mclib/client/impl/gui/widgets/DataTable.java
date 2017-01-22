@@ -307,7 +307,8 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
             final String dataKey = DataTable.this.visibleColumns.get(paramInt2).getDataKey();
             final Object result = section.get(dataKey);
             if (result instanceof String) return result;
-            return result.toString();
+            // TODO timestamp support etc.
+            return result == null ? null : result.toString();
         }
 
         @Override

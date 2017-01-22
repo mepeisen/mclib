@@ -286,7 +286,8 @@ public class MclibCoreHandler implements ComHandler
             else if (wd.getTextInput() != null)
             {
                 final FormEditField editField = new FormEditField(wd.getTextInput().getFormKey());
-                editField.setText(wd.getTextInput().getValue());
+                final String value = wd.getTextInput().getValue();
+                editField.setText(value == null ? "" : value); //$NON-NLS-1$
                 form.addRow("col1", "col2").addWithLabel(wd.getTextInput().getLabel(), editField); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else if (wd.getListInput() != null)
