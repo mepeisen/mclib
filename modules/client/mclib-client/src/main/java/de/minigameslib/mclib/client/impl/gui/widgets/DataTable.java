@@ -304,7 +304,10 @@ public class DataTable extends ColumnLayout implements FormFieldInterface, FormQ
         public Object getCell(int paramInt1, int paramInt2)
         {
             final DataSection section = DataTable.this.data.get(paramInt1);
-            return section.getString(DataTable.this.visibleColumns.get(paramInt2).getDataKey());
+            final String dataKey = DataTable.this.visibleColumns.get(paramInt2).getDataKey();
+            final Object result = section.get(dataKey);
+            if (result instanceof String) return result;
+            return result.toString();
         }
 
         @Override
