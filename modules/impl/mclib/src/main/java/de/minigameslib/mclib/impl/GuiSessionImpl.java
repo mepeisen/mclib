@@ -457,11 +457,13 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         final GuiButtonImpl button = new GuiButtonImpl();
         button.setLabel(Arrays.asList(this.player.encodeMessage(label, labelArgs)).stream().collect(Collectors.joining("\n"))); //$NON-NLS-1$
         button.setCloseAction(closeAction);
-        button.setAction((sgui, data) -> {
-            final DataSection form = new MemoryDataSection();
-            data.forEach(entry -> form.set(entry.getKey(), entry.getValue()));
-            action.accept(sgui, form);
-        });
+        if (action != null) {
+            button.setAction((sgui, data) -> {
+                final DataSection form = new MemoryDataSection();
+                data.forEach(entry -> form.set(entry.getKey(), entry.getValue()));
+                action.accept(sgui, form);
+            });
+        }
         return button;
     }
     
