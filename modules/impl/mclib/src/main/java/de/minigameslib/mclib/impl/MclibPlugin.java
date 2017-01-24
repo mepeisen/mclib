@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -611,6 +612,37 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         return new Locale(McCoreConfig.DefaultLocale.getString());
     }
     
+    @Override
+    public Collection<Locale> getMainLocales()
+    {
+        return Arrays.stream(McCoreConfig.MainLocales.getStringList()).map(Locale::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeMainLocale(Locale locale) throws McException
+    {
+        final String[] main = McCoreConfig.MainLocales.getStringList();
+        if (main.length == 1 && main[0].equals(locale.toString()))
+        {
+            // TODO throw exception
+        }
+        McCoreConfig.MainLocales.setStringList(
+                Arrays.stream(main).
+                filter(p -> p.equals(locale.toString())).toArray(String[]::new));
+        McCoreConfig.MainLocales.saveConfig();
+    }
+
+    @Override
+    public void addMainLocale(Locale locale) throws McException
+    {
+        final String[] main = McCoreConfig.MainLocales.getStringList();
+        for (final String l : main) if (l.equals(locale.toString())) return;
+        final String[] result = Arrays.copyOf(main, main.length + 1);
+        result[main.length] = locale.toString();
+        McCoreConfig.MainLocales.setStringList(result);
+        McCoreConfig.MainLocales.saveConfig();
+    }
+
     @Override
     public void setDefaultLocale(Locale locale) throws McException
     {

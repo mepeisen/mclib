@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.bukkit.plugin.Plugin;
@@ -92,6 +93,26 @@ public interface McLibInterface extends McContext
      *             thrown if the config could not be saved.
      */
     void setDefaultLocale(Locale locale) throws McException;
+    
+    /**
+     * Returns the main locales available on this server. This is for information only.
+     * @return main locales.
+     */
+    Collection<Locale> getMainLocales();
+    
+    /**
+     * Removes a main locale
+     * @param locale
+     * @throws McException thrown if config cannot be saved or if this is the last main locale.
+     */
+    void removeMainLocale(Locale locale) throws McException;
+    
+    /**
+     * Adds a main locale
+     * @param locale
+     * @throws McException thrown if config cannot be saved
+     */
+    void addMainLocale(Locale locale) throws McException;
     
     /**
      * Checks for debug flag.

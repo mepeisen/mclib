@@ -27,6 +27,7 @@ package de.minigameslib.mclib.impl;
 import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationString;
+import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
 
@@ -47,6 +48,16 @@ public enum McCoreConfig implements ConfigurationValueInterface
         "Set this to an ISO 639 alpha-2 or alpha-3 language code.",
         "For example 'en' or 'de'."})
     DefaultLocale,
+    
+    /**
+     * The main locales
+     */
+    @ConfigurationStringList(defaultValue = "en")
+    @ConfigComment({
+        "The main languages available to the players. Informational option only.",
+        "Set the list elements to an ISO 639 alpha-2 or alpha-3 language code.",
+        "For example 'en' or 'de'."})
+    MainLocales,
     
     /**
      * Debugging flag of minigames library
