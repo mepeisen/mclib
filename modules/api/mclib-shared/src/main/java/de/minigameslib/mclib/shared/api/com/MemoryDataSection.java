@@ -1551,5 +1551,206 @@ public class MemoryDataSection implements DataSection
     {
         this.contents.clear();
     }
+
+    @Override
+    public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key)
+    {
+        if (clazz.isAssignableFrom(UniqueEnumerationValue.class))
+        {
+            final DataSection child = this.getSection(key);
+            if (child == null)
+            {
+                return null;
+            }
+            final String plugin = child.getString("plugin");
+            final String n = child.getString("name");
+            // TODO
+            return null;
+        }
+        // TODO
+//        final String n = this.getString(key);
+//        if (n == null)
+//        {
+//            return null;
+//        }
+//        for (final T constant : clazz.getEnumConstants())
+//        {
+//            if (constant.name().equals(n))
+//            {
+//                return constant;
+//            }
+//        }
+        return null;
+    }
+
+    @Override
+    public <T extends EnumerationValue> T getEnum(Class<T> clazz, String key, T defaultValue)
+    {
+        final T result = this.getEnumValue(clazz, key);
+        return result == null ? defaultValue : result;
+    }
+
+    @Override
+    public <T extends Enum<?>> T getEnum(Class<T> clazz, String key, T defaultValue)
+    {
+        final T result = this.getEnum(clazz, key);
+        return result == null ? defaultValue : result;
+    }
+
+    @Override
+    public <T extends EnumerationValue> List<T> getEnumValueList(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<T> result = new ArrayList<>();
+            for (final String ckey : new TreeSet<>(child.getKeys(false)))
+            {
+                final T fragment = child.getEnumValue(clazz, ckey);
+                if (fragment == null)
+                {
+                    throw new ClassCastException("Invalid enum."); //$NON-NLS-1$
+                }
+                result.add(fragment);
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends EnumerationValue> Map<String, T> getEnumValueMap(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String, T> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getEnumValue(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends EnumerationValue> List<Map<String, T>> getEnumValueMapList(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<Map<String, T>> result = new ArrayList<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.add(child.getEnumValueMap(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends EnumerationValue> Map<String, List<T>> getEnumValueListMap(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String,List<T>> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getEnumValueList(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends Enum<?>> T getEnum(Class<T> clazz, String key)
+    {
+        final String n = this.getString(key);
+        if (n == null)
+        {
+            return null;
+        }
+        for (final T constant : clazz.getEnumConstants())
+        {
+            if (constant.name().equals(n))
+            {
+                return constant;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends Enum<?>> List<T> getEnumList(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<T> result = new ArrayList<>();
+            for (final String ckey : new TreeSet<>(child.getKeys(false)))
+            {
+                final T fragment = child.getEnum(clazz, ckey);
+                if (fragment == null)
+                {
+                    throw new ClassCastException("Invalid enum."); //$NON-NLS-1$
+                }
+                result.add(fragment);
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends Enum<?>> Map<String, T> getEnumMap(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String, T> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getEnum(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends Enum<?>> List<Map<String, T>> getEnumMapList(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final List<Map<String, T>> result = new ArrayList<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.add(child.getEnumMap(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
+
+    @Override
+    public <T extends Enum<?>> Map<String, List<T>> getEnumListMap(Class<T> clazz, String key)
+    {
+        final DataSection child = this.getSection(key);
+        if (child != null)
+        {
+            final Map<String,List<T>> result = new HashMap<>();
+            for (final String subkey : new TreeSet<>(child.getKeys(false)))
+            {
+                result.put(subkey, child.getEnumList(clazz, subkey));
+            }
+            return result;
+        }
+        return null;
+    }
     
 }

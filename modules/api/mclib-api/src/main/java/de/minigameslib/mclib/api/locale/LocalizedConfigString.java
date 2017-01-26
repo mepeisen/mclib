@@ -208,5 +208,11 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }
+
+    @Override
+    public String name()
+    {
+        throw new IllegalStateException();
+    }
     
 }

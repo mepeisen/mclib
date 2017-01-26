@@ -234,5 +234,11 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
         }
         return result;
     }
+
+    @Override
+    public String name()
+    {
+        throw new IllegalStateException();
+    }
     
 }

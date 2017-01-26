@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+
 /**
  * An interface used in enumerations to identify the component type.
  * 
@@ -38,14 +40,9 @@ package de.minigameslib.mclib.api.objects;
  * 
  * @author mepeisen
  */
-public interface ComponentTypeId
+public interface ComponentTypeId extends McUniqueEnumInterface
 {
     
-    /**
-     * Enumeration value name.
-     * 
-     * @return enumeration value name.
-     */
-    String name();
+    // marker only
     
 }

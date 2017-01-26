@@ -527,11 +527,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public MessagesConfigInterface getMessagesFromMsg(LocalizedMessageInterface item)
     {
-        if (!(item instanceof Enum<?>))
-        {
-            return null;
-        }
-        final Plugin plugin = this.enumService.getPlugin((Enum<?>) item);
+        final Plugin plugin = this.enumService.getPlugin(item);
         if (plugin == null)
         {
             return null;
@@ -542,11 +538,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public ConfigInterface getConfigFromCfg(ConfigurationValueInterface item)
     {
-        if (!(item instanceof Enum<?>))
-        {
-            return null;
-        }
-        final Plugin plugin = this.enumService.getPlugin((Enum<?>) item);
+        final Plugin plugin = this.enumService.getPlugin(item);
         if (plugin == null)
         {
             return null;

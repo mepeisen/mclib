@@ -22,27 +22,37 @@
 
 */
 
-package de.minigameslib.mclib.api.objects;
+package de.minigameslib.mclib.api.enums;
 
-import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+import org.bukkit.plugin.Plugin;
+
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 
 /**
- * An interface used in enumerations to identify the zone type.
+ * Optional base interface for McLib-Enumerations.
  * 
  * <p>
- * Inherit this interface in your enumeration classes.
- * </p>
- * 
- * <p>
- * IMPLEMENTATION HINT: The plugin name and the enumeration value name are used to identify this type.
- * If you change them the components get broken.
+ * Each functional enumeration (configuration values etc.) must implement this interface.
  * </p>
  * 
  * @author mepeisen
  */
-public interface ZoneTypeId extends McUniqueEnumInterface
+public interface McUniqueEnumInterface extends UniqueEnumerationValue
 {
     
-    // marker only
+    /**
+     * Returns the plugin declaring the given interface.
+     * @return plugin declaring given interface.
+     */
+    default Plugin getPlugin()
+    {
+        return EnumServiceCache.get().getPlugin(this);
+    }
+    
+    @Override
+    default String getPluginName()
+    {
+        return this.getPlugin().getName();
+    }
     
 }

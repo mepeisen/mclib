@@ -26,16 +26,14 @@ package de.minigameslib.mclib.api.enums;
 
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+
 /**
- * Base interface for McLib-Enumerations.
- * 
- * <p>
- * Each functional enumeration (configuration values etc.) must implement this interface.
- * </p>
+ * Optional base interface for McLib-Enumerations.
  * 
  * @author mepeisen
  */
-public interface McEnumInterface
+public interface McEnumInterface extends EnumerationValue
 {
     
     /**
@@ -44,11 +42,7 @@ public interface McEnumInterface
      */
     default Plugin getPlugin()
     {
-        if (this instanceof Enum<?>)
-        {
-            return EnumServiceCache.get().getPlugin((Enum<?>) this);
-        }
-        throw new IllegalStateException("Extension of IMcEnum only allowed in enumeration classes. Invalid class: " + this.getClass()); //$NON-NLS-1$
+        return EnumServiceCache.get().getPlugin(this);
     }
     
 }

@@ -909,4 +909,102 @@ public interface DataSection
      */
     boolean isSection(String key);
     
+    /**
+     * Returns an enumeration value
+     * @param clazz
+     * @param key
+     * @return enumeration value or {@code null} if value was not found or is invalid.
+     */
+    <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key);
+    
+    /**
+     * Returns an enumeration value
+     * @param clazz
+     * @param key
+     * @param defaultValue
+     * @return enumeration value or {@code defaultValue} if value was not found or is invalid.
+     */
+    <T extends EnumerationValue> T getEnum(Class<T> clazz, String key, T defaultValue);
+    
+    /**
+     * Returns a list of enumeration values.
+     * @param clazz
+     * @param key
+     * @return list of enumeration values.
+     */
+    <T extends EnumerationValue> List<T> getEnumValueList(Class<T> clazz, String key);
+    
+    /**
+     * Returns map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends EnumerationValue> Map<String, T> getEnumValueMap(Class<T> clazz, String key);
+    
+    /**
+     * Returns map list value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends EnumerationValue> List<Map<String, T>> getEnumValueMapList(Class<T> clazz, String key);
+    
+    /**
+     * Returns list map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends EnumerationValue> Map<String, List<T>> getEnumValueListMap(Class<T> clazz, String key);
+    
+    /**
+     * Returns an enumeration value
+     * @param clazz
+     * @param key
+     * @return enumeration value or {@code null} if value was not found or is invalid.
+     */
+    <T extends Enum<?>> T getEnum(Class<T> clazz, String key);
+    
+    /**
+     * Returns an enumeration value
+     * @param clazz
+     * @param key
+     * @param defaultValue
+     * @return enumeration value or {@code defaultValue} if value was not found or is invalid.
+     */
+    <T extends Enum<?>> T getEnum(Class<T> clazz, String key, T defaultValue);
+    
+    /**
+     * Returns a list of enumeration values.
+     * @param clazz
+     * @param key
+     * @return list of enumeration values.
+     */
+    <T extends Enum<?>> List<T> getEnumList(Class<T> clazz, String key);
+    
+    /**
+     * Returns map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends Enum<?>> Map<String, T> getEnumMap(Class<T> clazz, String key);
+    
+    /**
+     * Returns map list value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends Enum<?>> List<Map<String, T>> getEnumMapList(Class<T> clazz, String key);
+    
+    /**
+     * Returns list map value by key
+     * @param clazz 
+     * @param key
+     * @return value
+     */
+    <T extends Enum<?>> Map<String, List<T>> getEnumListMap(Class<T> clazz, String key);
+    
 }

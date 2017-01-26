@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+
 /**
  * An interface used in enumerations to identify the sign type.
  * 
@@ -38,14 +40,9 @@ package de.minigameslib.mclib.api.objects;
  * 
  * @author mepeisen
  */
-public interface SignTypeId
+public interface SignTypeId extends McUniqueEnumInterface
 {
     
-    /**
-     * sign value name.
-     * 
-     * @return sign value name.
-     */
-    String name();
+    // marker only
     
 }

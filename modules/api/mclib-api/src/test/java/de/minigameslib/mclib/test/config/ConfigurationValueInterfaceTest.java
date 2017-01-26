@@ -1155,7 +1155,13 @@ public class ConfigurationValueInterfaceTest
      */
     public static final class InvalidConfig2 implements ConfigurationValueInterface
     {
-        // empty
+
+        @Override
+        public String name()
+        {
+            throw new IllegalStateException();
+        }
+        
     }
     
     /**

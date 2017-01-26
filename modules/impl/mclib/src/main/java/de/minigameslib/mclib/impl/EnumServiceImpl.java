@@ -37,6 +37,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
  * @author mepeisen
@@ -53,9 +54,21 @@ class EnumServiceImpl implements EnumServiceInterface
     
     /** map from enumeration valur oto registering plugin. */
     private final Map<Enum<?>, Plugin> pluginsByEnum = new HashMap<>();
+    
+    // TODO unique enums can only be registered once per plugin and type
 
     @Override
-    public void registerEnumClass(Plugin plugin, Class<? extends Enum<?>> clazz)
+    public <T extends Enum<?> & EnumerationValue> void registerEnumClass(Plugin plugin, Class<T> clazz)
+    {
+        this.registerEnumClass0(plugin, clazz);
+    }
+
+    /**
+     * Register enum
+     * @param plugin
+     * @param clazz
+     */
+    private <T extends Enum<?>> void registerEnumClass0(Plugin plugin, Class<T> clazz)
     {
         synchronized (this.enumsByPlugin)
         {
@@ -75,7 +88,7 @@ class EnumServiceImpl implements EnumServiceInterface
         {
             for (final Class<? extends Enum<?>> childClazz : clazz.getAnnotation(ChildEnum.class).value())
             {
-                this.registerEnumClass(plugin, childClazz);
+                this.registerEnumClass0(plugin, childClazz);
             }
         }
     }
@@ -95,7 +108,7 @@ class EnumServiceImpl implements EnumServiceInterface
     }
 
     @Override
-    public Plugin getPlugin(Enum<?> enumValue)
+    public Plugin getPlugin(EnumerationValue enumValue)
     {
         synchronized (this.enumsByPlugin)
         {
@@ -114,7 +127,7 @@ class EnumServiceImpl implements EnumServiceInterface
     }
 
     @Override
-    public <T> Set<T> getEnumValues(Plugin plugin, Class<T> clazz)
+    public <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz)
     {
         synchronized (this.enumsByPlugin)
         {
@@ -124,7 +137,7 @@ class EnumServiceImpl implements EnumServiceInterface
     }
 
     @Override
-    public <T> Set<T> getEnumValues(Class<T> clazz)
+    public <T extends EnumerationValue> Set<T> getEnumValues(Class<T> clazz)
     {
         synchronized (this.enumsByPlugin)
         {

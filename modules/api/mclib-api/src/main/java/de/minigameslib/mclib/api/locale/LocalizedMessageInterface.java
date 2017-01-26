@@ -31,13 +31,14 @@ import java.util.Locale;
 import java.util.function.BiFunction;
 
 import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
  * An interface for enumerations that represent localized messages.
  * 
  * @author mepeisen
  */
-public interface LocalizedMessageInterface extends Serializable
+public interface LocalizedMessageInterface extends Serializable, EnumerationValue
 {
     
     /**

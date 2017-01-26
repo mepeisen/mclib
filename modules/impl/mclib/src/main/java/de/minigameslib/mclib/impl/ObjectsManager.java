@@ -93,6 +93,7 @@ import de.minigameslib.mclib.impl.comp.ZoneImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
  * A helper class managing plugin objects.
@@ -719,11 +720,11 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
      */
     private Plugin safeGetPlugin(String name, Object enumValue) throws McException
     {
-        if (!(enumValue instanceof Enum<?>))
+        if (!(enumValue instanceof Enum<?>) || !(enumValue instanceof EnumerationValue))
         {
             throw new McException(CommonMessages.BrokenObjectTypeNotAnEnum, "?", name, enumValue.getClass().getName()); //$NON-NLS-1$
         }
-        final Enum<?> value = (Enum<?>) enumValue;
+        final EnumerationValue value = (EnumerationValue) enumValue;
         final Plugin plugin = EnumServiceInterface.instance().getPlugin(value);
         if (plugin == null)
         {
@@ -1053,7 +1054,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ComponentTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         
         final List<ComponentInterface> result = new ArrayList<>();
@@ -1094,7 +1095,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final SignTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         
         final List<SignInterface> result = new ArrayList<>();
@@ -1166,7 +1167,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
@@ -1181,7 +1182,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1203,7 +1204,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
@@ -1217,7 +1218,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1230,7 +1231,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1244,7 +1245,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1257,7 +1258,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1271,7 +1272,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
@@ -1284,7 +1285,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
-            perPlugin.computeIfAbsent(EnumServiceInterface.instance().getPlugin((Enum<?>) typeid).getName(), k -> new HashSet<>()).add(typeid.name());
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         
         final List<ZoneInterface> result = new ArrayList<>();

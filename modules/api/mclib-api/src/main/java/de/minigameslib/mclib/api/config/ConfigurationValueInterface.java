@@ -36,13 +36,14 @@ import org.bukkit.Color;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
  * An interface for enumerations that represent entries in configuration files.
  * 
  * @author mepeisen
  */
-public interface ConfigurationValueInterface
+public interface ConfigurationValueInterface extends EnumerationValue
 {
     
     // TODO getShortLst etc.: convert from other numerics.
