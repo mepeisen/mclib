@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.gui;
 
+import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+
 /**
  * An interface used in enumerations to identify the gui.
  * 
@@ -33,14 +35,9 @@ package de.minigameslib.mclib.api.gui;
  * 
  * @author mepeisen
  */
-public interface ClickGuiId
+public interface ClickGuiId extends McUniqueEnumInterface
 {
     
-    /**
-     * Enumeration value name.
-     * 
-     * @return enumeration value name.
-     */
-    String name();
+    // marker only
     
 }

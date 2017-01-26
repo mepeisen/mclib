@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.gui;
 
+import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+
 /**
  * An interface used in enumerations to identify the anvil gui.
  * 
@@ -33,14 +35,9 @@ package de.minigameslib.mclib.api.gui;
  * 
  * @author mepeisen
  */
-public interface AnvilGuiId
+public interface AnvilGuiId extends McUniqueEnumInterface
 {
     
-    /**
-     * Enumeration value name.
-     * 
-     * @return enumeration value name.
-     */
-    String name();
+    // marker only
     
 }
