@@ -88,6 +88,12 @@ public interface SignInterface
      */
     Sign getBukkitSign();
     
+    /**
+     * Returns the handler.
+     * @return associated handler.
+     */
+    SignHandlerInterface getHandler();
+    
     // event system
     
     /**

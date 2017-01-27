@@ -62,6 +62,12 @@ public interface EntityInterface
      */
     void saveConfig() throws McException;
     
+    /**
+     * Returns the handler.
+     * @return associated handler.
+     */
+    EntityHandlerInterface getHandler();
+    
     // TODO Controlling entites
     
     // event system

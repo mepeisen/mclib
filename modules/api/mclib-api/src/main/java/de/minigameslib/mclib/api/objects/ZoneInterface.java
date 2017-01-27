@@ -111,6 +111,12 @@ public interface ZoneInterface
     void saveConfig() throws McException;
     
     /**
+     * Returns the handler.
+     * @return associated handler.
+     */
+    ZoneHandlerInterface getHandler();
+    
+    /**
      * Returns the child zones.
      * 
      * @return child zones
