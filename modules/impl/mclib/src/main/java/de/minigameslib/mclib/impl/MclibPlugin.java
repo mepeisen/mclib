@@ -127,6 +127,7 @@ import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
@@ -218,6 +219,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /** the event bus. */
     private EventBus eventBus = new EventBus();
     
+    /**
+     * plugin instance
+     */
+    private static MclibPlugin instance;
+    
     static
     {
         if (MemoryDataSection.isFragmentImplementationLocked())
@@ -229,6 +235,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initFragmentImplementation(ColorDataFragment.class, ConfigColorData.class);
         // TODO MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ConfigItemStackData.class);
         MemoryDataSection.initFragmentImplementation(VectorDataFragment.class, ConfigVectorData.class);
+        MemoryDataSection.initUniqueEnumValueFactory(MclibPlugin::create);
         MemoryDataSection.lockFragmentImplementations();
     }
 
@@ -241,6 +248,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public void onEnable()
     {
+        instance = this;
         this.players = new PlayerRegistry(new File(this.getDataFolder(), "players")); //$NON-NLS-1$
         
         switch (SERVER_VERSION)
@@ -1341,5 +1349,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             yml.saveFile(file);
         }
     }
+    
+    /**
+    * enum value factory method
+    * @param plugin
+    * @param name
+    * @param clazz
+    * @return enumeration value or {@code null} if it does not exist
+    */
+   private static <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
+   {
+        return instance.enumService.create(plugin, name, clazz);
+   }
     
 }

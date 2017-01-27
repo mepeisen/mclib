@@ -24,9 +24,11 @@
 
 package de.minigameslib.mclib.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -38,6 +40,7 @@ import org.bukkit.plugin.Plugin;
 import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 
 /**
  * @author mepeisen
@@ -52,10 +55,11 @@ class EnumServiceImpl implements EnumServiceInterface
     /** enumeration values, listed by plugin. */
     private final Map<Plugin, Set<Enum<?>>> enumsByPlugin = new HashMap<>();
     
+    /** enumeration values, listed by plugin and name. */
+    private final Map<String, Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>>> uniqueEnums = new HashMap<>();
+    
     /** map from enumeration valur oto registering plugin. */
     private final Map<Enum<?>, Plugin> pluginsByEnum = new HashMap<>();
-    
-    // TODO unique enums can only be registered once per plugin and type
 
     @Override
     public <T extends Enum<?> & EnumerationValue> void registerEnumClass(Plugin plugin, Class<T> clazz)
@@ -73,6 +77,7 @@ class EnumServiceImpl implements EnumServiceInterface
         synchronized (this.enumsByPlugin)
         {
             final Set<Enum<?>> set = this.enumsByPlugin.computeIfAbsent(plugin, (p) -> new HashSet<>());
+            final List<Map<String, UniqueEnumerationValue>> uniqueMaps = this.getUniqueMap(plugin, clazz);
             for (final Enum<?> ev : clazz.getEnumConstants())
             {
                 if (this.pluginsByEnum.containsKey(ev))
@@ -82,6 +87,16 @@ class EnumServiceImpl implements EnumServiceInterface
                 }
                 this.pluginsByEnum.put(ev, plugin);
                 set.add(ev);
+                
+                for (final Map<String, UniqueEnumerationValue> map : uniqueMaps)
+                {
+                    if (map.containsKey(ev.name()))
+                    {
+                        LOGGER.log(Level.SEVERE, "Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
+                        throw new IllegalStateException("Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    map.put(ev.name(), (UniqueEnumerationValue) ev);
+                }
             }
         }
         if (clazz.getAnnotation(ChildEnum.class) != null)
@@ -91,6 +106,26 @@ class EnumServiceImpl implements EnumServiceInterface
                 this.registerEnumClass0(plugin, childClazz);
             }
         }
+    }
+
+    /**
+     * @param plugin
+     * @param clazz
+     * @return unique enumeration map
+     */
+    private List<Map<String, UniqueEnumerationValue>> getUniqueMap(Plugin plugin, Class<?> clazz)
+    {
+        final List<Map<String, UniqueEnumerationValue>> result = new ArrayList<>();
+        final Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>> map = this.uniqueEnums.computeIfAbsent(plugin.getName(), n -> new HashMap<>());
+        for (final Class<?> child : clazz.getInterfaces())
+        {
+            if (UniqueEnumerationValue.class.isAssignableFrom(child))
+            {
+                final Class<? extends UniqueEnumerationValue> child2 = child.asSubclass(UniqueEnumerationValue.class);
+                result.add(map.computeIfAbsent(child2, k -> new HashMap<>()));
+            }
+        }
+        return result;
     }
 
     @Override
@@ -145,6 +180,30 @@ class EnumServiceImpl implements EnumServiceInterface
             this.enumsByPlugin.values().forEach(s -> s.stream().filter(e -> clazz.isInstance(e)).map(e -> clazz.cast(e)).forEach(result::add));
             return result;
         }
+    }
+    
+    /**
+     * enum value factory method
+     * @param plugin
+     * @param name
+     * @param clazz
+     * @return enumeration value or {@code null} if it does not exist
+     */
+    public <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            final Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>> map1 = this.uniqueEnums.get(plugin);
+            if (map1 != null)
+            {
+                final Map<String, UniqueEnumerationValue> map2 = map1.get(clazz);
+                if (map2 != null)
+                {
+                    return clazz.cast(map2.get(name));
+                }
+            }
+        }
+        return null;
     }
     
 }

@@ -24,12 +24,14 @@
 
 package de.minigameslib.mclib.api.perms;
 
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+
 /**
  * An interface for enumerations that represent list of permissions.
  * 
  * @author mepeisen
  */
-public interface PermissionsInterface
+public interface PermissionsInterface extends EnumerationValue
 {
     
     /**

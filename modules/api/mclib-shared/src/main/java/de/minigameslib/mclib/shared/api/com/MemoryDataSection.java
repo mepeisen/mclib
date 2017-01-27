@@ -65,6 +65,9 @@ public class MemoryDataSection implements DataSection
     /** the primitive types directly supported by DataSection. */
     static final Set<Class<?>>                   PRIM_TYPES           = new HashSet<>();
     
+    /** the unique enum value factory. */
+    private static UniqueEnumValueFactory uniqueEnumValueFactory;
+    
     static {
         // default impls
         fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
@@ -114,6 +117,18 @@ public class MemoryDataSection implements DataSection
         else
         {
             fragmentImpls.put(interfaz, impl);
+        }
+    }
+    
+    /**
+     * Inits the unique enum value factory
+     * @param factory
+     */
+    public static void initUniqueEnumValueFactory(UniqueEnumValueFactory factory)
+    {
+        if (!fragmentOverrideLock)
+        {
+            uniqueEnumValueFactory = factory;
         }
     }
     
@@ -295,6 +310,22 @@ public class MemoryDataSection implements DataSection
         else if (PRIM_TYPES.contains(newValue.getClass()))
         {
             this.doSet(key, newValue);
+        }
+        else if (newValue instanceof UniqueEnumerationValue)
+        {
+            final UniqueEnumerationValue casted = (UniqueEnumerationValue) newValue;
+            this.set(key + ".plugin", casted.getPluginName()); //$NON-NLS-1$
+            this.set(key + ".name", casted.name()); //$NON-NLS-1$
+        }
+        else if (newValue instanceof EnumerationValue)
+        {
+            final EnumerationValue casted = (EnumerationValue) newValue;
+            this.set(key + ".clazz", casted.getClass().getName()); //$NON-NLS-1$
+            this.set(key + ".name", casted.name()); //$NON-NLS-1$
+        }
+        else if (newValue instanceof Enum<?>)
+        {
+            this.set(key, ((Enum<?>) newValue).name());
         }
         else if (newValue instanceof DataFragment)
         {
@@ -1552,39 +1583,40 @@ public class MemoryDataSection implements DataSection
         this.contents.clear();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key)
     {
-        if (clazz.isAssignableFrom(UniqueEnumerationValue.class))
+        if (UniqueEnumerationValue.class.isAssignableFrom(clazz))
         {
             final DataSection child = this.getSection(key);
             if (child == null)
             {
                 return null;
             }
-            final String plugin = child.getString("plugin");
-            final String n = child.getString("name");
-            // TODO
+            final String plugin = child.getString("plugin"); //$NON-NLS-1$
+            final String n = child.getString("name"); //$NON-NLS-1$
+            return uniqueEnumValueFactory.create(plugin, n, UniqueEnumerationValue.class.asSubclass(clazz));
+        }
+        final DataSection child = this.getSection(key);
+        if (child == null)
+        {
             return null;
         }
-        // TODO
-//        final String n = this.getString(key);
-//        if (n == null)
-//        {
-//            return null;
-//        }
-//        for (final T constant : clazz.getEnumConstants())
-//        {
-//            if (constant.name().equals(n))
-//            {
-//                return constant;
-//            }
-//        }
-        return null;
+        final String className = child.getString("clazz"); //$NON-NLS-1$
+        try
+        {
+            return (T) child.getEnum(Enum.class.asSubclass(Class.forName(className)), "name"); //$NON-NLS-1$
+        }
+        catch (@SuppressWarnings("unused") ClassNotFoundException | ClassCastException e)
+        {
+            // silently ignore
+            return null;
+        }
     }
 
     @Override
-    public <T extends EnumerationValue> T getEnum(Class<T> clazz, String key, T defaultValue)
+    public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key, T defaultValue)
     {
         final T result = this.getEnumValue(clazz, key);
         return result == null ? defaultValue : result;
@@ -1751,6 +1783,22 @@ public class MemoryDataSection implements DataSection
             return result;
         }
         return null;
+    }
+    
+    /**
+     * Helper to create unique enums
+     */
+    @FunctionalInterface
+    public interface UniqueEnumValueFactory
+    {
+        /**
+         * Creates enum value for given plugin/name and class type
+         * @param plugin
+         * @param name
+         * @param clazz
+         * @return enum value or {@code null} if the given enum value was not registered
+         */
+        <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz);
     }
     
 }

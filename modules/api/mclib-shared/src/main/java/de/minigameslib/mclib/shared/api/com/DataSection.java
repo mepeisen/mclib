@@ -924,7 +924,7 @@ public interface DataSection
      * @param defaultValue
      * @return enumeration value or {@code defaultValue} if value was not found or is invalid.
      */
-    <T extends EnumerationValue> T getEnum(Class<T> clazz, String key, T defaultValue);
+    <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key, T defaultValue);
     
     /**
      * Returns a list of enumeration values.

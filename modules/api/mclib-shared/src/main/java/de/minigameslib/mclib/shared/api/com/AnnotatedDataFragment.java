@@ -109,6 +109,42 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 {
                     value = section.getFragmentMap(fdesc.elementType, name);
                 }
+                else if (fdesc.isJavaEnum)
+                {
+                    value = section.getEnum(fdesc.javaEnumType, name);
+                }
+                else if (fdesc.isJavaEnumList)
+                {
+                    value = section.getEnumList(fdesc.javaEnumType, name);
+                }
+                else if (fdesc.isJavaEnumMap)
+                {
+                    value = section.getEnumMap(fdesc.javaEnumType, name);
+                }
+                else if (fdesc.isEnum)
+                {
+                    value = section.getEnumValue(fdesc.normalEnumType, name);
+                }
+                else if (fdesc.isEnumList)
+                {
+                    value = section.getEnumValueList(fdesc.normalEnumType, name);
+                }
+                else if (fdesc.isEnumMap)
+                {
+                    value = section.getEnumValueMap(fdesc.normalEnumType, name);
+                }
+                else if (fdesc.isUniqueEnum)
+                {
+                    value = section.getEnumValue(fdesc.uniqueEnumType, name);
+                }
+                else if (fdesc.isUniqueEnumList)
+                {
+                    value = section.getEnumValueList(fdesc.uniqueEnumType, name);
+                }
+                else if (fdesc.isUniqueEnumMap)
+                {
+                    value = section.getEnumValueMap(fdesc.uniqueEnumType, name);
+                }
                 else
                 {
                     value = fdesc.primitiveType.get(name, section);
@@ -149,6 +185,42 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 else if (fdesc.isFragmentMap)
                 {
                     section.setFragmentMap(name, (Map<String, ? extends DataFragment>) value);
+                }
+                else if (fdesc.isJavaEnum)
+                {
+                    section.set(name, value);
+                }
+                else if (fdesc.isJavaEnumList)
+                {
+                    section.setPrimitiveList(name, (List<?>) value);
+                }
+                else if (fdesc.isJavaEnumMap)
+                {
+                    section.setPrimitiveMap(name, (Map<String, ?>) value);
+                }
+                else if (fdesc.isEnum)
+                {
+                    section.set(name, value);
+                }
+                else if (fdesc.isEnumList)
+                {
+                    section.setPrimitiveList(name, (List<?>) value);
+                }
+                else if (fdesc.isEnumMap)
+                {
+                    section.setPrimitiveMap(name, (Map<String, ?>) value);
+                }
+                else if (fdesc.isUniqueEnum)
+                {
+                    section.set(name, value);
+                }
+                else if (fdesc.isUniqueEnumList)
+                {
+                    section.setPrimitiveList(name, (List<?>) value);
+                }
+                else if (fdesc.isUniqueEnumMap)
+                {
+                    section.setPrimitiveMap(name, (Map<String, ?>) value);
                 }
                 else
                 {
@@ -258,7 +330,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         /** the target field type. */
         Class<?> clazz;
         
-        /** true if this is a list f data fragments. */
+        /** true if this is a list of data fragments. */
         boolean isFragmentList;
         
         /** true if this is a map to data fragments. */
@@ -267,8 +339,45 @@ public abstract class AnnotatedDataFragment implements DataFragment
         /** the list or map element types. */
         Class<? extends DataFragment> elementType;
 
+        /** the list or map element types. */
+        Class<? extends UniqueEnumerationValue> uniqueEnumType;
+
+        /** the list or map element types. */
+        @SuppressWarnings("rawtypes")
+        Class<? extends Enum> javaEnumType;
+
+        /** the list or map element types. */
+        Class<? extends EnumerationValue> normalEnumType;
+
         /** true if this is a data fragment. */
         boolean isFragment;
+        
+        /** true for java enums */
+        boolean isJavaEnum;
+        
+        /** true for unique enums */
+        boolean isUniqueEnum;
+        
+        /** true for normal enums */
+        boolean isEnum;
+        
+        /** true if this is a list of java enums. */
+        boolean isJavaEnumList;
+        
+        /** true if this is a list of unique enums. */
+        boolean isUniqueEnumList;
+        
+        /** true if this is a list of normal enums. */
+        boolean isEnumList;
+        
+        /** true if this is a map of java enums. */
+        boolean isJavaEnumMap;
+        
+        /** true if this is a map of unique enums. */
+        boolean isUniqueEnumMap;
+        
+        /** true if this is a map of normal enums. */
+        boolean isEnumMap;
         
         /**
          * Constructor.
@@ -307,6 +416,21 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         this.isFragmentList = true;
                         this.elementType = listType.asSubclass(DataFragment.class);
                     }
+                    else if (UniqueEnumerationValue.class.isAssignableFrom(listType))
+                    {
+                        this.isUniqueEnumList = true;
+                        this.uniqueEnumType = listType.asSubclass(UniqueEnumerationValue.class);
+                    }
+                    else if (EnumerationValue.class.isAssignableFrom(listType))
+                    {
+                        this.isFragmentList = true;
+                        this.normalEnumType = listType.asSubclass(EnumerationValue.class);
+                    }
+                    else if (Enum.class.isAssignableFrom(listType))
+                    {
+                        this.isJavaEnumList = true;
+                        this.javaEnumType = listType.asSubclass(Enum.class);
+                    }
                     else if (PRIM_TYPES.contains(listType))
                     {
                         this.primitiveType = PrimitiveFieldType.PrimitiveList;
@@ -339,6 +463,21 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         this.isFragmentMap = true;
                         this.elementType = valueType.asSubclass(DataFragment.class);
                     }
+                    else if (UniqueEnumerationValue.class.isAssignableFrom(valueType))
+                    {
+                        this.isUniqueEnumMap = true;
+                        this.uniqueEnumType = valueType.asSubclass(UniqueEnumerationValue.class);
+                    }
+                    else if (EnumerationValue.class.isAssignableFrom(valueType))
+                    {
+                        this.isFragmentMap = true;
+                        this.normalEnumType = valueType.asSubclass(EnumerationValue.class);
+                    }
+                    else if (Enum.class.isAssignableFrom(valueType))
+                    {
+                        this.isJavaEnumMap = true;
+                        this.javaEnumType = valueType.asSubclass(Enum.class);
+                    }
                     // TODO support list map etc.
 //                  else if (List.class.isAssignableFrom(valueType))
 //                  {
@@ -353,6 +492,21 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 {
                     this.isFragment = true;
                     this.elementType = this.clazz.asSubclass(DataFragment.class);
+                }
+                else if (UniqueEnumerationValue.class.isAssignableFrom(this.clazz))
+                {
+                    this.isUniqueEnum = true;
+                    this.uniqueEnumType = this.clazz.asSubclass(UniqueEnumerationValue.class);
+                }
+                else if (EnumerationValue.class.isAssignableFrom(this.clazz))
+                {
+                    this.isFragment = true;
+                    this.normalEnumType = this.clazz.asSubclass(EnumerationValue.class);
+                }
+                else if (Enum.class.isAssignableFrom(this.clazz))
+                {
+                    this.isJavaEnum = true;
+                    this.javaEnumType = this.clazz.asSubclass(Enum.class);
                 }
                 else
                 {
