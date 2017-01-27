@@ -24,23 +24,14 @@
 
 package de.minigameslib.mclib.api.objects;
 
-import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
- * An interface used in enumerations to identify the entity type.
- * 
- * <p>
- * Inherit this interface in your enumeration classes.
- * </p>
- * 
- * <p>
- * IMPLEMENTATION HINT: The plugin name and the enumeration value name are used to identify this type.
- * If you change them the components get broken.
- * </p>
+ * Marker interface for unique object ids.
  * 
  * @author mepeisen
  */
-public interface EntityTypeId extends McUniqueEnumInterface
+public interface ObjectIdInterface extends DataFragment
 {
     
     // marker only

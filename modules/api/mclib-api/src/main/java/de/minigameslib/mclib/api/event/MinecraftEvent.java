@@ -32,6 +32,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
@@ -53,6 +54,15 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
      * @return original event this rule 
      */
     Evt getBukkitEvent();
+    
+    /**
+     * Returns the object causing this event.
+     * @return object causing this event or {@code null} if this event was not caused by an object.
+     */
+    default ObjectInterface getObject()
+    {
+        return null;
+    }
     
     /**
      * Returns the zone causing this event.
@@ -97,6 +107,20 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     default ComponentInterface getComponent()
     {
         return null;
+    }
+    
+    /**
+     * Returns the objects associated with this event.
+     * @return object list
+     */
+    default Iterable<ObjectInterface> getObjects()
+    {
+        final ObjectInterface result = this.getObject();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
     }
     
     /**

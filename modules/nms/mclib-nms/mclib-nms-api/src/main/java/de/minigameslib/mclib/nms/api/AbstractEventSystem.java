@@ -72,6 +72,7 @@ import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
@@ -589,6 +590,14 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 if (comp instanceof MgEventListener)
                 {
                     ((MgEventListener) comp).handle(this.cls, mgevt);
+                }
+            }
+            
+            for (final ObjectInterface obj : mgevt.getObjects())
+            {
+                if (obj instanceof MgEventListener)
+                {
+                    ((MgEventListener) obj).handle(this.cls, mgevt);
                 }
             }
         }

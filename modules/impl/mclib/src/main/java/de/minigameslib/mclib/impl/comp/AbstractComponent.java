@@ -101,6 +101,7 @@ public abstract class AbstractComponent
      */
     protected void setWorldChunks(Set<WorldChunk> chunks)
     {
+        if (this.registry == null) return;
         final Set<WorldChunk> removed = new HashSet<>(this.currentChunks);
         removed.removeAll(chunks);
         final Set<WorldChunk> added = new HashSet<>(chunks);

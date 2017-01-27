@@ -58,6 +58,15 @@ public interface ObjectServiceInterface
     // handler registrations
     
     /**
+     * Registers an object handler.
+     * 
+     * @param type
+     * @param handler
+     * @throws McException
+     */
+    <T extends ObjectHandlerInterface> void register(ObjectTypeId type, Class<T> handler) throws McException;
+    
+    /**
      * Registers a component handler.
      * 
      * @param type
@@ -99,6 +108,13 @@ public interface ObjectServiceInterface
      * @return type or {@code null} if the type is not registered/ unknown
      */
     ComponentTypeId getType(ComponentIdInterface id);
+    
+    /**
+     * Returns the object type for given id.
+     * @param id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    ObjectTypeId getType(ObjectIdInterface id);
     
     /**
      * Returns the entity type for given id.
@@ -150,6 +166,13 @@ public interface ObjectServiceInterface
         Iterable<ComponentIdInterface> getBrokenComponents();
         
         /**
+         * Returns the list of broken objects.
+         * 
+         * @return broken objects
+         */
+        Iterable<ObjectIdInterface> getBrokenObjects();
+        
+        /**
          * Returns the list of broken entities.
          * 
          * @return broken entities
@@ -178,6 +201,15 @@ public interface ObjectServiceInterface
          * @return caught exception
          */
         McException getException(ComponentIdInterface id);
+        
+        /**
+         * Returns the exception that was caught during object loading
+         * 
+         * @param id
+         *            the object id of the broken component
+         * @return caught exception
+         */
+        McException getException(ObjectIdInterface id);
         
         /**
          * Returns the exception that was caught during entity loading
@@ -236,6 +268,40 @@ public interface ObjectServiceInterface
      * @return arena player.
      */
     McPlayerInterface getPlayer(UUID uuid);
+    
+    // object api
+    
+    /**
+     * Finds objects by id.
+     * 
+     * @param id
+     *            the object id to search for
+     * @return Object or {@code null} if no object was found.
+     */
+    ObjectInterface findObject(ObjectIdInterface id);
+    
+    /**
+     * Finds objects by type.
+     * 
+     * @param type
+     * @return objects by type.
+     */
+    Collection<ObjectInterface> findObjects(ObjectTypeId... type);
+    
+    /**
+     * Creates a new object with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this object within configuration files and restore during server restart
+     * @return created object
+     * @throws McException
+     *             thrown if the object could not be created
+     */
+    ObjectInterface createObject(ObjectTypeId type, ObjectHandlerInterface handler, boolean persist) throws McException;
     
     // component api
     

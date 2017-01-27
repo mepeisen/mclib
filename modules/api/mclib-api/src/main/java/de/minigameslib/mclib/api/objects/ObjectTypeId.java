@@ -27,7 +27,7 @@ package de.minigameslib.mclib.api.objects;
 import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
 
 /**
- * An interface used in enumerations to identify the entity type.
+ * An interface used in enumerations to identify the object type.
  * 
  * <p>
  * Inherit this interface in your enumeration classes.
@@ -40,7 +40,7 @@ import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
  * 
  * @author mepeisen
  */
-public interface EntityTypeId extends McUniqueEnumInterface
+public interface ObjectTypeId extends McUniqueEnumInterface
 {
     
     // marker only

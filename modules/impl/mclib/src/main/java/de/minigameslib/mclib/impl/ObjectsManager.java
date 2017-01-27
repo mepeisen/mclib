@@ -25,7 +25,6 @@
 package de.minigameslib.mclib.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,6 +53,8 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.ObjectCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ObjectCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
 import de.minigameslib.mclib.api.mcevent.SignCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneCreateEvent;
@@ -69,7 +69,11 @@ import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectHandlerInterface;
+import de.minigameslib.mclib.api.objects.ObjectIdInterface;
+import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.objects.ObjectTypeId;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
@@ -85,14 +89,13 @@ import de.minigameslib.mclib.impl.comp.ComponentOwner;
 import de.minigameslib.mclib.impl.comp.ComponentRegistry;
 import de.minigameslib.mclib.impl.comp.EntityId;
 import de.minigameslib.mclib.impl.comp.EntityImpl;
+import de.minigameslib.mclib.impl.comp.ObjectId;
+import de.minigameslib.mclib.impl.comp.ObjectImpl;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.SignImpl;
 import de.minigameslib.mclib.impl.comp.WorldChunk;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.comp.ZoneImpl;
-import de.minigameslib.mclib.impl.yml.YmlFile;
-import de.minigameslib.mclib.shared.api.com.DataFragment;
-import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -107,29 +110,20 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     /** target data folder. */
     private final File                                                             dataFolder;
     
-    /** the components. */
-    private final Map<ComponentId, ComponentImpl>                                  components              = new HashMap<>();
+    /** data container */
+    private final ObjectsContainer<ComponentIdInterface, ComponentId, ComponentImpl, ComponentTypeId, ComponentHandlerInterface> components = new ObjectsContainer<>();
     
-    /** the entities. */
-    private final Map<EntityId, EntityImpl>                                        entities                = new HashMap<>();
+    /** data container */
+    private final ObjectsContainer<ObjectIdInterface, ObjectId, ObjectImpl, ObjectTypeId, ObjectHandlerInterface> objects = new ObjectsContainer<>();
     
-    /** the signs. */
-    private final Map<SignId, SignImpl>                                            signs                   = new HashMap<>();
+    /** data container */
+    private final ObjectsContainer<SignIdInterface, SignId, SignImpl, SignTypeId, SignHandlerInterface> signs = new ObjectsContainer<>();
     
-    /** the zones. */
-    private final Map<ZoneId, ZoneImpl>                                            zones                   = new HashMap<>();
+    /** data container */
+    private final ObjectsContainer<EntityIdInterface, EntityId, EntityImpl, EntityTypeId, EntityHandlerInterface> entities = new ObjectsContainer<>();
     
-    /** registered components per plugin name. */
-    private final Map<String, Map<ComponentId, Boolean>>                           componentsByPlugin      = new HashMap<>();
-    
-    /** registered entities per plugin name. */
-    private final Map<String, Map<EntityId, Boolean>>                              entitiesByPlugin        = new HashMap<>();
-    
-    /** registered signs per plugin name. */
-    private final Map<String, Map<SignId, Boolean>>                                signsByPlugin           = new HashMap<>();
-    
-    /** registered zones per plugin name. */
-    private final Map<String, Map<ZoneId, Boolean>>                                zonesByPlugin           = new HashMap<>();
+    /** data container */
+    private final ObjectsContainer<ZoneIdInterface, ZoneId, ZoneImpl, ZoneTypeId, ZoneHandlerInterface> zones = new ObjectsContainer<>();
     
     /** component types per plugin name. */
     private final Map<String, Map<String, ComponentTypeId>>                        componentTypesByPlugin  = new HashMap<>();
@@ -143,6 +137,9 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     /** zone types per plugin name. */
     private final Map<String, Map<String, ZoneTypeId>>                             zoneTypesByPlugin       = new HashMap<>();
     
+    /** object types per plugin name. */
+    private final Map<String, Map<String, ObjectTypeId>>                           objectTypesByPlugin       = new HashMap<>();
+    
     /** registered handlers. */
     private final Map<ComponentTypeId, Class<? extends ComponentHandlerInterface>> componentHandlerClasses = new HashMap<>();
     
@@ -154,6 +151,9 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /** registered handlers. */
     private final Map<ZoneTypeId, Class<? extends ZoneHandlerInterface>>           zoneHandlerClasses      = new HashMap<>();
+    
+    /** registered handlers. */
+    private final Map<ObjectTypeId, Class<? extends ObjectHandlerInterface>>           objectHandlerClasses      = new HashMap<>();
     
     /** the component registry handling location specific components (components, zones, signs) */
     private final ComponentRegistry                                                registry                = new ComponentRegistry();
@@ -169,6 +169,9 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /** the zones folder. */
     private final File                                                             zonesFolder;
+    
+    /** the objects folder. */
+    private final File                                                             objectsFolder;
     
     /** the loaded plugin sets. To detect duplicate loading. */
     private final Set<String>                                                      loadedPlugins           = new HashSet<>();
@@ -191,6 +194,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         this.signsFolder = new File(this.dataFolder, "signs"); //$NON-NLS-1$
         this.entitiesFolder = new File(this.dataFolder, "entities"); //$NON-NLS-1$
         this.zonesFolder = new File(this.dataFolder, "zones"); //$NON-NLS-1$
+        this.objectsFolder = new File(this.dataFolder, "objects"); //$NON-NLS-1$
         
         if (!this.componentsFolder.exists())
             this.componentsFolder.mkdirs();
@@ -200,45 +204,14 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             this.entitiesFolder.mkdirs();
         if (!this.zonesFolder.exists())
             this.zonesFolder.mkdirs();
+        if (!this.objectsFolder.exists())
+            this.objectsFolder.mkdirs();
         
-        this.loadRegistry(this.componentsByPlugin, ComponentId::new, this.componentsFolder);
-        this.loadRegistry(this.zonesByPlugin, ZoneId::new, this.zonesFolder);
-        this.loadRegistry(this.entitiesByPlugin, EntityId::new, this.entitiesFolder);
-        this.loadRegistry(this.signsByPlugin, SignId::new, this.signsFolder);
-    }
-    
-    /**
-     * @param map
-     * @param factory
-     * @param folder
-     * @throws McException 
-     */
-    private <T extends DataFragment> void loadRegistry(Map<String, Map<T, Boolean>> map, Supplier<T> factory, File folder) throws McException
-    {
-        final File file = new File(folder, "registry.yml"); //$NON-NLS-1$
-        if (file.exists())
-        {
-            try
-            {
-                final YmlFile config = new YmlFile(file);
-                for (final String pluginName : config.getKeys(false))
-                {
-                    final Map<T, Boolean> idmap = map.computeIfAbsent(pluginName, k -> new HashMap<>());
-                    final DataSection pluginSection = config.getSection(pluginName);
-                    for (final String idkey : pluginSection.getKeys(false))
-                    {
-                        final DataSection section = pluginSection.getSection(idkey);
-                        final T id = factory.get();
-                        id.read(section);
-                        idmap.put(id, Boolean.TRUE);
-                    }
-                }
-            }
-            catch (IOException ex)
-            {
-                throw new McException(CommonMessages.InternalError, ex, ex.getMessage());
-            }
-        }
+        this.components.loadRegistry(ComponentId::new, this.componentsFolder);
+        this.zones.loadRegistry(ZoneId::new, this.zonesFolder);
+        this.entities.loadRegistry(EntityId::new, this.entitiesFolder);
+        this.signs.loadRegistry(SignId::new, this.signsFolder);
+        this.objects.loadRegistry(ObjectId::new, this.objectsFolder);
     }
 
     @Override
@@ -246,6 +219,13 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     {
         this.componentTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.componentHandlerClasses.put(type, handler);
+    }
+
+    @Override
+    public <T extends ObjectHandlerInterface> void register(ObjectTypeId type, Class<T> handler) throws McException
+    {
+        this.objectTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
+        this.objectHandlerClasses.put(type, handler);
     }
     
     @Override
@@ -276,10 +256,11 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         if (this.loadedPlugins.contains(pluginName))
         {
             final McException dupException = new McException(CommonMessages.PluginLoadedTwice, pluginName);
-            final Set<ZoneIdInterface> brokenZones = this.zonesByPlugin.containsKey(pluginName) ? new HashSet<>(this.zonesByPlugin.get(pluginName).keySet()) : Collections.emptySet();
-            final Set<ComponentIdInterface> brokenComponents = this.componentsByPlugin.containsKey(pluginName) ? new HashSet<>(this.componentsByPlugin.get(pluginName).keySet()) : Collections.emptySet();
-            final Set<EntityIdInterface> brokenEntities = this.entitiesByPlugin.containsKey(pluginName) ? new HashSet<>(this.entitiesByPlugin.get(pluginName).keySet()) : Collections.emptySet();
-            final Set<SignIdInterface> brokenSigns = this.signsByPlugin.containsKey(pluginName) ? new HashSet<>(this.signsByPlugin.get(pluginName).keySet()) : Collections.emptySet();
+            final Set<ObjectIdInterface> brokenObjects = this.objects.containsPluginName(pluginName) ? new HashSet<>(this.objects.getByPlugin(pluginName)) : Collections.emptySet();
+            final Set<ZoneIdInterface> brokenZones = this.zones.containsPluginName(pluginName) ? new HashSet<>(this.zones.getByPlugin(pluginName)) : Collections.emptySet();
+            final Set<ComponentIdInterface> brokenComponents = this.components.containsPluginName(pluginName) ? new HashSet<>(this.components.getByPlugin(pluginName)) : Collections.emptySet();
+            final Set<EntityIdInterface> brokenEntities = this.entities.containsPluginName(pluginName) ? new HashSet<>(this.entities.getByPlugin(pluginName)) : Collections.emptySet();
+            final Set<SignIdInterface> brokenSigns = this.signs.containsPluginName(pluginName) ? new HashSet<>(this.signs.getByPlugin(pluginName)) : Collections.emptySet();
             return new ResumeReport() {
                 
                 @Override
@@ -335,6 +316,18 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 {
                     return brokenComponents;
                 }
+
+                @Override
+                public Iterable<ObjectIdInterface> getBrokenObjects()
+                {
+                    return brokenObjects;
+                }
+
+                @Override
+                public McException getException(ObjectIdInterface id)
+                {
+                    return brokenObjects.contains(id) ? dupException : null;
+                }
             };
         }
         
@@ -343,136 +336,53 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         final Map<SignIdInterface, McException> brokenSigns = new HashMap<>();
         final Map<EntityIdInterface, McException> brokenEntities = new HashMap<>();
         final Map<ComponentIdInterface, McException> brokenComponents = new HashMap<>();
+        final Map<ObjectIdInterface, McException> brokenObjects = new HashMap<>();
         
-        if (this.zonesByPlugin.containsKey(pluginName))
-        {
-            for (final ZoneId id : this.zonesByPlugin.get(pluginName).keySet())
+        this.objects.resumeObjects(pluginName, this.objectTypesByPlugin, ObjectId::getType, this::safeCreateHandler, (id, handler) -> {
+            final ObjectImpl impl = new ObjectImpl(plugin, id, handler, new File(this.objectsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            handler.onResume(impl);
+            return impl;
+        }, brokenObjects);
+        
+        this.zones.resumeObjects(pluginName, this.zoneTypesByPlugin, ZoneId::getType, this::safeCreateHandler, (id, handler) -> {
+            final ZoneImpl impl = new ZoneImpl(plugin, this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            handler.onResume(impl);
+            return impl;
+        }, brokenZones);
+        
+        this.signs.resumeObjects(pluginName, this.signTypesByPlugin, SignId::getType, this::safeCreateHandler, (id, handler) -> {
+            final SignImpl impl = new SignImpl(plugin, this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            // research sign
+            final Block block = impl.getLocation().getBlock();
+            if (block instanceof Sign)
             {
-                if (!this.zoneTypesByPlugin.containsKey(pluginName))
-                {
-                    brokenZones.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                final ZoneTypeId type = this.zoneTypesByPlugin.get(pluginName).get(id.getType());
-                if (type == null)
-                {
-                    brokenZones.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                try
-                {
-                    // init
-                    final ZoneHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final ZoneImpl impl = new ZoneImpl(plugin, this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
-                    impl.readConfig();
-                    handler.onResume(impl);
-                    
-                    // store data
-                    this.zonesByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.TRUE);
-                    this.zones.put(id, impl);
-                }
-                catch (McException ex)
-                {
-                    brokenZones.put(id, ex);
-                }
+                impl.setSign((Sign) block);
+                handler.onResume(impl);
+            
+                // store data
+                return impl;
             }
-        }
+            throw new McException(CommonMessages.SignNotFoundError);
+        }, brokenSigns);
         
-        if (this.signsByPlugin.containsKey(pluginName))
-        {
-            for (final SignId id : this.signsByPlugin.get(pluginName).keySet())
-            {
-                if (!this.signTypesByPlugin.containsKey(pluginName))
-                {
-                    brokenSigns.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                final SignTypeId type = this.signTypesByPlugin.get(pluginName).get(id.getType());
-                if (type == null)
-                {
-                    brokenSigns.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                try
-                {
-                    // init
-                    final SignHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final SignImpl impl = new SignImpl(plugin, this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
-                    impl.readConfig();
-                    // research sign
-                    final Block block = impl.getLocation().getBlock();
-                    if (block instanceof Sign)
-                    {
-                        impl.setSign((Sign) block);
-                        handler.onResume(impl);
-                    
-                        // store data
-                        this.signsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.TRUE);
-                        this.signs.put(id, impl);
-                    }
-                    else
-                    {
-                        throw new McException(CommonMessages.SignNotFoundError);
-                    }
-                }
-                catch (McException ex)
-                {
-                    brokenSigns.put(id, ex);
-                }
-            }
-        }
+        // TODO entity support
         
-        if (this.entitiesByPlugin.containsKey(pluginName))
-        {
-            // TODO entity support
-        }
-        
-        if (this.componentsByPlugin.containsKey(pluginName))
-        {
-            for (final ComponentId id : this.componentsByPlugin.get(pluginName).keySet())
-            {
-                if (!this.componentTypesByPlugin.containsKey(pluginName))
-                {
-                    brokenComponents.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                final ComponentTypeId type = this.componentTypesByPlugin.get(pluginName).get(id.getType());
-                if (type == null)
-                {
-                    brokenComponents.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, id.getType(), "?")); //$NON-NLS-1$
-                    continue;
-                }
-                
-                try
-                {
-                    // init
-                    final ComponentHandlerInterface handler = safeCreateHandler(pluginName, type);
-                    final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
-                    impl.readConfig();
-                    handler.onResume(impl);
-                    
-                    // store data
-                    this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.TRUE);
-                    this.components.put(id, impl);
-                }
-                catch (McException ex)
-                {
-                    brokenComponents.put(id, ex);
-                }
-            }
-        }
+        this.components.resumeObjects(pluginName, this.componentTypesByPlugin, ComponentId::getType, this::safeCreateHandler, (id, handler) -> {
+            final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            handler.onResume(impl);
+            return impl;
+        }, brokenComponents);
         
         return new ResumeReport() {
             
             @Override
             public boolean isOk()
             {
-                return brokenComponents.isEmpty() && brokenEntities.isEmpty() && brokenSigns.isEmpty() && brokenZones.isEmpty();
+                return brokenComponents.isEmpty() && brokenEntities.isEmpty() && brokenSigns.isEmpty() && brokenZones.isEmpty() && brokenObjects.isEmpty();
             }
             
             @Override
@@ -522,6 +432,18 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             {
                 return brokenComponents.keySet();
             }
+
+            @Override
+            public Iterable<ObjectIdInterface> getBrokenObjects()
+            {
+                return brokenObjects.keySet();
+            }
+
+            @Override
+            public McException getException(ObjectIdInterface id)
+            {
+                return brokenObjects.get(id);
+            }
         };
     }
     
@@ -556,47 +478,37 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             }
             
             // pause elements
-            final Map<ComponentId, Boolean> cmap = this.componentsByPlugin.remove(pluginName);
-            if (cmap != null)
-            {
-                cmap.forEach((id, persist) -> {
-                    final ComponentImpl component = this.components.remove(id);
-                    component.clearEventRegistrations();
-                    component.getHandler().onPause(component);
-                });
-            }
-            final Map<EntityId, Boolean> emap = this.entitiesByPlugin.remove(pluginName);
-            if (emap != null)
-            {
-                emap.forEach((id, persist) -> {
-                    final EntityImpl entity = this.entities.remove(id);
-                    entity.clearEventRegistrations();
-                    entity.getHandler().onPause(entity);
-                });
-            }
-            final Map<SignId, Boolean> smap = this.signsByPlugin.remove(pluginName);
-            if (smap != null)
-            {
-                smap.forEach((id, persist) -> {
-                    final SignImpl sign = this.signs.remove(id);
-                    sign.clearEventRegistrations();
-                    sign.getHandler().onPause(sign);
-                });
-            }
-            final Map<ZoneId, Boolean> zmap = this.zonesByPlugin.remove(pluginName);
-            if (zmap != null)
-            {
-                zmap.forEach((id, persist) -> {
-                    final ZoneImpl zone = this.zones.remove(id);
-                    zone.clearEventRegistrations();
-                    zone.getHandler().onPause(zone);
-                });
-            }
+            this.components.removePlugin(pluginName).forEach(id -> {
+                final ComponentImpl component = this.components.remove(id);
+                component.clearEventRegistrations();
+                component.getHandler().onPause(component);
+            });
+            this.entities.removePlugin(pluginName).forEach(id -> {
+                final EntityImpl entity = this.entities.remove(id);
+                entity.clearEventRegistrations();
+                entity.getHandler().onPause(entity);
+            });
+            this.signs.removePlugin(pluginName).forEach(id -> {
+                final SignImpl sign = this.signs.remove(id);
+                sign.clearEventRegistrations();
+                sign.getHandler().onPause(sign);
+            });
+            this.zones.removePlugin(pluginName).forEach(id -> {
+                final ZoneImpl zone = this.zones.remove(id);
+                zone.clearEventRegistrations();
+                zone.getHandler().onPause(zone);
+            });
+            this.objects.removePlugin(pluginName).forEach(id -> {
+                final ObjectImpl object = this.objects.remove(id);
+                object.clearEventRegistrations();
+                object.getHandler().onPause(object);
+            });
             
-            this.components.values().forEach(c -> c.onDisable(plugin));
-            this.entities.values().forEach(c -> c.onDisable(plugin));
-            this.signs.values().forEach(c -> c.onDisable(plugin));
-            this.zones.values().forEach(c -> c.onDisable(plugin));
+            this.components.forEach(c -> c.onDisable(plugin));
+            this.entities.forEach(c -> c.onDisable(plugin));
+            this.signs.forEach(c -> c.onDisable(plugin));
+            this.zones.forEach(c -> c.onDisable(plugin));
+            this.objects.forEach(c -> c.onDisable(plugin));
             
             // remove plugin
             this.loadedPlugins.remove(pluginName);
@@ -623,7 +535,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     @Override
     public ComponentInterface findComponent(ComponentIdInterface id)
     {
-        return this.components.get(id);
+        return this.components.get((ComponentId) id);
     }
     
     @Override
@@ -650,49 +562,18 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         handler2.onCreate(impl);
         
         // store data
-        this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.valueOf(persist));
-        this.components.put(id, impl);
+        this.components.put(pluginName, id, impl, persist);
         
         // save data
         if (persist)
         {
-            this.saveIdList(this.componentsFolder, this.componentsByPlugin);
+            this.components.saveIdList(this.componentsFolder);
             impl.saveConfig();
         }
         
         final ComponentCreatedEvent createdEvent = new ComponentCreatedEvent(impl);
         Bukkit.getPluginManager().callEvent(createdEvent);
         return impl;
-    }
-    
-    /**
-     * @param folder
-     * @param map
-     * @throws McException
-     */
-    private <T extends DataFragment> void saveIdList(File folder, Map<String, Map<T, Boolean>> map) throws McException
-    {
-        final YmlFile fileConfig = new YmlFile();
-        map.forEach((k, v) -> {
-            final DataSection section = fileConfig.createSection(k);
-            int i = 0;
-            for (final Map.Entry<T, Boolean> data : v.entrySet())
-            {
-                if (data.getValue())
-                {
-                    i++;
-                    data.getKey().write(section.createSection("item" + i)); //$NON-NLS-1$
-                }
-            }
-        });
-        try
-        {
-            fileConfig.saveFile(new File(folder, "registry.yml")); //$NON-NLS-1$
-        }
-        catch (IOException ex)
-        {
-            throw new McException(CommonMessages.BrokenObjectType, ex);
-        }
     }
     
     /**
@@ -768,7 +649,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     @Override
     public EntityInterface findEntity(EntityIdInterface id)
     {
-        return this.entities.get(id);
+        return this.entities.get((EntityId) id);
     }
     
     @Override
@@ -789,7 +670,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     @Override
     public SignInterface findSign(SignIdInterface id)
     {
-        return this.signs.get(id);
+        return this.signs.get((SignId) id);
     }
     
     @Override
@@ -816,13 +697,12 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         handler2.onCreate(impl);
         
         // store data
-        this.signsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.valueOf(persist));
-        this.signs.put(id, impl);
+        this.signs.put(pluginName, id, impl, persist);
         
         // save data
         if (persist)
         {
-            this.saveIdList(this.zonesFolder, this.zonesByPlugin);
+            this.signs.saveIdList(this.zonesFolder);
             impl.saveConfig();
         }
         
@@ -880,13 +760,12 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         handler2.onCreate(impl);
         
         // store data
-        this.zonesByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, Boolean.valueOf(persist));
-        this.zones.put(id, impl);
+        this.zones.put(pluginName, id, impl, persist);
         
         // save data
         if (persist)
         {
-            this.saveIdList(this.zonesFolder, this.zonesByPlugin);
+            this.zones.saveIdList(this.zonesFolder);
             impl.saveConfig();
         }
         
@@ -920,10 +799,35 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         }
     }
     
+    /**
+     * Safe create handler from type.
+     * 
+     * @param pluginName
+     * @param type
+     * @return handler
+     * @throws McException
+     */
+    private ObjectHandlerInterface safeCreateHandler(String pluginName, ObjectTypeId type) throws McException
+    {
+        final Class<? extends ObjectHandlerInterface> clazz = this.objectHandlerClasses.get(type);
+        if (clazz == null)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
+        }
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
+        }
+    }
+    
     @Override
     public ZoneInterface findZone(ZoneIdInterface id)
     {
-        return this.zones.get(id);
+        return this.zones.get((ZoneId) id);
     }
     
     @Override
@@ -1001,12 +905,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     private void onDelete(ComponentImpl component) throws McException
     {
         final ComponentId id = (ComponentId) component.getComponentId();
-        final Boolean persistent = this.componentsByPlugin.get(id.getPluginName()).remove(id);
-        this.components.remove(id);
-        if (persistent)
-        {
-            this.saveIdList(this.componentsFolder, this.componentsByPlugin);
-        }
+        this.components.remove(id.getPluginName(), id, this.componentsFolder);
     }
     
     /**
@@ -1017,12 +916,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     private void onDelete(ZoneImpl zone) throws McException
     {
         final ZoneId id = zone.getZoneId();
-        final Boolean persistent = this.zonesByPlugin.get(id.getPluginName()).remove(id);
-        this.zones.remove(id);
-        if (persistent)
-        {
-            this.saveIdList(this.zonesFolder, this.zonesByPlugin);
-        }
+        this.zones.remove(id.getPluginName(), id, this.zonesFolder);
     }
     
     /**
@@ -1033,12 +927,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     private void onDelete(SignImpl sign) throws McException
     {
         final SignId id = (SignId) sign.getSignId();
-        final Boolean persistent = this.signsByPlugin.get(id.getPluginName()).remove(id);
-        this.signs.remove(id);
-        if (persistent)
-        {
-            this.saveIdList(this.signsFolder, this.signsByPlugin);
-        }
+        this.signs.remove(id.getPluginName(), id, this.signsFolder);
     }
 
     @Override
@@ -1059,10 +948,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         final List<ComponentInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) -> {
-            final Map<ComponentId, Boolean> map = this.componentsByPlugin.get(plugin);
-            if (map != null) {
-                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
-            }
+            this.components.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
         });
         
         return result;
@@ -1100,10 +986,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         final List<SignInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) -> {
-            final Map<SignId, Boolean> map = this.signsByPlugin.get(plugin);
-            if (map != null) {
-                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
-            }
+            this.signs.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
         });
         
         return result;
@@ -1290,10 +1173,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         final List<ZoneInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) -> {
-            final Map<ZoneId, Boolean> map = this.zonesByPlugin.get(plugin);
-            if (map != null) {
-                map.keySet().stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
-            }
+            this.zones.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
         });
         
         return result;
@@ -1379,6 +1259,74 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     {
         final SignId casted = (SignId) id;
         return this.signTypesByPlugin.containsKey(casted.getPluginName()) ? this.signTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
+    }
+
+    @Override
+    public ObjectTypeId getType(ObjectIdInterface id)
+    {
+        final ObjectId casted = (ObjectId) id;
+        return this.objectTypesByPlugin.containsKey(casted.getPluginName()) ? this.objectTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
+    }
+
+    @Override
+    public ObjectInterface findObject(ObjectIdInterface id)
+    {
+        return this.objects.get((ObjectId) id);
+    }
+
+    @Override
+    public Collection<ObjectInterface> findObjects(ObjectTypeId... type)
+    {
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ObjectTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<ObjectInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) -> {
+            this.objects.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.objects::get).forEach(result::add);
+        });
+        
+        return result;
+    }
+
+    @Override
+    public ObjectInterface createObject(ObjectTypeId type, ObjectHandlerInterface handler, boolean persist) throws McException
+    {
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
+        if (!this.loadedPlugins.contains(pluginName))
+        {
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
+        }
+        final ObjectHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
+        final UUID uuid = UUID.randomUUID();
+        final ObjectId id = new ObjectId(pluginName, type.name(), uuid);
+        
+        // init
+        final ObjectImpl impl = new ObjectImpl(plugin, id, handler2, persist ? new File(this.objectsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final ObjectCreateEvent createEvent = new ObjectCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
+        handler2.onCreate(impl);
+        
+        // store data
+        this.objects.put(pluginName, id, impl, persist);
+        
+        // save data
+        if (persist)
+        {
+            this.objects.saveIdList(this.objectsFolder);
+            impl.saveConfig();
+        }
+        
+        final ObjectCreatedEvent createdEvent = new ObjectCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+        return impl;
     }
     
 }
