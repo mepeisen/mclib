@@ -26,7 +26,13 @@ package de.minigameslib.mclib.api.mcevent;
 
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before a new sign is created.
@@ -41,7 +47,7 @@ import de.minigameslib.mclib.api.objects.SignInterface;
  * 
  * @author mepeisen
  */
-public class SignCreateEvent extends AbstractVetoEvent
+public class SignCreateEvent extends AbstractVetoEvent implements MinecraftEvent<SignCreateEvent, SignCreateEvent>
 {
     
     /** handlers list. */
@@ -61,11 +67,7 @@ public class SignCreateEvent extends AbstractVetoEvent
         this.sign = sign;
     }
     
-    /**
-     * Returns the sign that was created
-     * 
-     * @return the created sign
-     */
+    @Override
     public SignInterface getSign()
     {
         return this.sign;
@@ -90,6 +92,22 @@ public class SignCreateEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public SignCreateEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<SignCreateEvent> when(McPredicate<SignCreateEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

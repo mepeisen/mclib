@@ -26,7 +26,13 @@ package de.minigameslib.mclib.api.mcevent;
 
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before a new component is created.
@@ -37,7 +43,7 @@ import de.minigameslib.mclib.api.objects.ComponentInterface;
  * 
  * @author mepeisen
  */
-public class ComponentCreateEvent extends AbstractVetoEvent
+public class ComponentCreateEvent extends AbstractVetoEvent implements MinecraftEvent<ComponentCreateEvent, ComponentCreateEvent>
 {
     
     /** handlers list. */
@@ -57,11 +63,7 @@ public class ComponentCreateEvent extends AbstractVetoEvent
         this.component = component;
     }
     
-    /**
-     * Returns the component that was created
-     * 
-     * @return the created component
-     */
+    @Override
     public ComponentInterface getComponent()
     {
         return this.component;
@@ -86,6 +88,22 @@ public class ComponentCreateEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public ComponentCreateEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<ComponentCreateEvent> when(McPredicate<ComponentCreateEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

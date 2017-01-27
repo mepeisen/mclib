@@ -28,14 +28,20 @@ import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event showing up that a component was relocated.
  * 
  * @author mepeisen
  */
-public class ComponentRelocatedEvent extends Event
+public class ComponentRelocatedEvent extends Event implements MinecraftEvent<ComponentRelocatedEvent, ComponentRelocatedEvent>
 {
     
     /** handlers list. */
@@ -65,11 +71,7 @@ public class ComponentRelocatedEvent extends Event
         this.newLocation = newLocation;
     }
     
-    /**
-     * Returns the component that was relocated
-     * 
-     * @return the created component
-     */
+    @Override
     public ComponentInterface getComponent()
     {
         return this.component;
@@ -112,6 +114,22 @@ public class ComponentRelocatedEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public ComponentRelocatedEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<ComponentRelocatedEvent> when(McPredicate<ComponentRelocatedEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

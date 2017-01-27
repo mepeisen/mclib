@@ -27,7 +27,13 @@ package de.minigameslib.mclib.api.mcevent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event showing up that a entity was deleted.
@@ -38,7 +44,7 @@ import de.minigameslib.mclib.api.objects.EntityInterface;
  * 
  * @author mepeisen
  */
-public class EntityDeletedEvent extends Event
+public class EntityDeletedEvent extends Event implements MinecraftEvent<EntityDeletedEvent, EntityDeletedEvent>
 {
     
     /** handlers list. */
@@ -58,11 +64,7 @@ public class EntityDeletedEvent extends Event
         this.entity = entity;
     }
     
-    /**
-     * Returns the entity that was deleted
-     * 
-     * @return the deleted entity
-     */
+    @Override
     public EntityInterface getEntity()
     {
         return this.entity;
@@ -87,6 +89,22 @@ public class EntityDeletedEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public EntityDeletedEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<EntityDeletedEvent> when(McPredicate<EntityDeletedEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

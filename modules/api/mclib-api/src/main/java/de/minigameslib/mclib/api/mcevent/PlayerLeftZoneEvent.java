@@ -27,15 +27,21 @@ package de.minigameslib.mclib.api.mcevent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired after a player left a zone.
  * 
  * @author mepeisen
  */
-public class PlayerLeftZoneEvent extends Event
+public class PlayerLeftZoneEvent extends Event implements MinecraftEvent<PlayerLeftZoneEvent, PlayerLeftZoneEvent>
 {
     
     /** handlers list. */
@@ -61,21 +67,13 @@ public class PlayerLeftZoneEvent extends Event
         this.player = player;
     }
     
-    /**
-     * Returns the zone that was left
-     * 
-     * @return the left arena
-     */
+    @Override
     public ZoneInterface getZone()
     {
         return this.zone;
     }
     
-    /**
-     * Returns the player that was leaving the zone
-     * 
-     * @return the leaving player
-     */
+    @Override
     public McPlayerInterface getPlayer()
     {
         return this.player;
@@ -100,6 +98,22 @@ public class PlayerLeftZoneEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public PlayerLeftZoneEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<PlayerLeftZoneEvent> when(McPredicate<PlayerLeftZoneEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

@@ -24,18 +24,28 @@
 
 package de.minigameslib.mclib.api.mcevent;
 
+import java.util.Collection;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired after an entity enters a zone.
  * 
  * @author mepeisen
  */
-public class EntityEnteredZoneEvent extends Event
+public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<EntityEnteredZoneEvent, EntityEnteredZoneEvent>
 {
     
     /** handlers list. */
@@ -46,6 +56,12 @@ public class EntityEnteredZoneEvent extends Event
     
     /** the entity entering the zone. */
     private final Entity  entity;
+    
+    /** mclib entity */
+    private final EntityInterface mcEntity;
+    
+    /** mclib entities */
+    private final Collection<EntityInterface> mcEntities;
     
     /**
      * Constructor.
@@ -59,13 +75,23 @@ public class EntityEnteredZoneEvent extends Event
     {
         this.zone = zone;
         this.entity = entity;
+        this.mcEntities = ObjectServiceInterface.instance().findEntities(entity);
+        this.mcEntity = this.mcEntities.isEmpty() ? null : this.mcEntities.iterator().next();
     }
     
-    /**
-     * Returns the zone that was entered
-     * 
-     * @return the entered arena
-     */
+    @Override
+    public EntityInterface getEntity()
+    {
+        return this.mcEntity;
+    }
+
+    @Override
+    public Iterable<EntityInterface> getEntities()
+    {
+        return this.mcEntities;
+    }
+    
+    @Override
     public ZoneInterface getZone()
     {
         return this.zone;
@@ -76,11 +102,11 @@ public class EntityEnteredZoneEvent extends Event
      * 
      * @return the entering entity
      */
-    public Entity getEntity()
+    public Entity getBukkitEntity()
     {
         return this.entity;
     }
-    
+
     /**
      * Returns the handlers list
      * 
@@ -100,6 +126,22 @@ public class EntityEnteredZoneEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public EntityEnteredZoneEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<EntityEnteredZoneEvent> when(McPredicate<EntityEnteredZoneEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

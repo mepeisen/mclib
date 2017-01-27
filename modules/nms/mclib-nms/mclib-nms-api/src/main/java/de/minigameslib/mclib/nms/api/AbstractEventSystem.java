@@ -29,8 +29,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
@@ -63,7 +69,10 @@ import de.minigameslib.mclib.api.mcevent.ZoneDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneRelocateEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
 /**
@@ -87,36 +96,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      */
     public AbstractEventSystem()
     {
-        this.registerHandler(ComponentCreatedEvent.class, (evt) -> new MgComponentCreatedEvent(evt));
-        this.registerHandler(ComponentCreateEvent.class, (evt) -> new MgComponentCreateEvent(evt));
-        this.registerHandler(ComponentDeletedEvent.class, (evt) -> new MgComponentDeletedEvent(evt));
-        this.registerHandler(ComponentDeleteEvent.class, (evt) -> new MgComponentDeleteEvent(evt));
-        this.registerHandler(ComponentRelocatedEvent.class, (evt) -> new MgComponentRelocatedEvent(evt));
-        this.registerHandler(ComponentRelocateEvent.class, (evt) -> new MgComponentRelocateEvent(evt));
-        this.registerHandler(EntityCreatedEvent.class, (evt) -> new MgEntityCreatedEvent(evt));
-        this.registerHandler(EntityCreateEvent.class, (evt) -> new MgEntityCreateEvent(evt));
-        this.registerHandler(EntityDeletedEvent.class, (evt) -> new MgEntityDeletedEvent(evt));
-        this.registerHandler(EntityDeleteEvent.class, (evt) -> new MgEntityDeleteEvent(evt));
-        this.registerHandler(EntityEnteredZoneEvent.class, (evt) -> new MgEntityEnteredZoneEvent(evt));
-        this.registerHandler(EntityLeftZoneEvent.class, (evt) -> new MgEntityLeftZoneEvent(evt));
-        this.registerHandler(PlayerCloseGuiEvent.class, (evt) -> new MgPlayerCloseGuiEvent(evt));
-        this.registerHandler(PlayerDisplayGuiPageEvent.class, (evt) -> new MgPlayerDisplayGuiPageEvent(evt));
-        this.registerHandler(PlayerEnteredZoneEvent.class, (evt) -> new MgPlayerEnteredZoneEvent(evt));
-        this.registerHandler(PlayerGuiClickEvent.class, (evt) -> new MgPlayerGuiClickEvent(evt));
-        this.registerHandler(PlayerLeftZoneEvent.class, (evt) -> new MgPlayerLeftZoneEvent(evt));
-        this.registerHandler(PlayerOpenGuiEvent.class, (evt) -> new MgPlayerOpenGuiEvent(evt));
-        this.registerHandler(SignCreatedEvent.class, (evt) -> new MgSignCreatedEvent(evt));
-        this.registerHandler(SignCreateEvent.class, (evt) -> new MgSignCreateEvent(evt));
-        this.registerHandler(SignDeletedEvent.class, (evt) -> new MgSignDeletedEvent(evt));
-        this.registerHandler(SignDeleteEvent.class, (evt) -> new MgSignDeleteEvent(evt));
-        this.registerHandler(SignRelocatedEvent.class, (evt) -> new MgSignRelocatedEvent(evt));
-        this.registerHandler(SignRelocateEvent.class, (evt) -> new MgSignRelocateEvent(evt));
-        this.registerHandler(ZoneCreatedEvent.class, (evt) -> new MgZoneCreatedEvent(evt));
-        this.registerHandler(ZoneCreateEvent.class, (evt) -> new MgZoneCreateEvent(evt));
-        this.registerHandler(ZoneDeletedEvent.class, (evt) -> new MgZoneDeletedEvent(evt));
-        this.registerHandler(ZoneDeleteEvent.class, (evt) -> new MgZoneDeleteEvent(evt));
-        this.registerHandler(ZoneRelocatedEvent.class, (evt) -> new MgZoneRelocatedEvent(evt));
-        this.registerHandler(ZoneRelocateEvent.class, (evt) -> new MgZoneRelocateEvent(evt));
+        // empty
     }
     
     @Override
@@ -518,6 +498,20 @@ public abstract class AbstractEventSystem implements EventSystemInterface
         return ((MinecraftEventHandler<Evt, MgEvt>) this.getHandler(bukkitEvent.getClass())).createMgEvent(bukkitEvent);
     }
     
+    @Override
+    public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
+    {
+        Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
+            
+            @Override
+            public void execute(Listener paramListener, Event paramEvent) throws EventException
+            {
+                getHandler(clazz).handle(clazz.cast(paramEvent));
+            }
+        }, plugin);
+        this.registerHandler(clazz, evt -> evt);
+    }
+
     /**
      * The minigame event handler.
      * 
@@ -558,17 +552,44 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 listener.handle(this.cls, mgevt);
             }
             
-            final McPlayerInterface player = mgevt.getPlayer();
-            if (player instanceof MgEventListener)
+            for (final McPlayerInterface player : mgevt.getPlayers())
             {
-                ((MgEventListener) player).handle(this.cls, mgevt);
+                if (player instanceof MgEventListener)
+                {
+                    ((MgEventListener) player).handle(this.cls, mgevt);
+                }
             }
             
-            // TODO component etc.
-            final ZoneInterface arena = mgevt.getZone();
-            if (arena instanceof MgEventListener)
+            for (final ZoneInterface arena : mgevt.getZones())
             {
-                ((MgEventListener) arena).handle(this.cls, mgevt);
+                if (arena instanceof MgEventListener)
+                {
+                    ((MgEventListener) arena).handle(this.cls, mgevt);
+                }
+            }
+            
+            for (final SignInterface sign : mgevt.getSigns())
+            {
+                if (sign instanceof MgEventListener)
+                {
+                    ((MgEventListener) sign).handle(this.cls, mgevt);
+                }
+            }
+            
+            for (final EntityInterface entity : mgevt.getEntities())
+            {
+                if (entity instanceof MgEventListener)
+                {
+                    ((MgEventListener) entity).handle(this.cls, mgevt);
+                }
+            }
+            
+            for (final ComponentInterface comp : mgevt.getComponents())
+            {
+                if (comp instanceof MgEventListener)
+                {
+                    ((MgEventListener) comp).handle(this.cls, mgevt);
+                }
             }
         }
         

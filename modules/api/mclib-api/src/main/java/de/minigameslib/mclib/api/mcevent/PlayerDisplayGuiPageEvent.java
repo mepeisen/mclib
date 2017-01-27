@@ -27,9 +27,15 @@ package de.minigameslib.mclib.api.mcevent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * Fires before a page is opened.
@@ -41,7 +47,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
  * @author mepeisen
  *
  */
-public class PlayerDisplayGuiPageEvent extends Event
+public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<PlayerDisplayGuiPageEvent, PlayerDisplayGuiPageEvent>
 {
     
     /** handlers list. */
@@ -83,11 +89,7 @@ public class PlayerDisplayGuiPageEvent extends Event
         return this.gui;
     }
     
-    /**
-     * Returns the player
-     * 
-     * @return the player
-     */
+    @Override
     public McPlayerInterface getPlayer()
     {
         return this.player;
@@ -122,6 +124,22 @@ public class PlayerDisplayGuiPageEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public PlayerDisplayGuiPageEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<PlayerDisplayGuiPageEvent> when(McPredicate<PlayerDisplayGuiPageEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

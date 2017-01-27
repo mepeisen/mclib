@@ -26,7 +26,13 @@ package de.minigameslib.mclib.api.mcevent;
 
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before an existing component is deleted.
@@ -37,7 +43,7 @@ import de.minigameslib.mclib.api.objects.ComponentInterface;
  * 
  * @author mepeisen
  */
-public class ComponentDeleteEvent extends AbstractVetoEvent
+public class ComponentDeleteEvent extends AbstractVetoEvent implements MinecraftEvent<ComponentDeleteEvent, ComponentDeleteEvent>
 {
     
     /** handlers list. */
@@ -57,11 +63,7 @@ public class ComponentDeleteEvent extends AbstractVetoEvent
         this.component = component;
     }
     
-    /**
-     * Returns the component that was deleted
-     * 
-     * @return the deleted component
-     */
+    @Override
     public ComponentInterface getComponent()
     {
         return this.component;
@@ -86,6 +88,22 @@ public class ComponentDeleteEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public ComponentDeleteEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<ComponentDeleteEvent> when(McPredicate<ComponentDeleteEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

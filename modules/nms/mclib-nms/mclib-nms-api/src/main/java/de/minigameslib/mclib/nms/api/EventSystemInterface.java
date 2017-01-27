@@ -26,6 +26,7 @@ package de.minigameslib.mclib.nms.api;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 
@@ -50,5 +51,12 @@ public interface EventSystemInterface extends Listener
      * @param listener
      */
     void addEventListener(MgEventListener listener);
+    
+    /**
+     * Registers a new event class for event system
+     * @param plugin
+     * @param clazz
+     */
+    <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz);
     
 }

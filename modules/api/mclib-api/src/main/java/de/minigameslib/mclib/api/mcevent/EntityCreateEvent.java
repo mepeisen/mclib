@@ -26,7 +26,13 @@ package de.minigameslib.mclib.api.mcevent;
 
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before a new entity is created.
@@ -41,7 +47,7 @@ import de.minigameslib.mclib.api.objects.EntityInterface;
  * 
  * @author mepeisen
  */
-public class EntityCreateEvent extends AbstractVetoEvent
+public class EntityCreateEvent extends AbstractVetoEvent implements MinecraftEvent<EntityCreateEvent, EntityCreateEvent>
 {
     
     /** handlers list. */
@@ -61,11 +67,7 @@ public class EntityCreateEvent extends AbstractVetoEvent
         this.entity = entity;
     }
     
-    /**
-     * Returns the entity that was created
-     * 
-     * @return the created entity
-     */
+    @Override
     public EntityInterface getEntity()
     {
         return this.entity;
@@ -90,6 +92,22 @@ public class EntityCreateEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public EntityCreateEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<EntityCreateEvent> when(McPredicate<EntityCreateEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

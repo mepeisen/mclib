@@ -27,7 +27,13 @@ package de.minigameslib.mclib.api.mcevent;
 import org.bukkit.Location;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before a sign is relocated.
@@ -38,7 +44,7 @@ import de.minigameslib.mclib.api.objects.SignInterface;
  * 
  * @author mepeisen
  */
-public class SignRelocateEvent extends AbstractVetoEvent
+public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEvent<SignRelocateEvent, SignRelocateEvent>
 {
     
     /** handlers list. */
@@ -68,11 +74,7 @@ public class SignRelocateEvent extends AbstractVetoEvent
         this.newLocation = newLocation;
     }
     
-    /**
-     * Returns the sign that was relocated
-     * 
-     * @return the created sign
-     */
+    @Override
     public SignInterface getSign()
     {
         return this.sign;
@@ -115,6 +117,22 @@ public class SignRelocateEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public SignRelocateEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<SignRelocateEvent> when(McPredicate<SignRelocateEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

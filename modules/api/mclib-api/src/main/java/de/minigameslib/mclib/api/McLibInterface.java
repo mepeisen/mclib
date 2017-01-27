@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
 
+import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.event.McListener;
@@ -159,6 +160,13 @@ public interface McLibInterface extends McContext
     RawMessageInterface createRaw();
     
     // event system
+    
+    /**
+     * Registers a new event class for internal event bus
+     * @param plugin
+     * @param clazz
+     */
+    <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz);
     
     /**
      * Register event handler for given mclib event; simliar to registering single bukkit event handlers.

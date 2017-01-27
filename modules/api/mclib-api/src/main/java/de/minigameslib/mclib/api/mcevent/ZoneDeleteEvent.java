@@ -26,7 +26,13 @@ package de.minigameslib.mclib.api.mcevent;
 
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event fired before an existing zone is deleted.
@@ -37,7 +43,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
  * 
  * @author mepeisen
  */
-public class ZoneDeleteEvent extends AbstractVetoEvent
+public class ZoneDeleteEvent extends AbstractVetoEvent implements MinecraftEvent<ZoneDeleteEvent, ZoneDeleteEvent>
 {
     
     /** handlers list. */
@@ -57,11 +63,7 @@ public class ZoneDeleteEvent extends AbstractVetoEvent
         this.zone = zone;
     }
     
-    /**
-     * Returns the zone that was deleted
-     * 
-     * @return the deleted arena
-     */
+    @Override
     public ZoneInterface getZone()
     {
         return this.zone;
@@ -86,6 +88,22 @@ public class ZoneDeleteEvent extends AbstractVetoEvent
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public ZoneDeleteEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<ZoneDeleteEvent> when(McPredicate<ZoneDeleteEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

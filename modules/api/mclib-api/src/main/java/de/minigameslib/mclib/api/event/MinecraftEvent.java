@@ -24,10 +24,15 @@
 
 package de.minigameslib.mclib.api.event;
 
+import java.util.Collections;
+
 import org.bukkit.event.Event;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
@@ -53,13 +58,116 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
      * Returns the zone causing this event.
      * @return zone causing this event or {@code null} if this event was outside any zone.
      */
-    ZoneInterface getZone();
+    default ZoneInterface getZone()
+    {
+        return null;
+    }
     
     /**
      * Returns the player causing this event.
      * @return player causing this event or {@code null} if this event was not caused by any player.
      */
-    McPlayerInterface getPlayer();
+    default McPlayerInterface getPlayer()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns the sign causing this event.
+     * @return sign causing this event or {@code null} if this event was not involving a sign.
+     */
+    default SignInterface getSign()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns the entity causing this event.
+     * @return entity causing this event or {@code null} if this event was not involving an entity.
+     */
+    default EntityInterface getEntity()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns the component causing this event.
+     * @return component causing this event or {@code null} if this event was not involving a component.
+     */
+    default ComponentInterface getComponent()
+    {
+        return null;
+    }
+    
+    /**
+     * Returns the zones associated with this event.
+     * @return zone list
+     */
+    default Iterable<ZoneInterface> getZones()
+    {
+        final ZoneInterface result = this.getZone();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
+    }
+    
+    /**
+     * Returns the signs associated with this event.
+     * @return sign list
+     */
+    default Iterable<SignInterface> getSigns()
+    {
+        final SignInterface result = this.getSign();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
+    }
+    
+    /**
+     * Returns the components associated with this event.
+     * @return component list
+     */
+    default Iterable<ComponentInterface> getComponents()
+    {
+        final ComponentInterface result = this.getComponent();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
+    }
+    
+    /**
+     * Returns the players associated with this event.
+     * @return player list
+     */
+    default Iterable<McPlayerInterface> getPlayers()
+    {
+        final McPlayerInterface result = this.getPlayer();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
+    }
+    
+    /**
+     * Returns the entities associated with this event.
+     * @return entity list
+     */
+    default Iterable<EntityInterface> getEntities()
+    {
+        final EntityInterface result = this.getEntity();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
+    }
     
     // stubbing
     

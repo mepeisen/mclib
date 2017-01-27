@@ -27,15 +27,21 @@ package de.minigameslib.mclib.api.mcevent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.Cuboid;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.util.function.FalseStub;
+import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
+import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
  * An event showing up that a zone was relocated.
  * 
  * @author mepeisen
  */
-public class ZoneRelocatedEvent extends Event
+public class ZoneRelocatedEvent extends Event implements MinecraftEvent<ZoneRelocatedEvent, ZoneRelocatedEvent>
 {
     
     /** handlers list. */
@@ -65,11 +71,7 @@ public class ZoneRelocatedEvent extends Event
         this.newCuboid = newCuboid;
     }
     
-    /**
-     * Returns the zone that was relocated
-     * 
-     * @return the created zone
-     */
+    @Override
     public ZoneInterface getZone()
     {
         return this.zone;
@@ -112,6 +114,22 @@ public class ZoneRelocatedEvent extends Event
     public static HandlerList getHandlerList()
     {
         return handlers;
+    }
+
+    @Override
+    public ZoneRelocatedEvent getBukkitEvent()
+    {
+        return this;
+    }
+
+    @Override
+    public McOutgoingStubbing<ZoneRelocatedEvent> when(McPredicate<ZoneRelocatedEvent> test) throws McException
+    {
+        if (test.test(this))
+        {
+            return new TrueStub<>(this);
+        }
+        return new FalseStub<>(this);
     }
     
 }

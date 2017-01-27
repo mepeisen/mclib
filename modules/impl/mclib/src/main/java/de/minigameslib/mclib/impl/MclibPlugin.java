@@ -97,6 +97,36 @@ import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
+import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ComponentRelocatedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreateEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityEnteredZoneEvent;
+import de.minigameslib.mclib.api.mcevent.EntityLeftZoneEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerCloseGuiEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerDisplayGuiPageEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerEnteredZoneEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerGuiClickEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerLeftZoneEvent;
+import de.minigameslib.mclib.api.mcevent.PlayerOpenGuiEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
+import de.minigameslib.mclib.api.mcevent.SignCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.SignDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.SignRelocatedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneCreateEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneDeletedEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocateEvent;
+import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
@@ -314,6 +344,37 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
         
         Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
+        
+        this.registerEvent(this, ComponentCreatedEvent.class);
+        this.registerEvent(this, ComponentCreateEvent.class);
+        this.registerEvent(this, ComponentDeletedEvent.class);
+        this.registerEvent(this, ComponentDeleteEvent.class);
+        this.registerEvent(this, ComponentRelocatedEvent.class);
+        this.registerEvent(this, ComponentRelocateEvent.class);
+        this.registerEvent(this, EntityCreatedEvent.class);
+        this.registerEvent(this, EntityCreateEvent.class);
+        this.registerEvent(this, EntityDeletedEvent.class);
+        this.registerEvent(this, EntityDeleteEvent.class);
+        this.registerEvent(this, EntityEnteredZoneEvent.class);
+        this.registerEvent(this, EntityLeftZoneEvent.class);
+        this.registerEvent(this, PlayerCloseGuiEvent.class);
+        this.registerEvent(this, PlayerDisplayGuiPageEvent.class);
+        this.registerEvent(this, PlayerEnteredZoneEvent.class);
+        this.registerEvent(this, PlayerGuiClickEvent.class);
+        this.registerEvent(this, PlayerLeftZoneEvent.class);
+        this.registerEvent(this, PlayerOpenGuiEvent.class);
+        this.registerEvent(this, SignCreatedEvent.class);
+        this.registerEvent(this, SignCreateEvent.class);
+        this.registerEvent(this, SignDeletedEvent.class);
+        this.registerEvent(this, SignDeleteEvent.class);
+        this.registerEvent(this, SignRelocatedEvent.class);
+        this.registerEvent(this, SignRelocateEvent.class);
+        this.registerEvent(this, ZoneCreatedEvent.class);
+        this.registerEvent(this, ZoneCreateEvent.class);
+        this.registerEvent(this, ZoneDeletedEvent.class);
+        this.registerEvent(this, ZoneDeleteEvent.class);
+        this.registerEvent(this, ZoneRelocatedEvent.class);
+        this.registerEvent(this, ZoneRelocateEvent.class);
         
         try
         {
@@ -1361,5 +1422,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
    {
         return instance.enumService.create(plugin, name, clazz);
    }
+
+    @Override
+    public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
+    {
+        Bukkit.getServicesManager().load(EventSystemInterface.class).registerEvent(plugin, clazz);
+    }
     
 }
