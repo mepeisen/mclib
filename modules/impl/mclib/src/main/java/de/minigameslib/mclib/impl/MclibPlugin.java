@@ -154,6 +154,7 @@ import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
+import de.minigameslib.mclib.impl.items.ItemServiceImpl.ResourcePackMarker;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
@@ -716,17 +717,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         switch (evt.getStatus())
         {
             case ACCEPTED:
-                System.out.println("accepted");
+                // System.out.println("accepted");
                 break;
             default:
             case DECLINED:
-                System.out.println("declined");
+                // System.out.println("declined");
                 break;
             case FAILED_DOWNLOAD:
-                System.out.println("failed download");
+                // System.out.println("failed download");
                 break;
             case SUCCESSFULLY_LOADED:
-                System.out.println("successfully download");
+                this.players.getPlayer(evt.getPlayer()).getSessionStorage().set(ResourcePackMarker.class, new ResourcePackMarker());
                 break;
         }
     }

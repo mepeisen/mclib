@@ -69,7 +69,10 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
             final Player player = (Player) sender;
-            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Alarm, "HAHA"));
+            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Alarm, "AALARM!!!"));
+            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Address_book, "My personal address book"));
+            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back, "Go back"));
+            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Euro, "My money"));
         }
         return super.onCommand(sender, command, label, args);
     }

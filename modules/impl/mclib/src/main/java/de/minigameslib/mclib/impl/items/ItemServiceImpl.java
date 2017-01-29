@@ -64,6 +64,8 @@ import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 public class ItemServiceImpl implements ItemServiceInterface
 {
     
+    // TODO support version control...
+    
     /** java logger */
     private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
     
