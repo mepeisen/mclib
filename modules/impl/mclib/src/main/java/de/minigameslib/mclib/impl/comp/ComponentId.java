@@ -176,5 +176,11 @@ public class ComponentId implements ComponentIdInterface
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "component-" + this.pluginName + "-" + this.type + "-" + this.uuid; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
 }

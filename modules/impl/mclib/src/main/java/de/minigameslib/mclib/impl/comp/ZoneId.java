@@ -176,5 +176,11 @@ public class ZoneId implements ZoneIdInterface
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "zone-" + this.pluginName + "-" + this.type + "-" + this.uuid; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
 }

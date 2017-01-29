@@ -176,5 +176,11 @@ public class ObjectId implements ObjectIdInterface
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "object-" + this.pluginName + "-" + this.type + "-" + this.uuid; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
 }

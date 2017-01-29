@@ -176,5 +176,11 @@ public class EntityId implements EntityIdInterface
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "entity-" + this.pluginName + "-" + this.type + "-" + this.uuid; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
 }

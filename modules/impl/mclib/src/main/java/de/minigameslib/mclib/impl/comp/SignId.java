@@ -176,5 +176,11 @@ public class SignId implements SignIdInterface
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "sign-" + this.pluginName + "-" + this.type + "-" + this.uuid; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     
 }
