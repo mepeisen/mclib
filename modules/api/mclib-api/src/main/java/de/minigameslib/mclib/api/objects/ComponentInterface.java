@@ -48,6 +48,12 @@ public interface ComponentInterface
     ComponentIdInterface getComponentId();
     
     /**
+     * Returns the type id.
+     * @return type id of this object
+     */
+    ComponentTypeId getTypeId();
+    
+    /**
      * Returns the component location.
      * 
      * @return component location.

@@ -41,9 +41,11 @@ import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.SignDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.SignRelocateEvent;
 import de.minigameslib.mclib.api.mcevent.SignRelocatedEvent;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.SignHandlerInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
+import de.minigameslib.mclib.api.objects.SignTypeId;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.impl.EventBus;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -137,10 +139,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         this.handler.write(coreSection.createSection("handler")); //$NON-NLS-1$
     }
 
-    /**
-     * Returns the handler.
-     * @return handler.
-     */
+    @Override
     public SignHandlerInterface getHandler()
     {
         return this.handler;
@@ -232,6 +231,12 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
+    }
+
+    @Override
+    public SignTypeId getTypeId()
+    {
+        return ObjectServiceInterface.instance().getType(this.getSignId());
     }
     
 }

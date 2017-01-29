@@ -49,6 +49,12 @@ public interface SignInterface
     SignIdInterface getSignId();
     
     /**
+     * Returns the type id.
+     * @return type id of this object
+     */
+    SignTypeId getTypeId();
+    
+    /**
      * Returns the sign location.
      * 
      * @return sign location.

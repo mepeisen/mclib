@@ -33,6 +33,8 @@ import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.objects.EntityTypeId;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.impl.EventBus;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -66,9 +68,7 @@ public class EntityImpl implements EntityInterface, MgEventListener
         // TODO support entities
     }
 
-    /**
-     * @return handler
-     */
+    @Override
     public EntityHandlerInterface getHandler()
     {
         // TODO support entities
@@ -120,6 +120,12 @@ public class EntityImpl implements EntityInterface, MgEventListener
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
+    }
+
+    @Override
+    public EntityTypeId getTypeId()
+    {
+        return ObjectServiceInterface.instance().getType(this.getEntityId());
     }
     
 }

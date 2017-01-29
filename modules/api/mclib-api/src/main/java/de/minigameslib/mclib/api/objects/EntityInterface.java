@@ -47,6 +47,12 @@ public interface EntityInterface
     EntityIdInterface getEntityId();
     
     /**
+     * Returns the type id.
+     * @return type id of this object
+     */
+    EntityTypeId getTypeId();
+    
+    /**
      * Deletes this entity.
      * 
      * @throws McException

@@ -148,10 +148,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
 
-    /**
-     * Returns the handler
-     * @return handler
-     */
+    @Override
     public ZoneHandlerInterface getHandler()
     {
         return this.handler;
@@ -250,6 +247,12 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
+    }
+
+    @Override
+    public ZoneTypeId getTypeId()
+    {
+        return ObjectServiceInterface.instance().getType(this.getZoneId());
     }
     
 }

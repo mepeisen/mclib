@@ -39,6 +39,8 @@ import de.minigameslib.mclib.api.mcevent.ObjectDeletedEvent;
 import de.minigameslib.mclib.api.objects.ObjectHandlerInterface;
 import de.minigameslib.mclib.api.objects.ObjectIdInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.objects.ObjectTypeId;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.impl.EventBus;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -136,10 +138,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         }
     }
 
-    /**
-     * Returns the handler.
-     * @return handler.
-     */
+    @Override
     public ObjectHandlerInterface getHandler()
     {
         return this.handler;
@@ -190,6 +189,12 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
+    }
+
+    @Override
+    public ObjectTypeId getTypeId()
+    {
+        return ObjectServiceInterface.instance().getType(this.getObjectId());
     }
     
 }

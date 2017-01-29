@@ -51,6 +51,12 @@ public interface ZoneInterface
     ZoneIdInterface getZoneId();
     
     /**
+     * Returns the type id.
+     * @return type id of this object
+     */
+    ZoneTypeId getTypeId();
+    
+    /**
      * Returns the cuboid.
      * 
      * @return cuboid of this component.

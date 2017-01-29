@@ -47,6 +47,12 @@ public interface ObjectInterface
     ObjectIdInterface getObjectId();
     
     /**
+     * Returns the type id.
+     * @return type id of this object
+     */
+    ObjectTypeId getTypeId();
+    
+    /**
      * Deletes this object.
      * 
      * @throws McException
@@ -61,6 +67,12 @@ public interface ObjectInterface
      *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
+    
+    /**
+     * Returns the handler.
+     * @return associated handler.
+     */
+    ObjectHandlerInterface getHandler();
     
     // event system
     
