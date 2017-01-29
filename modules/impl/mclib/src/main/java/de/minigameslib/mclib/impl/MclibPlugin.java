@@ -53,6 +53,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
@@ -94,6 +95,8 @@ import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.items.CommonItems;
+import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
@@ -150,6 +153,7 @@ import de.minigameslib.mclib.impl.comp.EntityId;
 import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
+import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
@@ -351,6 +355,27 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
+        
+        // item service
+        this.enumService.registerEnumClass(this, CommonItems.class);
+        final ItemServiceImpl itemService = new ItemServiceImpl();
+        Bukkit.getServicesManager().register(ItemServiceInterface.class, itemService, this, ServicePriority.Highest);
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                itemService.init();
+                try
+                {
+                    itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources.zip")); //$NON-NLS-1$
+                }
+                catch (IOException e)
+                {
+                    MclibPlugin.this.getLogger().log(Level.WARNING, "Error creating resource pack", e); //$NON-NLS-1$
+                }
+            }
+        }.runTaskLaterAsynchronously(this, 2);
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         
@@ -668,6 +693,41 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         while (!this.bungeeQueue.isEmpty())
         {
             this.bungeeQueue.poll().accept(evt.getPlayer());
+        }
+        
+        // resources
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                evt.getPlayer().setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
+            }
+        }.runTaskLater(this, 2);
+    }
+    
+    /**
+     * Resource pack event
+     * @param evt
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onResourcePack(PlayerResourcePackStatusEvent evt)
+    {
+        switch (evt.getStatus())
+        {
+            case ACCEPTED:
+                System.out.println("accepted");
+                break;
+            default:
+            case DECLINED:
+                System.out.println("declined");
+                break;
+            case FAILED_DOWNLOAD:
+                System.out.println("failed download");
+                break;
+            case SUCCESSFULLY_LOADED:
+                System.out.println("successfully download");
+                break;
         }
     }
     

@@ -73,4 +73,11 @@ public enum McCoreConfig implements ConfigurationValueInterface
     @ConfigComment({"Name of this server within bungeecord networks"})
     BungeeServerName,
     
+    /**
+     * The default download url of the resource pack
+     */
+    @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources.zip")
+    @ConfigComment({"The default download url of the resource pack"})
+    RespourcePackDownloadUrl,
+    
 }

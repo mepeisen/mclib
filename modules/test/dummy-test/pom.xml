@@ -29,6 +29,12 @@
   		<version>${project.version}</version>
   		<scope>runtime</scope>
   	</dependency>
+
+  	<dependency>
+  		<groupId>org.spigotmc</groupId>
+  		<artifactId>spigot</artifactId>
+  		<version>1.10.2-R0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
   
 </project>
