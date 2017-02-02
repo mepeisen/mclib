@@ -299,7 +299,7 @@ public interface CommandInterface
      */
     default void checkOffline() throws McException
     {
-        if (this.isPlayer()) throw new McException(CommonMessages.InvokeIngame);
+        if (this.isPlayer()) throw new McException(CommonMessages.InvokeOnConsole);
     }
     
     /**
@@ -324,6 +324,16 @@ public interface CommandInterface
     default void checkMaxArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
         if (this.getArgs().length > count) throw new McException(errorMessage, errorArgs);
+    }
+    
+    /**
+     * Checks if not more than {@code count} arguments are available. Uses TooManyArguments as exception text.
+     * @param count
+     * @throws McException thrown if there are too many arguments
+     */
+    default void checkMaxArgCount(int count) throws McException
+    {
+        this.checkMaxArgCount(count, CommonMessages.TooManyArguments);
     }
     
 }

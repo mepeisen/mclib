@@ -50,6 +50,15 @@ public enum CommonMessages implements LocalizedMessageInterface
     InvokeIngame,
     
     /**
+     * Error message displayed when a command must not be invoked ingame.
+     * 
+     * <p>No Arguments</p>
+     */
+    @LocalizedMessage(defaultMessage = "Invoke this command on console.", severity = MessageSeverityType.Error)
+    @MessageComment({"Error message displayed if a command must not be invoked ingame."})
+    InvokeOnConsole,
+    
+    /**
      * Error message displayed if player does not have permission for a command.
      * 
      * <p>Arguments:</p>
