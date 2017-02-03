@@ -25,6 +25,8 @@
 package de.minigameslib.mclib.api.cmd;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -53,27 +55,27 @@ public class CommandImpl implements CommandInterface
     /**
      * the command sender.
      */
-    private final CommandSender   sender;
+    private final CommandSender sender;
     
     /**
      * The original command.
      */
-    private final Command         command;
+    private final Command       command;
     
     /**
      * The original label.
      */
-    private final String          label;
+    private final String        label;
     
     /**
      * The original command line arguments.
      */
-    private String[]        args;
+    private String[]            args;
     
     /**
      * current command path.
      */
-    private String          commandPath;
+    private String              commandPath;
     
     /**
      * Constructor to create the command.
@@ -160,7 +162,7 @@ public class CommandImpl implements CommandInterface
     {
         return this.commandPath;
     }
-
+    
     @Override
     public Locale getLocale()
     {
@@ -170,7 +172,7 @@ public class CommandImpl implements CommandInterface
         }
         return McLibInterface.instance().getDefaultLocale();
     }
-
+    
     @Override
     public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
     {
@@ -185,9 +187,71 @@ public class CommandImpl implements CommandInterface
             this.args = args2;
             this.commandPath = newPath.toString();
             
-            return Optional.ofNullable(mapper.apply(this, currentArg)); 
+            return Optional.ofNullable(mapper.apply(this, currentArg));
         }
         return Optional.empty();
+    }
+    
+    /**
+     * Handles onCommand invocations on plugin instances
+     * 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
+     * @param handler
+     */
+    public static void onCommand(CommandSender sender, Command command, String label, String[] args, CommandHandlerInterface handler)
+    {
+        final CommandImpl cmd = new CommandImpl(sender, command, label, args, '/' + command.getName());
+        try
+        {
+            McLibInterface.instance().runInNewContext(() -> {
+                McLibInterface.instance().setContext(McPlayerInterface.class, cmd.getPlayer());
+                McLibInterface.instance().setContext(CommandInterface.class, cmd);
+                handler.handle(cmd);
+            });
+        }
+        catch (McException e)
+        {
+            cmd.send(e.getErrorMessage(), e.getArgs());
+        }
+    }
+    
+    /**
+     * Handles onTabComplete invocations on plugin instances
+     * 
+     * @param sender
+     * @param command
+     * @param alias
+     * @param args
+     * @param handler
+     * @return tab complete list
+     */
+    public static List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args, CommandHandlerInterface handler)
+    {
+        String lastArg = null;
+        String[] newArgs = null;
+        if (args.length > 0)
+        {
+            lastArg = args[args.length - 1].toLowerCase();
+            newArgs = Arrays.copyOf(args, args.length - 1);
+        }
+        final CommandImpl cmd = new CommandImpl(sender, command, alias, newArgs, '/' + command.getName());
+        final String last = lastArg;
+        try
+        {
+            return McLibInterface.instance().calculateInNewContext(() -> {
+                McLibInterface.instance().setContext(McPlayerInterface.class, cmd.getPlayer());
+                McLibInterface.instance().setContext(CommandInterface.class, cmd);
+                return handler.onTabComplete(cmd, last);
+            });
+        }
+        catch (McException e)
+        {
+            cmd.send(e.getErrorMessage(), e.getArgs());
+        }
+        return Collections.emptyList();
     }
     
 }
