@@ -103,7 +103,21 @@ public interface CommandInterface
     <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException;
     
     /**
-     * Fetches a single string from arguments, removing i from rguments list; throws exception if no arguments are available.
+     * Fetches an argument by invoking given mapper, removing the first argument from arguments array; throws exception if no arguments are available.
+     * @param errorMessage
+     * @param errorArgs
+     * @param mapper the mapper to map a string argument to given function
+     * @return result of fetching argument
+     * @throws McException passed exception from mapper function
+     */
+    default <T> T fetch(McBiFunction<CommandInterface, String, T> mapper, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
+    {
+        this.checkMinArgCount(1, errorMessage, errorArgs);
+        return this.fetch(mapper).get();
+    }
+    
+    /**
+     * Fetches a single string from arguments, removing it from rguments list; throws exception if no arguments are available.
      * @param errorMessage
      * @param errorArgs
      * @return string argument
