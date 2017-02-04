@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.bukkit.plugin.Plugin;
+
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -211,6 +213,18 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
 
     @Override
     public String name()
+    {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public Plugin getPlugin()
+    {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public String path()
     {
         throw new IllegalStateException();
     }

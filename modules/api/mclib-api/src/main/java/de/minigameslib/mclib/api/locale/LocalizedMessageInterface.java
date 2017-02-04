@@ -31,14 +31,14 @@ import java.util.Locale;
 import java.util.function.BiFunction;
 
 import de.minigameslib.mclib.api.McLibInterface;
-import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+import de.minigameslib.mclib.api.enums.McEnumInterface;
 
 /**
  * An interface for enumerations that represent localized messages.
  * 
  * @author mepeisen
  */
-public interface LocalizedMessageInterface extends Serializable, EnumerationValue
+public interface LocalizedMessageInterface extends Serializable, McEnumInterface
 {
     
     /**
@@ -84,6 +84,20 @@ public interface LocalizedMessageInterface extends Serializable, EnumerationValu
         {
             throw new IllegalStateException(ex);
         }
+    }
+    
+    /**
+     * Returns the path within messages.yml for this message
+     * @return path
+     */
+    default String path()
+    {
+        final LocalizedMessages msgs = this.getClass().getAnnotation(LocalizedMessages.class);
+        if (msgs == null)
+        {
+            throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
+        }
+        return msgs.value() + '.' + this.name();
     }
     
     /**
