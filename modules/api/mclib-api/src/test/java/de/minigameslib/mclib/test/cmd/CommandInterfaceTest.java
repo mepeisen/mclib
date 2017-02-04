@@ -77,13 +77,6 @@ public class CommandInterfaceTest
     {
         this.lib = mock(MessageServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
-        when(this.lib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                return invocation.getArgumentAt(0, String.class);
-            }
-        });
         this.messages = mock(MessagesConfigInterface.class);
         when(this.lib.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
     }

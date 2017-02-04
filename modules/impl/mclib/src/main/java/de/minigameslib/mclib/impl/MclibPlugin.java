@@ -40,6 +40,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -184,24 +185,24 @@ import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
  * 
  * @author mepeisen
  */
-public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceInterface, MessageServiceInterface, PermissionServiceInterface,
-        McLibInterface, ServerCommunicationServiceInterface, ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
+public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceInterface, MessageServiceInterface, PermissionServiceInterface, McLibInterface, ServerCommunicationServiceInterface,
+        ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
 {
     
     /**
      * plugin channel for messages between servers and clients
      */
-    private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                    //$NON-NLS-1$
+    private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for messages between bungee servers
      */
-    private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                    //$NON-NLS-1$
+    private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for BungeeCord
      */
-    private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                  //$NON-NLS-1$
+    private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
     
     /** the overall minecraft server versioon. */
     private static final MinecraftVersionsType                           SERVER_VERSION                 = MclibPlugin.getServerVersion();
@@ -212,10 +213,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /** enum service helper. */
     private final EnumServiceImpl                                        enumService                    = new EnumServiceImpl();
     
-    /**
-     * messages configuration per plugin.
-     */
-    private final Map<Plugin, MessagesConfigInterface>                   messages                       = new HashMap<>();
+    /** message service helper. */
+    private MessageServiceInterface                                      msgService                     = new MessageServiceImpl(this.enumService);
     
     /**
      * configuration per plugin.
@@ -266,12 +265,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     private GetServersPing                                               serversPing;
     
     /** the event bus. */
-    private EventBus eventBus = new EventBus();
+    private EventBus                                                     eventBus                       = new EventBus();
     
     /**
      * plugin instance
      */
-    private static MclibPlugin instance;
+    private static MclibPlugin                                           instance;
     
     static
     {
@@ -294,7 +293,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initUniqueEnumValueFactory(MclibPlugin::create);
         MemoryDataSection.lockFragmentImplementations();
     }
-
+    
     @Override
     public int getApiVersion()
     {
@@ -436,7 +435,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             this.getLogger().log(Level.SEVERE, "Problems creating objects manager", ex); //$NON-NLS-1$
             // TODO what do we do at this point?
-            //      having no object manager will cause a dead plugin at all
+            // having no object manager will cause a dead plugin at all
         }
         
         // nms event listeners
@@ -647,12 +646,16 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public MessagesConfigInterface getMessagesFromMsg(LocalizedMessageInterface item)
     {
-        final Plugin plugin = this.enumService.getPlugin(item);
-        if (plugin == null)
-        {
-            return null;
-        }
-        return this.messages.computeIfAbsent(plugin, (key) -> new MessagesConfigImpl(plugin, this.enumService));
+        return this.msgService.getMessagesFromMsg(item);
+    }
+    
+    /**
+     * Hook into message service.
+     * @param func
+     */
+    public void hookMessageService(Function<MessageServiceInterface, MessageServiceInterface> func)
+    {
+        this.msgService = func.apply(this.msgService);
     }
     
     @Override
@@ -709,6 +712,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     
     /**
      * Resource pack event
+     * 
      * @param evt
      */
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -764,7 +768,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         return Arrays.stream(McCoreConfig.MainLocales.getStringList()).map(Locale::new).collect(Collectors.toList());
     }
-
+    
     @Override
     public void removeMainLocale(Locale locale) throws McException
     {
@@ -773,23 +777,23 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             // TODO throw exception
         }
-        McCoreConfig.MainLocales.setStringList(
-                Arrays.stream(main).
-                filter(p -> p.equals(locale.toString())).toArray(String[]::new));
+        McCoreConfig.MainLocales.setStringList(Arrays.stream(main).filter(p -> p.equals(locale.toString())).toArray(String[]::new));
         McCoreConfig.MainLocales.saveConfig();
     }
-
+    
     @Override
     public void addMainLocale(Locale locale) throws McException
     {
         final String[] main = McCoreConfig.MainLocales.getStringList();
-        for (final String l : main) if (l.equals(locale.toString())) return;
+        for (final String l : main)
+            if (l.equals(locale.toString()))
+                return;
         final String[] result = Arrays.copyOf(main, main.length + 1);
         result[main.length] = locale.toString();
         McCoreConfig.MainLocales.setStringList(result);
         McCoreConfig.MainLocales.saveConfig();
     }
-
+    
     @Override
     public void setDefaultLocale(Locale locale) throws McException
     {
@@ -1308,7 +1312,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 }
             }
         }
-
+        
         @Override
         public void transferPlayer(McPlayerInterface player)
         {
@@ -1380,7 +1384,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 }
             }
         }
-
+        
         @Override
         public void transferPlayer(McPlayerInterface player)
         {
@@ -1391,97 +1395,97 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         }
         
     }
-
+    
     @Override
     public RawMessageInterface createRaw()
     {
         return new RawMessage();
     }
-
+    
     @Override
     public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTask(plugin, task);
     }
-
+    
     @Override
     public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTaskAsynchronously(plugin, task);
     }
-
+    
     @Override
     public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTaskLater(plugin, delay, task);
     }
-
+    
     @Override
     public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTaskLaterAsynchronously(plugin, delay, task);
     }
-
+    
     @Override
     public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTaskTimer(plugin, delay, period, task);
     }
-
+    
     @Override
     public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
     {
         return this.context.runTaskLaterAsynchronously(plugin, delay, task);
     }
-
+    
     @Override
     public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
     {
         this.context.runInNewContext(event, command, player, zone, component, runnable);
     }
-
+    
     @Override
     public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
     {
         return this.context.calculateInNewContext(event, command, player, zone, component, runnable);
     }
-
+    
     @Override
     public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
     {
         this.eventBus.registerHandler(plugin, clazz, handler);
     }
-
+    
     @Override
     public void registerHandlers(Plugin plugin, McListener listener)
     {
         this.eventBus.registerHandlers(plugin, listener);
     }
-
+    
     @Override
     public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
     {
         this.eventBus.unregisterHandler(plugin, clazz, handler);
     }
-
+    
     @Override
     public void unregisterHandlers(Plugin plugin, McListener listener)
     {
         this.eventBus.unregisterHandlers(plugin, listener);
     }
-
+    
     @Override
     public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
     {
         this.eventBus.handle(eventClass, event);
     }
-
+    
     @Override
     public DataSection readYmlFile(File file) throws IOException
     {
         return new YmlFile(file);
     }
-
+    
     @Override
     public void saveYmlFile(DataSection section, File file) throws IOException
     {
@@ -1498,17 +1502,18 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-    * enum value factory method
-    * @param plugin
-    * @param name
-    * @param clazz
-    * @return enumeration value or {@code null} if it does not exist
-    */
-   private static <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
-   {
+     * enum value factory method
+     * 
+     * @param plugin
+     * @param name
+     * @param clazz
+     * @return enumeration value or {@code null} if it does not exist
+     */
+    private static <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
+    {
         return instance.enumService.create(plugin, name, clazz);
-   }
-
+    }
+    
     @Override
     public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
     {

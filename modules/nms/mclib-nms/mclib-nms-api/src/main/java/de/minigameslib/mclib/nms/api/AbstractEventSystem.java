@@ -38,6 +38,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
@@ -547,17 +549,44 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          */
         public void handle(T evt)
         {
+            final McLibInterface mclib = McLibInterface.instance();
             final MgEvt mgevt = this.createMgEvent(evt);
             for (MgEventListener listener : AbstractEventSystem.this.listeners)
             {
-                listener.handle(this.cls, mgevt);
+                try
+                {
+                    mclib.runInNewContext(() -> {
+                        mclib.setContext(Event.class, evt);
+                        listener.handle(this.cls, mgevt);
+                    });
+                }
+                catch (McException ex)
+                {
+                    // TODO logging
+                }
             }
             
             for (final McPlayerInterface player : mgevt.getPlayers())
             {
                 if (player instanceof MgEventListener)
                 {
-                    ((MgEventListener) player).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, player);
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(ObjectInterface.class, mgevt.getObject());
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) player).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
             
@@ -565,7 +594,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 if (arena instanceof MgEventListener)
                 {
-                    ((MgEventListener) arena).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, arena);
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(ObjectInterface.class, mgevt.getObject());
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) arena).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
             
@@ -573,7 +618,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 if (sign instanceof MgEventListener)
                 {
-                    ((MgEventListener) sign).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(ObjectInterface.class, mgevt.getObject());
+                            mclib.setContext(SignInterface.class, sign);
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) sign).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
             
@@ -581,7 +642,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 if (entity instanceof MgEventListener)
                 {
-                    ((MgEventListener) entity).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(ObjectInterface.class, mgevt.getObject());
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, entity);
+                            ((MgEventListener) entity).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
             
@@ -589,7 +666,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 if (comp instanceof MgEventListener)
                 {
-                    ((MgEventListener) comp).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, comp);
+                            mclib.setContext(ObjectInterface.class, mgevt.getObject());
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) comp).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
             
@@ -597,7 +690,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 if (obj instanceof MgEventListener)
                 {
-                    ((MgEventListener) obj).handle(this.cls, mgevt);
+                    try
+                    {
+                        mclib.runInNewContext(() -> {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(ObjectInterface.class, obj);
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) obj).handle(this.cls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        // TODO logging
+                    }
                 }
             }
         }

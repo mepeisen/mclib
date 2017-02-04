@@ -24,14 +24,12 @@
 
 package de.minigameslib.mclib.api.locale;
 
-import de.minigameslib.mclib.api.McContext;
-
 /**
  * Message services.
  * 
  * @author mepeisen
  */
-public interface MessageServiceInterface extends McContext
+public interface MessageServiceInterface
 {
     
     /**

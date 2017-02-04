@@ -398,13 +398,6 @@ public class HelpCommandHandlerTest
     {
         this.msgService = mock(MessageServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.msgService); //$NON-NLS-1$ //$NON-NLS-2$
-        when(this.msgService.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                return invocation.getArgumentAt(0, String.class);
-            }
-        });
         this.messages = mock(MessagesConfigInterface.class);
         when(this.msgService.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
         when(this.messages.getStringList(any(Locale.class), anyString(), any())).thenAnswer(new Answer<String[]>() {

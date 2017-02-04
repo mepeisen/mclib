@@ -50,6 +50,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
@@ -82,6 +83,7 @@ import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.comp.AbstractComponent;
 import de.minigameslib.mclib.impl.comp.ComponentId;
 import de.minigameslib.mclib.impl.comp.ComponentImpl;
@@ -341,14 +343,20 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         this.objects.resumeObjects(pluginName, this.objectTypesByPlugin, ObjectId::getType, this::safeCreateHandler, (id, handler) -> {
             final ObjectImpl impl = new ObjectImpl(plugin, id, handler, new File(this.objectsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
-            handler.onResume(impl);
+            
+            this.runInContext(ObjectInterface.class, impl, () -> {
+                handler.onResume(impl);
+            });
             return impl;
         }, brokenObjects);
         
         this.zones.resumeObjects(pluginName, this.zoneTypesByPlugin, ZoneId::getType, this::safeCreateHandler, (id, handler) -> {
             final ZoneImpl impl = new ZoneImpl(plugin, this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
-            handler.onResume(impl);
+            
+            this.runInContext(ZoneInterface.class, impl, () -> {
+                handler.onResume(impl);
+            });
             return impl;
         }, brokenZones);
         
@@ -360,9 +368,10 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             if (block instanceof Sign)
             {
                 impl.setSign((Sign) block);
-                handler.onResume(impl);
-            
-                // store data
+                
+                this.runInContext(SignInterface.class, impl, () -> {
+                    handler.onResume(impl);
+                });
                 return impl;
             }
             throw new McException(CommonMessages.SignNotFoundError);
@@ -373,7 +382,10 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         this.components.resumeObjects(pluginName, this.componentTypesByPlugin, ComponentId::getType, this::safeCreateHandler, (id, handler) -> {
             final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
-            handler.onResume(impl);
+            
+            this.runInContext(ComponentInterface.class, impl, () -> {
+                handler.onResume(impl);
+            });
             return impl;
         }, brokenComponents);
         
@@ -481,34 +493,69 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             this.components.removePlugin(pluginName).forEach(id -> {
                 final ComponentImpl component = this.components.remove(id);
                 component.clearEventRegistrations();
-                component.getHandler().onPause(component);
+                
+                this.runInContext(ComponentInterface.class, component, () -> {
+                    component.getHandler().onPause(component);
+                });
             });
             this.entities.removePlugin(pluginName).forEach(id -> {
                 final EntityImpl entity = this.entities.remove(id);
                 entity.clearEventRegistrations();
-                entity.getHandler().onPause(entity);
+                
+                this.runInContext(EntityInterface.class, entity, () -> {
+                    entity.getHandler().onPause(entity);
+                });
             });
             this.signs.removePlugin(pluginName).forEach(id -> {
                 final SignImpl sign = this.signs.remove(id);
                 sign.clearEventRegistrations();
-                sign.getHandler().onPause(sign);
+                
+                this.runInContext(SignInterface.class, sign, () -> {
+                    sign.getHandler().onPause(sign);
+                });
             });
             this.zones.removePlugin(pluginName).forEach(id -> {
                 final ZoneImpl zone = this.zones.remove(id);
                 zone.clearEventRegistrations();
-                zone.getHandler().onPause(zone);
+                
+                this.runInContext(ZoneInterface.class, zone, () -> {
+                    zone.getHandler().onPause(zone);
+                });
             });
             this.objects.removePlugin(pluginName).forEach(id -> {
                 final ObjectImpl object = this.objects.remove(id);
                 object.clearEventRegistrations();
-                object.getHandler().onPause(object);
+                
+                this.runInContext(ObjectInterface.class, object, () -> {
+                    object.getHandler().onPause(object);
+                });
             });
             
-            this.components.forEach(c -> c.onDisable(plugin));
-            this.entities.forEach(c -> c.onDisable(plugin));
-            this.signs.forEach(c -> c.onDisable(plugin));
-            this.zones.forEach(c -> c.onDisable(plugin));
-            this.objects.forEach(c -> c.onDisable(plugin));
+            this.components.forEach(c -> {
+                this.runInContext(ComponentInterface.class, c, () -> {
+                    c.onDisable(plugin);
+                });
+            });
+            this.entities.forEach(c -> {
+                this.runInContext(EntityInterface.class, c, () -> {
+                    c.onDisable(plugin);
+                });
+            });
+            this.signs.forEach(c -> {
+                this.runInContext(SignInterface.class, c, () -> {
+                    c.onDisable(plugin);
+                });
+            });
+            this.zones.forEach(c -> {
+                this.runInContext(ZoneInterface.class, c, () -> {
+                    c.onDisable(plugin);
+                });
+            });
+            this.objects.forEach(c -> {
+                this.runInContext(ObjectInterface.class, c, () -> {
+                    c.onDisable(plugin);
+                });
+            });
             
             // remove plugin
             this.loadedPlugins.remove(pluginName);
@@ -559,17 +606,20 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
-        handler2.onCreate(impl);
         
-        // store data
-        this.components.put(pluginName, id, impl, persist);
-        
-        // save data
-        if (persist)
-        {
-            this.components.saveIdList(this.componentsFolder);
-            impl.saveConfig();
-        }
+        this.runInContext(ComponentInterface.class, impl, () -> {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.components.put(pluginName, id, impl, persist);
+            
+            // save data
+            if (persist)
+            {
+                this.components.saveIdList(this.componentsFolder);
+                impl.saveConfig();
+            }
+        });
         
         final ComponentCreatedEvent createdEvent = new ComponentCreatedEvent(impl);
         Bukkit.getPluginManager().callEvent(createdEvent);
@@ -694,17 +744,20 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
-        handler2.onCreate(impl);
         
-        // store data
-        this.signs.put(pluginName, id, impl, persist);
-        
-        // save data
-        if (persist)
-        {
-            this.signs.saveIdList(this.zonesFolder);
-            impl.saveConfig();
-        }
+        this.runInContext(SignInterface.class, impl, () -> {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.signs.put(pluginName, id, impl, persist);
+            
+            // save data
+            if (persist)
+            {
+                this.signs.saveIdList(this.zonesFolder);
+                impl.saveConfig();
+            }
+        });
         
         final SignCreatedEvent createdEvent = new SignCreatedEvent(impl);
         Bukkit.getPluginManager().callEvent(createdEvent);
@@ -757,17 +810,20 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
-        handler2.onCreate(impl);
         
-        // store data
-        this.zones.put(pluginName, id, impl, persist);
-        
-        // save data
-        if (persist)
-        {
-            this.zones.saveIdList(this.zonesFolder);
-            impl.saveConfig();
-        }
+        this.runInContext(ZoneInterface.class, impl, () -> {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.zones.put(pluginName, id, impl, persist);
+            
+            // save data
+            if (persist)
+            {
+                this.zones.saveIdList(this.zonesFolder);
+                impl.saveConfig();
+            }
+        });
         
         final ZoneCreatedEvent createdEvent = new ZoneCreatedEvent(impl);
         Bukkit.getPluginManager().callEvent(createdEvent);
@@ -1312,21 +1368,45 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
-        handler2.onCreate(impl);
         
-        // store data
-        this.objects.put(pluginName, id, impl, persist);
-        
-        // save data
-        if (persist)
-        {
-            this.objects.saveIdList(this.objectsFolder);
-            impl.saveConfig();
-        }
+        this.runInContext(ObjectInterface.class, impl, () -> {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.objects.put(pluginName, id, impl, persist);
+            
+            // save data
+            if (persist)
+            {
+                this.objects.saveIdList(this.objectsFolder);
+                impl.saveConfig();
+            }
+        });
         
         final ObjectCreatedEvent createdEvent = new ObjectCreatedEvent(impl);
         Bukkit.getPluginManager().callEvent(createdEvent);
         return impl;
+    }
+    
+    /**
+     * Runs given method in context and sets given value
+     * @param clazz
+     * @param value
+     * @param run
+     */
+    private <T> void runInContext(Class<T> clazz, T value, McRunnable run)
+    {
+        try
+        {
+            McLibInterface.instance().runInCopiedContext(() -> {
+                McLibInterface.instance().setContext(clazz, value);
+                run.run();
+            });
+        }
+        catch (McException ex)
+        {
+            // TODO logging
+        }
     }
     
 }
