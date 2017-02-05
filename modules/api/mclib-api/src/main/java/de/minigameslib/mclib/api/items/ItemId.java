@@ -42,7 +42,7 @@ public interface ItemId extends McUniqueEnumInterface
     {
         try
         {
-            final ItemData data = this.getClass().getDeclaredField(((Enum<?>) this).name()).getAnnotation(ItemData.class);
+            final ItemData data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemData.class);
             return data.textures();
         }
         catch (NoSuchFieldException ex)
@@ -59,7 +59,7 @@ public interface ItemId extends McUniqueEnumInterface
     {
         try
         {
-            final ItemData data = this.getClass().getDeclaredField(((Enum<?>) this).name()).getAnnotation(ItemData.class);
+            final ItemData data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemData.class);
             return data.modelJson();
         }
         catch (NoSuchFieldException ex)

@@ -171,7 +171,7 @@ public class ConfigImpl implements ConfigInterface
                     try
                     {
                         final ConfigurationValues clazzDef = cfg.getClass().getAnnotation(ConfigurationValues.class);
-                        final Field field = cfg.getClass().getDeclaredField(((Enum<?>) cfg).name());
+                        final Field field = cfg.getClass().getDeclaredField(cfg.name());
                         if (clazzDef == null)
                         {
                             throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$

@@ -53,7 +53,7 @@ class ConfigurationTool
         try
         {
             final ConfigurationValues configs = val.getClass().getAnnotation(ConfigurationValues.class);
-            final Annot config = val.getClass().getDeclaredField(((Enum<?>) val).name()).getAnnotation(clazz);
+            final Annot config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
             if (configs == null || config == null)
             {
                 throw new IllegalStateException("Invalid configuration class."); //$NON-NLS-1$
@@ -188,7 +188,7 @@ class ConfigurationTool
         try
         {
             final ConfigurationValues configs = val.getClass().getAnnotation(ConfigurationValues.class);
-            final Annot config = val.getClass().getDeclaredField(((Enum<?>) val).name()).getAnnotation(clazz);
+            final Annot config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
             if (configs == null || config == null)
             {
                 throw new IllegalStateException("Invalid configuration class."); //$NON-NLS-1$
@@ -305,7 +305,7 @@ class ConfigurationTool
     {
         try
         {
-            final Field field = val.getClass().getDeclaredField(((Enum<?>) val).name());
+            final Field field = val.getClass().getDeclaredField(val.name());
             return field.getAnnotation(clazz) != null;
         }
         catch (Exception ex)
@@ -321,7 +321,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationSection> sectionPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? ((Enum<?>) val).name() : config.value()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? val.name() : config.value()));
     }
     
     /**
@@ -331,7 +331,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationBool> boolPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -341,7 +341,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationBoolList> boolListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -351,7 +351,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationByte> bytePath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -361,7 +361,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationByteList> byteListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -371,7 +371,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationCharacter> charPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -381,7 +381,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationCharacterList> charListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -391,7 +391,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationColor> colorPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -401,7 +401,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationColorList> colorListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -411,7 +411,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationDouble> doublePath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -421,7 +421,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationDoubleList> doubleListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -431,7 +431,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationFloat> floatPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -441,7 +441,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationFloatList> floatListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -451,7 +451,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationInt> intPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -461,7 +461,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationIntList> intListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -471,7 +471,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationItemStack> itemStackPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -481,7 +481,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationItemStackList> itemStackListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -491,7 +491,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationLong> longPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -501,7 +501,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationLongList> longListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -511,7 +511,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationObject> objectPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -521,7 +521,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationObjectList> objectListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -531,7 +531,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationPlayer> playerPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -541,7 +541,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationPlayerList> playerListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -551,7 +551,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationString> stringPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -561,7 +561,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationStringList> stringListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -571,7 +571,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationShort> shortPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -581,7 +581,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationShortList> shortListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -591,7 +591,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationVector> vectorPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -601,7 +601,7 @@ class ConfigurationTool
      */
     static PathCalculator<ConfigurationVectorList> vectorListPath()
     {
-        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? ((Enum<?>) val).name() : config.name()));
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**

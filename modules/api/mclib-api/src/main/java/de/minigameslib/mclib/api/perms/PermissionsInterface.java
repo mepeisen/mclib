@@ -44,12 +44,12 @@ public interface PermissionsInterface extends EnumerationValue
         try
         {
             final Permissions permissions = this.getClass().getAnnotation(Permissions.class);
-            final Permission perm = this.getClass().getDeclaredField(((Enum<?>) this).name()).getAnnotation(Permission.class);
+            final Permission perm = this.getClass().getDeclaredField(this.name()).getAnnotation(Permission.class);
             if (permissions == null || perm == null)
             {
                 throw new IllegalStateException("Invalid permission class."); //$NON-NLS-1$
             }
-            return permissions.value() + '.' + (perm.value().length() == 0 ? ((Enum<?>) this).name() : perm.value());
+            return permissions.value() + '.' + (perm.value().length() == 0 ? this.name() : perm.value());
         }
         catch (NoSuchFieldException ex)
         {

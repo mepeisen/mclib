@@ -210,8 +210,8 @@ class MessagesConfigImpl implements MessagesConfigInterface
             try
             {
                 final LocalizedMessages clazzDef = msg.getClass().getAnnotation(LocalizedMessages.class);
-                final LocalizedMessage valueDef = msg.getClass().getDeclaredField(((Enum<?>) msg).name()).getAnnotation(LocalizedMessage.class);
-                final LocalizedMessageList listDef = msg.getClass().getDeclaredField(((Enum<?>) msg).name()).getAnnotation(LocalizedMessageList.class);
+                final LocalizedMessage valueDef = msg.getClass().getDeclaredField(msg.name()).getAnnotation(LocalizedMessage.class);
+                final LocalizedMessageList listDef = msg.getClass().getDeclaredField(msg.name()).getAnnotation(LocalizedMessageList.class);
                 if (clazzDef == null || (listDef == null && valueDef == null))
                 {
                     throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
@@ -219,7 +219,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
                 
                 if (valueDef == null && listDef != null)
                 {
-                    final String path = clazzDef.value() + "." + ((Enum<?>) msg).name(); //$NON-NLS-1$
+                    final String path = clazzDef.value() + '.' + msg.name();
                     if (!this.config.contains(path))
                     {
                         this.config.set(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
@@ -232,7 +232,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
                 }
                 else if (valueDef != null)
                 {
-                    final String path = clazzDef.value() + "." + ((Enum<?>) msg).name(); //$NON-NLS-1$
+                    final String path = clazzDef.value() + '.' + msg.name();
                     this.config.set(path + ".default_locale", clazzDef.defaultLocale()); //$NON-NLS-1$
                     this.config.set(path + ".user." + clazzDef.defaultLocale(), valueDef.defaultMessage()); //$NON-NLS-1$
                     if (valueDef.defaultAdminMessage().length() > 0)
