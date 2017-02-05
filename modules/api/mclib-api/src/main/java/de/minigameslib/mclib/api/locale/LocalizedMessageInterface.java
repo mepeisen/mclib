@@ -142,15 +142,13 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     }
     
     /**
-     * Returns a human readable text for this message; this message will be displayed to common users.
+     * Returns the original unformatted content to be displayed to users.
      * 
      * @param loc
      *            locale to be used.
-     * @param args
-     *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String toUserMessage(Locale loc, Serializable... args)
+    default String getUnformattedUserMessage(Locale loc)
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
@@ -169,7 +167,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
             }
             
             final String smsg = messages.getString(locale, msgs.value() + "." + this.name(), msg.defaultMessage()); //$NON-NLS-1$
-            return String.format(locale, smsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            return smsg;
         }
         catch (NoSuchFieldException ex)
         {
@@ -178,15 +176,13 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     }
     
     /**
-     * Returns an array of human readable texts for this message; this message will be displayed to common users.
+     * Returns the original unformatted content to be displayed to users.
      * 
      * @param loc
      *            locale to be used.
-     * @param args
-     *            object arguments that can be used to build the message.
      * @return message string array.
      */
-    default String[] toUserMessageLine(Locale loc, Serializable... args)
+    default String[] getUnformattedUserMessageLine(Locale loc)
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
@@ -205,14 +201,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
             }
             
             final String[] smsg = messages.getStringList(locale, msgs.value() + "." + this.name(), msg.value()); //$NON-NLS-1$
-            final String[] result = new String[smsg.length];
-            int i = 0;
-            for (final String lmsg : smsg)
-            {
-                result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
-                i++;
-            }
-            return result;
+            return smsg;
         }
         catch (NoSuchFieldException ex)
         {
@@ -221,15 +210,13 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     }
     
     /**
-     * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
+     * Returns the original unformatted content to be displayed to admins.
      * 
      * @param loc
      *            locale to be used.
-     * @param args
-     *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String toAdminMessage(Locale loc, Serializable... args)
+    default String getUnformattedAdminMessage(Locale loc)
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
@@ -250,9 +237,9 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
             String smsg = messages.getAdminString(locale, msgs.value() + "." + this.name(), msg.defaultAdminMessage()); //$NON-NLS-1$
             if (smsg.length() == 0)
             {
-                smsg = messages.getString(locale, msgs.value() + "." + this.name(), msg.defaultMessage()); //$NON-NLS-1$
+                return messages.getString(locale, msgs.value() + "." + this.name(), msg.defaultMessage()); //$NON-NLS-1$
             }
-            return String.format(locale, smsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            return smsg;
         }
         catch (NoSuchFieldException ex)
         {
@@ -261,15 +248,13 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     }
     
     /**
-     * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
+     * Returns the original unformatted content to be displayed to admins.
      * 
      * @param loc
      *            locale to be used.
-     * @param args
-     *            object arguments that can be used to build the message.
      * @return message string.
      */
-    default String[] toAdminMessageLine(Locale loc, Serializable... args)
+    default String[] getUnformattedAdminMessageLine(Locale loc)
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         try
@@ -290,21 +275,94 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
             String[] smsg = messages.getAdminStringList(locale, msgs.value() + "." + this.name(), msg.adminMessages().length == 0 ? null : msg.adminMessages()); //$NON-NLS-1$
             if (smsg == null || smsg.length == 0)
             {
-                smsg = messages.getStringList(locale, msgs.value() + "." + this.name(), msg.value()); //$NON-NLS-1$
+                return messages.getStringList(locale, msgs.value() + "." + this.name(), msg.value()); //$NON-NLS-1$
             }
-            final String[] result = new String[smsg.length];
-            int i = 0;
-            for (final String lmsg : smsg)
-            {
-                result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
-                i++;
-            }
-            return result;
+            return smsg;
         }
         catch (NoSuchFieldException ex)
         {
             throw new IllegalStateException(ex);
         }
+    }
+    
+    /**
+     * Returns a human readable text for this message; this message will be displayed to common users.
+     * 
+     * @param loc
+     *            locale to be used.
+     * @param args
+     *            object arguments that can be used to build the message.
+     * @return message string.
+     */
+    default String toUserMessage(Locale loc, Serializable... args)
+    {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
+        final String msg = this.getUnformattedUserMessage(locale);
+        return msg == null ? "" : String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Returns an array of human readable texts for this message; this message will be displayed to common users.
+     * 
+     * @param loc
+     *            locale to be used.
+     * @param args
+     *            object arguments that can be used to build the message.
+     * @return message string array.
+     */
+    default String[] toUserMessageLine(Locale loc, Serializable... args)
+    {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
+        final String[] smsg = this.getUnformattedUserMessageLine(locale);
+        if (smsg == null) return new String[0];
+        final String[] result = new String[smsg.length];
+        int i = 0;
+        for (final String lmsg : smsg)
+        {
+            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            i++;
+        }
+        return result;
+    }
+    
+    /**
+     * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
+     * 
+     * @param loc
+     *            locale to be used.
+     * @param args
+     *            object arguments that can be used to build the message.
+     * @return message string.
+     */
+    default String toAdminMessage(Locale loc, Serializable... args)
+    {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
+        final String msg = this.getUnformattedAdminMessage(locale);
+        return msg == null ? "" : String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Returns an array of human readable texts for this message; the message will be displayed to administrators only.
+     * 
+     * @param loc
+     *            locale to be used.
+     * @param args
+     *            object arguments that can be used to build the message.
+     * @return message string.
+     */
+    default String[] toAdminMessageLine(Locale loc, Serializable... args)
+    {
+        final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
+        final String[] smsg = this.getUnformattedAdminMessageLine(locale);
+        if (smsg == null) return new String[0];
+        final String[] result = new String[smsg.length];
+        int i = 0;
+        for (final String lmsg : smsg)
+        {
+            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            i++;
+        }
+        return result;
     }
     
     /**

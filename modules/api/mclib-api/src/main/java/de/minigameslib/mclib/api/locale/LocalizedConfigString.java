@@ -24,7 +24,6 @@
 
 package de.minigameslib.mclib.api.locale;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -162,9 +161,9 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
     }
     
     @Override
-    public String toUserMessage(Locale locale, Serializable... args)
+    public String getUnformattedUserMessage(Locale loc)
     {
-        String smsg = this.userStrings.get(locale);
+        String smsg = this.userStrings.get(loc);
         if (smsg == null)
         {
             smsg = this.userStrings.get(this.defaultLocale);
@@ -173,17 +172,17 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
         {
             return null;
         }
-        return String.format(locale, smsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+        return smsg;
     }
-    
+
     @Override
-    public String[] toUserMessageLine(Locale locale, Serializable... args)
+    public String[] getUnformattedUserMessageLine(Locale locale)
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }
     
     @Override
-    public String toAdminMessage(Locale locale, Serializable... args)
+    public String getUnformattedAdminMessage(Locale locale)
     {
         String smsg = this.adminStrings.get(locale);
         if (smsg == null || smsg.length() == 0)
@@ -202,11 +201,11 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
         {
             return null;
         }
-        return String.format(locale, smsg, (Object[]) MessageTool.convertArgs(locale, true, args));
+        return smsg;
     }
-    
+
     @Override
-    public String[] toAdminMessageLine(Locale locale, Serializable... args)
+    public String[] getUnformattedAdminMessageLine(Locale locale)
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }

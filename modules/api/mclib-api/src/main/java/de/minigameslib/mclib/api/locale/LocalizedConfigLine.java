@@ -24,7 +24,6 @@
 
 package de.minigameslib.mclib.api.locale;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -174,13 +173,13 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
     }
     
     @Override
-    public String toUserMessage(Locale locale, Serializable... args)
+    public String getUnformattedUserMessage(Locale locale)
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }
     
     @Override
-    public String[] toUserMessageLine(Locale locale, Serializable... args)
+    public String[] getUnformattedUserMessageLine(Locale locale)
     {
         List<String> smsg = this.userStrings.get(locale);
         if (smsg == null)
@@ -191,24 +190,17 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
         {
             return new String[0];
         }
-        final String[] result = new String[smsg.size()];
-        int i = 0;
-        for (final String lmsg : smsg)
-        {
-            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
-            i++;
-        }
-        return result;
+        return smsg.toArray(new String[smsg.size()]);
     }
     
     @Override
-    public String toAdminMessage(Locale locale, Serializable... args)
+    public String getUnformattedAdminMessage(Locale locale)
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }
     
     @Override
-    public String[] toAdminMessageLine(Locale locale, Serializable... args)
+    public String[] getUnformattedAdminMessageLine(Locale locale)
     {
         List<String> smsg = this.adminStrings.get(locale);
         if (smsg == null || smsg.size() == 0)
@@ -227,14 +219,7 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
         {
             return new String[0];
         }
-        final String[] result = new String[smsg.size()];
-        int i = 0;
-        for (final String lmsg : smsg)
-        {
-            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, true, args));
-            i++;
-        }
-        return result;
+        return smsg.toArray(new String[smsg.size()]);
     }
 
     @Override
