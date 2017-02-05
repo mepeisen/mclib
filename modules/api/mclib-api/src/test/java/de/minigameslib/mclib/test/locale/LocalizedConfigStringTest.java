@@ -26,7 +26,6 @@ package de.minigameslib.mclib.test.locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
@@ -94,7 +93,7 @@ public class LocalizedConfigStringTest
     {
         // empty message object
         final LocalizedConfigString line = new LocalizedConfigString();
-        assertNull(line.toUserMessage(Locale.GERMAN));
+        assertEquals("", line.toUserMessage(Locale.GERMAN)); //$NON-NLS-1$
         
         // setting default locale
         line.setUserMessage(Locale.ENGLISH, "foo"); //$NON-NLS-1$
@@ -120,7 +119,7 @@ public class LocalizedConfigStringTest
     {
         // empty message object
         final LocalizedConfigString line = new LocalizedConfigString();
-        assertNull(line.toAdminMessage(Locale.GERMAN));
+        assertEquals("", line.toAdminMessage(Locale.GERMAN)); //$NON-NLS-1$
         
         // setting default locale
         line.setAdminMessage(Locale.ENGLISH, "foo"); //$NON-NLS-1$
