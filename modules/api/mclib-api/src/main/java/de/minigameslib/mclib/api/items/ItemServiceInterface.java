@@ -27,9 +27,11 @@ package de.minigameslib.mclib.api.items;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 
 /**
  * A service to register custom items.
@@ -62,11 +64,59 @@ public interface ItemServiceInterface
     String getDownloadUrl();
     
     /**
+     * Returns true for automatic resource download on login
+     * @return automatic resource download flag
+     */
+    boolean isAutoResourceDownload();
+    
+    /**
+     * Sets the automatic resource download flag
+     * @param newValue automatic resource download flag
+     */
+    void setAutoResourceDownload(boolean newValue);
+    
+    /**
+     * Returns the number of ticks to wait for automatic resource download
+     * @return automatic resource download.
+     */
+    int getAutoResourceTicks();
+    
+    /**
+     * Sets the number of ticks to wait for automatic resource download
+     * @param ticks number of ticks waiting before download
+     */
+    void setAutoResourceTicks(int ticks);
+    
+    /**
      * Checks if the player has accepted and installed the resource pack.
      * @param player 
      * @return {@code true} if player has installed the resource pack.
      */
     boolean hasResourcePack(McPlayerInterface player);
+    
+    /**
+     * Returns the resource pack status
+     * @param player
+     * @return resource pack status or {@code null} if unknown
+     */
+    PlayerResourcePackStatusEvent.Status getState(McPlayerInterface player);
+    
+    /**
+     * Forces downloading the resource pack (sends download request)
+     * @param player
+     * @param success invoked on successful download
+     */
+    void forceDownload(McPlayerInterface player, McRunnable success);
+    
+    /**
+     * Forces downloading the resource pack (sends download request)
+     * @param player
+     * @param url a custom url
+     * @param success invoked on successful download
+     * @param failure invoked on failed downloads
+     * @param declined invoked on declined downloads
+     */
+    void forceDownload(McPlayerInterface player, String url, McRunnable success, McRunnable failure, McRunnable declined);
     
     /**
      * Creates a new item stack for given item id

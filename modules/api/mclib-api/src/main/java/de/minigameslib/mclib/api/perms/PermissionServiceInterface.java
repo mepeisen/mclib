@@ -24,14 +24,12 @@
 
 package de.minigameslib.mclib.api.perms;
 
-import de.minigameslib.mclib.api.McContext;
-
 /**
  * A service to register enumerations with plugins.
  * 
  * @author mepeisen
  */
-public interface PermissionServiceInterface extends McContext
+public interface PermissionServiceInterface
 {
     
     /**

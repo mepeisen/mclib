@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api.config;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Color;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
@@ -46,7 +48,25 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 public interface ConfigurationValueInterface extends EnumerationValue
 {
     
-    // TODO getShortLst etc.: convert from other numerics.
+    /**
+     * Checks if this configuration variable is an enum.
+     * 
+     * @return {@code true} if this is an enum
+     */
+    default boolean isEnum()
+    {
+        return ConfigurationTool.isType(this, ConfigurationEnum.class);
+    }
+    
+    /**
+     * Checks if this configuration variable is an enum list.
+     * 
+     * @return {@code true} if this is an enum list
+     */
+    default boolean isEnumList()
+    {
+        return ConfigurationTool.isType(this, ConfigurationEnumList.class);
+    }
     
     /**
      * Checks if this configuration variable is a boolean.
@@ -349,8 +369,24 @@ public interface ConfigurationValueInterface extends EnumerationValue
         {
             final Field field = this.getClass().getDeclaredField(this.name());
             final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
-            final ConfigServiceInterface lib = ConfigServiceInterface.instance();
+            final McLibInterface lib = McLibInterface.instance();
             
+            {
+                final ConfigurationEnum config = field.getAnnotation(ConfigurationEnum.class);
+                if (config != null)
+                {
+                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    return path;
+                }
+            }
+            {
+                final ConfigurationEnumList config = field.getAnnotation(ConfigurationEnumList.class);
+                if (config != null)
+                {
+                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    return path;
+                }
+            }
             {
                 final ConfigurationBool config = field.getAnnotation(ConfigurationBool.class);
                 if (config != null)
@@ -623,7 +659,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
             final ConfigurationSection config = field.getAnnotation(ConfigurationSection.class);
             if (config != null)
             {
-                final String mpath = lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value())) + '.' + path;
+                final String mpath = McLibInterface.instance().resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value())) + '.' + path;
                 return minigame.getConfig(configs.file()).contains(mpath);
             }
             throw new IllegalStateException("Invalid configuration option"); //$NON-NLS-1$
@@ -671,6 +707,37 @@ public interface ConfigurationValueInterface extends EnumerationValue
                 section2 = section.createSection(path);
             }
             element.write(section2);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     * @param subpath
+     *            the sub path
+     */
+    default void setEnum(EnumerationValue value, String subpath)
+    {
+        ConfigurationTool.consume(this, subpath, (val, configs, config, lib, minigame, path) -> {
+            minigame.getConfig(configs.file()).set(path, value);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     * @param subpath
+     *            the sub path
+     */
+    default void setEnumList(EnumerationValue[] value, String subpath)
+    {
+        final List<EnumerationValue> list = Arrays.asList(value);
+        ConfigurationTool.consume(this, subpath, (val, configs, config, lib, minigame, path) -> {
+            minigame.getConfig(configs.file()).setPrimitiveList(path, list);
         });
     }
     
@@ -1133,6 +1200,33 @@ public interface ConfigurationValueInterface extends EnumerationValue
      * @param value
      *            value to set.
      */
+    default void setEnum(EnumerationValue value)
+    {
+        ConfigurationTool.consume(this, ConfigurationEnum.class, ConfigurationTool.enumPath(), (val, configs, config, lib, minigame, path) -> {
+            minigame.getConfig(configs.file()).set(path, value);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     */
+    default void setEnumList(EnumerationValue[] value)
+    {
+        final List<EnumerationValue> list = Arrays.asList(value);
+        ConfigurationTool.consume(this, ConfigurationEnumList.class, ConfigurationTool.enumListPath(), (val, configs, config, lib, minigame, path) -> {
+            minigame.getConfig(configs.file()).setPrimitiveList(path, list);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     */
     default void setBoolean(boolean value)
     {
         ConfigurationTool.consume(this, ConfigurationBool.class, ConfigurationTool.boolPath(), (val, configs, config, lib, minigame, path) -> {
@@ -1528,12 +1622,25 @@ public interface ConfigurationValueInterface extends EnumerationValue
     /**
      * Returns the value of given configuration value.
      * 
+     * @param clazz
+     *            enumeration class
+     * @return value.
+     */
+    default <T extends EnumerationValue> T getEnum(Class<T> clazz)
+    {
+        return ConfigurationTool.calculate(this, ConfigurationEnum.class, ConfigurationTool.enumPath(),
+                (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file()).getEnumValue(clazz, path));
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
      * @return value.
      */
     default ConfigColorData getColor()
     {
-        return ConfigurationTool.calculate(this, ConfigurationColor.class, ConfigurationTool.colorPath(),
-                (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file()).getFragment(ConfigColorData.class, path, ConfigColorData.fromBukkitColor(Color.fromRGB(config.defaultRgb()))));
+        return ConfigurationTool.calculate(this, ConfigurationColor.class, ConfigurationTool.colorPath(), (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file())
+                .getFragment(ConfigColorData.class, path, ConfigColorData.fromBukkitColor(Color.fromRGB(config.defaultRgb()))));
     }
     
     /**
@@ -1608,6 +1715,27 @@ public interface ConfigurationValueInterface extends EnumerationValue
         final boolean[] result = new boolean[list.size()];
         for (int i = 0; i < result.length; i++)
             result[i] = list.get(i);
+        return result;
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
+     * @param clazz
+     *            enumeration class
+     * @return value.
+     */
+    default <T extends EnumerationValue> T[] getEnumList(Class<T> clazz)
+    {
+        final List<T> list = ConfigurationTool.calculate(this, ConfigurationEnumList.class, ConfigurationTool.enumListPath(),
+                (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file()).getEnumValueList(clazz, path), null);
+        @SuppressWarnings("unchecked")
+        final T[] result = (T[]) Array.newInstance(clazz, list == null ? 0 : list.size());
+        if (list != null)
+        {
+            for (int i = 0; i < result.length; i++)
+                result[i] = list.get(i);
+        }
         return result;
     }
     
@@ -1884,7 +2012,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
             }
             final ConfigServiceInterface lib = ConfigServiceInterface.instance();
             final ConfigInterface minigame = lib.getConfigFromCfg(this);
-            final String path = lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value()));
+            final String path = McLibInterface.instance().resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value()));
             final Set<String> result = minigame.getConfig(configs.file()).getSection(path).getKeys(deep);
             return result.toArray(new String[result.size()]);
         }
@@ -1923,6 +2051,21 @@ public interface ConfigurationValueInterface extends EnumerationValue
     /**
      * Returns the value of given configuration value.
      * 
+     * @param clazz
+     *            enumeration class
+     * @param path
+     *            sub path of configuration section
+     * 
+     * @return value.
+     */
+    default <T extends EnumerationValue> T getEnum(Class<T> clazz, String path)
+    {
+        return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnumValue(clazz, spath));
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
      * @param path
      *            sub path of configuration section
      * @param defaultValue
@@ -1948,6 +2091,29 @@ public interface ConfigurationValueInterface extends EnumerationValue
     default boolean getBoolean(String path, boolean defaultValue)
     {
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getBoolean(spath, defaultValue));
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
+     * @param clazz
+     *            enumeration class
+     * @param path
+     *            sub path of configuration section
+     * 
+     * @return value.
+     */
+    default <T extends EnumerationValue> T[] getEnumList(Class<T> clazz, String path)
+    {
+        final List<T> list = ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnumValueList(clazz, spath));
+        @SuppressWarnings("unchecked")
+        final T[] result = (T[]) Array.newInstance(clazz, list == null ? 0 : list.size());
+        if (list != null)
+        {
+            for (int i = 0; i < result.length; i++)
+                result[i] = list.get(i);
+        }
+        return result;
     }
     
     /**
@@ -2302,12 +2468,14 @@ public interface ConfigurationValueInterface extends EnumerationValue
     /**
      * Returns the value of given configuration value.
      * 
-     * @param clazz DataFragment object class
+     * @param clazz
+     *            DataFragment object class
      * @param path
      *            sub path of configuration section
      * 
      * @return value.
-     * @param <T> DataFragment object class
+     * @param <T>
+     *            DataFragment object class
      */
     default <T extends DataFragment> T[] getObjectList(Class<T> clazz, String path)
     {
@@ -2362,7 +2530,8 @@ public interface ConfigurationValueInterface extends EnumerationValue
      * 
      * @param path
      *            sub path of configuration section
-     * @param defaultValue the default value to return
+     * @param defaultValue
+     *            the default value to return
      * 
      * @return value.
      */

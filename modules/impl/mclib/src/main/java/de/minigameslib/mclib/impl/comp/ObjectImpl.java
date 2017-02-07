@@ -32,6 +32,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectDeleteEvent;
@@ -94,7 +95,10 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        this.handler.canDelete();
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ObjectInterface.class, this);
+            this.handler.canDelete();
+        });
         
         final ObjectDeleteEvent deleteEvent = new ObjectDeleteEvent(this);
         Bukkit.getPluginManager().callEvent(deleteEvent);
@@ -102,9 +106,12 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         {
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
-        
-        super.delete();
-        this.handler.onDelete();
+
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ObjectInterface.class, this);
+            super.delete();
+            this.handler.onDelete();
+        });
         this.eventBus.clear();
 
         final ObjectDeletedEvent deletedEvent = new ObjectDeletedEvent(this);

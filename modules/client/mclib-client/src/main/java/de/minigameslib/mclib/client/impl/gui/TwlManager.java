@@ -37,7 +37,6 @@ import de.matthiasmann.twl.input.lwjgl.LWJGLInput;
 import de.matthiasmann.twl.renderer.lwjgl.LWJGLRenderer;
 import de.matthiasmann.twl.theme.ThemeManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 
 /**
  * gui manager helper

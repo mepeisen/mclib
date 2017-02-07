@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,12 +84,36 @@ public class YmlFile extends YmlCommentableSection
     }
     
     /**
+     * Constructor to read from existing file.
+     * 
+     * @param file
+     * @throws IOException
+     */
+    public YmlFile(InputStream file) throws IOException
+    {
+        this();
+        this.load(file);
+    }
+    
+    /**
      * Reads a file into this config.
      * 
      * @param fr
      * @throws IOException
      */
     public void load(FileReader fr) throws IOException
+    {
+        final MyCommentMap map = (MyCommentMap) this.yml.load(fr);
+        this.load(map);
+    }
+    
+    /**
+     * Reads a file into this config.
+     * 
+     * @param fr
+     * @throws IOException
+     */
+    public void load(InputStream fr) throws IOException
     {
         final MyCommentMap map = (MyCommentMap) this.yml.load(fr);
         this.load(map);

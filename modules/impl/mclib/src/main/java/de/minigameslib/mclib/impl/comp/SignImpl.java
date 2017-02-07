@@ -35,6 +35,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
@@ -107,7 +108,10 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        this.handler.canDelete();
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(SignInterface.class, this);
+            this.handler.canDelete();
+        });
         
         final SignDeleteEvent deleteEvent = new SignDeleteEvent(this);
         Bukkit.getPluginManager().callEvent(deleteEvent);
@@ -115,9 +119,12 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         {
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
-        
-        super.delete();
-        this.handler.onDelete();
+
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(SignInterface.class, this);
+            super.delete();
+            this.handler.onDelete();
+        });
         this.eventBus.clear();
 
         final SignDeletedEvent deletedEvent = new SignDeletedEvent(this);
@@ -167,6 +174,10 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         if (block instanceof Sign)
         {
             final Location old = this.location;
+            McLibInterface.instance().runInCopiedContext(() -> {
+                McLibInterface.instance().setContext(SignInterface.class, this);
+                this.handler.canChangeLocation(loc);
+            });
             final SignRelocateEvent relocateEvent = new SignRelocateEvent(this, old, loc);
             Bukkit.getPluginManager().callEvent(relocateEvent);
             if (relocateEvent.isCancelled())
@@ -175,6 +186,11 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             }
             
             this.sign = (Sign) block;
+
+            McLibInterface.instance().runInCopiedContext(() -> {
+                McLibInterface.instance().setContext(SignInterface.class, this);
+                this.handler.onLocationChange(loc);
+            });
             super.setLocation(loc);
             
             final SignRelocatedEvent relocatedEvent = new SignRelocatedEvent(this, old, loc);

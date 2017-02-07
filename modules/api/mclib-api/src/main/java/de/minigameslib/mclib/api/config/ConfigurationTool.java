@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -60,7 +61,7 @@ class ConfigurationTool
             }
             final ConfigServiceInterface lib = ConfigServiceCache.get();
             final ConfigInterface minigame = lib.getConfigFromCfg(val);
-            return calculator.supply(val, configs, config, lib, minigame);
+            return calculator.supply(val, configs, config, McLibInterface.instance(), minigame);
         }
         catch (Exception ex)
         {
@@ -98,7 +99,7 @@ class ConfigurationTool
         final Calculator<Ret, Annot> calc = (val2, configs, config, lib, minigame) -> {
             final String spath = path.supply(val, configs, config, lib);
             Ret res = minigame.getConfig(configs.file()).contains(spath) ? calculator.supply(val, configs, config, lib, minigame, spath) : null;
-            if (res == null)
+            if (res == null && defaultValue != null)
             {
                 res = defaultValue.supply(val, configs, config, lib, minigame, spath);
             }
@@ -195,7 +196,7 @@ class ConfigurationTool
             }
             final ConfigServiceInterface lib = ConfigServiceCache.get();
             final ConfigInterface minigame = lib.getConfigFromCfg(val);
-            consumer.apply(val, configs, config, lib, minigame);
+            consumer.apply(val, configs, config, McLibInterface.instance(), minigame);
         }
         catch (Exception ex)
         {
@@ -322,6 +323,26 @@ class ConfigurationTool
     static PathCalculator<ConfigurationSection> sectionPath()
     {
         return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? val.name() : config.value()));
+    }
+    
+    /**
+     * Returns the path calculator for given type
+     * 
+     * @return path calculator
+     */
+    static PathCalculator<ConfigurationEnum> enumPath()
+    {
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
+    }
+    
+    /**
+     * Returns the path calculator for given type
+     * 
+     * @return path calculator
+     */
+    static PathCalculator<ConfigurationEnumList> enumListPath()
+    {
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }
     
     /**
@@ -627,7 +648,7 @@ class ConfigurationTool
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
@@ -655,7 +676,7 @@ class ConfigurationTool
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, String path) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
@@ -684,7 +705,7 @@ class ConfigurationTool
          * @return return value
          * @throws Exception
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, DataSection section, String key) throws Exception;
+        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, DataSection section, String key) throws Exception;
         
     }
     
@@ -708,7 +729,7 @@ class ConfigurationTool
          * @return return value
          * @throws Exception
          */
-        String supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib) throws Exception;
+        String supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib) throws Exception;
         
     }
     
@@ -732,7 +753,7 @@ class ConfigurationTool
          * @param minigame
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
@@ -757,7 +778,7 @@ class ConfigurationTool
          * @param path
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, String path) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
@@ -786,7 +807,7 @@ class ConfigurationTool
          * @param element
          * @throws Exception
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, ConfigServiceInterface lib, ConfigInterface minigame, DataSection section, String path, T element)
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, DataSection section, String path, T element)
                 throws Exception;
         
     }

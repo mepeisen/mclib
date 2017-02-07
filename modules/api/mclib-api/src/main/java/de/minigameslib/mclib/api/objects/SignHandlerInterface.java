@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import org.bukkit.Location;
+
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
@@ -79,6 +81,24 @@ public interface SignHandlerInterface extends DataFragment
      * Invoked upon deletion of the sign.
      */
     void onDelete();
+    
+    /**
+     * Checks if the location can be changed.
+     * 
+     * @param newValue
+     *            the new location
+     * @throws McException
+     *             thrown to veto the location change.
+     */
+    void canChangeLocation(Location newValue) throws McException;
+    
+    /**
+     * Invoked upon change of location
+     * 
+     * @param newValue
+     *            the new location
+     */
+    void onLocationChange(Location newValue);
     
     /**
      * Checks if is is safe to create the given sign on the same location.

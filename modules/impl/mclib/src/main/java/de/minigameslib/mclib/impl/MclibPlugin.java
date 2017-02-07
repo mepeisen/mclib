@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,6 +78,7 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
 import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
@@ -700,14 +702,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         }
         
         // resources
-        new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                evt.getPlayer().setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
-            }
-        }.runTaskLater(this, 2);
+        if (ItemServiceInterface.instance().isAutoResourceDownload())
+        {
+            new BukkitRunnable() {
+                
+                @Override
+                public void run()
+                {
+                    evt.getPlayer().setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
+                }
+            }.runTaskLater(this, ItemServiceInterface.instance().getAutoResourceTicks());
+        }
     }
     
     /**
@@ -718,21 +723,61 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onResourcePack(PlayerResourcePackStatusEvent evt)
     {
-        switch (evt.getStatus())
+        final McPlayerImpl player = this.players.getPlayer(evt.getPlayer());
+        final McStorage sessionStorage = player.getSessionStorage();
+        final ResourcePackMarker marker = sessionStorage.get(ResourcePackMarker.class);
+        if (marker == null)
         {
-            case ACCEPTED:
-                // System.out.println("accepted");
-                break;
-            default:
-            case DECLINED:
-                // System.out.println("declined");
-                break;
-            case FAILED_DOWNLOAD:
-                // System.out.println("failed download");
-                break;
-            case SUCCESSFULLY_LOADED:
-                this.players.getPlayer(evt.getPlayer()).getSessionStorage().set(ResourcePackMarker.class, new ResourcePackMarker());
-                break;
+            sessionStorage.set(ResourcePackMarker.class, new ResourcePackMarker(evt.getStatus()));
+        }
+        else
+        {
+            marker.setState(evt.getStatus());
+            switch (evt.getStatus())
+            {
+                default:
+                case ACCEPTED:
+                    break;
+                case DECLINED:
+                    if (marker.getDeclined() != null)
+                    {
+                        try
+                        {
+                            marker.getDeclined().run();
+                        }
+                        catch (McException ex)
+                        {
+                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                        }
+                    }
+                    break;
+                case FAILED_DOWNLOAD:
+                    if (marker.getFailure() != null)
+                    {
+                        try
+                        {
+                            marker.getFailure().run();
+                        }
+                        catch (McException ex)
+                        {
+                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                        }
+                    }
+                    break;
+                case SUCCESSFULLY_LOADED:
+                    if (marker.getSuccess() != null)
+                    {
+                        try
+                        {
+                            marker.getSuccess().run();
+                        }
+                        catch (McException ex)
+                        {
+                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                        }
+                    }
+                    break;
+            }
         }
     }
     
@@ -1482,6 +1527,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     
     @Override
     public DataSection readYmlFile(File file) throws IOException
+    {
+        return new YmlFile(file);
+    }
+    
+    @Override
+    public DataSection readYmlFile(InputStream file) throws IOException
     {
         return new YmlFile(file);
     }

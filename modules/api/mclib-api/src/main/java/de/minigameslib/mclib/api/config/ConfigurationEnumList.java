@@ -24,32 +24,31 @@
 
 package de.minigameslib.mclib.api.config;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 /**
- * Configuration services.
+ * A single configuration value.
  * 
  * @author mepeisen
  */
-public interface ConfigServiceInterface
+@Retention(RUNTIME)
+@Target(FIELD)
+public @interface ConfigurationEnumList
 {
     
     /**
-     * Returns the configuration services instance.
+     * The name of the configuration value.
      * 
-     * @return configuration services instance.
+     * <p>
+     * The name is appended to the path of the {@link ConfigurationValues} annotation on the enum class.
+     * </p>
+     * 
+     * @return Name of configuration value; empty string to use the constant name.
      */
-    static ConfigServiceInterface instance()
-    {
-        return ConfigServiceCache.get();
-    }
-    
-    /**
-     * Returns the configuration declaring the given configuration value.
-     * 
-     * @param item
-     *            the configuration value; only works on classes that are returned by a plugin or extension provider during initialization.
-     * 
-     * @return config provider or {@code null} if the class was not declared by any minigame or extension.
-     */
-    ConfigInterface getConfigFromCfg(ConfigurationValueInterface item);
+    String name() default "";
     
 }

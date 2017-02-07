@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl;
 
 import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
+import de.minigameslib.mclib.api.config.ConfigurationInt;
 import de.minigameslib.mclib.api.config.ConfigurationString;
 import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
@@ -78,6 +79,22 @@ public enum McCoreConfig implements ConfigurationValueInterface
      */
     @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources.zip")
     @ConfigComment({"The default download url of the resource pack"})
-    RespourcePackDownloadUrl,
+    ResourcePackDownloadUrl,
+    
+    /**
+     * The auto download flag
+     */
+    @ConfigurationBool(defaultValue = false)
+    @ConfigComment({"True to let the users automatically be notified about the resource pack on join"})
+    ResourcePackAutoDownload,
+    
+    /**
+     * The auto download ticks
+     */
+    @ConfigurationInt(defaultValue = 40)
+    @ConfigComment({
+        "Number of ticks to wait before sending the resource pack notification to clients",
+        "Requires RespourcePackAutoDownload to be set to true"})
+    ResourcePackAutoDownloadTicks,
     
 }

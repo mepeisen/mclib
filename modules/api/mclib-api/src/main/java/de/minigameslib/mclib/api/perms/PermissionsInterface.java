@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api.perms;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -65,7 +66,7 @@ public interface PermissionsInterface extends EnumerationValue
     default String resolveName()
     {
         final String srcName = this.fullPath();
-        return PermissionServiceInterface.instance().resolveContextVar(srcName);
+        return McLibInterface.instance().resolveContextVar(srcName);
     }
     
 }

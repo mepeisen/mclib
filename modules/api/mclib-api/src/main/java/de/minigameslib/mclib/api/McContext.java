@@ -31,7 +31,10 @@ import org.bukkit.scheduler.BukkitTask;
 
 import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
@@ -200,6 +203,36 @@ public interface McContext
     default ZoneInterface getCurrentZone()
     {
         return this.getContext(ZoneInterface.class);
+    }
+    
+    /**
+     * Returns the current sign.
+     * 
+     * @return current sign.
+     */
+    default SignInterface getCurrentSign()
+    {
+        return this.getContext(SignInterface.class);
+    }
+    
+    /**
+     * Returns the current object.
+     * 
+     * @return current object.
+     */
+    default ObjectInterface getCurrentObject()
+    {
+        return this.getContext(ObjectInterface.class);
+    }
+    
+    /**
+     * Returns the current entity.
+     * 
+     * @return current entity.
+     */
+    default EntityInterface getCurrentEntity()
+    {
+        return this.getContext(EntityInterface.class);
     }
     
     /**

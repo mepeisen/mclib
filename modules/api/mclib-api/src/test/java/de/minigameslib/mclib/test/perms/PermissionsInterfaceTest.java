@@ -31,8 +31,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.perms.Permission;
-import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.perms.Permissions;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 
@@ -80,9 +80,9 @@ public class PermissionsInterfaceTest
     @Test
     public void resolveNameTest() throws ClassNotFoundException
     {
-        final PermissionServiceInterface mglib = mock(PermissionServiceInterface.class);
-        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.perms.PermissionServiceCache"), "SERVICES", mglib); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mglib.resolveContextVar("FOO.BAR")).thenReturn("FOOBAR"); //$NON-NLS-1$ //$NON-NLS-2$
+        final McLibInterface mclib = mock(McLibInterface.class);
+        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
+        when(mclib.resolveContextVar("FOO.BAR")).thenReturn("FOOBAR"); //$NON-NLS-1$ //$NON-NLS-2$
         
         assertEquals("FOOBAR", PermissionEnum.BAR.resolveName()); //$NON-NLS-1$
     }

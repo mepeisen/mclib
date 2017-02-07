@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ZoneDeleteEvent;
@@ -99,7 +100,10 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        this.handler.canDelete();
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ZoneInterface.class, this);
+            this.handler.canDelete();
+        });
         
         final ZoneDeleteEvent deleteEvent = new ZoneDeleteEvent(this);
         Bukkit.getPluginManager().callEvent(deleteEvent);
@@ -108,8 +112,12 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
         
-        super.delete();
-        this.handler.onDelete();
+
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ZoneInterface.class, this);
+            super.delete();
+            this.handler.onDelete();
+        });
         this.eventBus.clear();
         
         final ZoneDeletedEvent deletedEvent = new ZoneDeletedEvent(this);
@@ -120,14 +128,22 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     public void setCuboid(Cuboid cub) throws McException
     {
         final Cuboid old = this.cuboid;
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ZoneInterface.class, this);
+            this.handler.canChangeCuboid(cub);
+        });
         final ZoneRelocateEvent relocateEvent = new ZoneRelocateEvent(this, old, cub);
         Bukkit.getPluginManager().callEvent(relocateEvent);
         if (relocateEvent.isCancelled())
         {
             throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
         }
-        
-        super.setCuboid(cub);
+
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ZoneInterface.class, this);
+            super.setCuboid(cub);
+            this.handler.onCuboidChange(cub);
+        });
         
         final ZoneRelocatedEvent relocatedEvent = new ZoneRelocatedEvent(this, old, cub);
         Bukkit.getPluginManager().callEvent(relocatedEvent);

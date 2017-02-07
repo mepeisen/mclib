@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -210,6 +211,14 @@ public interface McLibInterface extends McContext
      * @throws IOException
      */
     DataSection readYmlFile(File file) throws IOException;
+    
+    /**
+     * Reads a yml file into a data section.
+     * @param file
+     * @return yml data file; implements {@link CommentableDataSection}.
+     * @throws IOException
+     */
+    DataSection readYmlFile(InputStream file) throws IOException;
     
     /**
      * Saves given data section into given file.

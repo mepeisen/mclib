@@ -59,6 +59,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
@@ -135,9 +136,11 @@ public class ConfigurationValueInterfaceTest
     {
         this.lib = mock(ConfigServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.config.ConfigServiceCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
+        final McLibInterface mclib = mock(McLibInterface.class);
+        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
         this.objsrv = mock(ObjectServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.objects.ObjectServiceCache"), "SERVICES", this.objsrv); //$NON-NLS-1$ //$NON-NLS-2$
-        when(this.lib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
+        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable
             {

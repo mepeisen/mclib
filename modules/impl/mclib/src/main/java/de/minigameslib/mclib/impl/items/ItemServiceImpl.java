@@ -41,6 +41,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent.Status;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -53,8 +54,10 @@ import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.McCoreConfig;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
  * The item service implementation.
@@ -113,20 +116,66 @@ public class ItemServiceImpl implements ItemServiceInterface
     @Override
     public void setDownloadUrl(String url)
     {
-        McCoreConfig.RespourcePackDownloadUrl.setString(url);
-        McCoreConfig.RespourcePackDownloadUrl.saveConfig();
+        McCoreConfig.ResourcePackDownloadUrl.setString(url);
+        McCoreConfig.ResourcePackDownloadUrl.saveConfig();
     }
     
     @Override
     public String getDownloadUrl()
     {
-        return McCoreConfig.RespourcePackDownloadUrl.getString();
+        return McCoreConfig.ResourcePackDownloadUrl.getString();
+    }
+
+    @Override
+    public boolean isAutoResourceDownload()
+    {
+        return McCoreConfig.ResourcePackAutoDownload.getBoolean();
+    }
+
+    @Override
+    public void setAutoResourceDownload(boolean newValue)
+    {
+        McCoreConfig.ResourcePackAutoDownload.setBoolean(newValue);
+        McCoreConfig.ResourcePackAutoDownload.saveConfig();
+    }
+
+    @Override
+    public int getAutoResourceTicks()
+    {
+        return McCoreConfig.ResourcePackAutoDownloadTicks.getInt();
+    }
+
+    @Override
+    public void setAutoResourceTicks(int ticks)
+    {
+        McCoreConfig.ResourcePackAutoDownload.setInt(ticks);
+        McCoreConfig.ResourcePackAutoDownload.saveConfig();
+    }
+
+    @Override
+    public Status getState(McPlayerInterface player)
+    {
+        final ResourcePackMarker marker = player.getSessionStorage().get(ResourcePackMarker.class);
+        return marker == null ? null : marker.getState();
+    }
+
+    @Override
+    public void forceDownload(McPlayerInterface player, McRunnable success)
+    {
+        this.forceDownload(player, this.getDownloadUrl(), success, null, null);
+    }
+    
+    @Override
+    public void forceDownload(McPlayerInterface player, String url, McRunnable success, McRunnable failure, McRunnable declined)
+    {
+        player.getBukkitPlayer().setResourcePack(url);
+        player.getSessionStorage().set(ResourcePackMarker.class, new ResourcePackMarker(success, failure, declined));
     }
     
     @Override
     public boolean hasResourcePack(McPlayerInterface player)
     {
-        return player.getSessionStorage().get(ResourcePackMarker.class) != null;
+        return getState(player) == Status.SUCCESSFULLY_LOADED;
     }
     
     @Override
@@ -294,7 +343,78 @@ public class ItemServiceImpl implements ItemServiceInterface
      */
     public static final class ResourcePackMarker extends AnnotatedDataFragment
     {
-        // marker only
+        /** the resource pack state. */
+        @PersistentField
+        private Status state;
+        /** runnable for success. */
+        private McRunnable success;
+        /** runnable for failure. */
+        private McRunnable failure;
+        /** runnable for declined. */
+        private McRunnable declined;
+
+        /**
+         * @param state
+         */
+        public ResourcePackMarker(Status state)
+        {
+            this.state = state;
+        }
+        
+        /**
+         * Constructor
+         * @param success
+         * @param failure
+         * @param declined
+         */
+        public ResourcePackMarker(McRunnable success, McRunnable failure, McRunnable declined)
+        {
+            this.success = success;
+            this.failure = failure;
+            this.declined = declined;
+        }
+
+        /**
+         * @param state the state to set
+         */
+        public void setState(Status state)
+        {
+            this.state = state;
+        }
+
+        /**
+         * @return the state
+         */
+        public Status getState()
+        {
+            return this.state;
+        }
+
+        /**
+         * @return the success
+         */
+        public McRunnable getSuccess()
+        {
+            return this.success;
+        }
+
+        /**
+         * @return the failure
+         */
+        public McRunnable getFailure()
+        {
+            return this.failure;
+        }
+
+        /**
+         * @return the declined
+         */
+        public McRunnable getDeclined()
+        {
+            return this.declined;
+        }
+        
+        
     }
     
 }

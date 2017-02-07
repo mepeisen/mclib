@@ -26,14 +26,12 @@ package de.minigameslib.mclib.api.ext;
 
 import org.bukkit.plugin.Plugin;
 
-import de.minigameslib.mclib.api.McContext;
-
 /**
  * Extension services.
  * 
  * @author mepeisen
  */
-public interface ExtensionServiceInterface extends McContext
+public interface ExtensionServiceInterface
 {
     
     /**

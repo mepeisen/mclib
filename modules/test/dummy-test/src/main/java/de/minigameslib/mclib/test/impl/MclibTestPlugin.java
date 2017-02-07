@@ -26,21 +26,20 @@ package de.minigameslib.mclib.test.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
-import de.minigameslib.mclib.api.items.CommonItems;
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.gui.GuiSessionInterface.GuiButton;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
 /**
  * @author mepeisen
@@ -52,7 +51,8 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     @Override
     public void onEnable()
     {
-        EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class); // test
+        EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class);
+        EnumServiceInterface.instance().registerEnumClass(this, MyMessages.class);
         
         Bukkit.getPluginManager().registerEvents(this, this);
     }
@@ -69,10 +69,19 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
             final Player player = (Player) sender;
-            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Alarm, "AALARM!!!"));
-            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Address_book, "My personal address book"));
-            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back, "Go back"));
-            player.getInventory().addItem(ItemServiceInterface.instance().createItem(CommonItems.App_Euro, "My money"));
+            final McPlayerInterface mcp = ObjectServiceInterface.instance().getPlayer(player);
+            try
+            {
+                final GuiSessionInterface gui = mcp.openSmartGui();
+                final GuiButton yesButton = gui.sguiCreateButton(MyMessages.YesButton, null, null, true);
+                final GuiButton noButton = gui.sguiCreateButton(MyMessages.NoButton, null, null, true);
+                final GuiButton cancelButton = gui.sguiCreateButton(MyMessages.CancelButton, null, null, true);
+                gui.sguiDisplayYesNoCancel(MyMessages.Title, null, MyMessages.Body, null, yesButton, noButton, cancelButton);
+            }
+            catch (McException ex)
+            {
+                mcp.sendMessage(ex.getErrorMessage(), ex.getArgs());
+            }
         }
         return super.onCommand(sender, command, label, args);
     }

@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentDeleteEvent;
@@ -111,6 +112,10 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     public void setLocation(Location loc) throws McException
     {
         final Location old = this.location;
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ComponentInterface.class, this);
+            this.handler.canChangeLocation(loc);
+        });
         final ComponentRelocateEvent relocateEvent = new ComponentRelocateEvent(this, old, loc);
         Bukkit.getPluginManager().callEvent(relocateEvent);
         if (relocateEvent.isCancelled())
@@ -118,7 +123,11 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
         }
         
-        super.setLocation(loc);
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ComponentInterface.class, this);
+            super.setLocation(loc);
+            this.handler.onLocationChange(loc);
+        });
         
         final ComponentRelocatedEvent relocatedEvent = new ComponentRelocatedEvent(this, old, loc);
         Bukkit.getPluginManager().callEvent(relocatedEvent);
@@ -131,7 +140,10 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        this.handler.canDelete();
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ComponentInterface.class, this);
+            this.handler.canDelete();
+        });
         
         final ComponentDeleteEvent deleteEvent = new ComponentDeleteEvent(this);
         Bukkit.getPluginManager().callEvent(deleteEvent);
@@ -140,8 +152,11 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
         
-        super.delete();
-        this.handler.onDelete();
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(ComponentInterface.class, this);
+            super.delete();
+            this.handler.onDelete();
+        });
         this.eventBus.clear();
         
         final ComponentDeletedEvent deletedEvent = new ComponentDeletedEvent(this);

@@ -511,7 +511,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         display.setCancelButton((GuiButtonImpl) cancelButton);
         display.setId(result.getUuid());
         final DataSection section = new MemoryDataSection();
-        section.set("KEY", CoreMessages.DisplayYesNo.name()); //$NON-NLS-1$
+        section.set("KEY", CoreMessages.DisplayYesNoCancel.name()); //$NON-NLS-1$
         display.write(section.createSection("data")); //$NON-NLS-1$
         this.player.sendToClient(MclibCommunication.ClientServerCore, section);
         return result;

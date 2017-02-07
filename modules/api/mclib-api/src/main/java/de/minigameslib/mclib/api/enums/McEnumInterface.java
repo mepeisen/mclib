@@ -45,4 +45,13 @@ public interface McEnumInterface extends EnumerationValue
         return EnumServiceCache.get().getPlugin(this);
     }
     
+    /**
+     * Returns the plugin name.
+     * @return plugin name.
+     */
+    default String getPluginName()
+    {
+        return this.getPlugin().getName();
+    }
+    
 }
