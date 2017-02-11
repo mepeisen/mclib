@@ -82,6 +82,7 @@ import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
 import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
+import de.minigameslib.mclib.api.cmd.CommandImpl;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.com.CommunicationBungeeHandler;
 import de.minigameslib.mclib.api.com.CommunicationPeerHandler;
@@ -150,6 +151,7 @@ import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
+import de.minigameslib.mclib.impl.cmd.MclibCommand;
 import de.minigameslib.mclib.impl.com.PlayerProxy;
 import de.minigameslib.mclib.impl.comp.ComponentId;
 import de.minigameslib.mclib.impl.comp.EntityId;
@@ -269,6 +271,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /** the event bus. */
     private EventBus                                                     eventBus                       = new EventBus();
     
+    /** mclib chat command */
+    private MclibCommand                                                 mclibCommand                   = new MclibCommand();
+    
     /**
      * plugin instance
      */
@@ -383,6 +388,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // mclib enumerations
         this.enumService.registerEnumClass(this, CommonMessages.class);
+        this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
+        this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
         this.enumService.registerEnumClass(this, McCoreConfig.class);
         
         // nms services
@@ -653,6 +660,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     
     /**
      * Hook into message service.
+     * 
      * @param func
      */
     public void hookMessageService(Function<MessageServiceInterface, MessageServiceInterface> func)
@@ -904,14 +912,27 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 }
                 catch (IllegalArgumentException ex)
                 {
-                    // TODO report error
+                    this.getLogger().log(Level.FINE, "Problems parsing rawmessage. no uuid: " + args[1], ex); //$NON-NLS-1$
                 }
             }
-            // TODO Command impl
+            else
+            {
+                CommandImpl.onCommand(sender, command, label, args, this.mclibCommand);
+            }
         }
         return false;
     }
     
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args)
+    {
+        if (command.getName().equals("mclib")) //$NON-NLS-1$
+        {
+            return CommandImpl.onTabComplete(sender, command, alias, args, this.mclibCommand);
+        }
+        return null;
+    }
+
     @Override
     public void registerPeerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationPeerHandler handler)
     {

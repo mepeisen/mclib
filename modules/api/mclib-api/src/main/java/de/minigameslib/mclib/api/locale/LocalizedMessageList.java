@@ -150,6 +150,21 @@ public @interface LocalizedMessageList
      */
     String RESET = "§r"; //$NON-NLS-1$
     
+    /** semantic color: error message severity. */
+    String ERROR_COLOR = LocalizedMessage.ERROR_COLOR;
+    /** semantic color: information message severity. */
+    String INFORMATION_COLOR = LocalizedMessage.INFORMATION_COLOR;
+    /** semantic color: loser message severity. */
+    String LOSER_COLOR = LocalizedMessage.LOSER_COLOR;
+    /** semantic color: success message severity. */
+    String SUCCESS_COLOR = LocalizedMessage.SUCCESS_COLOR;
+    /** semantic color: warning message severity. */
+    String WARNING_COLOR = LocalizedMessage.WARNING_COLOR;
+    /** semantic color: winner message severity. */
+    String WINNER_COLOR = LocalizedMessage.WINNER_COLOR;
+    /** semantic color: message arguments or chat codes. */
+    String CODE_COLOR = LocalizedMessage.CODE_COLOR;
+    
     /**
      * The array of localized messages (lines) inside this list.
      * 

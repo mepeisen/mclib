@@ -150,6 +150,21 @@ public @interface LocalizedMessage
      */
     String RESET = "§r"; //$NON-NLS-1$
     
+    /** semantic color: error message severity. */
+    String ERROR_COLOR = DARK_RED;
+    /** semantic color: information message severity. */
+    String INFORMATION_COLOR = WHITE;
+    /** semantic color: loser message severity. */
+    String LOSER_COLOR = RED;
+    /** semantic color: success message severity. */
+    String SUCCESS_COLOR = GREEN;
+    /** semantic color: warning message severity. */
+    String WARNING_COLOR = YELLOW;
+    /** semantic color: winner message severity. */
+    String WINNER_COLOR = GOLD;
+    /** semantic color: message arguments or chat codes. */
+    String CODE_COLOR = BLUE;
+    
     /**
      * Returns the default user message used as fallback; must be in locale returned by {@link LocalizedMessages#defaultLocale()}.
      * 
