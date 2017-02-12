@@ -175,7 +175,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             this.handler.write(core.createSection("handler")); //$NON-NLS-1$
             if (this.entityUuid != null)
             {
-                core.set("entityUuid", this.entityUuid);  //$NON-NLS-1$
+                core.set("entityUuid", this.entityUuid.toString());  //$NON-NLS-1$
             }
             if (this.dynamic != null)
             {
