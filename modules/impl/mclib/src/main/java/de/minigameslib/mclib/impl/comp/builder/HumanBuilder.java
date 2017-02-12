@@ -109,10 +109,6 @@ public class HumanBuilder implements HumanBuilderInterface
         {
             throw new McException(CommonMessages.InternalError, "type is null"); //$NON-NLS-1$
         }
-        if (this.skinPlayer == null)
-        {
-            throw new McException(CommonMessages.InternalError, "skinPlayer is null"); //$NON-NLS-1$
-        }
         if (this.name == null)
         {
             throw new McException(CommonMessages.InternalError, "name is null"); //$NON-NLS-1$
@@ -121,7 +117,10 @@ public class HumanBuilder implements HumanBuilderInterface
         final HumanEntity bukkitEntity = helper.spawnDummyHuman(this.location, this.name, null);
         final SkinServiceInterface skins = SkinServiceInterface.instance();
         final EntityImpl impl = (EntityImpl) ObjectServiceInterface.instance().createEntity(this.type, bukkitEntity, this.handler, this.persistent);
-        skins.getSkinSnapshot(this.skinPlayer, s -> skins.setToHuman(impl, s));
+        if (this.skinPlayer != null)
+        {
+            skins.getSkinSnapshot(this.skinPlayer, s -> skins.setToHuman(impl, s));
+        }
         if (this.persistent)
         {
             impl.setDynamicType(DynamicEntityType.DUMMY_HUMAN);
