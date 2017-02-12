@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -181,6 +182,14 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             {
                 this.config.set("dynamictype", this.dynamic); //$NON-NLS-1$
                 this.dynamic.onStore(this.getDynamicConfig(), this.entity);
+            }
+            try
+            {
+                this.config.saveFile(this.configFile);
+            }
+            catch (IOException e)
+            {
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
             }
         }
     }
