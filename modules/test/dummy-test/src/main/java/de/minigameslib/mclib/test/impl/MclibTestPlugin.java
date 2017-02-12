@@ -26,6 +26,7 @@ package de.minigameslib.mclib.test.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,9 +37,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
-import de.minigameslib.mclib.api.gui.GuiSessionInterface;
-import de.minigameslib.mclib.api.gui.GuiSessionInterface.GuiButton;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
 /**
@@ -53,6 +53,18 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyMessages.class);
+        EnumServiceInterface.instance().registerEnumClass(this, MyEntitites.class);
+        
+        try
+        {
+            ObjectServiceInterface.instance().register(MyEntitites.Dummy, DummyEntity.class);
+            ObjectServiceInterface.instance().resumeObjects(this);
+        }
+        catch (McException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         Bukkit.getPluginManager().registerEvents(this, this);
     }
@@ -68,19 +80,17 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final Player player = (Player) sender;
-            final McPlayerInterface mcp = ObjectServiceInterface.instance().getPlayer(player);
+            final Location loc = ((Player)sender).getLocation().add(1, 0, 1);
             try
             {
-                final GuiSessionInterface gui = mcp.openSmartGui();
-                final GuiButton yesButton = gui.sguiCreateButton(MyMessages.YesButton, null, null, true);
-                final GuiButton noButton = gui.sguiCreateButton(MyMessages.NoButton, null, null, true);
-                final GuiButton cancelButton = gui.sguiCreateButton(MyMessages.CancelButton, null, null, true);
-                gui.sguiDisplayYesNoCancel(MyMessages.Title, null, MyMessages.Body, null, yesButton, noButton, cancelButton);
+                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+                // NpcServiceInterface.instance().villager().location(loc).profession(Profession.FARMER).handler(MyEntitites.Dummy, new DummyEntity()).create();
+                NpcServiceInterface.instance().human().location(loc).handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
             }
-            catch (McException ex)
+            catch (McException e)
             {
-                mcp.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
         return super.onCommand(sender, command, label, args);

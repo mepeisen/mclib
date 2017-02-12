@@ -24,12 +24,21 @@
 
 package de.minigameslib.mclib.impl.comp;
 
+import java.io.File;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeleteEvent;
+import de.minigameslib.mclib.api.mcevent.EntityDeletedEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
@@ -38,41 +47,148 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.impl.EventBus;
 import de.minigameslib.mclib.nms.api.MgEventListener;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
  *
  */
-public class EntityImpl implements EntityInterface, MgEventListener
+public class EntityImpl extends AbstractComponent implements EntityInterface, MgEventListener
 {
+    
+    // TODO fetch entity die events
+    
+    /** the bukkit entity. */
+    private Entity entity;
+    
+    /** the event id. */
+    private final EntityId id;
+    
+    /** the event handler. */
+    private final EntityHandlerInterface handler;
     
     /** an event bus to handle events. */
     private final EventBus                      eventBus         = new EventBus();
     
+    /**
+     * the entity uuid.
+     */
+    private UUID entityUuid;
+
+    /**
+     * Dyncmic entity type
+     */
+    private DynamicEntityType dynamic;
+    
+    /**
+     * @param plugin 
+     * @param entity
+     * @param id 
+     * @param handler 
+     * @param config 
+     * @param owner 
+     * @throws McException 
+     */
+    public EntityImpl(Plugin plugin, Entity entity, EntityId id, EntityHandlerInterface handler, File config, ComponentOwner owner) throws McException
+    {
+        super(null, config, owner);
+        this.entity = entity;
+        this.id = id;
+        this.handler = handler;
+        if (this.handler instanceof McListener)
+        {
+            this.eventBus.registerHandlers(plugin, (McListener) this.handler);
+        }
+        if (this.entity != null)
+        {
+            this.entityUuid = this.entity.getUniqueId();
+        }
+    }
+
     @Override
     public EntityIdInterface getEntityId()
     {
-        // TODO support entities
-        return null;
+        return this.id;
     }
-    
+
     @Override
     public void delete() throws McException
     {
-        // TODO support entities
+        if (this.deleted)
+        {
+            throw new McException(CommonMessages.AlreadyDeletedError);
+        }
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(EntityInterface.class, this);
+            this.handler.canDelete();
+        });
+        
+        final EntityDeleteEvent deleteEvent = new EntityDeleteEvent(this);
+        Bukkit.getPluginManager().callEvent(deleteEvent);
+        if (deleteEvent.isCancelled())
+        {
+            throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
+        }
+
+        McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().setContext(EntityInterface.class, this);
+            super.delete();
+            this.handler.onDelete();
+        });
+        this.eventBus.clear();
+
+        final EntityDeletedEvent deletedEvent = new EntityDeletedEvent(this);
+        Bukkit.getPluginManager().callEvent(deletedEvent);
+    }
+    
+    /**
+     * reads the file config.
+     * 
+     * @throws McException
+     */
+    public void readConfig() throws McException
+    {
+        if (this.config != null)
+        {
+            final DataSection core = this.config.getSection("core"); //$NON-NLS-1$
+            if (core != null)
+            {
+                this.handler.read(core.getSection("handler")); //$NON-NLS-1$
+            }
+            if (this.config.isString("entityUuid")) //$NON-NLS-1$
+            {
+                this.entityUuid = UUID.fromString(this.config.getString("entityUuid")); //$NON-NLS-1$
+            }
+            if (this.config.isString("dynamictype")) //$NON-NLS-1$
+            {
+                this.dynamic = this.config.getEnum(DynamicEntityType.class, "dynamictype"); //$NON-NLS-1$
+            }
+        }
     }
     
     @Override
     public void saveConfig() throws McException
     {
-        // TODO support entities
+        if (this.config != null)
+        {
+            final DataSection core = this.config.createSection("core"); //$NON-NLS-1$
+            this.handler.write(core.createSection("handler")); //$NON-NLS-1$
+            if (this.entityUuid != null)
+            {
+                core.set("entityUuid", this.entityUuid);  //$NON-NLS-1$
+            }
+            if (this.dynamic != null)
+            {
+                this.config.set("dynamictype", this.dynamic); //$NON-NLS-1$
+                this.dynamic.onStore(this.getDynamicConfig(), this.entity);
+            }
+        }
     }
 
     @Override
     public EntityHandlerInterface getHandler()
     {
-        // TODO support entities
-        return null;
+        return this.handler;
     }
 
     /**
@@ -126,6 +242,56 @@ public class EntityImpl implements EntityInterface, MgEventListener
     public EntityTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getEntityId());
+    }
+
+    @Override
+    public Entity getBukkitEntity()
+    {
+        return this.entity;
+    }
+
+    /**
+     * @param entity2
+     */
+    public void setEntity(Entity entity2)
+    {
+        this.entity = entity2;
+        if (this.entity != null)
+        {
+            this.entityUuid = this.entity.getUniqueId();
+        }
+    }
+
+    /**
+     * @return entity uuid
+     */
+    public UUID getEntityUuid()
+    {
+        return this.entityUuid;
+    }
+
+    /**
+     * @param t
+     */
+    public void setDynamicType(DynamicEntityType t)
+    {
+        this.dynamic = t;
+    }
+    
+    /**
+     * @return the dynamic entity type
+     */
+    public DynamicEntityType getDynamicType()
+    {
+        return this.dynamic;
+    }
+
+    /**
+     * @return the dynamiic section data config
+     */
+    public DataSection getDynamicConfig()
+    {
+        return this.config.createSection("dynamic"); //$NON-NLS-1$
     }
     
 }

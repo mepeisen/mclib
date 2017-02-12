@@ -455,4 +455,13 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment(value = "Error if sign was not found.")
     SignNotFoundError,
     
+    /**
+     * Entity was not found.
+     */
+    @LocalizedMessage(
+            defaultMessage = "Entity not found.",
+            severity = MessageSeverityType.Error)
+    @MessageComment(value = "Error if entity was not found.")
+    EntityNotFoundError,
+    
 }

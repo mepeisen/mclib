@@ -22,30 +22,30 @@
 
 */
 
-package de.minigameslib.mclib.api.objects;
+package de.minigameslib.mclib.api.skin;
 
 import org.bukkit.Bukkit;
 
 /**
- * Helper to cache the ObjectServices class.
+ * Helper to cache the SkinServices class.
  * 
  * @author mepeisen
  */
-class ObjectServiceCache
+class SkinServiceCache
 {
     
-    /** the object services. */
-    private static ObjectServiceInterface SERVICES;
+    /** the Skin services. */
+    private static SkinServiceInterface SERVICES;
     
     /**
-     * Returns the object services instance.
-     * @return object services.
+     * Returns the Skin services instance.
+     * @return Skin services.
      */
-    static ObjectServiceInterface get()
+    static SkinServiceInterface get()
     {
         if (SERVICES == null)
         {
-            SERVICES = Bukkit.getServicesManager().load(ObjectServiceInterface.class);
+            SERVICES = Bukkit.getServicesManager().load(SkinServiceInterface.class);
         }
         return SERVICES;
     }

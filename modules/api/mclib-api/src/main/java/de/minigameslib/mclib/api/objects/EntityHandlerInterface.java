@@ -27,6 +27,7 @@ package de.minigameslib.mclib.api.objects;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
  * An entity handler is declared by another plugin; while entity creation it is used to store custom data.
@@ -37,7 +38,7 @@ import de.minigameslib.mclib.api.event.McListener;
  * 
  * @author mepeisen
  */
-public interface EntityHandlerInterface
+public interface EntityHandlerInterface extends DataFragment
 {
     
     /**

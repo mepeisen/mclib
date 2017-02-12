@@ -30,10 +30,12 @@ import java.util.function.Supplier;
 
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
+import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
+import de.minigameslib.mclib.nms.v110.entity.EntityHelper1_10_1;
 
 /**
  * Factory to create NMS relevant classes.
@@ -56,6 +58,7 @@ public class NmsFactory1_10_1 implements NmsFactory
         this.impls.put(AnvilManagerInterface.class, AnvilManager1_10_1::new);
         this.impls.put(PlayerManagerInterface.class, PlayerManager1_10_1::new);
         this.impls.put(ChatSystemInterface.class, ChatSystem1_10_1::new);
+        this.impls.put(EntityHelperInterface.class, EntityHelper1_10_1::new);
     }
     
     @Override

@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
@@ -67,6 +68,13 @@ public interface EntityInterface
      *             thrown if the config cannot be saved
      */
     void saveConfig() throws McException;
+    
+    /**
+     * Returns the bukkit entity.
+     * 
+     * @return bukkit entity.
+     */
+    Entity getBukkitEntity();
     
     /**
      * Returns the handler.

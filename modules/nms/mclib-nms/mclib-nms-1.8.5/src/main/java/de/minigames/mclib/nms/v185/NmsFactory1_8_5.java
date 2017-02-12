@@ -28,8 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import de.minigames.mclib.nms.v185.entity.EntityHelper1_8_5;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
+import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
@@ -56,6 +58,7 @@ public class NmsFactory1_8_5 implements NmsFactory
         this.impls.put(AnvilManagerInterface.class, AnvilManager1_8_5::new);
         this.impls.put(PlayerManagerInterface.class, PlayerManager1_8_5::new);
         this.impls.put(ChatSystemInterface.class, ChatSystem1_8_5::new);
+        this.impls.put(EntityHelperInterface.class, EntityHelper1_8_5::new);
     }
     
     @Override

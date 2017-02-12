@@ -40,6 +40,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -142,12 +144,14 @@ import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectIdInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
+import de.minigameslib.mclib.api.skin.SkinServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
@@ -160,8 +164,10 @@ import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl.ResourcePackMarker;
+import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
+import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -279,6 +285,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
      */
     private static MclibPlugin                                           instance;
     
+    /**
+     * asynchronous thread pools
+     */
+    private final ExecutorService                                        executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
+    
     static
     {
         if (MemoryDataSection.isFragmentImplementationLocked())
@@ -363,6 +374,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
         
+        Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
+        
         // item service
         this.enumService.registerEnumClass(this, CommonItems.class);
         final ItemServiceImpl itemService = new ItemServiceImpl();
@@ -439,6 +452,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             this.objectsManager = new ObjectsManager(this.getDataFolder(), this.players);
             Bukkit.getServicesManager().register(ObjectServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
+            Bukkit.getServicesManager().register(NpcServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
         }
         catch (McException ex)
         {
@@ -689,12 +703,14 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
+        final Player player = evt.getPlayer();
+        
         // TODO Why do we need to register bungeecord here???
         // TODO Disable Server-To-Server and BungeeCord in Non-BungeeCord environments
         final PlayerManagerInterface playerManager = Bukkit.getServicesManager().load(NmsFactory.class).create(PlayerManagerInterface.class);
-        playerManager.registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_CLIENT_CHANNEL);
-        playerManager.registerChannelEx(evt.getPlayer(), MCLIB_SERVER_TO_SERVER_CHANNEL);
-        playerManager.registerChannelEx(evt.getPlayer(), BUNGEECORD_CHANNEL);
+        playerManager.registerChannelEx(player, MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        playerManager.registerChannelEx(player, MCLIB_SERVER_TO_SERVER_CHANNEL);
+        playerManager.registerChannelEx(player, BUNGEECORD_CHANNEL);
         this.players.onPlayerJoin(evt);
         
         // try to ping the client mod.
@@ -702,11 +718,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
         ping.write(section.createSection("data")); //$NON-NLS-1$
-        this.players.getPlayer(evt.getPlayer()).sendToClient(MclibCommunication.ClientServerCore, section);
+        this.players.getPlayer(player).sendToClient(MclibCommunication.ClientServerCore, section);
         
         while (!this.bungeeQueue.isEmpty())
         {
-            this.bungeeQueue.poll().accept(evt.getPlayer());
+            this.bungeeQueue.poll().accept(player);
         }
         
         // resources
@@ -717,10 +733,27 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 @Override
                 public void run()
                 {
-                    evt.getPlayer().setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
+                    if (player.isOnline())
+                    {
+                        player.setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
+                    }
                 }
             }.runTaskLater(this, ItemServiceInterface.instance().getAutoResourceTicks());
         }
+        
+        // hide dummy humans
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                if (player.isOnline())
+                {
+                    final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
+                    factory.create(EntityHelperInterface.class).updateVisibilityList(player);
+                }
+            }
+        }.runTaskLater(this, 10);
     }
     
     /**
@@ -932,7 +965,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         }
         return null;
     }
-
+    
     @Override
     public void registerPeerHandler(Plugin plugin, CommunicationEndpointId id, CommunicationPeerHandler handler)
     {

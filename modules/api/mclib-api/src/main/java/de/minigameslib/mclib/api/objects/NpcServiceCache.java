@@ -27,25 +27,25 @@ package de.minigameslib.mclib.api.objects;
 import org.bukkit.Bukkit;
 
 /**
- * Helper to cache the ObjectServices class.
+ * Helper to cache the NpcServices class.
  * 
  * @author mepeisen
  */
-class ObjectServiceCache
+class NpcServiceCache
 {
     
-    /** the object services. */
-    private static ObjectServiceInterface SERVICES;
+    /** the npc services. */
+    private static NpcServiceInterface SERVICES;
     
     /**
-     * Returns the object services instance.
-     * @return object services.
+     * Returns the npc services instance.
+     * @return npc services.
      */
-    static ObjectServiceInterface get()
+    static NpcServiceInterface get()
     {
         if (SERVICES == null)
         {
-            SERVICES = Bukkit.getServicesManager().load(ObjectServiceInterface.class);
+            SERVICES = Bukkit.getServicesManager().load(NpcServiceInterface.class);
         }
         return SERVICES;
     }

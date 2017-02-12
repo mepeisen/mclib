@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -54,6 +55,8 @@ import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreateEvent;
+import de.minigameslib.mclib.api.mcevent.EntityCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
@@ -70,6 +73,7 @@ import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectHandlerInterface;
 import de.minigameslib.mclib.api.objects.ObjectIdInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
@@ -98,6 +102,8 @@ import de.minigameslib.mclib.impl.comp.SignImpl;
 import de.minigameslib.mclib.impl.comp.WorldChunk;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.comp.ZoneImpl;
+import de.minigameslib.mclib.impl.comp.builder.HumanBuilder;
+import de.minigameslib.mclib.impl.comp.builder.VillagerBuilder;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -106,87 +112,92 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  * @author mepeisen
  *
  */
-class ObjectsManager implements ComponentOwner, ObjectServiceInterface
+class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServiceInterface
 {
     
     /** target data folder. */
-    private final File                                                             dataFolder;
+    private final File                                                                                                           dataFolder;
     
     /** data container */
-    private final ObjectsContainer<ComponentIdInterface, ComponentId, ComponentImpl, ComponentTypeId, ComponentHandlerInterface> components = new ObjectsContainer<>();
+    private final ObjectsContainer<ComponentIdInterface, ComponentId, ComponentImpl, ComponentTypeId, ComponentHandlerInterface> components              = new ObjectsContainer<>();
     
     /** data container */
-    private final ObjectsContainer<ObjectIdInterface, ObjectId, ObjectImpl, ObjectTypeId, ObjectHandlerInterface> objects = new ObjectsContainer<>();
+    private final ObjectsContainer<ObjectIdInterface, ObjectId, ObjectImpl, ObjectTypeId, ObjectHandlerInterface>                objects                 = new ObjectsContainer<>();
     
     /** data container */
-    private final ObjectsContainer<SignIdInterface, SignId, SignImpl, SignTypeId, SignHandlerInterface> signs = new ObjectsContainer<>();
+    private final ObjectsContainer<SignIdInterface, SignId, SignImpl, SignTypeId, SignHandlerInterface>                          signs                   = new ObjectsContainer<>();
     
     /** data container */
-    private final ObjectsContainer<EntityIdInterface, EntityId, EntityImpl, EntityTypeId, EntityHandlerInterface> entities = new ObjectsContainer<>();
+    private final ObjectsContainer<EntityIdInterface, EntityId, EntityImpl, EntityTypeId, EntityHandlerInterface>                entities                = new ObjectsContainer<>();
     
     /** data container */
-    private final ObjectsContainer<ZoneIdInterface, ZoneId, ZoneImpl, ZoneTypeId, ZoneHandlerInterface> zones = new ObjectsContainer<>();
+    private final ObjectsContainer<ZoneIdInterface, ZoneId, ZoneImpl, ZoneTypeId, ZoneHandlerInterface>                          zones                   = new ObjectsContainer<>();
     
     /** component types per plugin name. */
-    private final Map<String, Map<String, ComponentTypeId>>                        componentTypesByPlugin  = new HashMap<>();
+    private final Map<String, Map<String, ComponentTypeId>>                                                                      componentTypesByPlugin  = new HashMap<>();
     
     /** entity types per plugin name. */
-    private final Map<String, Map<String, EntityTypeId>>                           entityTypesByPlugin     = new HashMap<>();
+    private final Map<String, Map<String, EntityTypeId>>                                                                         entityTypesByPlugin     = new HashMap<>();
     
     /** sign types per plugin name. */
-    private final Map<String, Map<String, SignTypeId>>                             signTypesByPlugin       = new HashMap<>();
+    private final Map<String, Map<String, SignTypeId>>                                                                           signTypesByPlugin       = new HashMap<>();
     
     /** zone types per plugin name. */
-    private final Map<String, Map<String, ZoneTypeId>>                             zoneTypesByPlugin       = new HashMap<>();
+    private final Map<String, Map<String, ZoneTypeId>>                                                                           zoneTypesByPlugin       = new HashMap<>();
     
     /** object types per plugin name. */
-    private final Map<String, Map<String, ObjectTypeId>>                           objectTypesByPlugin       = new HashMap<>();
+    private final Map<String, Map<String, ObjectTypeId>>                                                                         objectTypesByPlugin     = new HashMap<>();
     
     /** registered handlers. */
-    private final Map<ComponentTypeId, Class<? extends ComponentHandlerInterface>> componentHandlerClasses = new HashMap<>();
+    private final Map<ComponentTypeId, Class<? extends ComponentHandlerInterface>>                                               componentHandlerClasses = new HashMap<>();
     
     /** registered handlers. */
-    private final Map<EntityTypeId, Class<? extends EntityHandlerInterface>>       entityHandlerClasses    = new HashMap<>();
+    private final Map<EntityTypeId, Class<? extends EntityHandlerInterface>>                                                     entityHandlerClasses    = new HashMap<>();
     
     /** registered handlers. */
-    private final Map<SignTypeId, Class<? extends SignHandlerInterface>>           signHandlerClasses      = new HashMap<>();
+    private final Map<SignTypeId, Class<? extends SignHandlerInterface>>                                                         signHandlerClasses      = new HashMap<>();
     
     /** registered handlers. */
-    private final Map<ZoneTypeId, Class<? extends ZoneHandlerInterface>>           zoneHandlerClasses      = new HashMap<>();
+    private final Map<ZoneTypeId, Class<? extends ZoneHandlerInterface>>                                                         zoneHandlerClasses      = new HashMap<>();
     
     /** registered handlers. */
-    private final Map<ObjectTypeId, Class<? extends ObjectHandlerInterface>>           objectHandlerClasses      = new HashMap<>();
+    private final Map<ObjectTypeId, Class<? extends ObjectHandlerInterface>>                                                     objectHandlerClasses    = new HashMap<>();
     
     /** the component registry handling location specific components (components, zones, signs) */
-    private final ComponentRegistry                                                registry                = new ComponentRegistry();
+    private final ComponentRegistry                                                                                              registry                = new ComponentRegistry();
     
     /** the components folder. */
-    private final File                                                             componentsFolder;
+    private final File                                                                                                           componentsFolder;
     
     /** the signs folder. */
-    private final File                                                             signsFolder;
+    private final File                                                                                                           signsFolder;
     
     /** the entites folder. */
-    private final File                                                             entitiesFolder;
+    private final File                                                                                                           entitiesFolder;
     
     /** the zones folder. */
-    private final File                                                             zonesFolder;
+    private final File                                                                                                           zonesFolder;
     
     /** the objects folder. */
-    private final File                                                             objectsFolder;
+    private final File                                                                                                           objectsFolder;
     
     /** the loaded plugin sets. To detect duplicate loading. */
-    private final Set<String>                                                      loadedPlugins           = new HashSet<>();
+    private final Set<String>                                                                                                    loadedPlugins           = new HashSet<>();
     
     /** the players registry. */
-    private final PlayerRegistry players;
+    private final PlayerRegistry                                                                                                 players;
+    
+    /**
+     * entities by uuid.
+     */
+    private final Map<UUID, Set<EntityId>>                                                                                       entitiesByUuid          = new HashMap<>();
     
     /**
      * Constructor.
      * 
      * @param dataFolder
-     * @param players 
-     * @throws McException 
+     * @param players
+     * @throws McException
      */
     public ObjectsManager(File dataFolder, PlayerRegistry players) throws McException
     {
@@ -215,14 +226,14 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         this.signs.loadRegistry(SignId::new, this.signsFolder);
         this.objects.loadRegistry(ObjectId::new, this.objectsFolder);
     }
-
+    
     @Override
     public <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException
     {
         this.componentTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
         this.componentHandlerClasses.put(type, handler);
     }
-
+    
     @Override
     public <T extends ObjectHandlerInterface> void register(ObjectTypeId type, Class<T> handler) throws McException
     {
@@ -318,13 +329,13 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 {
                     return brokenComponents;
                 }
-
+                
                 @Override
                 public Iterable<ObjectIdInterface> getBrokenObjects()
                 {
                     return brokenObjects;
                 }
-
+                
                 @Override
                 public McException getException(ObjectIdInterface id)
                 {
@@ -377,7 +388,41 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             throw new McException(CommonMessages.SignNotFoundError);
         }, brokenSigns);
         
-        // TODO entity support
+        this.entities.resumeObjects(pluginName, this.entityTypesByPlugin, EntityId::getType, this::safeCreateHandler, (id, handler) -> {
+            final EntityImpl impl = new EntityImpl(plugin, null, id, handler, new File(this.entitiesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            // research entity
+            Entity entity = null;
+            if (impl.getDynamicType() == null)
+            {
+                final UUID entityUuid = impl.getEntityUuid();
+                outer: for (final World world : Bukkit.getWorlds())
+                {
+                    for (final Entity ent : world.getEntities())
+                    {
+                        if (ent.getUniqueId().equals(entityUuid))
+                        {
+                            entity = ent;
+                            break outer;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                entity = impl.getDynamicType().onResume(impl.getDynamicConfig());
+            }
+            if (entity != null)
+            {
+                impl.setEntity(entity);
+                
+                this.runInContext(EntityInterface.class, impl, () -> {
+                    handler.onResume(impl);
+                });
+                return impl;
+            }
+            throw new McException(CommonMessages.EntityNotFoundError);
+        }, brokenEntities);
         
         this.components.resumeObjects(pluginName, this.componentTypesByPlugin, ComponentId::getType, this::safeCreateHandler, (id, handler) -> {
             final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
@@ -444,13 +489,13 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             {
                 return brokenComponents.keySet();
             }
-
+            
             @Override
             public Iterable<ObjectIdInterface> getBrokenObjects()
             {
                 return brokenObjects.keySet();
             }
-
+            
             @Override
             public McException getException(ObjectIdInterface id)
             {
@@ -692,8 +737,16 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     @Override
     public EntityInterface findEntity(Entity entity)
     {
-        // TODO entity support
-        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+        final UUID uuid = entity.getUniqueId();
+        if (this.entitiesByUuid.containsKey(uuid))
+        {
+            final Optional<EntityInterface> result = this.entitiesByUuid.get(uuid).stream().map(this::findEntity).findFirst();
+            if (result.isPresent())
+            {
+                return result.get();
+            }
+        }
+        return null;
     }
     
     @Override
@@ -705,8 +758,44 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     @Override
     public EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException
     {
-        // TODO entity support
-        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
+        if (!this.loadedPlugins.contains(pluginName))
+        {
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
+        }
+        final EntityHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
+        final UUID uuid = UUID.randomUUID();
+        final EntityId id = new EntityId(pluginName, type.name(), uuid);
+        
+        // init
+        final EntityImpl impl = new EntityImpl(plugin, entity, id, handler2, persist ? new File(this.entitiesFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final EntityCreateEvent createEvent = new EntityCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
+        
+        this.runInContext(EntityInterface.class, impl, () -> {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.entities.put(pluginName, id, impl, persist);
+            final UUID entityUuid = entity.getUniqueId();
+            this.entitiesByUuid.computeIfAbsent(entityUuid, k -> new HashSet<>()).add(id);
+            
+            // save data
+            if (persist)
+            {
+                this.entities.saveIdList(this.entitiesFolder);
+                impl.saveConfig();
+            }
+        });
+        
+        final EntityCreatedEvent createdEvent = new EntityCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+        return impl;
     }
     
     @Override
@@ -754,7 +843,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
             // save data
             if (persist)
             {
-                this.signs.saveIdList(this.zonesFolder);
+                this.signs.saveIdList(this.signsFolder);
                 impl.saveConfig();
             }
         });
@@ -775,6 +864,31 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     private SignHandlerInterface safeCreateHandler(String pluginName, SignTypeId type) throws McException
     {
         final Class<? extends SignHandlerInterface> clazz = this.signHandlerClasses.get(type);
+        if (clazz == null)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
+        }
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
+        }
+    }
+    
+    /**
+     * Safe create handler from type.
+     * 
+     * @param pluginName
+     * @param type
+     * @return handler
+     * @throws McException
+     */
+    private EntityHandlerInterface safeCreateHandler(String pluginName, EntityTypeId type) throws McException
+    {
+        final Class<? extends EntityHandlerInterface> clazz = this.entityHandlerClasses.get(type);
         if (clazz == null)
         {
             throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
@@ -946,17 +1060,21 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             this.onDelete((SignImpl) component);
         }
-        // TODO entity support
-//        else if (component instanceof EntityImpl)
-//        {
-//            this.onDelete((EntityImpl) component);
-//        }
+        if (component instanceof ObjectImpl)
+        {
+            this.onDelete((ObjectImpl) component);
+        }
+        else if (component instanceof EntityImpl)
+        {
+            this.onDelete((EntityImpl) component);
+        }
     }
     
     /**
      * Deletes a component
+     * 
      * @param component
-     * @throws McException 
+     * @throws McException
      */
     private void onDelete(ComponentImpl component) throws McException
     {
@@ -966,8 +1084,9 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /**
      * Deletes a zone
+     * 
      * @param zone
-     * @throws McException 
+     * @throws McException
      */
     private void onDelete(ZoneImpl zone) throws McException
     {
@@ -977,22 +1096,52 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /**
      * Deletes a sign
+     * 
      * @param sign
-     * @throws McException 
+     * @throws McException
      */
     private void onDelete(SignImpl sign) throws McException
     {
         final SignId id = (SignId) sign.getSignId();
         this.signs.remove(id.getPluginName(), id, this.signsFolder);
     }
-
+    
+    /**
+     * Deletes an object
+     * 
+     * @param obj
+     * @throws McException
+     */
+    private void onDelete(ObjectImpl obj) throws McException
+    {
+        final ObjectId id = (ObjectId) obj.getObjectId();
+        this.objects.remove(id.getPluginName(), id, this.objectsFolder);
+    }
+    
+    /**
+     * Deletes an entity
+     * 
+     * @param ent
+     * @throws McException
+     */
+    private void onDelete(EntityImpl ent) throws McException
+    {
+        final EntityId id = (EntityId) ent.getEntityId();
+        final UUID uuid = ent.getBukkitEntity().getUniqueId();
+        if (this.entitiesByUuid.containsKey(uuid))
+        {
+            this.entitiesByUuid.get(uuid).remove(id);
+        }
+        this.entities.remove(id.getPluginName(), id, this.entitiesFolder);
+    }
+    
     @Override
     public Collection<ComponentInterface> findComponents(Location location)
     {
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
-                .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c).filter(c -> c.getLocation().equals(location))
+                .collect(Collectors.toList());
     }
-
+    
     @Override
     public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
     {
@@ -1009,28 +1158,40 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         return result;
     }
-
+    
     @Override
     public Collection<EntityInterface> findEntities(Entity entity)
     {
-        // TODO entity support
-        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+        final UUID uuid = entity.getUniqueId();
+        if (this.entitiesByUuid.containsKey(uuid))
+        {
+            return this.entitiesByUuid.get(uuid).stream().map(this::findEntity).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
-
+    
     @Override
     public Collection<EntityInterface> findEntities(EntityTypeId... type)
     {
-        // TODO entity support
-        throw new UnsupportedOperationException("entities not yet supported"); //$NON-NLS-1$
+        final List<EntityInterface> result = new ArrayList<>();
+        final Set<EntityTypeId> types = new HashSet<>();
+        for (final EntityTypeId t : type)
+        {
+            types.add(t);
+        }
+        this.entitiesByUuid.values().forEach(s -> {
+            s.stream().map(this::findEntity).filter(e -> types.contains(e.getTypeId())).forEach(result::add);
+        });
+        return result;
     }
-
+    
     @Override
     public Collection<SignInterface> findSigns(Location location)
     {
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c)
-                .filter(c -> c.getLocation().equals(location)).collect(Collectors.toList());
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
+                .collect(Collectors.toList());
     }
-
+    
     @Override
     public Collection<SignInterface> findSigns(SignTypeId... type)
     {
@@ -1050,6 +1211,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /**
      * Returns a stream for all chunks in given cuboid
+     * 
      * @param cuboid
      * @return stream
      */
@@ -1068,7 +1230,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         }
         return result;
     }
-
+    
     /**
      * @param mode
      * @return test function
@@ -1090,16 +1252,15 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         }
         return null;
     }
-
+    
     @Override
     public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
     {
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> tester.test(z, cuboid)).findFirst();
+        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
-
+    
     @Override
     public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
@@ -1110,11 +1271,11 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(z -> tester.test(z, cuboid)).findFirst();
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+                .findFirst();
         return result.isPresent() ? result.get() : null;
     }
-
+    
     @Override
     public ZoneInterface findZone(Location location, ZoneTypeId... type)
     {
@@ -1128,15 +1289,14 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
     {
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
+        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
@@ -1147,10 +1307,10 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
+                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+                .collect(Collectors.toList());
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
     {
@@ -1163,7 +1323,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
                 .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
     }
-
+    
     @Override
     public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
     {
@@ -1177,7 +1337,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
     {
@@ -1190,7 +1350,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
                 .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
     }
-
+    
     @Override
     public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
     {
@@ -1204,7 +1364,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(c -> c.getCuboid().containsLocWithoutYD(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
     {
@@ -1217,7 +1377,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
                 .filter(c -> c.getCuboid().containsLocWithoutYD(location)).collect(Collectors.toList());
     }
-
+    
     @Override
     public Collection<ZoneInterface> findZones(ZoneTypeId... type)
     {
@@ -1234,37 +1394,37 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         return result;
     }
-
+    
     @Override
     public ComponentInterface findComponent(Block block)
     {
         return this.findComponent(block.getLocation());
     }
-
+    
     @Override
     public Collection<ComponentInterface> findComponents(Block block)
     {
         return this.findComponents(block.getLocation());
     }
-
+    
     @Override
     public SignInterface findSign(Block block)
     {
         return this.findSign(block.getLocation());
     }
-
+    
     @Override
     public Collection<SignInterface> findSigns(Block block)
     {
         return this.findSigns(block.getLocation());
     }
-
+    
     @Override
     public SignInterface findSign(Sign sign)
     {
         return this.findSign(sign.getLocation());
     }
-
+    
     @Override
     public Collection<SignInterface> findSigns(Sign sign)
     {
@@ -1288,48 +1448,48 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     {
         return this.players.getPlayer(uuid);
     }
-
+    
     @Override
     public ComponentTypeId getType(ComponentIdInterface id)
     {
         final ComponentId casted = (ComponentId) id;
         return this.componentTypesByPlugin.containsKey(casted.getPluginName()) ? this.componentTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
-
+    
     @Override
     public EntityTypeId getType(EntityIdInterface id)
     {
         final EntityId casted = (EntityId) id;
         return this.entityTypesByPlugin.containsKey(casted.getPluginName()) ? this.entityTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
-
+    
     @Override
     public ZoneTypeId getType(ZoneIdInterface id)
     {
         final ZoneId casted = (ZoneId) id;
         return this.zoneTypesByPlugin.containsKey(casted.getPluginName()) ? this.zoneTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
-
+    
     @Override
     public SignTypeId getType(SignIdInterface id)
     {
         final SignId casted = (SignId) id;
         return this.signTypesByPlugin.containsKey(casted.getPluginName()) ? this.signTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
-
+    
     @Override
     public ObjectTypeId getType(ObjectIdInterface id)
     {
         final ObjectId casted = (ObjectId) id;
         return this.objectTypesByPlugin.containsKey(casted.getPluginName()) ? this.objectTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
-
+    
     @Override
     public ObjectInterface findObject(ObjectIdInterface id)
     {
         return this.objects.get((ObjectId) id);
     }
-
+    
     @Override
     public Collection<ObjectInterface> findObjects(ObjectTypeId... type)
     {
@@ -1346,7 +1506,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         
         return result;
     }
-
+    
     @Override
     public ObjectInterface createObject(ObjectTypeId type, ObjectHandlerInterface handler, boolean persist) throws McException
     {
@@ -1390,6 +1550,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
     
     /**
      * Runs given method in context and sets given value
+     * 
      * @param clazz
      * @param value
      * @param run
@@ -1407,6 +1568,18 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface
         {
             // TODO logging
         }
+    }
+    
+    @Override
+    public VillagerBuilderInterface villager()
+    {
+        return new VillagerBuilder();
+    }
+
+    @Override
+    public HumanBuilderInterface human()
+    {
+        return new HumanBuilder();
     }
     
 }
