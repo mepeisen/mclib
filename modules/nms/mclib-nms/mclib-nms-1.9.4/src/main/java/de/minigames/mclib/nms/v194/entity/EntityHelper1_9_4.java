@@ -238,5 +238,17 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
         
         return response.getProperties();
     }
+
+    @Override
+    public void delete(Villager entity)
+    {
+        entity.remove();
+    }
+
+    @Override
+    public void delete(HumanEntity entity)
+    {
+        ((CraftPlayer) entity).kickPlayer("delete"); //$NON-NLS-1$
+    }
     
 }

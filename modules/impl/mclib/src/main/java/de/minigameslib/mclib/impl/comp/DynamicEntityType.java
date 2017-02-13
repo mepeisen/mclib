@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.bukkit.Bukkit;
@@ -49,10 +50,10 @@ public enum DynamicEntityType
 {
 
     /** a dummy villager. */
-    DUMMY_VILLAGER(DummyVillager::onResume, DummyVillager::onStore),
+    DUMMY_VILLAGER(DummyVillager::onResume, DummyVillager::onStore, DummyVillager::onDelete),
 
     /** a dummy human. */
-    DUMMY_HUMAN(DummyHuman::onResume, DummyHuman::onStore)
+    DUMMY_HUMAN(DummyHuman::onResume, DummyHuman::onStore, DummyHuman::onDelete)
     ;
     
     /** resume function. */
@@ -61,14 +62,19 @@ public enum DynamicEntityType
     /** store function. */
     private final BiConsumer<DataSection, Entity> store;
     
+    /** delete function. */
+    private final Consumer<Entity> delete;
+    
     /**
      * @param resume
      * @param store
+     * @param delete 
      */
-    private DynamicEntityType(Function<DataSection, Entity> resume, BiConsumer<DataSection, Entity> store)
+    private DynamicEntityType(Function<DataSection, Entity> resume, BiConsumer<DataSection, Entity> store, Consumer<Entity> delete)
     {
         this.resume = resume;
         this.store = store;
+        this.delete = delete;
     }
 
     /**
@@ -89,6 +95,15 @@ public enum DynamicEntityType
     public void onStore(DataSection section, Entity entity)
     {
         this.store.accept(section, entity);
+    }
+    
+    /**
+     * Deletion of entity
+     * @param entity
+     */
+    public void onDelete(Entity entity)
+    {
+        this.delete.accept(entity);
     }
     
     /**
@@ -123,6 +138,16 @@ public enum DynamicEntityType
             final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
             section.set("profession", ((Villager)entity).getProfession()); //$NON-NLS-1$
+        }
+        
+        /**
+         * Delete function
+         * @param entity
+         */
+        static void onDelete(Entity entity)
+        {
+            final EntityHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class);
+            helper.delete((Villager) entity);
         }
         
     }
@@ -168,6 +193,16 @@ public enum DynamicEntityType
             final Location loc = entity.getLocation();
             final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
+        }
+        
+        /**
+         * Delete function
+         * @param entity
+         */
+        static void onDelete(Entity entity)
+        {
+            final EntityHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class);
+            helper.delete((HumanEntity) entity);
         }
         
     }

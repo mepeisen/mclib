@@ -137,6 +137,11 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             this.handler.onDelete();
         });
         this.eventBus.clear();
+        
+        if (this.dynamic != null)
+        {
+            this.dynamic.onDelete(getBukkitEntity());
+        }
 
         final EntityDeletedEvent deletedEvent = new EntityDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);

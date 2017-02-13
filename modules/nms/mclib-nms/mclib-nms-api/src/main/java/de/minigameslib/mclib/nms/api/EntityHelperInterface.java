@@ -90,5 +90,15 @@ public interface EntityHelperInterface
      * @param player
      */
     void updateVisibilityList(Player player);
+
+    /**
+     * @param entity
+     */
+    void delete(Villager entity);
+
+    /**
+     * @param entity
+     */
+    void delete(HumanEntity entity);
     
 }
