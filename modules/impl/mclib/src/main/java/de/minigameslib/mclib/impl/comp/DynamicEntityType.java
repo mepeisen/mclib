@@ -120,7 +120,7 @@ public enum DynamicEntityType
         static void onStore(DataSection section, Entity entity)
         {
             final Location loc = entity.getLocation();
-            final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().toString());
+            final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
             section.set("profession", ((Villager)entity).getProfession()); //$NON-NLS-1$
         }
@@ -166,7 +166,7 @@ public enum DynamicEntityType
             }
             section.set("name", ((HumanEntity) entity).getName()); //$NON-NLS-1$
             final Location loc = entity.getLocation();
-            final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().toString());
+            final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
         }
         
