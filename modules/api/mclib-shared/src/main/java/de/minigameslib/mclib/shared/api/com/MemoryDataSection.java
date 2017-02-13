@@ -610,7 +610,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isInt(String key)
     {
-        return this.get(key) instanceof Integer;
+        return this.get(key) instanceof Number;
     }
     
     @Override
@@ -656,7 +656,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isByte(String key)
     {
-        return this.get(key) instanceof Byte;
+        return this.get(key) instanceof Number;
     }
     
     @Override
@@ -702,7 +702,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isShort(String key)
     {
-        return this.get(key) instanceof Short;
+        return this.get(key) instanceof Number;
     }
     
     @Override
@@ -978,7 +978,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isDouble(String key)
     {
-        return this.get(key) instanceof Double;
+        return this.get(key) instanceof Number;
     }
     
     @Override
@@ -1024,7 +1024,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isFloat(String key)
     {
-        return this.get(key) instanceof Float;
+        return this.get(key) instanceof Number;
     }
     
     @Override
@@ -1070,7 +1070,7 @@ public class MemoryDataSection implements DataSection
     @Override
     public boolean isLong(String key)
     {
-        return this.get(key) instanceof Long;
+        return this.get(key) instanceof Number;
     }
     
     @Override
