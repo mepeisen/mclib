@@ -525,6 +525,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public void onDisable()
     {
+        this.objectsManager.disable();
         this.enumService.unregisterAllEnumerations(this);
         this.removeAllCommunicationEndpoints(this);
         Bukkit.getServicesManager().unregisterAll(this);

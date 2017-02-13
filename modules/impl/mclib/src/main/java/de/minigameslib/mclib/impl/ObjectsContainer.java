@@ -105,10 +105,10 @@ class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInterface,
      * @param pluginName
      * @return ids
      */
-    public Iterable<Id> removePlugin(String pluginName)
+    public Map<Id, Boolean> removePlugin(String pluginName)
     {
         final Map<Id, Boolean> cmap = this.componentsByPlugin.remove(pluginName);
-        return cmap == null ? Collections.emptyList() : cmap.keySet();
+        return cmap == null ? Collections.emptyMap() : cmap;
     }
 
     /**

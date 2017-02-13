@@ -104,6 +104,7 @@ public class VillagerBuilder implements VillagerBuilderInterface
         if (this.persistent)
         {
             impl.setDynamicType(DynamicEntityType.DUMMY_VILLAGER);
+            impl.saveConfig();
         }
         return impl;
     }

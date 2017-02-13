@@ -119,11 +119,18 @@ public class HumanBuilder implements HumanBuilderInterface
         final EntityImpl impl = (EntityImpl) ObjectServiceInterface.instance().createEntity(this.type, bukkitEntity, this.handler, this.persistent);
         if (this.skinPlayer != null)
         {
-            skins.getSkinSnapshot(this.skinPlayer, s -> skins.setToHuman(impl, s));
+            skins.getSkinSnapshot(this.skinPlayer, s -> {
+                skins.setToHuman(impl, s);
+                if (this.persistent)
+                {
+                    impl.saveConfig();
+                }
+            });
         }
         if (this.persistent)
         {
             impl.setDynamicType(DynamicEntityType.DUMMY_HUMAN);
+            impl.saveConfig();
         }
         return impl;
     }

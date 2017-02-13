@@ -535,44 +535,64 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
             }
             
             // pause elements
-            this.components.removePlugin(pluginName).forEach(id -> {
+            this.components.removePlugin(pluginName).forEach((id, persistent) -> {
                 final ComponentImpl component = this.components.remove(id);
                 component.clearEventRegistrations();
                 
                 this.runInContext(ComponentInterface.class, component, () -> {
                     component.getHandler().onPause(component);
+                    if (persistent)
+                    {
+                        component.saveConfig();
+                    }
                 });
             });
-            this.entities.removePlugin(pluginName).forEach(id -> {
+            this.entities.removePlugin(pluginName).forEach((id, persistent) -> {
                 final EntityImpl entity = this.entities.remove(id);
                 entity.clearEventRegistrations();
                 
                 this.runInContext(EntityInterface.class, entity, () -> {
                     entity.getHandler().onPause(entity);
+                    if (persistent)
+                    {
+                        entity.saveConfig();
+                    }
                 });
             });
-            this.signs.removePlugin(pluginName).forEach(id -> {
+            this.signs.removePlugin(pluginName).forEach((id, persistent) -> {
                 final SignImpl sign = this.signs.remove(id);
                 sign.clearEventRegistrations();
                 
                 this.runInContext(SignInterface.class, sign, () -> {
                     sign.getHandler().onPause(sign);
+                    if (persistent)
+                    {
+                        sign.saveConfig();
+                    }
                 });
             });
-            this.zones.removePlugin(pluginName).forEach(id -> {
+            this.zones.removePlugin(pluginName).forEach((id, persistent) -> {
                 final ZoneImpl zone = this.zones.remove(id);
                 zone.clearEventRegistrations();
                 
                 this.runInContext(ZoneInterface.class, zone, () -> {
                     zone.getHandler().onPause(zone);
+                    if (persistent)
+                    {
+                        zone.saveConfig();
+                    }
                 });
             });
-            this.objects.removePlugin(pluginName).forEach(id -> {
+            this.objects.removePlugin(pluginName).forEach((id, persistent) -> {
                 final ObjectImpl object = this.objects.remove(id);
                 object.clearEventRegistrations();
                 
                 this.runInContext(ObjectInterface.class, object, () -> {
                     object.getHandler().onPause(object);
+                    if (persistent)
+                    {
+                        object.saveConfig();
+                    }
                 });
             });
             
@@ -1580,6 +1600,21 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     public HumanBuilderInterface human()
     {
         return new HumanBuilder();
+    }
+
+    /**
+     * Disable objects manager
+     */
+    public void disable()
+    {
+        for (final String pname : this.loadedPlugins)
+        {
+            final Plugin plugin = Bukkit.getPluginManager().getPlugin(pname);
+            if (plugin != null)
+            {
+                this.onDisable(plugin);
+            }
+        }
     }
     
 }
