@@ -255,5 +255,11 @@ public class EntityHelper1_10_1 implements EntityHelperInterface
     {
         ((CraftPlayer) entity).kickPlayer("delete"); //$NON-NLS-1$
     }
+
+    @Override
+    public void clearSkinCache(Player player)
+    {
+        PROPERTIES.invalidate(player.getUniqueId());
+    }
     
 }

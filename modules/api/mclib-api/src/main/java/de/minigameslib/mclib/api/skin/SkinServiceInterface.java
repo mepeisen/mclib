@@ -24,8 +24,6 @@
 
 package de.minigameslib.mclib.api.skin;
 
-import java.util.concurrent.Future;
-
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.McException;
@@ -106,6 +104,12 @@ public interface SkinServiceInterface
      * @throws McException thrown if given entity is not a human
      */
     void setToHuman(EntityInterface entity, SkinInterface skin) throws McException;
+    
+    /**
+     * Clears the skin cache for given player
+     * @param player
+     */
+    void clearSkinCache(McPlayerInterface player);
     
     /**
      * Returns an item stack representing a skull for given skin

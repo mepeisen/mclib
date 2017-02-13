@@ -79,7 +79,7 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
     private static final Set<DummyHuman1_9_4> HUMANS = new HashSet<>();
     
     /** properties cache. */
-    private final LoadingCache<UUID, PropertyMap> properties = CacheBuilder.newBuilder().
+    private static final LoadingCache<UUID, PropertyMap> PROPERTIES = CacheBuilder.newBuilder().
             maximumSize(10000).
             expireAfterAccess(20, TimeUnit.MINUTES).
             build(new CacheLoader<UUID, PropertyMap>(){
@@ -87,7 +87,7 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
                 public PropertyMap load(UUID key) throws Exception
                 {
                     final Player player = Bukkit.getPlayer(key);
-                    return EntityHelper1_9_4.this.getRemoteProfile(player);
+                    return EntityHelper1_9_4.getRemoteProfile(player);
                 }
             });
     
@@ -150,7 +150,7 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
     @Override
     public String loadSkinTexture(Player player) throws ExecutionException
     {
-        final PropertyMap prop = this.properties.get(player.getUniqueId());
+        final PropertyMap prop = PROPERTIES.get(player.getUniqueId());
         final Collection<Property> props = prop.get("textures"); //$NON-NLS-1$
         if (props.isEmpty())
         {
@@ -212,7 +212,7 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
      * @return profile properties
      * @throws Exception
      */
-    protected PropertyMap getRemoteProfile(Player player) throws Exception
+    static PropertyMap getRemoteProfile(Player player) throws Exception
     {
         final MinecraftSessionService sessionService = ((CraftServer) Bukkit.getServer()).getServer().ay();
         boolean requireSecure = true;
@@ -249,6 +249,12 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
     public void delete(HumanEntity entity)
     {
         ((CraftPlayer) entity).kickPlayer("delete"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void clearSkinCache(Player player)
+    {
+        PROPERTIES.invalidate(player.getUniqueId());
     }
     
 }

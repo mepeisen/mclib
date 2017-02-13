@@ -100,5 +100,11 @@ public interface EntityHelperInterface
      * @param entity
      */
     void delete(HumanEntity entity);
+
+    /**
+     * Clears skin cache for given player
+     * @param player
+     */
+    void clearSkinCache(Player player);
     
 }

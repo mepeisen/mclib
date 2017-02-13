@@ -156,6 +156,12 @@ public class SkinServiceImpl implements SkinServiceInterface
     }
 
     @Override
+    public void clearSkinCache(McPlayerInterface player)
+    {
+        Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).clearSkinCache(player.getBukkitPlayer());
+    }
+
+    @Override
     public ItemStack getSkull(SkinInterface skin, String name)
     {
         final ItemStack result = new ItemStack(Material.SKULL_ITEM);
