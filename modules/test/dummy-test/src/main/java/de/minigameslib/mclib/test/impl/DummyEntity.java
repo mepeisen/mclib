@@ -25,6 +25,10 @@
 package de.minigameslib.mclib.test.impl;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McEntityDamageEvent;
+import de.minigameslib.mclib.api.event.McEventHandler;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.McPlayerInteractEntityEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
@@ -33,8 +37,22 @@ import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
  * @author mepeisen
  *
  */
-public class DummyEntity extends AnnotatedDataFragment implements EntityHandlerInterface
+public class DummyEntity extends AnnotatedDataFragment implements EntityHandlerInterface, McListener
 {
+    
+    @McEventHandler
+    public void onDamage(McEntityDamageEvent evt)
+    {
+        evt.getBukkitEvent().setCancelled(true);
+        System.out.println("LEFT CLICK BY " + evt.getBukkitEvent().getEntity());
+    }
+    
+    @McEventHandler
+    public void onDamage(McPlayerInteractEntityEvent evt)
+    {
+        evt.getBukkitEvent().setCancelled(true);
+        System.out.println("RIGHT CLICK BY " + evt.getBukkitEvent().getPlayer());
+    }
     
     @Override
     public void onCreate(EntityInterface entity) throws McException

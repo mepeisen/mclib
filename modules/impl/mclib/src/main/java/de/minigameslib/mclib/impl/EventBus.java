@@ -197,7 +197,7 @@ public class EventBus
      * @param event
      */
     @SuppressWarnings("unchecked")
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
     {
         final Set<EventHandler<?>> handlers = this.eventHandlersPerClass.get(eventClass);
         if (handlers != null)

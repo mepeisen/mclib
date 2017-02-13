@@ -46,8 +46,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -799,13 +797,13 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
     {
-        if (eventClass == PlayerMoveEvent.class)
+        if (eventClass == McPlayerMoveEvent.class)
         {
             this.zoneManager.registerMovement(((McPlayerMoveEvent)event).getBukkitEvent().getTo());
         }
-        else if (eventClass == PlayerTeleportEvent.class)
+        else if (eventClass == McPlayerTeleportEvent.class)
         {
             this.zoneManager.registerMovement(((McPlayerTeleportEvent)event).getBukkitEvent().getTo());
         }

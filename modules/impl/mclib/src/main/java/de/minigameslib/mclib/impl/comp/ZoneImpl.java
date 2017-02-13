@@ -251,7 +251,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<T> eventClass, Evt event)
+    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
     {
         this.eventBus.handle(eventClass, event);
     }

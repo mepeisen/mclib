@@ -61,7 +61,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     private final Map<Class<? extends Event>, MinecraftEventHandler<?, ?>> eventHandlers = new HashMap<>();
     
     /** common event listeners. */
-    public final List<MgEventListener> listeners = new ArrayList<>();
+    public final List<MgEventListener>                                     listeners     = new ArrayList<>();
     
     /**
      * Constructor.
@@ -76,7 +76,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     {
         this.listeners.add(listener);
     }
-
+    
     /**
      * Returns the minigame event handler for given class.
      * 
@@ -95,12 +95,14 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      * 
      * @param clazz
      *            event class.
+     * @param mgclazz
+     *            minecraft event class
      * @param factory
      *            the factory to create minigame events.
      */
-    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, MinecraftEventFactory<T> factory)
+    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, Class<MgEvt> mgclazz, MinecraftEventFactory<T> factory)
     {
-        this.eventHandlers.put(clazz, new MinecraftEventHandler<>(clazz, factory));
+        this.eventHandlers.put(clazz, new MinecraftEventHandler<>(clazz, mgclazz, factory));
     }
     
     @SuppressWarnings("unchecked")
@@ -121,9 +123,9 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 getHandler(clazz).handle(clazz.cast(paramEvent));
             }
         }, plugin);
-        this.registerHandler(clazz, evt -> evt);
+        this.registerHandler(clazz, clazz, evt -> evt);
     }
-
+    
     /**
      * The minigame event handler.
      * 
@@ -139,21 +141,30 @@ public abstract class AbstractEventSystem implements EventSystemInterface
         /** the event factory. */
         private MinecraftEventFactory<T> factory;
         /** event class. */
-        private Class<T> cls;
-
+        private Class<T>                 cls;
+        /** event class. */
+        private Class<MgEvt>             mgcls;
+        
         /**
          * Constructor.
-         * @param clazz event class
-         * @param factory mg event factory
+         * 
+         * @param clazz
+         *            event class
+         * @param mgclazz
+         *            mclib event class
+         * @param factory
+         *            mg event factory
          */
-        public MinecraftEventHandler(Class<T> clazz, MinecraftEventFactory<T> factory)
+        public MinecraftEventHandler(Class<T> clazz, Class<MgEvt> mgclazz, MinecraftEventFactory<T> factory)
         {
             this.cls = clazz;
+            this.mgcls = mgclazz;
             this.factory = factory;
         }
         
         /**
          * Handles minigame event.
+         * 
          * @param evt
          */
         public void handle(T evt)
@@ -166,7 +177,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     mclib.runInNewContext(() -> {
                         mclib.setContext(Event.class, evt);
-                        listener.handle(this.cls, mgevt);
+                        listener.handle(this.mgcls, mgevt);
                     });
                 }
                 catch (McException ex)
@@ -189,7 +200,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, mgevt.getObject());
                             mclib.setContext(SignInterface.class, mgevt.getSign());
                             mclib.setContext(EntityInterface.class, mgevt.getEntity());
-                            ((MgEventListener) player).handle(this.cls, mgevt);
+                            ((MgEventListener) player).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -213,7 +224,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, mgevt.getObject());
                             mclib.setContext(SignInterface.class, mgevt.getSign());
                             mclib.setContext(EntityInterface.class, mgevt.getEntity());
-                            ((MgEventListener) arena).handle(this.cls, mgevt);
+                            ((MgEventListener) arena).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -237,7 +248,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, mgevt.getObject());
                             mclib.setContext(SignInterface.class, sign);
                             mclib.setContext(EntityInterface.class, mgevt.getEntity());
-                            ((MgEventListener) sign).handle(this.cls, mgevt);
+                            ((MgEventListener) sign).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -261,7 +272,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, mgevt.getObject());
                             mclib.setContext(SignInterface.class, mgevt.getSign());
                             mclib.setContext(EntityInterface.class, entity);
-                            ((MgEventListener) entity).handle(this.cls, mgevt);
+                            ((MgEventListener) entity).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -285,7 +296,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, mgevt.getObject());
                             mclib.setContext(SignInterface.class, mgevt.getSign());
                             mclib.setContext(EntityInterface.class, mgevt.getEntity());
-                            ((MgEventListener) comp).handle(this.cls, mgevt);
+                            ((MgEventListener) comp).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -309,7 +320,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                             mclib.setContext(ObjectInterface.class, obj);
                             mclib.setContext(SignInterface.class, mgevt.getSign());
                             mclib.setContext(EntityInterface.class, mgevt.getEntity());
-                            ((MgEventListener) obj).handle(this.cls, mgevt);
+                            ((MgEventListener) obj).handle(this.mgcls, mgevt);
                         });
                     }
                     catch (McException ex)
@@ -322,7 +333,9 @@ public abstract class AbstractEventSystem implements EventSystemInterface
         
         /**
          * Creates minigame event.
-         * @param evt bukkit event
+         * 
+         * @param evt
+         *            bukkit event
          * @return minigame event.
          */
         @SuppressWarnings("unchecked")

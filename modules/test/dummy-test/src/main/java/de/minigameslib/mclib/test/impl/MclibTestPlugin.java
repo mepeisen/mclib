@@ -29,6 +29,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -99,7 +100,8 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     @EventHandler
     public void onConnect(PlayerJoinEvent evt)
     {
-        evt.getPlayer().setGameMode(GameMode.CREATIVE);
+        if (evt.getPlayer().getClass() == CraftPlayer.class)
+            evt.getPlayer().setGameMode(GameMode.CREATIVE);
     }
     
 }

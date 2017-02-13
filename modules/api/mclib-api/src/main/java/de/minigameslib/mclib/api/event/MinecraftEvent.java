@@ -33,6 +33,7 @@ import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
@@ -97,7 +98,8 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
      */
     default EntityInterface getEntity()
     {
-        return null;
+        final McPlayerInterface player = this.getPlayer();
+        return player == null ? null : ObjectServiceInterface.instance().findEntity(this.getPlayer().getBukkitPlayer());
     }
     
     /**
