@@ -35,8 +35,11 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -321,6 +324,57 @@ public class DummyHuman1_9 extends EntityPlayer
         public void setMetadata(String metadataKey, MetadataValue newMetadataValue)
         {
             this.spigot.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
+        }
+        
+        @Override
+        public boolean teleport(Location location, TeleportCause cause)
+        {
+            // taken from bukkit. We need to override because playerConnection is always disconnected...
+            // seems to be fixed in 1.10 and later
+            EntityPlayer e = getHandle();
+
+            if ((getHealth() == 0.0D) || (e.dead)) {
+                return false;
+            }
+
+            if (e.playerConnection == null) {
+                return false;
+            }
+
+            if (e.isVehicle()) {
+                return false;
+            }
+
+            Location from = getLocation();
+
+            Location to = location;
+
+            PlayerTeleportEvent event = new PlayerTeleportEvent(this, from, to, cause);
+            this.server.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            e.stopRiding();
+
+            from = event.getFrom();
+
+            to = event.getTo();
+
+            WorldServer fromWorld = ((CraftWorld) from.getWorld()).getHandle();
+            WorldServer toWorld = ((CraftWorld) to.getWorld()).getHandle();
+
+            if (getHandle().activeContainer != getHandle().defaultContainer) {
+                getHandle().closeInventory();
+            }
+
+            if (fromWorld == toWorld)
+                e.playerConnection.teleport(to);
+            else {
+                this.server.getHandle().moveToWorld(e, toWorld.dimension, true, to, true);
+            }
+            return true;
         }
         
     }
