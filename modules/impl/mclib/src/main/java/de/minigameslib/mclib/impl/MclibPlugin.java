@@ -704,6 +704,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
+        if (ObjectServiceInterface.instance().isHuman(evt.getPlayer())) return;
+        
         final Player player = evt.getPlayer();
         
         // TODO Why do we need to register bungeecord here???
@@ -751,7 +753,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 if (player.isOnline())
                 {
                     final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
-                    factory.create(EntityHelperInterface.class).updateVisibilityList(player);
+                    factory.create(EntityHelperInterface.class).playerOnline(player);
                 }
             }
         }.runTaskLater(this, 10);
@@ -831,7 +833,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent evt)
     {
-        this.players.onPlayerQuit(evt);
+        if (!ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
+        {
+            final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
+            factory.create(EntityHelperInterface.class).playerOffline(evt.getPlayer());
+            this.players.onPlayerQuit(evt);
+        }
     }
     
     // library

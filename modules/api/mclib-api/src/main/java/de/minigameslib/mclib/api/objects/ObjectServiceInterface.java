@@ -243,6 +243,13 @@ public interface ObjectServiceInterface
     // player api
     
     /**
+     * Checks if given player is a human
+     * @param player
+     * @return checks for human npcs
+     */
+    boolean isHuman(Player player);
+    
+    /**
      * Returns the player for given bukkit player.
      * 
      * @param player

@@ -63,9 +63,7 @@ import com.mojang.util.UUIDTypeAdapter;
 
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
 import net.minecraft.server.v1_9_R1.MinecraftServer;
-import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_9_R1.PlayerInteractManager;
 
 /**
@@ -126,9 +124,7 @@ public class EntityHelper1_9 implements EntityHelperInterface
             @Override
             public void run()
             {
-                final PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(
-                        PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { result });
-                server.getPlayerList().sendAll(packet);
+                Bukkit.getOnlinePlayers().forEach(result::track);
             }
         }, 10);
         return result.getBukkitEntity();
@@ -165,11 +161,7 @@ public class EntityHelper1_9 implements EntityHelperInterface
     {
         final DummyHuman1_9 human = (DummyHuman1_9) ((CraftPlayer)entity).getHandle();
         setSkinToProfile(human.getProfile(), texture);
-        // TODO Sending updates to clients does not work
-//        Bukkit.getOnlinePlayers().forEach(p -> {
-//            p.hidePlayer(human.getBukkitEntity());
-//            p.showPlayer(human.getBukkitEntity());
-//        });
+        human.respawnAll();
     }
     
     /** 
@@ -184,13 +176,20 @@ public class EntityHelper1_9 implements EntityHelperInterface
     }
 
     @Override
-    public void updateVisibilityList(Player player)
+    public void playerOnline(Player player)
     {
         for (final DummyHuman1_9 human : HUMANS)
         {
-            final PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(
-                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { human });
-            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+            human.track(player);
+        }
+    }
+
+    @Override
+    public void playerOffline(Player player)
+    {
+        for (final DummyHuman1_9 human : HUMANS)
+        {
+            human.untrack(player);
         }
     }
 
@@ -254,6 +253,9 @@ public class EntityHelper1_9 implements EntityHelperInterface
     public void delete(HumanEntity entity)
     {
         ((CraftPlayer) entity).kickPlayer("delete"); //$NON-NLS-1$
+        final DummyHuman1_9 human = (DummyHuman1_9) ((CraftPlayer) entity).getHandle();
+        HUMANS.remove(human);
+        human.delete();
     }
 
     @Override

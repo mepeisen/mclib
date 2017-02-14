@@ -86,7 +86,8 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
             {
                 final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
                 // NpcServiceInterface.instance().villager().location(loc).profession(Profession.FARMER).handler(MyEntitites.Dummy, new DummyEntity()).create();
-                NpcServiceInterface.instance().human().location(loc).handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
+                NpcServiceInterface.instance().human().location(loc).persistent().handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
+
             }
             catch (McException e)
             {

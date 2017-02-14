@@ -25,17 +25,25 @@
 package de.minigames.mclib.nms.v183.entity;
 
 import java.net.SocketAddress;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.mojang.authlib.GameProfile;
 
+import de.minigameslib.mclib.api.McLibInterface;
 import io.netty.channel.AbstractChannel;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelMetadata;
@@ -46,10 +54,15 @@ import net.minecraft.server.v1_8_R2.Block;
 import net.minecraft.server.v1_8_R2.BlockPosition;
 import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.EnumProtocolDirection;
+import net.minecraft.server.v1_8_R2.IChatBaseComponent;
 import net.minecraft.server.v1_8_R2.MinecraftServer;
 import net.minecraft.server.v1_8_R2.NBTTagCompound;
 import net.minecraft.server.v1_8_R2.NetworkManager;
 import net.minecraft.server.v1_8_R2.Packet;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R2.PacketPlayOutNamedEntitySpawn;
+import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_8_R2.PlayerConnection;
 import net.minecraft.server.v1_8_R2.PlayerInteractManager;
 import net.minecraft.server.v1_8_R2.WorldServer;
@@ -60,6 +73,15 @@ import net.minecraft.server.v1_8_R2.WorldServer;
  */
 public class DummyHuman1_8_3 extends EntityPlayer
 {
+    
+    /** update task. */
+    private BukkitRunnable updateTask;
+    
+    /** tracked players. */
+    Set<UUID> trackedPlayers = new HashSet<>();
+    
+    /** players in range. */
+    Map<UUID, Boolean> inRange = new HashMap<>();
     
     /**
      * @param minecraftserver
@@ -84,6 +106,122 @@ public class DummyHuman1_8_3 extends EntityPlayer
         this.playerInteractManager.a((WorldServer) this.world);
         this.playerInteractManager.b(this.world.getWorldData().getGameType());
         ((CraftServer)Bukkit.getServer()).getHandle().a(conn, this);
+        
+        this.updateTask = new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                for (final UUID uuid : DummyHuman1_8_3.this.trackedPlayers)
+                {
+                    final Player player = Bukkit.getPlayer(uuid);
+                    if (player != null)
+                    {
+                        boolean newInRange = getDistanceSquared(player) < 64*64;
+                        boolean oldInRange = DummyHuman1_8_3.this.inRange.get(uuid);
+                        if (newInRange != oldInRange)
+                        {
+                            if (!oldInRange)
+                            {
+                                final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
+                                new BukkitRunnable() {
+                                    
+                                    @Override
+                                    public void run()
+                                    {
+                                        con.sendPacket(new PacketPlayOutEntityDestroy(DummyHuman1_8_3.this.getId()));
+                                        con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_8_3.this));
+                                        con.sendPacket(new PacketPlayOutNamedEntitySpawn(DummyHuman1_8_3.this));
+                                    }
+                                }.runTaskLater((Plugin) McLibInterface.instance(), 1);
+                                new BukkitRunnable() {
+                                    
+                                    @Override
+                                    public void run()
+                                    {
+                                        con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_8_3.this));
+                                    }
+                                }.runTaskLater((Plugin) McLibInterface.instance(), 3);
+                            }
+                            DummyHuman1_8_3.this.inRange.put(uuid, newInRange);
+                        }
+                    }
+                }
+            }
+        };
+        this.updateTask.runTaskTimer((Plugin) McLibInterface.instance(), 0, 30);
+    }
+    
+    @Override
+    public IChatBaseComponent getPlayerListName()
+    {
+        return null;
+    }
+
+    /**
+     * Marks all players to respawn the entity
+     */
+    public void respawnAll()
+    {
+        this.trackedPlayers.forEach(u -> this.inRange.put(u, false));
+    }
+    
+    /**
+     * Returns the suawred distance between this human and players
+     * @param player
+     * @return squared distance
+     */
+    protected double getDistanceSquared(Player player)
+    {
+        Location loc = player.getLocation();
+        double dx = loc.getX() - this.locX;
+        double dy = loc.getY() - this.locY;
+        double dz = loc.getZ() - this.locZ;
+        return dx * dx + dy * dy + dz * dz;
+    }
+    
+    /**
+     * untrack given player
+     * @param player
+     */
+    public void untrack(Player player)
+    {
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                DummyHuman1_8_3.this.trackedPlayers.remove(player.getUniqueId());
+                DummyHuman1_8_3.this.inRange.remove(player.getUniqueId());
+            }
+        }.runTaskLater((Plugin) McLibInterface.instance(), 1);
+    }
+    
+    /**
+     * track given player
+     * @param player
+     */
+    public void track(Player player)
+    {
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                DummyHuman1_8_3.this.trackedPlayers.add(player.getUniqueId());
+                DummyHuman1_8_3.this.inRange.put(player.getUniqueId(), Boolean.FALSE);
+            }
+        }.runTaskLater((Plugin) McLibInterface.instance(), 1);
+    }
+    
+    /**
+     * Delete/cleanup the human
+     */
+    public void delete()
+    {
+        this.updateTask.cancel();
+        this.trackedPlayers.clear();
+        this.inRange.clear();
     }
     
     @Override

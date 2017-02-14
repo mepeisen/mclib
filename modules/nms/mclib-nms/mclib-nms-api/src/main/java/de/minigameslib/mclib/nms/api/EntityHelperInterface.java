@@ -89,7 +89,13 @@ public interface EntityHelperInterface
      * Updates visibility list for given player; hides dummy humans
      * @param player
      */
-    void updateVisibilityList(Player player);
+    void playerOnline(Player player);
+    
+    /**
+     * Updates visibility list for given player; hides dummy humans
+     * @param player
+     */
+    void playerOffline(Player player);
 
     /**
      * @param entity

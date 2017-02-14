@@ -415,6 +415,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
             if (entity != null)
             {
                 impl.setEntity(entity);
+                this.entitiesByUuid.computeIfAbsent(entity.getUniqueId(), k -> new HashSet<>()).add(id);
                 
                 this.runInContext(EntityInterface.class, impl, () -> {
                     handler.onResume(impl);
@@ -1480,21 +1481,21 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public McPlayerInterface getPlayer(Player player)
     {
-        if (player == null) return null;
+        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId())) return null;
         return this.players.getPlayer(player);
     }
     
     @Override
     public McPlayerInterface getPlayer(OfflinePlayer player)
     {
-        if (player == null) return null;
+        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId())) return null;
         return this.players.getPlayer(player);
     }
     
     @Override
     public McPlayerInterface getPlayer(UUID uuid)
     {
-        if (uuid == null) return null;
+        if (uuid == null || this.entitiesByUuid.containsKey(uuid)) return null;
         return this.players.getPlayer(uuid);
     }
     
@@ -1645,6 +1646,12 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
                 this.onDisable(plugin);
             }
         }
+    }
+
+    @Override
+    public boolean isHuman(Player player)
+    {
+        return this.entitiesByUuid.containsKey(player.getUniqueId());
     }
     
 }
