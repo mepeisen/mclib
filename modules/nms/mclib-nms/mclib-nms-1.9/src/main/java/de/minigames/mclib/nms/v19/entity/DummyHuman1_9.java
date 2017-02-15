@@ -213,6 +213,8 @@ public class DummyHuman1_9 extends EntityPlayer
             {
                 DummyHuman1_9.this.trackedPlayers.add(player.getUniqueId());
                 DummyHuman1_9.this.inRange.put(player.getUniqueId(), Boolean.FALSE);
+                final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
+                con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_9.this));
             }
         }.runTaskLater((Plugin) McLibInterface.instance(), 1);
     }
