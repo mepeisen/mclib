@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 
@@ -167,12 +168,13 @@ public enum DynamicEntityType
         {
             final String skin = section.getString("skin"); //$NON-NLS-1$
             final String name = section.getString("name"); //$NON-NLS-1$
+            final String displayName = section.getString("displayName"); //$NON-NLS-1$
             final LocationDataFragment locdf = section.getLocation("location"); //$NON-NLS-1$
             final Location loc = new Location(Bukkit.getWorld(locdf.getWorld()), locdf.getX(), locdf.getY(), locdf.getZ(), locdf.getYaw(), locdf.getPitch());
             
             final EntityHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class);
             final HumanEntity bukkitEntity = helper.spawnDummyHuman(loc, name, skin);
-            
+            ((Player)bukkitEntity).setDisplayName(displayName);
             return bukkitEntity;
         }
         
@@ -190,6 +192,7 @@ public enum DynamicEntityType
                 section.set("skin", skin); //$NON-NLS-1$
             }
             section.set("name", ((HumanEntity) entity).getName()); //$NON-NLS-1$
+            section.set("displayname", ((Player) entity).getDisplayName()); //$NON-NLS-1$
             final Location loc = entity.getLocation();
             final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
