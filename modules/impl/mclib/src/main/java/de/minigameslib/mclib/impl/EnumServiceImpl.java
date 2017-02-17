@@ -49,6 +49,8 @@ import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 class EnumServiceImpl implements EnumServiceInterface
 {
     
+    // TODO performance tuning. remove synchronized
+    
     /** logging. */
     private static final Logger LOGGER = Logger.getLogger(EnumServiceImpl.class.getName());
     
@@ -88,14 +90,17 @@ class EnumServiceImpl implements EnumServiceInterface
                 this.pluginsByEnum.put(ev, plugin);
                 set.add(ev);
                 
-                for (final Map<String, UniqueEnumerationValue> map : uniqueMaps)
+                if (ev instanceof UniqueEnumerationValue)
                 {
-                    if (map.containsKey(ev.name()))
+                    for (final Map<String, UniqueEnumerationValue> map : uniqueMaps)
                     {
-                        LOGGER.log(Level.SEVERE, "Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
-                        throw new IllegalStateException("Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
+                        if (map.containsKey(ev.name()))
+                        {
+                            LOGGER.log(Level.SEVERE, "Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
+                            throw new IllegalStateException("Duplicate registration of unique enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                        map.put(ev.name(), (UniqueEnumerationValue) ev);
                     }
-                    map.put(ev.name(), (UniqueEnumerationValue) ev);
                 }
             }
         }
@@ -159,6 +164,24 @@ class EnumServiceImpl implements EnumServiceInterface
             final Set<Enum<?>> s = this.enumsByPlugin.get(plugin);
             return s == null ? Collections.emptySet() : Collections.unmodifiableSet(s);
         }
+    }
+
+    @Override
+    public <T extends UniqueEnumerationValue> T getEnumValue(Class<T> clazz, String plugin, String name)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            if (this.uniqueEnums.containsKey(plugin))
+            {
+                final Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>> map1 = this.uniqueEnums.get(plugin);
+                if (map1.containsKey(clazz))
+                {
+                    final Map<String, UniqueEnumerationValue> map2 = map1.get(clazz);
+                    return clazz.cast(map2.get(name));
+                }
+            }
+        }
+        return null;
     }
 
     @Override

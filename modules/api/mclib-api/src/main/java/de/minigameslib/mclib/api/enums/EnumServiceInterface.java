@@ -29,6 +29,7 @@ import java.util.Set;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 
 /**
  * A service to register enumerations with plugins.
@@ -85,6 +86,21 @@ public interface EnumServiceInterface
      * @return enumeration values
      */
     <T extends EnumerationValue> Set<T> getEnumValues(Class<T> clazz);
+    
+    /**
+     * Returns the enumeration value implementing given interface class from given plugin and with given name.
+     * 
+     * @param clazz
+     *            class/interface for filtering the enum values
+     * @param <T>
+     *            class param
+     * @param plugin
+     *            plugin name
+     * @param name
+     *            enumeration value name
+     * @return enumeration value or {@code null} if the enum is not registered
+     */
+    <T extends UniqueEnumerationValue> T getEnumValue(Class<T> clazz, String plugin, String name);
     
     /**
      * Returns the enumeration values of given plugin.
