@@ -65,6 +65,7 @@ import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
+import net.minecraft.server.v1_8_R3.WorldServer;
 
 /**
  * @author mepeisen
@@ -119,6 +120,7 @@ public class EntityHelper1_8_5 implements EntityHelperInterface
         }
         final DummyHuman1_8_5 result = new DummyHuman1_8_5(server, world.getHandle(), profile, new PlayerInteractManager(world.getHandle()), loc);
         HUMANS.add(result);
+        ((WorldServer) result.world).tracker.untrackEntity(result);
         Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin) McLibInterface.instance(), new Runnable() {
             
             @Override

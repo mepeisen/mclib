@@ -58,11 +58,14 @@ import net.minecraft.server.v1_8_R2.BlockPosition;
 import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R2.IChatBaseComponent;
+import net.minecraft.server.v1_8_R2.MathHelper;
 import net.minecraft.server.v1_8_R2.MinecraftServer;
 import net.minecraft.server.v1_8_R2.NBTTagCompound;
 import net.minecraft.server.v1_8_R2.NetworkManager;
 import net.minecraft.server.v1_8_R2.Packet;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntity;
 import net.minecraft.server.v1_8_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R2.PacketPlayOutEntityHeadRotation;
 import net.minecraft.server.v1_8_R2.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
@@ -85,6 +88,9 @@ public class DummyHuman1_8_3 extends EntityPlayer
     
     /** players in range. */
     Map<UUID, Boolean> inRange = new HashMap<>();
+
+    /** respawn flag */
+    boolean respawn;
     
     /**
      * @param minecraftserver
@@ -120,39 +126,79 @@ public class DummyHuman1_8_3 extends EntityPlayer
                     final Player player = Bukkit.getPlayer(uuid);
                     if (player != null)
                     {
+                        final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
                         boolean newInRange = getDistanceSquared(player) < 64*64;
+                        
+                        if (DummyHuman1_8_3.this.respawn)
+                        {
+                            // if forced resapwn (teleport etc.) and it is no more in range we delete the entity so that it disappears
+                            if (!newInRange)
+                            {
+                                sendPackages(con, 1,
+                                    new PacketPlayOutEntityDestroy(DummyHuman1_8_3.this.getId()));
+                            }
+                            // override inrange to false so that players still in range will be forced to get a clean respawn
+                            DummyHuman1_8_3.this.inRange.put(uuid, Boolean.FALSE);
+                        }
+
                         boolean oldInRange = DummyHuman1_8_3.this.inRange.get(uuid);
                         if (newInRange != oldInRange)
                         {
                             if (!oldInRange)
                             {
-                                final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
-                                new BukkitRunnable() {
-                                    
-                                    @Override
-                                    public void run()
-                                    {
-                                        con.sendPacket(new PacketPlayOutEntityDestroy(DummyHuman1_8_3.this.getId()));
-                                        con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_8_3.this));
-                                        con.sendPacket(new PacketPlayOutNamedEntitySpawn(DummyHuman1_8_3.this));
-                                    }
-                                }.runTaskLater((Plugin) McLibInterface.instance(), 1);
-                                new BukkitRunnable() {
-                                    
-                                    @Override
-                                    public void run()
-                                    {
-                                        con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_8_3.this));
-                                    }
-                                }.runTaskLater((Plugin) McLibInterface.instance(), 3);
+                                final byte encodedyaw = toAngle(DummyHuman1_8_3.this.yaw);
+                                float body = DummyHuman1_8_3.this.yaw + 45;
+                                if (body >= 180) body -= 360;
+                                final byte encodedbody = toAngle(body);
+                                sendPackages(con, 1,
+                                        new PacketPlayOutEntityDestroy(DummyHuman1_8_3.this.getId()),
+                                        new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_8_3.this),
+                                        new PacketPlayOutNamedEntitySpawn(DummyHuman1_8_3.this));
+                                sendPackages(con, 2,
+                                        new PacketPlayOutEntityHeadRotation(DummyHuman1_8_3.this, encodedyaw),
+                                        new PacketPlayOutEntity.PacketPlayOutEntityLook(DummyHuman1_8_3.this.getId(), encodedbody, toAngle(DummyHuman1_8_3.this.pitch), true));
+                                sendPackages(con, 4,
+                                        new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_8_3.this));
                             }
                             DummyHuman1_8_3.this.inRange.put(uuid, newInRange);
                         }
                     }
                 }
+                DummyHuman1_8_3.this.respawn = false;
             }
         };
         this.updateTask.runTaskTimer((Plugin) McLibInterface.instance(), 0, 30);
+    }
+    
+    /**
+     * Sends packets to given connection with given delay
+     * @param con
+     * @param delay
+     * @param packets
+     */
+    void sendPackages(PlayerConnection con, int delay, Packet<?>... packets)
+    {
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                for (final Packet<?> packet : packets)
+                {
+                    con.sendPacket(packet);
+                }
+            }
+        }.runTaskLater((Plugin) McLibInterface.instance(), delay);
+    }
+    
+    /**
+     * Converts yaw/pitch value to byte degrees
+     * @param value
+     * @return degrees
+     */
+    static byte toAngle(float value)
+    {
+        return (byte) MathHelper.d(value * 256.0F / 360.0F);
     }
     
     @Override
@@ -283,6 +329,13 @@ public class DummyHuman1_8_3 extends EntityPlayer
     void setPosition(Location loc)
     {
         this.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+    }
+
+    @Override
+    public void setPosition(double d0, double d1, double d2)
+    {
+        super.setPosition(d0, d1, d2);
+        this.respawn = true;
     }
     
     /**

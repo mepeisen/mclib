@@ -29,18 +29,26 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.nms.v110.entity.DummyHuman1_10_1;
+import net.minecraft.server.v1_10_R1.EntityHuman;
+import net.minecraft.server.v1_10_R1.PacketPlayOutEntity;
 
 /**
  * @author mepeisen
@@ -81,15 +89,22 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final Location loc = ((Player)sender).getLocation().add(1, 0, 1);
+            final Location loc = ((Player)sender).getLocation().add(0, 3, 0);
             try
             {
                 final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
                 // NpcServiceInterface.instance().villager().location(loc).profession(Profession.FARMER).handler(MyEntitites.Dummy, new DummyEntity()).create();
-                NpcServiceInterface.instance().human().location(loc).persistent().handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
-
+                // NpcServiceInterface.instance().human().location(loc).persistent().handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
+                
+                final EntityInterface entity = ObjectServiceInterface.instance().findEntities(MyEntitites.Dummy).iterator().next();
+                final Entity bukkit = entity.getBukkitEntity();
+                final EntityHuman human = (EntityHuman) ((CraftEntity)bukkit).getHandle();
+                bukkit.teleport(player.getBukkitPlayer());
+//                System.out.println(human.yaw);
+//                final byte look = (byte) 32;
+//                ((CraftPlayer) player.getBukkitPlayer()).getHandle().playerConnection.sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(human.getId(), look, (byte) 0, true));
             }
-            catch (McException e)
+            catch (Exception e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
