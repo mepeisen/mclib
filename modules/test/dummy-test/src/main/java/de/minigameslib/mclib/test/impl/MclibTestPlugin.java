@@ -32,23 +32,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
-import de.minigameslib.mclib.nms.v110.entity.DummyHuman1_10_1;
 import net.minecraft.server.v1_10_R1.EntityHuman;
-import net.minecraft.server.v1_10_R1.PacketPlayOutEntity;
 
 /**
  * @author mepeisen
