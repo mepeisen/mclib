@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent.Status;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -86,6 +85,8 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
 {
     
     // TODO support version control...
+    
+    // TODO 1.8 does not have resource pack status. Maybe this is a problem since we do not know about the resource packs?
     
     /** java logger */
     private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
@@ -171,7 +172,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     }
 
     @Override
-    public Status getState(McPlayerInterface player)
+    public ResourcePackStatus getState(McPlayerInterface player)
     {
         final ResourcePackMarker marker = player.getSessionStorage().get(ResourcePackMarker.class);
         return marker == null ? null : marker.getState();
@@ -193,7 +194,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     @Override
     public boolean hasResourcePack(McPlayerInterface player)
     {
-        return getState(player) == Status.SUCCESSFULLY_LOADED;
+        return getState(player) == ResourcePackStatus.SUCCESSFULLY_LOADED;
     }
     
     @Override
@@ -656,7 +657,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     {
         /** the resource pack state. */
         @PersistentField
-        private Status state;
+        private ResourcePackStatus state;
         /** runnable for success. */
         private McRunnable success;
         /** runnable for failure. */
@@ -667,7 +668,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
         /**
          * @param state
          */
-        public ResourcePackMarker(Status state)
+        public ResourcePackMarker(ResourcePackStatus state)
         {
             this.state = state;
         }
@@ -688,7 +689,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
         /**
          * @param state the state to set
          */
-        public void setState(Status state)
+        public void setState(ResourcePackStatus state)
         {
             this.state = state;
         }
@@ -696,7 +697,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
         /**
          * @return the state
          */
-        public Status getState()
+        public ResourcePackStatus getState()
         {
             return this.state;
         }

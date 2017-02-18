@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
@@ -103,7 +102,31 @@ public interface ItemServiceInterface
      * @param player
      * @return resource pack status or {@code null} if unknown
      */
-    PlayerResourcePackStatusEvent.Status getState(McPlayerInterface player);
+    ResourcePackStatus getState(McPlayerInterface player);
+
+    /**
+     * Status of the resource pack.
+     */
+    public enum ResourcePackStatus {
+
+        /**
+         * The resource pack has been successfully downloaded and applied to the
+         * client.
+         */
+        SUCCESSFULLY_LOADED,
+        /**
+         * The client refused to accept the resource pack.
+         */
+        DECLINED,
+        /**
+         * The client accepted the pack, but download failed.
+         */
+        FAILED_DOWNLOAD,
+        /**
+         * The client accepted the pack and is beginning a download of it.
+         */
+        ACCEPTED;
+    }
     
     /**
      * Forces downloading the resource pack (sends download request)

@@ -57,7 +57,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
@@ -80,7 +79,6 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
-import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
 import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
@@ -163,7 +161,6 @@ import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
-import de.minigameslib.mclib.impl.items.ItemServiceImpl.ResourcePackMarker;
 import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
@@ -494,6 +491,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         this.serversPing = new GetServersPing();
         this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
+        
+        if (this.getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_8_R2))
+        {
+            Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
+        }
     }
     
     /**
@@ -763,74 +765,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 }
             }
         }.runTaskLater(this, 10);
-    }
-    
-    /**
-     * Resource pack event
-     * 
-     * @param evt
-     */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onResourcePack(PlayerResourcePackStatusEvent evt)
-    {
-        final McPlayerImpl player = this.players.getPlayer(evt.getPlayer());
-        final McStorage sessionStorage = player.getSessionStorage();
-        final ResourcePackMarker marker = sessionStorage.get(ResourcePackMarker.class);
-        if (marker == null)
-        {
-            sessionStorage.set(ResourcePackMarker.class, new ResourcePackMarker(evt.getStatus()));
-        }
-        else
-        {
-            marker.setState(evt.getStatus());
-            switch (evt.getStatus())
-            {
-                default:
-                case ACCEPTED:
-                    break;
-                case DECLINED:
-                    if (marker.getDeclined() != null)
-                    {
-                        try
-                        {
-                            marker.getDeclined().run();
-                        }
-                        catch (McException ex)
-                        {
-                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
-                        }
-                    }
-                    break;
-                case FAILED_DOWNLOAD:
-                    if (marker.getFailure() != null)
-                    {
-                        try
-                        {
-                            marker.getFailure().run();
-                        }
-                        catch (McException ex)
-                        {
-                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
-                        }
-                    }
-                    break;
-                case SUCCESSFULLY_LOADED:
-                    if (marker.getSuccess() != null)
-                    {
-                        try
-                        {
-                            marker.getSuccess().run();
-                        }
-                        catch (McException ex)
-                        {
-                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
-                        }
-                    }
-                    break;
-            }
-        }
-        
-        this.itemService.clearTools(player.getBukkitPlayer().getInventory());
     }
     
     /**
