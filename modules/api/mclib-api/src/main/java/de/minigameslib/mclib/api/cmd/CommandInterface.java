@@ -171,35 +171,37 @@ public interface CommandInterface
         {
             final Locale locale = this.getLocale();
             final boolean isAdmin = this.getSender().isOp();
-            final String msg2 = msg.toArg(args).apply(locale, isAdmin);
-            // TODO use semantic colors
-            // TODO allow override of semantic colors via server config
-            switch (msg.getSeverity())
+            final String[] msglines = msg.isSingleLine() ? new String[]{msg.toArg(args).apply(locale, isAdmin)} : msg.toListArg(args).apply(locale, isAdmin);
+            for (final String msg2 : msglines)
             {
-                default:
-                case Neutral:
-                    this.getSender().sendMessage(msg2);
-                    break;
-                case Error:
-                    this.getSender().sendMessage(ChatColor.DARK_RED + msg2);
-                    break;
-                case Information:
-                    this.getSender().sendMessage(ChatColor.WHITE + msg2);
-                    break;
-                case Loser:
-                    this.getSender().sendMessage(ChatColor.RED + msg2);
-                    break;
-                case Success:
-                    this.getSender().sendMessage(ChatColor.GREEN + msg2);
-                    break;
-                case Warning:
-                    this.getSender().sendMessage(ChatColor.YELLOW + msg2);
-                    break;
-                case Winner:
-                    this.getSender().sendMessage(ChatColor.GOLD + msg2);
-                    break;
+                // TODO use semantic colors
+                // TODO allow override of semantic colors via server config
+                switch (msg.getSeverity())
+                {
+                    default:
+                    case Neutral:
+                        this.getSender().sendMessage(msg2);
+                        break;
+                    case Error:
+                        this.getSender().sendMessage(ChatColor.DARK_RED + msg2);
+                        break;
+                    case Information:
+                        this.getSender().sendMessage(ChatColor.WHITE + msg2);
+                        break;
+                    case Loser:
+                        this.getSender().sendMessage(ChatColor.RED + msg2);
+                        break;
+                    case Success:
+                        this.getSender().sendMessage(ChatColor.GREEN + msg2);
+                        break;
+                    case Warning:
+                        this.getSender().sendMessage(ChatColor.YELLOW + msg2);
+                        break;
+                    case Winner:
+                        this.getSender().sendMessage(ChatColor.GOLD + msg2);
+                        break;
+                }
             }
-            
         }
     }
     
