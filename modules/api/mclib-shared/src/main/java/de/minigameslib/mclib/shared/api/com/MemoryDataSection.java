@@ -1596,7 +1596,8 @@ public class MemoryDataSection implements DataSection
             }
             final String plugin = child.getString("plugin"); //$NON-NLS-1$
             final String n = child.getString("name"); //$NON-NLS-1$
-            return uniqueEnumValueFactory.create(plugin, n, clazz.asSubclass(UniqueEnumerationValue.class));
+            final Class<? extends UniqueEnumerationValue> clazz2 = clazz.asSubclass(UniqueEnumerationValue.class);
+            return clazz.cast(uniqueEnumValueFactory.create(plugin, n, clazz2));
         }
         final DataSection child = this.getSection(key);
         if (child == null)
