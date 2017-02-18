@@ -54,6 +54,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.google.common.io.Files;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
@@ -425,6 +426,25 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
             @Override
             public void build()
             {
+                switch (ItemServiceImpl.this.getState(player))
+                {
+                    case DECLINED:
+                        player.sendMessage(CommonMessages.ResourcePackDeclined);
+                        return;
+                    case FAILED_DOWNLOAD:
+                        player.sendMessage(CommonMessages.ResourcePackFailed);
+                        return;
+                    case SUCCESSFULLY_LOADED:
+                        // fall through
+                        break;
+                    case ACCEPTED:
+                        player.sendMessage(CommonMessages.ResourcePackAccepted);
+                        return;
+                    default:
+                        ItemServiceImpl.this.forceDownload(player, this::build);
+                        return;
+                }
+                
                 ToolMarker marker = player.getSessionStorage().get(ToolMarker.class);
                 if (marker == null)
                 {

@@ -464,4 +464,25 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment(value = "Error if entity was not found.")
     EntityNotFoundError,
     
+    /**
+     * Resource pack is declined
+     */
+    @LocalizedMessage(defaultMessage = "Unable to use item tool. You declined the resource pack.")
+    @MessageComment({"Resource pack is declined."})
+    ResourcePackDeclined,
+    
+    /**
+     * Resource pack failed
+     */
+    @LocalizedMessage(defaultMessage = "Unable to use item tool. Resource pack download failed.")
+    @MessageComment({"Resource pack failed."})
+    ResourcePackFailed,
+    
+    /**
+     * Resource pack accepted
+     */
+    @LocalizedMessage(defaultMessage = "Wait for resource pack download to finish.")
+    @MessageComment({"Resource pack download in progress."})
+    ResourcePackAccepted,
+    
 }
