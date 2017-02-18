@@ -311,6 +311,12 @@ public class MemoryDataSection implements DataSection
         {
             this.doSet(key, newValue);
         }
+        else if (newValue instanceof DataFragment)
+        {
+            final DataFragment fragment = (DataFragment) newValue;
+            final DataSection child = this.createSection(key);
+            fragment.write(child);
+        }
         else if (newValue instanceof UniqueEnumerationValue)
         {
             final UniqueEnumerationValue casted = (UniqueEnumerationValue) newValue;
@@ -326,12 +332,6 @@ public class MemoryDataSection implements DataSection
         else if (newValue instanceof Enum<?>)
         {
             this.set(key, ((Enum<?>) newValue).name());
-        }
-        else if (newValue instanceof DataFragment)
-        {
-            final DataFragment fragment = (DataFragment) newValue;
-            final DataSection child = this.createSection(key);
-            fragment.write(child);
         }
         else
         {
