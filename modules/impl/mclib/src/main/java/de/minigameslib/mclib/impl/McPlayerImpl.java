@@ -287,6 +287,8 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
         
         for (int i = 0; i < result.length; i++)
         {
+            // TODO use semantic colors
+            // TODO allow override of semantic colors via server config
             switch (msg.getSeverity())
             {
                 default:

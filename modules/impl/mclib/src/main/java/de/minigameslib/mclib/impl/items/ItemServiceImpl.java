@@ -29,7 +29,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,22 +42,37 @@ import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent.Status;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import com.google.common.io.Files;
 
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.event.McEventHandler;
+import de.minigameslib.mclib.api.event.McInventoryClickEvent;
+import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.McPlayerDeathEvent;
+import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
+import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.McCoreConfig;
+import de.minigameslib.mclib.nms.api.ItemHelperInterface;
+import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -64,7 +81,7 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
  * 
  * @author mepeisen
  */
-public class ItemServiceImpl implements ItemServiceInterface
+public class ItemServiceImpl implements ItemServiceInterface, McListener
 {
     
     // TODO support version control...
@@ -339,6 +356,280 @@ public class ItemServiceImpl implements ItemServiceInterface
     }
 
     /**
+     * @param inventory
+     */
+    public void clearTools(PlayerInventory inventory)
+    {        
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        
+        // clears tooling items
+        for (int i = 0; i < inventory.getSize(); i++)
+        {
+            final ItemStack item = inventory.getItem(i);
+            if (helper.getCustomData(item, "mclib", "clearOnJoin") != null)  //$NON-NLS-1$//$NON-NLS-2$
+            {
+                inventory.setItem(i, new ItemStack(Material.AIR));
+            }
+        }
+    }
+
+    @Override
+    public ToolBuilderInterface prepareTool(ItemId item, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
+    {
+        return new ToolBuilderInterface() {
+            
+            /** flag for single use */
+            private boolean singleUse;
+            
+            /** right click handler */
+            private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClick;
+            
+            /** left click handler */
+            private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClick;
+
+            /** description */
+            private LocalizedMessageInterface description;
+
+            /** description arguments */
+            private Serializable[] descriptionArgs;
+            
+            @Override
+            public ToolBuilderInterface singleUse()
+            {
+                this.singleUse = true;
+                return this;
+            }
+            
+            @Override
+            public ToolBuilderInterface onRightClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
+            {
+                this.rightClick = handler;
+                return this;
+            }
+            
+            @Override
+            public ToolBuilderInterface onLeftClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
+            {
+                this.leftClick = handler;
+                return this;
+            }
+            
+            @Override
+            public ToolBuilderInterface description(LocalizedMessageInterface desc, Serializable... descargs)
+            {
+                this.description = desc;
+                this.descriptionArgs = descargs;
+                return this;
+            }
+            
+            @Override
+            public void build()
+            {
+                ToolMarker marker = player.getSessionStorage().get(ToolMarker.class);
+                if (marker == null)
+                {
+                    marker = new ToolMarker();
+                    player.getSessionStorage().set(ToolMarker.class, marker);
+                    player.registerHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
+                }
+                
+                final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+                final PlayerInventory inventory = player.getBukkitPlayer().getInventory();
+                
+                // search existing tooling
+                int slot = -1;
+                for (int i = 0; i < inventory.getSize(); i++)
+                {
+                    final ItemStack invitem = inventory.getItem(i);
+                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+                    {
+                        slot = i;
+                        break;
+                    }
+                }
+                if (slot == -1)
+                {
+                    slot = inventory.firstEmpty();
+                }
+                
+                // preplace item stack
+                ItemStack stack = ItemServiceImpl.this.createItem(item, player.encodeMessage(title, titleArgs)[0]);
+                if (this.description != null)
+                {
+                    final ItemMeta meta = stack.getItemMeta();
+                    meta.setLore(Arrays.asList(player.encodeMessage(this.description, this.descriptionArgs)));
+                    stack.setItemMeta(meta);
+                }
+                inventory.setItem(slot, stack);
+                stack = inventory.getItem(slot); // forces to use the correct NMS class
+
+                helper.addCustomData(stack, "mclib", "clearOnJoin", "1");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                helper.addCustomData(stack, "mclib", "customTooling", "1");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                marker.setOneUse(this.singleUse);
+                marker.setLeftClickHandler(this.leftClick);
+                marker.setRightClickHandler(this.rightClick);
+                
+                player.getBukkitPlayer().updateInventory();
+            }
+        };
+    }
+    
+    /**
+     * Player death event; cancels the drop of the tooling item...
+     * @param evt
+     */
+    @McEventHandler
+    public void onDeath(McPlayerDeathEvent evt)
+    {
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        final List<ItemStack> stacks = evt.getBukkitEvent().getDrops();
+        for (int i = 0; i < stacks.size(); i++)
+        {
+            if (helper.getCustomData(stacks.get(i), "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+            {
+                stacks.remove(i);
+                break;
+            }
+        }
+    }
+    
+    /**
+     * On drop items; cancels drop of tooling item...
+     * @param evt
+     */
+    @McEventHandler
+    public void onPlayerDrop(McPlayerDropItemEvent evt)
+    {
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        if (helper.getCustomData(evt.getBukkitEvent().getItemDrop().getItemStack(), "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+        {
+            evt.getBukkitEvent().setCancelled(true);
+        }
+    }
+    
+    /**
+     * On inventory action; cancels drop of tooling item into other inventories...
+     * @param evt
+     */
+    @McEventHandler
+    public void onInventoryClick(McInventoryClickEvent evt)
+    {
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        final ItemStack cursor = evt.getBukkitEvent().getCursor();
+        if (cursor != null && helper.getCustomData(cursor, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+        {
+            switch (evt.getBukkitEvent().getAction())
+            {
+                case CLONE_STACK:
+                case UNKNOWN:
+                case COLLECT_TO_CURSOR:
+                default:
+                    // deny
+                    evt.getBukkitEvent().setCancelled(true);
+                    break;
+                case DROP_ALL_CURSOR:
+                case DROP_ALL_SLOT:
+                case DROP_ONE_CURSOR:
+                case DROP_ONE_SLOT:
+                case MOVE_TO_OTHER_INVENTORY:
+                case PLACE_ALL:
+                case PLACE_ONE:
+                case PLACE_SOME:
+                case SWAP_WITH_CURSOR:
+                    if (evt.getBukkitEvent().getClickedInventory() != evt.getPlayer().getBukkitPlayer().getInventory())
+                    {
+                        // deny foreign repositories
+                        evt.getBukkitEvent().setCancelled(true);
+                    }
+                    break;
+                case HOTBAR_MOVE_AND_READD:
+                case HOTBAR_SWAP:
+                case NOTHING:
+                case PICKUP_ALL:
+                case PICKUP_HALF:
+                case PICKUP_ONE:
+                case PICKUP_SOME:
+                    // allow
+                    break;
+            }
+        }
+    }
+    
+    /**
+     * Player mouse click
+     * @param evt
+     */
+    @McEventHandler
+    public void onClick(McPlayerInteractEvent evt)
+    {
+        if (evt.getBukkitEvent().hasBlock())
+        {
+            final ItemStack stack = evt.getBukkitEvent().getItem();
+            final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+            if (stack != null && helper.getCustomData(stack, "mclib", "customTooling") != null)//$NON-NLS-1$//$NON-NLS-2$
+            {
+                evt.getBukkitEvent().setCancelled(true);
+                
+                final ToolMarker marker = evt.getPlayer().getSessionStorage().get(ToolMarker.class);
+                if (marker != null)
+                {
+                    boolean clear = false;
+                    if (evt.getBukkitEvent().getAction() == Action.LEFT_CLICK_BLOCK)
+                    {
+                        if (marker.getLeftClickHandler() != null)
+                        {
+                            try
+                            {
+                                marker.getLeftClickHandler().accept(evt.getPlayer(), evt);
+                            }
+                            catch (McException ex)
+                            {
+                                // TODO logging
+                                evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
+                            }
+                        }
+                        clear = true;
+                    }
+                    else if (evt.getBukkitEvent().getAction() == Action.RIGHT_CLICK_BLOCK)
+                    {
+                        if (marker.getRightClickHandler() != null)
+                        {
+                            try
+                            {
+                                marker.getRightClickHandler().accept(evt.getPlayer(), evt);
+                            }
+                            catch (McException ex)
+                            {
+                                // TODO logging
+                                evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
+                            }
+                        }
+                        clear = true;
+                    }
+                    
+                    if (clear && marker.isOneUse())
+                    {
+                        // search and clear existing tooling
+                        final PlayerInventory inventory = evt.getPlayer().getBukkitPlayer().getInventory();
+                        for (int i = 0; i < inventory.getSize(); i++)
+                        {
+                            final ItemStack invitem = inventory.getItem(i);
+                            if (helper.getCustomData(invitem, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+                            {
+                                inventory.setItem(i, new ItemStack(Material.AIR));
+                                evt.getPlayer().getBukkitPlayer().updateInventory();
+                                evt.getPlayer().unregisterHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
+                                evt.getPlayer().getSessionStorage().set(ToolMarker.class, null);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * A marker for players that downloaded the resource pack.
      */
     public static final class ResourcePackMarker extends AnnotatedDataFragment
@@ -414,6 +705,77 @@ public class ItemServiceImpl implements ItemServiceInterface
             return this.declined;
         }
         
+    }
+
+    /**
+     * A marker for players that have installed tools
+     */
+    public static final class ToolMarker extends AnnotatedDataFragment
+    {
+        
+        /**
+         * boolean for destroying of tool upon use
+         */
+        @PersistentField
+        private boolean isOneUse;
+        
+        /**
+         * non persistent left click handler.
+         */
+        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClickHandler;
+        
+        /**
+         * non persistent right click handler.
+         */
+        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler;
+
+        /**
+         * @return the isOneUse
+         */
+        public boolean isOneUse()
+        {
+            return this.isOneUse;
+        }
+
+        /**
+         * @param isOneUse the isOneUse to set
+         */
+        public void setOneUse(boolean isOneUse)
+        {
+            this.isOneUse = isOneUse;
+        }
+
+        /**
+         * @return the leftClickHandler
+         */
+        public McBiConsumer<McPlayerInterface, McPlayerInteractEvent> getLeftClickHandler()
+        {
+            return this.leftClickHandler;
+        }
+
+        /**
+         * @param leftClickHandler the leftClickHandler to set
+         */
+        public void setLeftClickHandler(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClickHandler)
+        {
+            this.leftClickHandler = leftClickHandler;
+        }
+
+        /**
+         * @return the rightClickHandler
+         */
+        public McBiConsumer<McPlayerInterface, McPlayerInteractEvent> getRightClickHandler()
+        {
+            return this.rightClickHandler;
+        }
+
+        /**
+         * @param rightClickHandler the rightClickHandler to set
+         */
+        public void setRightClickHandler(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler)
+        {
+            this.rightClickHandler = rightClickHandler;
+        }
         
     }
     

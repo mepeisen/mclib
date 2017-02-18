@@ -172,6 +172,8 @@ public interface CommandInterface
             final Locale locale = this.getLocale();
             final boolean isAdmin = this.getSender().isOp();
             final String msg2 = msg.toArg(args).apply(locale, isAdmin);
+            // TODO use semantic colors
+            // TODO allow override of semantic colors via server config
             switch (msg.getSeverity())
             {
                 default:

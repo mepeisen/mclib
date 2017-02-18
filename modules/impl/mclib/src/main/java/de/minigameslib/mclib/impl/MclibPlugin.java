@@ -290,6 +290,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
      */
     private final ExecutorService                                        executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
     
+    /**
+     * the item service impl
+     */
+    ItemServiceImpl                                                      itemService;
+    
     static
     {
         if (MemoryDataSection.isFragmentImplementationLocked())
@@ -378,17 +383,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // item service
         this.enumService.registerEnumClass(this, CommonItems.class);
-        final ItemServiceImpl itemService = new ItemServiceImpl();
-        Bukkit.getServicesManager().register(ItemServiceInterface.class, itemService, this, ServicePriority.Highest);
+        this.itemService = new ItemServiceImpl();
+        Bukkit.getServicesManager().register(ItemServiceInterface.class, this.itemService, this, ServicePriority.Highest);
         new BukkitRunnable() {
             
             @Override
             public void run()
             {
-                itemService.init();
+                MclibPlugin.this.itemService.init();
                 try
                 {
-                    itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources.zip")); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources.zip")); //$NON-NLS-1$
                 }
                 catch (IOException e)
                 {
@@ -704,7 +709,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
-        if (ObjectServiceInterface.instance().isHuman(evt.getPlayer())) return;
+        if (ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
+            return;
         
         final Player player = evt.getPlayer();
         
@@ -823,6 +829,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                     break;
             }
         }
+        
+        this.itemService.clearTools(player.getBukkitPlayer().getInventory());
     }
     
     /**

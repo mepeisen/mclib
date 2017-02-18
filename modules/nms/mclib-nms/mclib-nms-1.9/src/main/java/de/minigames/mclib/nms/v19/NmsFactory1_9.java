@@ -34,6 +34,7 @@ import de.minigameslib.mclib.nms.api.ChatSystemInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
+import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 
@@ -59,6 +60,7 @@ public class NmsFactory1_9 implements NmsFactory
         this.impls.put(PlayerManagerInterface.class, PlayerManager1_9::new);
         this.impls.put(ChatSystemInterface.class, ChatSystem1_9::new);
         this.impls.put(EntityHelperInterface.class, EntityHelper1_9::new);
+        this.impls.put(ItemHelperInterface.class, ItemHelper1_9::new);
     }
     
     @Override
