@@ -299,7 +299,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         return false;
                     }
                 }
-                else
+                else if (fdesc.primitiveType != null)
                 {
                     if (!fdesc.primitiveType.test(name, section))
                     {
