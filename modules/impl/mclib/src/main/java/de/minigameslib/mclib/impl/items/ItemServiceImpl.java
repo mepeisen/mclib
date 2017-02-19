@@ -607,7 +607,15 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                         {
                             try
                             {
-                                marker.getLeftClickHandler().accept(evt.getPlayer(), evt);
+                                try
+                                {
+                                    marker.getLeftClickHandler().accept(evt.getPlayer(), evt);
+                                }
+                                catch (RuntimeException ex)
+                                {
+                                    throw new McException(CommonMessages.InternalError, ex, ex.getMessage());
+                                }
+                                clear = true;
                             }
                             catch (McException ex)
                             {
@@ -615,7 +623,6 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                                 evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
                             }
                         }
-                        clear = true;
                     }
                     else if (evt.getBukkitEvent().getAction() == Action.RIGHT_CLICK_BLOCK)
                     {
@@ -623,7 +630,15 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                         {
                             try
                             {
-                                marker.getRightClickHandler().accept(evt.getPlayer(), evt);
+                                try
+                                {
+                                    marker.getRightClickHandler().accept(evt.getPlayer(), evt);
+                                }
+                                catch (RuntimeException ex)
+                                {
+                                    throw new McException(CommonMessages.InternalError, ex, ex.getMessage());
+                                }
+                                clear = true;
                             }
                             catch (McException ex)
                             {
@@ -631,7 +646,6 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                                 evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
                             }
                         }
-                        clear = true;
                     }
                     
                     if (clear && marker.isOneUse())
