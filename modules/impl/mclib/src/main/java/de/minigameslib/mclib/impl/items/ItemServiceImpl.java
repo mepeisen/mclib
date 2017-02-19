@@ -427,7 +427,13 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
             @Override
             public void build()
             {
-                switch (ItemServiceImpl.this.getState(player))
+                final ResourcePackStatus state = ItemServiceImpl.this.getState(player);
+                if (state == null)
+                {
+                    ItemServiceImpl.this.forceDownload(player, this::build);
+                    return;
+                }
+                switch (state)
                 {
                     case DECLINED:
                         player.sendMessage(CommonMessages.ResourcePackDeclined);
