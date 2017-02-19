@@ -70,6 +70,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
+import de.minigames.mclib.nms.v18.NetworkManager1_8;
 import de.minigames.mclib.nms.v18.NmsFactory1_8;
 import de.minigames.mclib.nms.v183.NmsFactory1_8_3;
 import de.minigames.mclib.nms.v185.NmsFactory1_8_5;
@@ -713,6 +714,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         if (ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
             return;
+        
+        if (this.getMinecraftVersion() == MinecraftVersionsType.V1_8_R1)
+        {
+            NetworkManager1_8.hookResourcePackStatus(evt.getPlayer(), new ResourcePackHandler(this.players, this.itemService));
+        }
         
         final Player player = evt.getPlayer();
         

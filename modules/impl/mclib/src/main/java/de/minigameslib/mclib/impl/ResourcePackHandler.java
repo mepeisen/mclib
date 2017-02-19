@@ -24,12 +24,6 @@
 
 package de.minigameslib.mclib.impl;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-
-import de.minigameslib.mclib.api.items.ItemServiceInterface.ResourcePackStatus;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 
 /**
@@ -37,28 +31,16 @@ import de.minigameslib.mclib.impl.items.ItemServiceImpl;
  * 
  * @author mepeisen
  */
-class ResourcePackListener extends AbstractResourcePackListener implements Listener
+class ResourcePackHandler extends AbstractResourcePackListener
 {
     
     /**
      * @param players
      * @param itemService
      */
-    public ResourcePackListener(PlayerRegistry players, ItemServiceImpl itemService)
+    public ResourcePackHandler(PlayerRegistry players, ItemServiceImpl itemService)
     {
         super(players, itemService);
-    }
-
-
-    /**
-     * Resource pack event
-     * 
-     * @param evt
-     */
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onResourcePack(PlayerResourcePackStatusEvent evt)
-    {
-        super.accept(evt.getPlayer(), ResourcePackStatus.valueOf(evt.getStatus().name()));
     }
     
 }
