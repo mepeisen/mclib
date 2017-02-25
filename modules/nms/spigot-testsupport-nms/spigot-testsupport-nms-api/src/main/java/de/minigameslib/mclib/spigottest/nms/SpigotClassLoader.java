@@ -154,7 +154,7 @@ public class SpigotClassLoader extends ClassLoader implements FilterableClassLoa
             {
                 try
                 {
-                    final URL url = filter.toURI().resolve(path).toURL();
+                    final URL url = new URL(filter, path);
                     if (DEBUG) System.out.println("Check " + name + " against " + url); //$NON-NLS-1$ //$NON-NLS-2$
                     try (final InputStream is = url.openStream())
                     {
@@ -162,7 +162,7 @@ public class SpigotClassLoader extends ClassLoader implements FilterableClassLoa
                         throw new ClassNotFoundException();
                     }
                 }
-                catch (@SuppressWarnings("unused") URISyntaxException | IOException ex)
+                catch (@SuppressWarnings("unused") IOException ex)
                 {
                     // silently ignore
                 }
