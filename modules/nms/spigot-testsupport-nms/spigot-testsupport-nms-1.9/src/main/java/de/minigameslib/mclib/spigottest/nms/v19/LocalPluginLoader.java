@@ -32,10 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -160,11 +158,11 @@ public class LocalPluginLoader implements PluginLoader
     @Override
     public Plugin loadPlugin(File file) throws InvalidPluginException, UnknownDependencyException
     {
-        Validate.notNull(file, "File cannot be null");
+        Validate.notNull(file, "File cannot be null"); //$NON-NLS-1$
         
         if (!(file.exists()))
         {
-            throw new InvalidPluginException(new FileNotFoundException(file.getPath() + " does not exist"));
+            throw new InvalidPluginException(new FileNotFoundException(file.getPath() + " does not exist")); //$NON-NLS-1$
         }
         PluginDescriptionFile description;
         try
@@ -185,22 +183,22 @@ public class LocalPluginLoader implements PluginLoader
             if ((dataFolder.isDirectory()) && (oldDataFolder.isDirectory()))
             {
                 this.server.getLogger().warning(
-                        String.format("While loading %s (%s) found old-data folder: `%s' next to the new one `%s'", new Object[] { description.getFullName(), file, oldDataFolder, dataFolder }));
+                        String.format("While loading %s (%s) found old-data folder: `%s' next to the new one `%s'", new Object[] { description.getFullName(), file, oldDataFolder, dataFolder })); //$NON-NLS-1$
             }
             else if ((oldDataFolder.isDirectory()) && (!(dataFolder.exists())))
             {
                 if (!(oldDataFolder.renameTo(dataFolder)))
                 {
-                    throw new InvalidPluginException("Unable to rename old data folder: `" + oldDataFolder + "' to: `" + dataFolder + "'");
+                    throw new InvalidPluginException("Unable to rename old data folder: `" + oldDataFolder + "' to: `" + dataFolder + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 this.server.getLogger().log(Level.INFO,
-                        String.format("While loading %s (%s) renamed data folder: `%s' to `%s'", new Object[] { description.getFullName(), file, oldDataFolder, dataFolder }));
+                        String.format("While loading %s (%s) renamed data folder: `%s' to `%s'", new Object[] { description.getFullName(), file, oldDataFolder, dataFolder })); //$NON-NLS-1$
             }
         }
         
         if ((dataFolder.exists()) && (!(dataFolder.isDirectory())))
         {
-            throw new InvalidPluginException(String.format("Projected datafolder: `%s' for %s (%s) exists and is not a directory", new Object[] { dataFolder, description.getFullName(), file }));
+            throw new InvalidPluginException(String.format("Projected datafolder: `%s' for %s (%s) exists and is not a directory", new Object[] { dataFolder, description.getFullName(), file })); //$NON-NLS-1$
         }
         
         for (String pluginName : description.getDepend())
@@ -221,17 +219,11 @@ public class LocalPluginLoader implements PluginLoader
             final ClassLoader appLoader = this.javaLoader.getClass().getClassLoader();
             ctor.setAccessible(true);
             final Properties props = fetchProperties(file);
-            if (props.containsKey("pluginYml")) //$NON-NLS-1$
+            if (props.containsKey("pluginYml") && props.containsKey("cp")) //$NON-NLS-1$ //$NON-NLS-2$
             {
-                final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
-                final File classesFolder = Paths.get(url.toURI()).toFile().getParentFile();
-                // final File testClassesFolder = new File(Paths.get(url.toURI()).toFile().getParentFile().getParentFile(), "test-classes"); //$NON-NLS-1$
-                ((FilterableClassLoader)appLoader).addFilterUrl(classesFolder.toURI().toURL());
-                // ((FilterableClassLoader)appLoader).addFilterUrl(testClassesFolder.toURI().toURL());
-                loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, classesFolder);
-//                final Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", URL.class); //$NON-NLS-1$
-//                addUrl.setAccessible(true);
-//                addUrl.invoke(loader, testClassesFolder.toURI().toURL());
+                final File cp = new File(props.getProperty("cp")); //$NON-NLS-1$
+                ((FilterableClassLoader)appLoader).addFilterUrl(cp.toURI().toURL());
+                loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, cp);
                 
                 final Field field = clazz.getDeclaredField("plugin"); //$NON-NLS-1$
                 field.setAccessible(true);

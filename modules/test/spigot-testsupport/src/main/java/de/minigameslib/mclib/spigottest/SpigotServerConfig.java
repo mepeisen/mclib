@@ -33,6 +33,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -447,13 +450,28 @@ public class SpigotServerConfig
                     }
                     final Properties properties = new Properties();
                     properties.setProperty("pluginYml", url.toString()); //$NON-NLS-1$
+                    try
+                    {
+                        final File file = Paths.get(url.toURI()).toFile().getParentFile();
+                        properties.setProperty("cp", file.toString()); //$NON-NLS-1$
+                    }
+                    catch (@SuppressWarnings("unused") FileSystemNotFoundException ex)
+                    {
+                        final Map<String, String> env = new HashMap<>();
+                        env.put("create", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+                        try (final FileSystem fs = FileSystems.newFileSystem(url.toURI(), env))
+                        {
+                            final File file = Paths.get(url.toURI()).toFile().getParentFile();
+                            properties.setProperty("cp", file.toString()); //$NON-NLS-1$
+                        }
+                    }
                     try (final FileOutputStream fos = new FileOutputStream(new File(installFolder, name + ".localplugin"))) //$NON-NLS-1$
                     {
                         properties.store(fos, ""); //$NON-NLS-1$
                     }
                 }
             }
-            catch (IOException ex)
+            catch (IOException | URISyntaxException ex)
             {
                 throw new IllegalStateException(ex);
             }
