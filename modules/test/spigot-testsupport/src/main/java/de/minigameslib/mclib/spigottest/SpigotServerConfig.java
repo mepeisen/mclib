@@ -30,13 +30,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -313,6 +309,32 @@ public class SpigotServerConfig
     }
     
     /**
+     * Returns the root for given url
+     * @param url
+     * @param segmentCount
+     * @return root
+     * @throws MalformedURLException
+     */
+    static File getRootForCpFile(URL url, int segmentCount) throws MalformedURLException
+    {
+        final String surl = url.toString();
+        if (surl.startsWith("file:")) //$NON-NLS-1$
+        {
+            File file = new File(surl.substring(5));
+            for (int i = 0; i < segmentCount; i++)
+            {
+                file = file.getParentFile();
+            }
+            return file;
+        }
+        if (surl.startsWith("jar:file:")) //$NON-NLS-1$
+        {
+            return new File(surl.substring(9, surl.lastIndexOf('!')));
+        }
+        throw new IllegalArgumentException("unknown url type: " + url); //$NON-NLS-1$
+    }
+    
+    /**
      * A builder to create classpath plugins.
      * 
      * @author mepeisen
@@ -450,28 +472,14 @@ public class SpigotServerConfig
                     }
                     final Properties properties = new Properties();
                     properties.setProperty("pluginYml", url.toString()); //$NON-NLS-1$
-                    try
-                    {
-                        final File file = Paths.get(url.toURI()).toFile().getParentFile();
-                        properties.setProperty("cp", file.toString()); //$NON-NLS-1$
-                    }
-                    catch (@SuppressWarnings("unused") FileSystemNotFoundException ex)
-                    {
-                        final Map<String, String> env = new HashMap<>();
-                        env.put("create", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-                        try (final FileSystem fs = FileSystems.newFileSystem(url.toURI(), env))
-                        {
-                            final File file = Paths.get(url.toURI()).toFile().getParentFile();
-                            properties.setProperty("cp", file.toString()); //$NON-NLS-1$
-                        }
-                    }
+                    properties.setProperty("cp", getRootForCpFile(url, 1).toString()); //$NON-NLS-1$
                     try (final FileOutputStream fos = new FileOutputStream(new File(installFolder, name + ".localplugin"))) //$NON-NLS-1$
                     {
                         properties.store(fos, ""); //$NON-NLS-1$
                     }
                 }
             }
-            catch (IOException | URISyntaxException ex)
+            catch (IOException ex)
             {
                 throw new IllegalStateException(ex);
             }
@@ -511,15 +519,10 @@ public class SpigotServerConfig
             final URL url = SpigotServerConfig.class.getClassLoader().getResource(className.replace('.', '/').concat(".class")); //$NON-NLS-1$
             try (final FileOutputStream fos = new FileOutputStream(new File(installFolder, this.custom.name() + ".localplugin"))) //$NON-NLS-1$
             {
-                File file = Paths.get(url.toURI()).toFile();
-                for (int i = className.length() - className.replace(".", "").length(); i > 0; i--) //$NON-NLS-1$ //$NON-NLS-2$
-                {
-                    file = file.getParentFile();
-                }
-                properties.setProperty("cp", file.toString()); //$NON-NLS-1$
+                properties.setProperty("cp", getRootForCpFile(url, className.length() - className.replace(".", "").length()).toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 properties.store(fos, ""); //$NON-NLS-1$
             }
-            catch (IOException | URISyntaxException ex)
+            catch (IOException ex)
             {
                 throw new IllegalStateException(ex);
             }
