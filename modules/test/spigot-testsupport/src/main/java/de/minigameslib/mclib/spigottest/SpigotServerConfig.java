@@ -30,8 +30,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -47,6 +49,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.yaml.snakeyaml.Yaml;
+
+import de.minigameslib.mclib.spigottest.SpigotTest.CustomPlugin;
 
 /**
  * Configuration for spigot test servers.
@@ -88,6 +92,9 @@ public class SpigotServerConfig
      * override server properties.
      */
     private Map<String, String> serverProperties = new HashMap<>();
+    
+    /** flag to control if local plugin was already added. */
+    private boolean localPluginAdded = false;
     
     /**
      * Creates a spigot server for this config.
@@ -279,9 +286,6 @@ public class SpigotServerConfig
         this.plugins.add(cpb.build());
         return this;
     }
-    
-    /** flag to control if local plugin was already added. */
-    private boolean localPluginAdded = false;
 
     /**
      * Adds the plugin from local classpath
@@ -294,6 +298,15 @@ public class SpigotServerConfig
             this.plugins.add(new LocalPlugin());
         }
         return this;
+    }
+
+    /**
+     * Adds a custom plugin
+     * @param plugin
+     */
+    public void addCustomPlugin(CustomPlugin plugin)
+    {
+        this.plugins.add(new CustomPlugin_(plugin));
     }
     
     /**
@@ -441,6 +454,54 @@ public class SpigotServerConfig
                 }
             }
             catch (IOException ex)
+            {
+                throw new IllegalStateException(ex);
+            }
+            LOGGER.log(Level.FINE, "created local plugin files"); //$NON-NLS-1$
+        }
+        
+    }
+    
+    /**
+     * custom plugin class
+     * @author mepeisen
+     */
+    static class CustomPlugin_ extends Plugin
+    {
+        
+        /** custom plugin annotation data */
+        private CustomPlugin custom;
+
+        /**
+         * Constructor
+         * @param custom the annotation data
+         */
+        public CustomPlugin_(CustomPlugin custom)
+        {
+            this.custom = custom;
+        }
+        
+        @Override
+        void prepare(File installFolder)
+        {
+            LOGGER.log(Level.FINE, "creating custom plugin file for " + this.custom.name()); //$NON-NLS-1$
+
+            final Properties properties = new Properties();
+            properties.setProperty("name", this.custom.name()); //$NON-NLS-1$
+            properties.setProperty("main", this.custom.pluginClass().getName()); //$NON-NLS-1$
+            final String className = this.custom.pluginClass().getName();
+            final URL url = SpigotServerConfig.class.getClassLoader().getResource(className.replace('.', '/').concat(".class")); //$NON-NLS-1$
+            try (final FileOutputStream fos = new FileOutputStream(new File(installFolder, this.custom.name() + ".localplugin"))) //$NON-NLS-1$
+            {
+                File file = Paths.get(url.toURI()).toFile();
+                for (int i = className.length() - className.replace(".", "").length(); i > 0; i--) //$NON-NLS-1$ //$NON-NLS-2$
+                {
+                    file = file.getParentFile();
+                }
+                properties.setProperty("cp", file.toString()); //$NON-NLS-1$
+                properties.store(fos, ""); //$NON-NLS-1$
+            }
+            catch (IOException | URISyntaxException ex)
             {
                 throw new IllegalStateException(ex);
             }

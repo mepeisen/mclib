@@ -373,5 +373,31 @@ class LocalServerStarter implements ServerManager
             return null;
         }
     }
+
+    @Override
+    public boolean isPluginEnabled(String name)
+    {
+        return Bukkit.getPluginManager().isPluginEnabled(name);
+    }
+
+    @Override
+    public Object getPlugin(String name)
+    {
+        return Bukkit.getPluginManager().getPlugin(name);
+    }
+
+    @Override
+    public Object loadServicePlugin(String serviceClass)
+    {
+        try
+        {
+            return Bukkit.getServicesManager().load(Class.forName(serviceClass));
+        }
+        catch (ClassNotFoundException e)
+        {
+            // TODO logging
+            return null;
+        }
+    }
     
 }

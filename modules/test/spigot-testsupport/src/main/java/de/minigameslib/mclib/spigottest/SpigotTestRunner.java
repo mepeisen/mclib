@@ -38,6 +38,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import de.minigameslib.mclib.spigottest.SpigotTest.CustomPlugin;
+
 /**
  * @author mepeisen
  *
@@ -75,6 +77,13 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
             {
                 config.addLocalPlugin();
             }
+            if (test.customPlugins() != null && test.customPlugins().length > 0)
+            {
+                for (final CustomPlugin plugin : test.customPlugins())
+                {
+                    config.addCustomPlugin(plugin);
+                }
+            }
         }
         this.server = config.create();
     }
@@ -95,7 +104,7 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
                     reflectField.set(obj, this.server);
                     break;
                 default:
-                    // TODO logging
+                    System.out.println("Unknown class type for spigot inject. field: " + field.getName() + " / type: " + reflectField.getType()); //$NON-NLS-1$ //$NON-NLS-2$
                     break;
             }
         }
@@ -142,7 +151,7 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
                     }
                     catch (Exception ex)
                     {
-                        // TODO logging
+                        ex.printStackTrace();
                         SpigotTestRunner.this.server.destroy();
                     }
                 }

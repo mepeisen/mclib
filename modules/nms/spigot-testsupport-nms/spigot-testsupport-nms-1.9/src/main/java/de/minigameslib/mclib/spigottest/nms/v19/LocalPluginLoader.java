@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.spigottest.nms.v19;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -220,19 +221,35 @@ public class LocalPluginLoader implements PluginLoader
             final ClassLoader appLoader = this.javaLoader.getClass().getClassLoader();
             ctor.setAccessible(true);
             final Properties props = fetchProperties(file);
-            final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
-            final File classesFolder = Paths.get(url.toURI()).toFile().getParentFile();
-            final File testClassesFolder = new File(Paths.get(url.toURI()).toFile().getParentFile().getParentFile(), "test-classes"); //$NON-NLS-1$
-            ((FilterableClassLoader)appLoader).addFilterUrl(classesFolder.toURI().toURL());
-            ((FilterableClassLoader)appLoader).addFilterUrl(testClassesFolder.toURI().toURL());
-            loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, classesFolder);
-            final Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", URL.class); //$NON-NLS-1$
-            addUrl.setAccessible(true);
-            addUrl.invoke(loader, testClassesFolder.toURI().toURL());
-            
-            final Field field = clazz.getDeclaredField("plugin"); //$NON-NLS-1$
-            field.setAccessible(true);
-            plugin = (Plugin) field.get(loader);
+            if (props.containsKey("pluginYml")) //$NON-NLS-1$
+            {
+                final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
+                final File classesFolder = Paths.get(url.toURI()).toFile().getParentFile();
+                // final File testClassesFolder = new File(Paths.get(url.toURI()).toFile().getParentFile().getParentFile(), "test-classes"); //$NON-NLS-1$
+                ((FilterableClassLoader)appLoader).addFilterUrl(classesFolder.toURI().toURL());
+                // ((FilterableClassLoader)appLoader).addFilterUrl(testClassesFolder.toURI().toURL());
+                loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, classesFolder);
+//                final Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", URL.class); //$NON-NLS-1$
+//                addUrl.setAccessible(true);
+//                addUrl.invoke(loader, testClassesFolder.toURI().toURL());
+                
+                final Field field = clazz.getDeclaredField("plugin"); //$NON-NLS-1$
+                field.setAccessible(true);
+                plugin = (Plugin) field.get(loader);
+            }
+            else if (props.containsKey("name") && props.containsKey("main") && props.containsKey("cp")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            {
+                final File cp = new File(props.getProperty("cp")); //$NON-NLS-1$
+                ((FilterableClassLoader)appLoader).addFilterUrl(cp.toURI().toURL());
+                loader = ctor.newInstance(this.javaLoader, appLoader, description, dataFolder, cp);
+                final Field field = clazz.getDeclaredField("plugin"); //$NON-NLS-1$
+                field.setAccessible(true);
+                plugin = (Plugin) field.get(loader);
+            }
+            else
+            {
+                throw new IllegalStateException("Unsupported plugin type in " + file); //$NON-NLS-1$
+            }
         }
         catch (Throwable ex)
         {
@@ -251,11 +268,23 @@ public class LocalPluginLoader implements PluginLoader
         try
         {
             final Properties props = fetchProperties(file);
-            final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
-            
-            try (final InputStream is = url.openStream())
+            if (props.containsKey("pluginYml")) //$NON-NLS-1$
             {
-                return new PluginDescriptionFile(is);
+                final URL url = new URL(props.getProperty("pluginYml")); //$NON-NLS-1$
+                
+                try (final InputStream is = url.openStream())
+                {
+                    return new PluginDescriptionFile(is);
+                }
+            }
+            else if (props.containsKey("name") && props.containsKey("main") && props.containsKey("cp")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            {
+                final String content = "name: " + props.getProperty("name") + "\nmain: " + props.getProperty("main") + "\nversion: 0.0.1\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                return new PluginDescriptionFile(new ByteArrayInputStream(content.getBytes()));
+            }
+            else
+            {
+                throw new IllegalStateException("Unsupported plugin type in " + file); //$NON-NLS-1$
             }
         }
         catch (IOException | YAMLException ex)

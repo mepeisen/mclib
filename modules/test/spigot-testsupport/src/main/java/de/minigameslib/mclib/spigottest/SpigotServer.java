@@ -344,4 +344,34 @@ public class SpigotServer
         return this.manager.createInstance(javaClass.getName());
     }
     
+    /**
+     * Check if plugin is enabled
+     * @param name
+     * @return {@code true} if plugin is enabled.
+     */
+    public boolean isPluginEnabled(String name)
+    {
+        return this.manager.isPluginEnabled(name);
+    }
+    
+    /**
+     * Returns the plugin object for given plugin name.
+     * @param name
+     * @return plugin object
+     */
+    public Object getPlugin(String name)
+    {
+        return this.manager.getPlugin(name);
+    }
+    
+    /**
+     * Returns the plugin object for given plugin name.
+     * @param serviceClass
+     * @return plugin object
+     */
+    public Object loadServicePlugin(Class<?> serviceClass)
+    {
+        return this.manager.loadServicePlugin(serviceClass.getName());
+    }
+    
 }

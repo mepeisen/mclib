@@ -30,6 +30,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 /**
  * Annotation for spigot test support.
  * 
@@ -54,8 +56,34 @@ public @interface SpigotTest
     
     /**
      * Flag to load the local plugin from classpath
-     * @return {@code true} for loading local plugin from classpath; assumes that we are tresting within plugin code.
+     * @return {@code true} for loading local plugin from classpath; assumes that we are testing within plugin code.
      */
     boolean loadLocalPlugin() default true;
+    
+    /**
+     * Custom plugins to be loaded.
+     * The custom plugins do not have their own plugin.yml.
+     * They will be loaded after other localPlugins (if {@link #loadLocalPlugin()} is true) in order of the returned array.
+     * @return list of custom plugins.
+     */
+    CustomPlugin[] customPlugins() default {};
+    
+    /**
+     * Annotation for loading custom plugins.
+     */
+    public @interface CustomPlugin
+    {
+        /**
+         * Name of the plugin.
+         * @return plugin name.
+         */
+        String name();
+        
+        /**
+         * Plugin class to be loaded.
+         * @return plugin class.
+         */
+        Class<? extends JavaPlugin> pluginClass();
+    }
     
 }

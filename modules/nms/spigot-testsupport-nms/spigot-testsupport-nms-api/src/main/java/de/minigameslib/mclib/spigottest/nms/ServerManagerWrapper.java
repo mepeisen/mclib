@@ -200,5 +200,50 @@ public class ServerManagerWrapper implements ServerManager
             Thread.currentThread().setContextClassLoader(old);
         }
     }
+
+    @Override
+    public boolean isPluginEnabled(String name)
+    {
+        final ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            Thread.currentThread().setContextClassLoader(this.classLoader);
+            return this.delegate.isPluginEnabled(name);
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
+
+    @Override
+    public Object getPlugin(String name)
+    {
+        final ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            Thread.currentThread().setContextClassLoader(this.classLoader);
+            return this.delegate.getPlugin(name);
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
+
+    @Override
+    public Object loadServicePlugin(String serviceClass)
+    {
+        final ClassLoader old = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            Thread.currentThread().setContextClassLoader(this.classLoader);
+            return this.delegate.loadServicePlugin(serviceClass);
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader(old);
+        }
+    }
     
 }

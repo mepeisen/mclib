@@ -24,14 +24,16 @@
 
 package de.minigameslib.mclib.test.impl;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,10 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
-import de.minigameslib.mclib.api.objects.EntityInterface;
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
-import net.minecraft.server.v1_10_R1.EntityHuman;
 
 /**
  * @author mepeisen
@@ -71,6 +70,34 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         }
         
         Bukkit.getPluginManager().registerEvents(this, this);
+        
+        try
+        {
+//            System.out.println("Registering material #500");
+//            final Material[] byId = getStaticField(Material.class, "byId");
+//            byId[500] = Material.STONE;
+//            final Map<String, Material> byName = getStaticField(Material.class, "BY_NAME");
+//            byName.put("custom_stone", Material.STONE);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    private <T> T getStaticField(Class<?> clazz, String field)
+    {
+        try
+        {
+            final Field f = clazz.getDeclaredField(field);
+            f.setAccessible(true);
+            return (T) f.get(clazz);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -84,26 +111,11 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final Location loc = ((Player)sender).getLocation().add(0, 3, 0);
-            try
-            {
-                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-                // NpcServiceInterface.instance().villager().location(loc).profession(Profession.FARMER).handler(MyEntitites.Dummy, new DummyEntity()).create();
-                // NpcServiceInterface.instance().human().location(loc).persistent().handler(MyEntitites.Dummy, new DummyEntity()).name("JACK").skin(player).create();
-                
-                final EntityInterface entity = ObjectServiceInterface.instance().findEntities(MyEntitites.Dummy).iterator().next();
-                final Entity bukkit = entity.getBukkitEntity();
-                final EntityHuman human = (EntityHuman) ((CraftEntity)bukkit).getHandle();
-                bukkit.teleport(player.getBukkitPlayer());
-//                System.out.println(human.yaw);
-//                final byte look = (byte) 32;
-//                ((CraftPlayer) player.getBukkitPlayer()).getHandle().playerConnection.sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(human.getId(), look, (byte) 0, true));
-            }
-            catch (Exception e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            final Location loc = ((Player)sender).getLocation();
+//            loc.getBlock().setTypeId(Integer.parseInt(args[0]));
+//            loc.getBlock().setData(Byte.parseByte(args[1]));
+//            
+//            System.out.println(loc.getBlock().getTypeId());
         }
         return super.onCommand(sender, command, label, args);
     }

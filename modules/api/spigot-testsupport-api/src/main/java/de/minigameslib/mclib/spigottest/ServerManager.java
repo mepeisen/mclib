@@ -91,4 +91,25 @@ public interface ServerManager extends Runnable
      */
     Object createInstance(String javaClass);
     
+    /**
+     * Check if plugin is enabled
+     * @param name
+     * @return {@code true} if plugin is enabled.
+     */
+    boolean isPluginEnabled(String name);
+    
+    /**
+     * Returns the plugin object for given plugin name.
+     * @param name
+     * @return plugin object
+     */
+    Object getPlugin(String name);
+    
+    /**
+     * Returns the plugin object for given plugin name.
+     * @param serviceClass
+     * @return plugin object
+     */
+    Object loadServicePlugin(String serviceClass);
+    
 }
