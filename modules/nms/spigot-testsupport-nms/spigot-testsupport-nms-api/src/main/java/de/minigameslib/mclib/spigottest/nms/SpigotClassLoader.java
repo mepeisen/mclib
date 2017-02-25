@@ -26,6 +26,7 @@ package de.minigameslib.mclib.spigottest.nms;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -63,6 +64,18 @@ public class SpigotClassLoader extends ClassLoader implements FilterableClassLoa
     @Override
     public void addFilterUrl(URL url)
     {
+        if (url.getProtocol().equals("file") && url.toString().endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
+        {
+            try
+            {
+                this.addFilterUrl(new URL("jar:" + url.toString() + "!/")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            catch (MalformedURLException e)
+            {
+                e.printStackTrace();
+            }
+            return;
+        }
         final URL[] newFilters = Arrays.copyOf(this.filters, this.filters.length + 1);
         newFilters[this.filters.length] = url;
         this.filters = newFilters;
