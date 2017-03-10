@@ -26,6 +26,8 @@ package de.minigameslib.mclib.shared.api.com;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -412,7 +414,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 if (this.clazz.equals(List.class))
                 {
                     final ParameterizedType ptype = (ParameterizedType) field.getGenericType();
-                    final Class<?> listType = (Class<?>) ptype.getActualTypeArguments()[0];
+                    final Class<?> listType = getClassFromTypes(ptype, 0);
                     this.isList = true;
                     if (VectorDataFragment.class.equals(listType))
                     {
@@ -467,7 +469,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 else if (this.clazz.equals(Set.class))
                 {
                     final ParameterizedType ptype = (ParameterizedType) field.getGenericType();
-                    final Class<?> listType = (Class<?>) ptype.getActualTypeArguments()[0];
+                    final Class<?> listType = getClassFromTypes(ptype, 0);
                     this.isSet = true;
                     if (VectorDataFragment.class.equals(listType))
                     {
@@ -522,8 +524,8 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 else if (this.clazz.equals(Map.class))
                 {
                     final ParameterizedType ptype = (ParameterizedType) field.getGenericType();
-                    final Class<?> keyType = (Class<?>) ptype.getActualTypeArguments()[0];
-                    final Class<?> valueType = (Class<?>) ptype.getActualTypeArguments()[1];
+                    final Class<?> keyType = getClassFromTypes(ptype, 0);
+                    final Class<?> valueType = getClassFromTypes(ptype, 1);
                     this.isMap = true;
                     if (!PRIM_TYPES.contains(keyType))
                     {
@@ -588,6 +590,25 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     throw new IllegalStateException("Unsupported value type detected. " + this.clazz); //$NON-NLS-1$
                 }
             }
+        }
+
+        /**
+         * @param ptype
+         * @param index
+         * @return clazz
+         */
+        private Class<?> getClassFromTypes(final ParameterizedType ptype, int index)
+        {
+            final Type type = ptype.getActualTypeArguments()[0];
+            if (type instanceof Class<?>)
+            {
+                return (Class<?>) type;
+            }
+            if (type instanceof TypeVariable<?>)
+            {
+                return (Class<?>) ((TypeVariable<?>) type).getBounds()[0];
+            }
+            return null;
         }
         
     }
