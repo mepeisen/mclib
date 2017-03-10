@@ -27,8 +27,11 @@ package de.minigameslib.mclib.impl;
 import java.util.function.BiConsumer;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.items.ItemServiceInterface.ResourcePackStatus;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
@@ -108,20 +111,25 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
                 case SUCCESSFULLY_LOADED:
                     if (marker.getSuccess() != null)
                     {
-                        try
-                        {
-                            marker.getSuccess().run();
-                        }
-                        catch (McException ex)
-                        {
-                            player.sendMessage(ex.getErrorMessage(), ex.getArgs());
-                        }
+                        new BukkitRunnable() {
+                            
+                            @Override
+                            public void run()
+                            {
+                                try
+                                {
+                                    marker.getSuccess().run();
+                                }
+                                catch (McException ex)
+                                {
+                                    player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                                }
+                            }
+                        }.runTaskLater((Plugin) McLibInterface.instance(), 2);
                     }
                     break;
             }
         }
-        
-        this.itemService.clearTools(player.getBukkitPlayer().getInventory());
     }
     
 }

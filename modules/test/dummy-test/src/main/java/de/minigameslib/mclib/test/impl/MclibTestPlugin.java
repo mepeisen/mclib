@@ -25,15 +25,11 @@
 package de.minigameslib.mclib.test.impl;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,6 +38,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
+import de.minigameslib.mclib.api.items.CommonItems;
+import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 
 /**
@@ -111,19 +111,31 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final Location loc = ((Player)sender).getLocation();
-//            loc.getBlock().setTypeId(Integer.parseInt(args[0]));
-//            loc.getBlock().setData(Byte.parseByte(args[1]));
-//            
-//            System.out.println(loc.getBlock().getTypeId());
+            final ItemServiceInterface itemService = ItemServiceInterface.instance();
+            final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+            itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
+                .onLeftClick(this::onLeftClick)
+                .onRightClick(this::onRightClick)
+                .singleUse()
+                .build();
         }
         return super.onCommand(sender, command, label, args);
+    }
+    
+    private void onLeftClick(McPlayerInterface player, McPlayerInteractEvent evt)
+    {
+        System.out.println("Left clicked at " + evt.getBukkitEvent().getClickedBlock());
+    }
+    
+    private void onRightClick(McPlayerInterface player, McPlayerInteractEvent evt)
+    {
+        System.out.println("Right clicked at " + evt.getBukkitEvent().getClickedBlock());
     }
     
     @EventHandler
     public void onConnect(PlayerJoinEvent evt)
     {
-        if (evt.getPlayer().getClass() == CraftPlayer.class)
+        if (!ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
             evt.getPlayer().setGameMode(GameMode.CREATIVE);
     }
     

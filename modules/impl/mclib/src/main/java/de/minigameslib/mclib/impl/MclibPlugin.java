@@ -760,6 +760,16 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             }.runTaskLater(this, ItemServiceInterface.instance().getAutoResourceTicks());
         }
         
+        // clear inventory
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                MclibPlugin.this.itemService.clearTools(player.getInventory());
+            }
+        }.runTaskLater(this, 2);
+        
         // hide dummy humans
         new BukkitRunnable() {
             
