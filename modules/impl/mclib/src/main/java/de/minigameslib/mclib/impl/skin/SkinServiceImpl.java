@@ -26,6 +26,8 @@ package de.minigameslib.mclib.impl.skin;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -58,11 +60,16 @@ public class SkinServiceImpl implements SkinServiceInterface
 {
     
     /** the executor service. */
-    private ExecutorService executor;
+    private ExecutorService     executor;
+    
+    /** logger */
+    static final Logger LOGGER = Logger.getLogger(SkinServiceImpl.class.getName());
     
     /**
      * Constructor
-     * @param executor the executor service for asynchronous service execution
+     * 
+     * @param executor
+     *            the executor service for asynchronous service execution
      */
     public SkinServiceImpl(ExecutorService executor)
     {
@@ -75,19 +82,19 @@ public class SkinServiceImpl implements SkinServiceInterface
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     @Override
     public void save(SkinInterface skin, DataFragment section, String key) throws McException
     {
         // TODO Auto-generated method stub
     }
-
+    
     @Override
     public SkinInterface get(McPlayerInterface player)
     {
         return new SkinFromPlayer(player.getPlayerUUID());
     }
-
+    
     @Override
     public SkinInterface getFromHuman(EntityInterface entity) throws McException
     {
@@ -99,7 +106,7 @@ public class SkinServiceImpl implements SkinServiceInterface
         }
         return null;
     }
-
+    
     @Override
     public void getSkinSnapshot(SkinInterface skin, McConsumer<SkinInterface> completion)
     {
@@ -113,11 +120,14 @@ public class SkinServiceImpl implements SkinServiceInterface
             this.executor.submit(() -> this.fetch((SkinFromPlayer) skin, completion));
         }
     }
-
+    
     /**
      * Fetch player skin.
-     * @param skin player skin
-     * @param completion the completion func
+     * 
+     * @param skin
+     *            player skin
+     * @param completion
+     *            the completion func
      */
     private void fetch(SkinFromPlayer skin, McConsumer<SkinInterface> completion)
     {
@@ -129,20 +139,20 @@ public class SkinServiceImpl implements SkinServiceInterface
         }
         catch (ExecutionException | McException e)
         {
-            // TODO logging
+            LOGGER.log(Level.INFO, "error fetching skin", e); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void getSkinSnapshot(McPlayerInterface player, McConsumer<SkinInterface> completion)
     {
         this.getSkinSnapshot(this.get(player), completion);
     }
-
+    
     @Override
     public void setToHuman(EntityInterface entity, SkinInterface skin) throws McException
     {
-        final HumanEntity human = (HumanEntity) entity.getBukkitEntity(); 
+        final HumanEntity human = (HumanEntity) entity.getBukkitEntity();
         if (skin instanceof SkinFromPlayer)
         {
             this.getSkinSnapshot(skin, s -> {
@@ -154,13 +164,13 @@ public class SkinServiceImpl implements SkinServiceInterface
             Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).setSkin(human, ((SkinFromTextures) skin).getTextures());
         }
     }
-
+    
     @Override
     public void clearSkinCache(McPlayerInterface player)
     {
         Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).clearSkinCache(player.getBukkitPlayer());
     }
-
+    
     @Override
     public ItemStack getSkull(SkinInterface skin, String name)
     {
@@ -176,7 +186,7 @@ public class SkinServiceImpl implements SkinServiceInterface
         if (skin instanceof SkinFromPlayer)
         {
             final OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(((SkinFromPlayer) skin).getPlayerUuid());
-            ((SkullMeta)meta).setOwner(player.getName()); // TODO maybe unsafe?
+            ((SkullMeta) meta).setOwner(player.getName()); // TODO maybe unsafe?
         }
         else if (skin instanceof SkinFromTextures)
         {
@@ -196,8 +206,8 @@ public class SkinServiceImpl implements SkinServiceInterface
         private final McConsumer<SkinInterface> consumer;
         
         /** skin */
-        private final SkinInterface skin;
-
+        private final SkinInterface             skin;
+        
         /**
          * @param consumer
          * @param skin
@@ -207,7 +217,7 @@ public class SkinServiceImpl implements SkinServiceInterface
             this.consumer = consumer;
             this.skin = skin;
         }
-
+        
         @Override
         public void run()
         {
@@ -217,7 +227,7 @@ public class SkinServiceImpl implements SkinServiceInterface
             }
             catch (McException ex)
             {
-                // TODO logging
+                LOGGER.log(Level.INFO, "error invoking accept handler", ex); //$NON-NLS-1$
             }
         }
         

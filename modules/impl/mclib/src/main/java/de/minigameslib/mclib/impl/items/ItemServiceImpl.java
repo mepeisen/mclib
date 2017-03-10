@@ -86,8 +86,6 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     
     // TODO support version control...
     
-    // TODO 1.8 does not have resource pack status. Maybe this is a problem since we do not know about the resource packs?
-    
     /** java logger */
     private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
     
@@ -619,7 +617,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                             }
                             catch (McException ex)
                             {
-                                // TODO logging
+                                LOGGER.log(Level.INFO, "Error invoking left click handler", ex); //$NON-NLS-1$
                                 evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
                             }
                         }
@@ -642,7 +640,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
                             }
                             catch (McException ex)
                             {
-                                // TODO logging
+                                LOGGER.log(Level.INFO, "Error invoking right click handler", ex); //$NON-NLS-1$
                                 evt.getPlayer().sendMessage(ex.getErrorMessage(), ex.getArgs());
                             }
                         }

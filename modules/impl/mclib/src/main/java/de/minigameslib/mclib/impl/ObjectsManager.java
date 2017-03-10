@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -191,6 +193,10 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
      * entities by uuid.
      */
     private final Map<UUID, Set<EntityId>>                                                                                       entitiesByUuid          = new HashMap<>();
+    
+    /** logger */
+    private static final Logger                                                                                                  LOGGER                  = Logger
+            .getLogger(ObjectsManager.class.getName());
     
     /**
      * Constructor.
@@ -640,7 +646,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ComponentInterface findComponent(Location location)
     {
-        if (location == null) return null;
+        if (location == null)
+            return null;
         final Optional<ComponentImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
                 .filter(c -> c.getLocation().equals(location)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -759,7 +766,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public EntityInterface findEntity(Entity entity)
     {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         final UUID uuid = entity.getUniqueId();
         if (this.entitiesByUuid.containsKey(uuid))
         {
@@ -824,7 +832,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public SignInterface findSign(Location location)
     {
-        if (location == null) return null;
+        if (location == null)
+            return null;
         final Optional<SignImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
                 .findFirst();
         return result.isPresent() ? result.get() : null;
@@ -1027,7 +1036,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZonesWithoutYD(Location location)
     {
-        if (location == null) return Collections.emptyList();
+        if (location == null)
+            return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYD(location))
                 .collect(Collectors.toList());
     }
@@ -1035,7 +1045,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZoneWithoutYD(Location location)
     {
-        if (location == null) return null;
+        if (location == null)
+            return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(c -> c.getCuboid().containsLocWithoutYD(location)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -1044,7 +1055,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZonesWithoutY(Location location)
     {
-        if (location == null) return Collections.emptyList();
+        if (location == null)
+            return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutY(location))
                 .collect(Collectors.toList());
     }
@@ -1052,7 +1064,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZoneWithoutY(Location location)
     {
-        if (location == null) return null;
+        if (location == null)
+            return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -1061,7 +1074,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZones(Location location)
     {
-        if (location == null) return Collections.emptyList();
+        if (location == null)
+            return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLoc(location))
                 .collect(Collectors.toList());
     }
@@ -1069,7 +1083,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZone(Location location)
     {
-        if (location == null) return null;
+        if (location == null)
+            return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -1168,7 +1183,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ComponentInterface> findComponents(Location location)
     {
-        if (location == null) return Collections.emptyList();
+        if (location == null)
+            return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c).filter(c -> c.getLocation().equals(location))
                 .collect(Collectors.toList());
     }
@@ -1176,7 +1192,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
     {
-        if (type == null || type.length == 0) return Collections.emptyList();
+        if (type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ComponentTypeId typeid : type)
         {
@@ -1194,7 +1211,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<EntityInterface> findEntities(Entity entity)
     {
-        if (entity == null) return Collections.emptyList();
+        if (entity == null)
+            return Collections.emptyList();
         final UUID uuid = entity.getUniqueId();
         if (this.entitiesByUuid.containsKey(uuid))
         {
@@ -1206,7 +1224,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<EntityInterface> findEntities(EntityTypeId... type)
     {
-        if (type == null || type.length == 0) return Collections.emptyList();
+        if (type == null || type.length == 0)
+            return Collections.emptyList();
         final List<EntityInterface> result = new ArrayList<>();
         final Set<EntityTypeId> types = new HashSet<>();
         for (final EntityTypeId t : type)
@@ -1222,7 +1241,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<SignInterface> findSigns(Location location)
     {
-        if (location == null) return Collections.emptyList();
+        if (location == null)
+            return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
                 .collect(Collectors.toList());
     }
@@ -1230,7 +1250,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<SignInterface> findSigns(SignTypeId... type)
     {
-        if (type == null || type.length == 0) return Collections.emptyList();
+        if (type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final SignTypeId typeid : type)
         {
@@ -1292,7 +1313,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
     {
-        if (cuboid == null || mode == null) return null;
+        if (cuboid == null || mode == null)
+            return null;
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -1301,7 +1323,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
-        if (cuboid == null || mode == null || type == null || type.length == 0) return null;
+        if (cuboid == null || mode == null || type == null || type.length == 0)
+            return null;
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1317,7 +1340,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZone(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return null;
+        if (location == null || type == null || type.length == 0)
+            return null;
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1332,7 +1356,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
     {
-        if (cuboid == null || mode == null) return Collections.emptyList();
+        if (cuboid == null || mode == null)
+            return Collections.emptyList();
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
     }
@@ -1340,7 +1365,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
     {
-        if (cuboid == null || mode == null || type == null || type.length == 0) return Collections.emptyList();
+        if (cuboid == null || mode == null || type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1355,7 +1381,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return Collections.emptyList();
+        if (location == null || type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1369,7 +1396,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return null;
+        if (location == null || type == null || type.length == 0)
+            return null;
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1384,7 +1412,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return Collections.emptyList();
+        if (location == null || type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1398,7 +1427,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return null;
+        if (location == null || type == null || type.length == 0)
+            return null;
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1413,7 +1443,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
     {
-        if (location == null || type == null || type.length == 0) return Collections.emptyList();
+        if (location == null || type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1427,7 +1458,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ZoneInterface> findZones(ZoneTypeId... type)
     {
-        if (type == null || type.length == 0) return Collections.emptyList();
+        if (type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ZoneTypeId typeid : type)
         {
@@ -1481,21 +1513,24 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public McPlayerInterface getPlayer(Player player)
     {
-        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId())) return null;
+        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId()))
+            return null;
         return this.players.getPlayer(player);
     }
     
     @Override
     public McPlayerInterface getPlayer(OfflinePlayer player)
     {
-        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId())) return null;
+        if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId()))
+            return null;
         return this.players.getPlayer(player);
     }
     
     @Override
     public McPlayerInterface getPlayer(UUID uuid)
     {
-        if (uuid == null || this.entitiesByUuid.containsKey(uuid)) return null;
+        if (uuid == null || this.entitiesByUuid.containsKey(uuid))
+            return null;
         return this.players.getPlayer(uuid);
     }
     
@@ -1543,7 +1578,8 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public Collection<ObjectInterface> findObjects(ObjectTypeId... type)
     {
-        if (type == null || type.length == 0) return Collections.emptyList();
+        if (type == null || type.length == 0)
+            return Collections.emptyList();
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ObjectTypeId typeid : type)
         {
@@ -1617,7 +1653,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
         }
         catch (McException ex)
         {
-            // TODO logging
+            LOGGER.log(Level.INFO, "error invoking in context", ex); //$NON-NLS-1$
         }
     }
     
@@ -1626,13 +1662,13 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     {
         return new VillagerBuilder();
     }
-
+    
     @Override
     public HumanBuilderInterface human()
     {
         return new HumanBuilder();
     }
-
+    
     /**
      * Disable objects manager
      */
@@ -1647,7 +1683,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
             }
         }
     }
-
+    
     @Override
     public boolean isHuman(Player player)
     {
