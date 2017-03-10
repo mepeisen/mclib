@@ -599,7 +599,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
          */
         private Class<?> getClassFromTypes(final ParameterizedType ptype, int index)
         {
-            final Type type = ptype.getActualTypeArguments()[0];
+            final Type type = ptype.getActualTypeArguments()[index];
             if (type instanceof Class<?>)
             {
                 return (Class<?>) type;
