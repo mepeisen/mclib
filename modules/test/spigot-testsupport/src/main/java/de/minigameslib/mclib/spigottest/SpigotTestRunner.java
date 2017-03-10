@@ -39,6 +39,7 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import de.minigameslib.mclib.spigottest.SpigotTest.CustomPlugin;
+import de.minigameslib.mclib.spigottest.SpigotTest.ServerProperty;
 
 /**
  * @author mepeisen
@@ -84,6 +85,20 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
                     config.addCustomPlugin(plugin);
                 }
             }
+            config.setMainPort(test.port());
+            if (test.world() != null)
+            {
+                config.setDefaultWorldType(test.world().worldType());
+                config.setResetWorld(test.world().reset());
+            }
+            if (test.serverProperties() != null && test.serverProperties().length > 0)
+            {
+                for (final ServerProperty prop : test.serverProperties())
+                {
+                    config.setServerProperty(prop.name(), prop.value());
+                }
+            }
+            config.setResetPluginFiles(test.resetPluginFiles());
         }
         this.server = config.create();
     }
@@ -133,27 +148,38 @@ public class SpigotTestRunner extends BlockJUnit4ClassRunner
             @Override
             public void evaluate() throws Throwable
             {
+                System.out.println(System.currentTimeMillis() + " starting server"); //$NON-NLS-1$
                 SpigotTestRunner.this.server.start();
                 try
                 {
-                    assertTrue(SpigotTestRunner.this.server.waitGameCycle(60000));
+                    System.out.println(System.currentTimeMillis() + " waiting game cycle (120000)"); //$NON-NLS-1$
+                    assertTrue(SpigotTestRunner.this.server.waitGameCycle(120000));
+                    System.out.println(System.currentTimeMillis() + " evaluate tests"); //$NON-NLS-1$
                     classBlock.evaluate();
                 }
                 finally
                 {
                     try
                     {
+                        System.out.println(System.currentTimeMillis() + " stopping server"); //$NON-NLS-1$
                         SpigotTestRunner.this.server.stop();
+                        System.out.println(System.currentTimeMillis() + " waiting shutdown (25000)"); //$NON-NLS-1$
                         if (!SpigotTestRunner.this.server.waitShutdown(25000))
                         {
+                            System.out.println(System.currentTimeMillis() + " destroy"); //$NON-NLS-1$
                             SpigotTestRunner.this.server.destroy();
                         }
                     }
                     catch (Exception ex)
                     {
                         ex.printStackTrace();
+                        System.out.println(System.currentTimeMillis() + " destroy"); //$NON-NLS-1$
                         SpigotTestRunner.this.server.destroy();
                     }
+                    SpigotTestRunner.this.server = null;
+                    System.out.println(System.currentTimeMillis() + " gc"); //$NON-NLS-1$
+                    System.gc();
+                    System.out.println(System.currentTimeMillis() + " finished"); //$NON-NLS-1$
                 }
             }
         };

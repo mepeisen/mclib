@@ -81,6 +81,8 @@ import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
+import de.minigameslib.mclib.nms.api.EventBus;
+import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
@@ -135,7 +137,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     private final ExpiringMap<UUID, McRunnable> rawActions       = ExpiringMap.builder().variableExpiration().build();
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = new EventBus();
+    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * the players zone manager

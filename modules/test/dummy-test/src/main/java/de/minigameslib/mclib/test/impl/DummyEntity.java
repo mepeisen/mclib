@@ -28,6 +28,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McEntityDamageEvent;
 import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
+import de.minigameslib.mclib.api.event.McPlayerInteractAtEntityEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEntityEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
@@ -48,7 +49,7 @@ public class DummyEntity extends AnnotatedDataFragment implements EntityHandlerI
     }
     
     @McEventHandler
-    public void onDamage(McPlayerInteractEntityEvent evt)
+    public void onDamage(McPlayerInteractAtEntityEvent evt)
     {
         evt.getBukkitEvent().setCancelled(true);
         System.out.println("RIGHT CLICK BY " + evt.getBukkitEvent().getPlayer());

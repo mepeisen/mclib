@@ -59,4 +59,10 @@ public interface EventSystemInterface extends Listener
      */
     <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz);
     
+    /**
+     * Creates a new event bus.
+     * @return event bus implementation
+     */
+    EventBus createEventBus();
+    
 }

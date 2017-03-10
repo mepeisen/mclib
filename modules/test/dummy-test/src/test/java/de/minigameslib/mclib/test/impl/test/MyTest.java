@@ -33,13 +33,14 @@ import de.minigameslib.mclib.spigottest.SpigotInject;
 import de.minigameslib.mclib.spigottest.SpigotJunit4Runner;
 import de.minigameslib.mclib.spigottest.SpigotServer;
 import de.minigameslib.mclib.spigottest.SpigotTest;
+import de.minigameslib.mclib.spigottest.SpigotTest.WorldConfig;
 
 /**
  * @author mepeisen
  *
  */
 @RunWith(SpigotJunit4Runner.class)
-@SpigotTest(all = true)
+@SpigotTest(all = true, resetPluginFiles = true, world = @WorldConfig(reset = true))
 public class MyTest
 {
     

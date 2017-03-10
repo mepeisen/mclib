@@ -47,7 +47,8 @@ import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.EventBus;
+import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -64,7 +65,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     private final ZoneHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = new EventBus();
+    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * @param plugin 

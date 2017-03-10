@@ -46,7 +46,8 @@ import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.ComponentTypeId;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.EventBus;
+import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -64,7 +65,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     private final ComponentHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = new EventBus();
+    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * @param plugin

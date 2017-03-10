@@ -69,6 +69,30 @@ public @interface SpigotTest
     CustomPlugin[] customPlugins() default {};
     
     /**
+     * Returns the world configuration.
+     * @return world configuration.
+     */
+    WorldConfig world() default @WorldConfig();
+    
+    /**
+     * Custom server properties for server.properties file.
+     * @return custom server properties
+     */
+    ServerProperty[] serverProperties() default {};
+    
+    /**
+     * Port number for spigot server
+     * @return minecraft port number
+     */
+    int port() default 25565;
+    
+    /**
+     * Resets the plugin files
+     * @return {@code true} to reset the plugin files at startup
+     */
+    boolean resetPluginFiles() default false;
+    
+    /**
      * Annotation for loading custom plugins.
      */
     public @interface CustomPlugin
@@ -84,6 +108,44 @@ public @interface SpigotTest
          * @return plugin class.
          */
         Class<? extends JavaPlugin> pluginClass();
+    }
+    
+    /**
+     * Annotation for spigot test world config.
+     */
+    public @interface WorldConfig
+    {
+        
+        /**
+         * Flag to reset the world on test startup
+         * @return {@code true} to reset/delete the world on test startup.
+         */
+        boolean reset() default false;
+        
+        /**
+         * Returns the default world type.
+         * @return world type.
+         */
+        String worldType() default "FLAT";
+        
+    }
+    
+    /**
+     * Annotation for custom server properties.
+     */
+    public @interface ServerProperty
+    {
+        /**
+         * Property name.
+         * @return property name.
+         */
+        String name();
+        
+        /**
+         * Property value.
+         * @return property value.
+         */
+        String value();
     }
     
 }

@@ -27,8 +27,10 @@ package de.minigames.mclib.nms.v183.event;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import de.minigameslib.mclib.api.event.McEntityDamageByEntityEvent;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
@@ -55,10 +57,20 @@ public class MgEntityDamageByEntityEvent extends AbstractMinigameEvent<EntityDam
      * @param event
      * @return player
      */
-    private static McPlayerInterface player(EntityDamageByEntityEvent event)
+    private static McPlayerInterface player(EntityDamageEvent event)
     {
         final Entity passenger = event.getEntity();
-        return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
+        if (passenger instanceof Player)
+        {
+            return ObjectServiceInterface.instance().isHuman((Player) passenger) ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
+        }
+        return null;
+    }
+
+    @Override
+    public EntityInterface getEntity()
+    {
+        return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getEntity());
     }
 
     /**

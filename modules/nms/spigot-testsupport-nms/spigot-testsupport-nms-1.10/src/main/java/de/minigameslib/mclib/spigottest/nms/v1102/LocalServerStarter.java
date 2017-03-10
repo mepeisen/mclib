@@ -88,6 +88,12 @@ class LocalServerStarter implements ServerManager
      * console thread.
      */
     private ConsoleThread consoleThread;
+    
+    /** booted flag */
+    private boolean booted = false;
+    
+    /** thread group */
+    private ThreadGroup threadGroup = new ThreadGroup("Spigot"); //$NON-NLS-1$
 
     /**
      * Constructor
@@ -101,119 +107,141 @@ class LocalServerStarter implements ServerManager
     @Override
     public void run()
     {
-        if (this.dedicatedserver != null)
-        {
-            throw new IllegalStateException("Already started."); //$NON-NLS-1$
-        }
-        
-        final OptionParser parser = new OptionParser() {
+        new Thread(this.threadGroup, () -> {
+            if (this.dedicatedserver != null)
             {
-                acceptsAll(asList("?", "help"), "Show the help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
-                acceptsAll(asList("c", "config"), "Properties file to use").withRequiredArg().ofType(File.class).defaultsTo(new File("server.properties")).describedAs("Properties file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("P", "plugins"), "Plugin directory to use").withRequiredArg().ofType(File.class).defaultsTo(new File("plugins")).describedAs("Plugin directory"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("h", "host", "server-ip"), "Host to listen on").withRequiredArg().ofType(String.class).describedAs("Hostname or IP"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("W", "world-dir", "universe", "world-container"), "World container").withRequiredArg().ofType(File.class).describedAs("Directory containing worlds"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                
-                acceptsAll(asList("w", "world", "level-name"), "World name").withRequiredArg().ofType(String.class).describedAs("World name"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("p", "port", "server-port"), "Port to listen on").withRequiredArg().ofType(Integer.class).describedAs("Port"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("o", "online-mode"), "Whether to use online authentication").withRequiredArg().ofType(Boolean.class).describedAs("Authentication"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                
-                acceptsAll(asList("s", "size", "max-players"), "Maximum amount of players").withRequiredArg().ofType(Integer.class).describedAs("Server size"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("d", "date-format"), "Format of the date to display in the console (for log entries)").withRequiredArg().ofType(SimpleDateFormat.class) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        .describedAs("Log date format"); //$NON-NLS-1$
-                
-                acceptsAll(asList("log-pattern"), "Specfies the log filename pattern").withRequiredArg().ofType(String.class).defaultsTo("server.log").describedAs("Log filename"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                
-                acceptsAll(asList("log-limit"), "Limits the maximum size of the log file (0 = unlimited)").withRequiredArg().ofType(Integer.class).defaultsTo(0).describedAs("Max log size"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
-                acceptsAll(asList("log-count"), "Specified how many log files to cycle through").withRequiredArg().ofType(Integer.class).defaultsTo(1).describedAs("Log count"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
-                acceptsAll(asList("log-append"), "Whether to append to the log file").withRequiredArg().ofType(Boolean.class).defaultsTo(true).describedAs("Log append"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
-                acceptsAll(asList("log-strip-color"), "Strips color codes from log file"); //$NON-NLS-1$ //$NON-NLS-2$
-                
-                acceptsAll(asList("b", "bukkit-settings"), "File for bukkit settings").withRequiredArg().ofType(File.class).defaultsTo(new File("bukkit.yml")).describedAs("Yml file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("C", "commands-settings"), "File for command settings").withRequiredArg().ofType(File.class).defaultsTo(new File("commands.yml")).describedAs("Yml file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                
-                acceptsAll(asList("nojline"), "Disables jline and emulates the vanilla console"); //$NON-NLS-1$ //$NON-NLS-2$
-                
-                acceptsAll(asList("noconsole"), "Disables the console"); //$NON-NLS-1$ //$NON-NLS-2$
-                
-                acceptsAll(asList("v", "version"), "Show the CraftBukkit Version"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
-                acceptsAll(asList("demo"), "Demo mode"); //$NON-NLS-1$ //$NON-NLS-2$
-                
-                acceptsAll(asList("S", "spigot-settings"), "File for spigot settings") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                .withRequiredArg()
-                .ofType(File.class)
-                .defaultsTo(new File("spigot.yml")) //$NON-NLS-1$
-                .describedAs("Yml file"); //$NON-NLS-1$
+                throw new IllegalStateException("Already started."); //$NON-NLS-1$
             }
-        };
-        
-        OptionSet options = null;
-        try
-        {
-            options = parser.parse(new String[0]);
-        }
-        catch (OptionException ex)
-        {
-            LocalServerStarter.LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        }
-        
-        // Do you love Java using + and ! as string based identifiers? I sure do!
-        String path = this.configDirectory.getAbsolutePath();
-        if (path.contains("!") || path.contains("+")) //$NON-NLS-1$ //$NON-NLS-2$
-        {
-            throw new IllegalStateException("Cannot run server in a directory with ! or + in the pathname. Please rename the affected folders and try again."); //$NON-NLS-1$
-        }
-        
-        try
-        {
-            @SuppressWarnings("resource")
-            final PipedInputStream sysin = new PipedInputStream();
-            this.pipedOut = new PipedOutputStream(sysin);
             
-            @SuppressWarnings("resource")
-            final PipedOutputStream sysout = new PipedOutputStream();
-            this.pipedIn = new PipedInputStream(sysout);
-
-            this.consoleThread = new ConsoleThread(this.pipedIn, sysout, this.console);
-            this.consoleThread.start();
-
-            // This trick bypasses Maven Shade's clever rewriting of our getProperty call when using String literals
-            String jline_UnsupportedTerminal = new String(
-                    new char[] { 'j', 'l', 'i', 'n', 'e', '.', 'U', 'n', 's', 'u', 'p', 'p', 'o', 'r', 't', 'e', 'd', 'T', 'e', 'r', 'm', 'i', 'n', 'a', 'l' });
-            String jline_terminal = new String(new char[] { 'j', 'l', 'i', 'n', 'e', '.', 't', 'e', 'r', 'm', 'i', 'n', 'a', 'l' });
+            final OptionParser parser = new OptionParser() {
+                {
+                    acceptsAll(asList("?", "help"), "Show the help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    
+                    acceptsAll(asList("c", "config"), "Properties file to use").withRequiredArg().ofType(File.class).defaultsTo(new File("server.properties")).describedAs("Properties file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("P", "plugins"), "Plugin directory to use").withRequiredArg().ofType(File.class).defaultsTo(new File("plugins")).describedAs("Plugin directory"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("h", "host", "server-ip"), "Host to listen on").withRequiredArg().ofType(String.class).describedAs("Hostname or IP"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("W", "world-dir", "universe", "world-container"), "World container").withRequiredArg().ofType(File.class).describedAs("Directory containing worlds"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                    
+                    acceptsAll(asList("w", "world", "level-name"), "World name").withRequiredArg().ofType(String.class).describedAs("World name"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("p", "port", "server-port"), "Port to listen on").withRequiredArg().ofType(Integer.class).describedAs("Port"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("o", "online-mode"), "Whether to use online authentication").withRequiredArg().ofType(Boolean.class).describedAs("Authentication"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    
+                    acceptsAll(asList("s", "size", "max-players"), "Maximum amount of players").withRequiredArg().ofType(Integer.class).describedAs("Server size"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("d", "date-format"), "Format of the date to display in the console (for log entries)").withRequiredArg().ofType(SimpleDateFormat.class) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            .describedAs("Log date format"); //$NON-NLS-1$
+                    
+                    acceptsAll(asList("log-pattern"), "Specfies the log filename pattern").withRequiredArg().ofType(String.class).defaultsTo("server.log").describedAs("Log filename"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    
+                    acceptsAll(asList("log-limit"), "Limits the maximum size of the log file (0 = unlimited)").withRequiredArg().ofType(Integer.class).defaultsTo(0).describedAs("Max log size"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    
+                    acceptsAll(asList("log-count"), "Specified how many log files to cycle through").withRequiredArg().ofType(Integer.class).defaultsTo(1).describedAs("Log count"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    
+                    acceptsAll(asList("log-append"), "Whether to append to the log file").withRequiredArg().ofType(Boolean.class).defaultsTo(true).describedAs("Log append"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    
+                    acceptsAll(asList("log-strip-color"), "Strips color codes from log file"); //$NON-NLS-1$ //$NON-NLS-2$
+                    
+                    acceptsAll(asList("b", "bukkit-settings"), "File for bukkit settings").withRequiredArg().ofType(File.class).defaultsTo(new File("bukkit.yml")).describedAs("Yml file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("C", "commands-settings"), "File for command settings").withRequiredArg().ofType(File.class).defaultsTo(new File("commands.yml")).describedAs("Yml file"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    
+                    acceptsAll(asList("nojline"), "Disables jline and emulates the vanilla console"); //$NON-NLS-1$ //$NON-NLS-2$
+                    
+                    acceptsAll(asList("noconsole"), "Disables the console"); //$NON-NLS-1$ //$NON-NLS-2$
+                    
+                    acceptsAll(asList("v", "version"), "Show the CraftBukkit Version"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    
+                    acceptsAll(asList("demo"), "Demo mode"); //$NON-NLS-1$ //$NON-NLS-2$
+                    
+                    acceptsAll(asList("S", "spigot-settings"), "File for spigot settings") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    .withRequiredArg()
+                    .ofType(File.class)
+                    .defaultsTo(new File("spigot.yml")) //$NON-NLS-1$
+                    .describedAs("Yml file"); //$NON-NLS-1$
+                }
+            };
             
-            System.setProperty(jline_terminal, jline_UnsupportedTerminal);
-            Main.useJline = false;
-            System.setProperty(TerminalFactory.JLINE_TERMINAL, UnsupportedTerminal.class.getName());
+            OptionSet options = null;
+            try
+            {
+                options = parser.parse(new String[0]);
+            }
+            catch (OptionException ex)
+            {
+                LocalServerStarter.LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
             
-            DispenserRegistry.c();
-
-            YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(
-                    Proxy.NO_PROXY, UUID.randomUUID().toString());
-            MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice
-                    .createMinecraftSessionService();
-            GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
-            UserCache usercache = new UserCache(gameprofilerepository, new File(this.configDirectory, MinecraftServer.a.getName()));
+            // Do you love Java using + and ! as string based identifiers? I sure do!
+            String path = this.configDirectory.getAbsolutePath();
+            if (path.contains("!") || path.contains("+")) //$NON-NLS-1$ //$NON-NLS-2$
+            {
+                throw new IllegalStateException("Cannot run server in a directory with ! or + in the pathname. Please rename the affected folders and try again."); //$NON-NLS-1$
+            }
             
-            this.dedicatedserver = new SpigotDedicatedServer(options, DataConverterRegistry.a(), yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, usercache, sysin, sysout, this.consoleThread);
-            this.dedicatedserver.universe = this.configDirectory;
-            this.dedicatedserver.primaryThread.start();
-        }
-        catch (Throwable t)
+            try
+            {
+                @SuppressWarnings("resource")
+                final PipedInputStream sysin = new PipedInputStream();
+                this.pipedOut = new PipedOutputStream(sysin);
+                
+                @SuppressWarnings("resource")
+                final PipedOutputStream sysout = new PipedOutputStream();
+                this.pipedIn = new PipedInputStream(sysout);
+    
+                this.consoleThread = new ConsoleThread(this.pipedIn, sysout, this.console);
+                this.consoleThread.start();
+    
+                // This trick bypasses Maven Shade's clever rewriting of our getProperty call when using String literals
+                String jline_UnsupportedTerminal = new String(
+                        new char[] { 'j', 'l', 'i', 'n', 'e', '.', 'U', 'n', 's', 'u', 'p', 'p', 'o', 'r', 't', 'e', 'd', 'T', 'e', 'r', 'm', 'i', 'n', 'a', 'l' });
+                String jline_terminal = new String(new char[] { 'j', 'l', 'i', 'n', 'e', '.', 't', 'e', 'r', 'm', 'i', 'n', 'a', 'l' });
+                
+                System.setProperty(jline_terminal, jline_UnsupportedTerminal);
+                Main.useJline = false;
+                System.setProperty(TerminalFactory.JLINE_TERMINAL, UnsupportedTerminal.class.getName());
+                
+                DispenserRegistry.c();
+    
+                YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(
+                        Proxy.NO_PROXY, UUID.randomUUID().toString());
+                MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice
+                        .createMinecraftSessionService();
+                GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
+                UserCache usercache = new UserCache(gameprofilerepository, new File(this.configDirectory, MinecraftServer.a.getName()));
+                
+                this.dedicatedserver = new SpigotDedicatedServer(options, DataConverterRegistry.a(), yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, usercache, sysin, sysout, this.consoleThread);
+                this.dedicatedserver.universe = this.configDirectory;
+                this.dedicatedserver.primaryThread.start();
+            }
+            catch (Throwable t)
+            {
+                t.printStackTrace();
+                // throw new IllegalStateException(t);
+            }
+            synchronized (this)
+            {
+                this.booted = true;
+                this.notifyAll();
+             }
+        }).start();
+        synchronized (this)
         {
-            throw new IllegalStateException(t);
+            while (!this.booted)
+            {
+                try
+                {
+                    this.wait(1000);
+                }
+                catch (@SuppressWarnings("unused") InterruptedException ex)
+                {
+                    // ignore
+                }
+            }
         }
     }
 
@@ -308,7 +336,31 @@ class LocalServerStarter implements ServerManager
                 this.consoleThread.done();
                 this.consoleThread = null;
             }
+            
+            this.killthreads();
+            
             return true;
+        }
+    }
+
+    /**
+     * kills all threads in out thread group
+     */
+    @SuppressWarnings("deprecation")
+    private void killthreads()
+    {
+        final Thread[] thread = new Thread[10000];
+        final int n = this.threadGroup.enumerate(thread, true);
+        for (int i = 0; i < n; i++)
+        {
+            try
+            {
+                thread[i].stop();
+            }
+            catch (@SuppressWarnings("unused") Exception ex)
+            {
+                // silently ignore
+            }
         }
     }
 
@@ -340,7 +392,8 @@ class LocalServerStarter implements ServerManager
             this.consoleThread.done();
             this.consoleThread = null;
         }
-        // TODO force the server to shut down
+        
+        this.killthreads();
     }
 
     @Override
@@ -367,9 +420,9 @@ class LocalServerStarter implements ServerManager
             }
             return clazz.newInstance();
         }
-        catch (@SuppressWarnings("unused") Exception ex)
+        catch (Exception ex)
         {
-            // TODO logging
+            ex.printStackTrace();
             return null;
         }
     }
@@ -395,7 +448,7 @@ class LocalServerStarter implements ServerManager
         }
         catch (ClassNotFoundException e)
         {
-            // TODO logging
+            e.printStackTrace();
             return null;
         }
     }

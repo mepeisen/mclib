@@ -27,6 +27,7 @@ package de.minigames.mclib.nms.v19.event;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 import de.minigameslib.mclib.api.event.McPlayerInteractAtEntityEvent;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
@@ -46,6 +47,12 @@ public class MgPlayerInteractAtEntityEvent extends AbstractMinigameEvent<PlayerI
     public MgPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent event)
     {
         super(event, ObjectServiceInterface.instance().getPlayer(event.getPlayer()));
+    }
+
+    @Override
+    public EntityInterface getEntity()
+    {
+        return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getRightClicked());
     }
     
 }

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -36,6 +37,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
@@ -64,6 +66,16 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     public final List<MgEventListener>                                     listeners     = new ArrayList<>();
     
     /**
+     * the event executors.
+     */
+    private final Map<Class<? extends Event>, EventExecutor>               executors     = new ConcurrentHashMap<>();
+    
+    /**
+     * mapping from mclib event classes to bukkit event classes
+     */
+    private final Map<Class<? extends MinecraftEvent<?, ?>>, Class<? extends Event>> classMap = new HashMap<>();
+    
+    /**
      * Constructor.
      */
     public AbstractEventSystem()
@@ -75,6 +87,59 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     public void addEventListener(MgEventListener listener)
     {
         this.listeners.add(listener);
+    }
+    
+    @Override
+    public EventBus createEventBus()
+    {
+        return new EventBus(this);
+    }
+    
+    /**
+     * Register class mapping
+     * @param src
+     * @param target
+     */
+    protected void registerMapping(Class<? extends MinecraftEvent<?, ?>> src, Class<? extends Event> target)
+    {
+        this.classMap.put(src, target);
+    }
+
+    /**
+     * Register an event class
+     * @param clazz
+     */
+    <Evt extends MinecraftEvent<?, Evt>> void registerEventClass(Class<Evt> clazz)
+    {
+        this.registerEventClassEx(this.classMap.get(clazz));
+    }
+    
+    /**
+     * Registers an event class for listening
+     * @param clazz
+     */
+    void registerEventClassEx(Class<? extends Event> clazz)
+    {
+        this.executors.computeIfAbsent(clazz, c -> {
+            final EventExecutor executor = new EventExecutor(){
+
+                @Override
+                public void execute(Listener listener, Event event) throws EventException
+                {
+                    this.handle(event);
+                }
+                
+                private <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void handle(T event)
+                {
+                    final Class<T> clazz2 = (Class<T>) clazz;
+                    final MinecraftEventHandler<T, MgEvt> handler = AbstractEventSystem.this.getHandler(clazz2);
+                    handler.handle(event);
+                }
+                
+            };
+            Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.HIGHEST, executor, (JavaPlugin) McLibInterface.instance(), true);
+            return executor;
+        });
     }
     
     /**
@@ -102,6 +167,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      */
     protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, Class<MgEvt> mgclazz, MinecraftEventFactory<T> factory)
     {
+        this.classMap.put(mgclazz, clazz);
         this.eventHandlers.put(clazz, new MinecraftEventHandler<>(clazz, mgclazz, factory));
     }
     
@@ -115,14 +181,14 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     @Override
     public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
     {
-        Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
-            
-            @Override
-            public void execute(Listener paramListener, Event paramEvent) throws EventException
-            {
-                getHandler(clazz).handle(clazz.cast(paramEvent));
-            }
-        }, plugin);
+//        Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
+//            
+//            @Override
+//            public void execute(Listener paramListener, Event paramEvent) throws EventException
+//            {
+//                getHandler(clazz).handle(clazz.cast(paramEvent));
+//            }
+//        }, plugin);
         this.registerHandler(clazz, clazz, evt -> evt);
     }
     

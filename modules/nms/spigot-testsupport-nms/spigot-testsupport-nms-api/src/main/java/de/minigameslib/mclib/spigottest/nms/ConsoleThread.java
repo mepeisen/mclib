@@ -58,6 +58,9 @@ public class ConsoleThread extends Thread
     
     /** console. */
     private List<String> console;
+
+    /** piped output stream. */
+    private PipedOutputStream os;
     
     /**
      * @param in
@@ -67,9 +70,12 @@ public class ConsoleThread extends Thread
     public ConsoleThread(PipedInputStream in, PipedOutputStream os, List<String> console)
     {
         this.in = in;
+        this.os = os;
         this.console = console;
         System.setOut(new PrintStream(os));
         System.setErr(new PrintStream(os));
+        System.out.println("fetch sysout/syserr: " + sysOut + "/" + sysErr);
+        System.out.println("new sysout/syserr: " + System.out + "/" + System.err);
     }
 
     @Override
@@ -113,17 +119,19 @@ public class ConsoleThread extends Thread
                         }
                     }
                 }
+                finally
+                {
+                    System.out.println("resetting sysout/syserr: " + sysOut + "/" + sysErr);
+                    System.setOut(sysOut);
+                    System.setErr(sysErr);
+                    System.out.println("resetting sysout/syserr finished");
+                }
             }
         }
         catch (IOException ex)
         {
             sysOut.println("Problems reading console"); //$NON-NLS-1$
             ex.printStackTrace(sysOut);
-        }
-        finally
-        {
-            System.setOut(sysOut);
-            System.setErr(sysErr);
         }
     }
     
@@ -133,6 +141,22 @@ public class ConsoleThread extends Thread
     public void done()
     {
         this.finished = true;
+        try
+        {
+            this.in.close();
+        }
+        catch (IOException ex)
+        {
+            // TODO logging
+        }
+        try
+        {
+            this.os.close();
+        }
+        catch (IOException ex)
+        {
+            // TODO logging
+        }
         try
         {
             this.join();

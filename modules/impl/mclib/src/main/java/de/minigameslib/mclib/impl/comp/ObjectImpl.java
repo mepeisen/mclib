@@ -43,7 +43,8 @@ import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectTypeId;
 import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.impl.EventBus;
+import de.minigameslib.mclib.nms.api.EventBus;
+import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -61,7 +62,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     private final ObjectHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = new EventBus();
+    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * @param plugin 

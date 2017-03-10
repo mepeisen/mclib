@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.impl;
+package de.minigameslib.mclib.nms.api;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,6 +58,18 @@ public class EventBus
     
     /** the event descriptors per class. */
     private static final Map<Class<?>, Set<EventDescriptor<?>>> eventDescriptors       = new HashMap<>();
+    
+    /** the abstract event system owning this event bus */
+    private final AbstractEventSystem eventSystem;
+    
+    /**
+     * Secured constructor
+     * @param eventSystem the abstract event system
+     */
+    EventBus(AbstractEventSystem eventSystem)
+    {
+        this.eventSystem = eventSystem;
+    }
 
     /**
      * Clears tegistered handlers.
@@ -79,6 +91,7 @@ public class EventBus
         final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).add(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).add(eventHandler);
+        this.eventSystem.registerEventClass(clazz);
     }
     
     /**
@@ -144,6 +157,7 @@ public class EventBus
         final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), desc.eventClass, evt -> desc.handle(listener, evt), listener);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).add(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).add(eventHandler);
+        this.eventSystem.registerEventClass(desc.eventClass);
     }
     
     /**
@@ -170,6 +184,7 @@ public class EventBus
         final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).remove(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).remove(eventHandler);
+        // TODO this.eventSystem.unregisterEventClass
     }
     
     /**
@@ -189,6 +204,7 @@ public class EventBus
                 this.eventHandlersPerClass.computeIfAbsent(handler.eventClass, k -> new HashSet<>()).remove(handler);
             }
         }
+        // TODO this.eventSystem.unregisterEventClass
     }
     
     /**

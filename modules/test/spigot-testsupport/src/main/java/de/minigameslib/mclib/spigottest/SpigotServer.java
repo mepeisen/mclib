@@ -31,6 +31,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -60,6 +66,9 @@ public class SpigotServer
      * Server starting runnable for configured server types.
      */
     private ServerManager manager;
+
+    /** the server config */
+    private SpigotServerConfig spigotServerConfig;
     
     /**
      * Constructor
@@ -132,40 +141,30 @@ public class SpigotServer
                 throw new IllegalStateException("Unknown server type"); //$NON-NLS-1$
         }
         
-        // prepare plugins
-        final File pluginDir = new File(spigotServerConfig.getTempDirectory(), "plugins"); //$NON-NLS-1$
-        if (!pluginDir.exists())
-        {
-            pluginDir.mkdirs();
-        }
-        for (final Plugin plugin : spigotServerConfig.getPlugins())
-        {
-            plugin.prepare(pluginDir);
-        }
-        
-        // server.properties
-        final File serverProperties = new File(spigotServerConfig.getTempDirectory(), "server.properties"); //$NON-NLS-1$
-        final Properties properties = new Properties();
-        if (serverProperties.exists())
-        {
-            try (final FileInputStream fis = new FileInputStream(serverProperties))
-            {
-                properties.load(fis);
+        this.spigotServerConfig = spigotServerConfig;
+    }
+
+    /**
+     * @param file
+     * @throws IOException
+     */
+    private void deleteDirectoryRecursive(final File file) throws IOException
+    {
+        Path directory = Paths.get(file.getAbsolutePath());
+        Files.walkFileTree(directory, new SimpleFileVisitor<Path>(){
+            @Override
+            public FileVisitResult visitFile(Path f, BasicFileAttributes attrs) throws IOException {
+                Files.delete(f);
+                return FileVisitResult.CONTINUE;
             }
-        }
-        properties.setProperty("server-port", String.valueOf(spigotServerConfig.getMainPort())); //$NON-NLS-1$
-        properties.setProperty("level-type", spigotServerConfig.getDefaultWorldType()); //$NON-NLS-1$
-        for (final Map.Entry<String, String> entry : spigotServerConfig.getServerProperties().entrySet())
-        {
-            properties.put(entry.getKey(), entry.getValue());
-        }
-        try (final FileOutputStream fos = new FileOutputStream(serverProperties))
-        {
-            properties.store(fos, ""); //$NON-NLS-1$
-        }
-        
-        // current work dir
-        System.setProperty("com.mojang.eula.agree", "true");  //$NON-NLS-1$  //$NON-NLS-2$
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+
+        });
     }
     
     /**
@@ -244,9 +243,62 @@ public class SpigotServer
 
     /**
      * Starts the server asynchronous; should be followed by a call to {@link #waitGameCycle}
+     * @throws IOException 
      */
-    public void start()
+    public void start() throws IOException
     {
+        // prepare plugins
+        final File pluginDir = new File(this.spigotServerConfig.getTempDirectory(), "plugins"); //$NON-NLS-1$
+        if (!pluginDir.exists())
+        {
+            pluginDir.mkdirs();
+        }
+        for (final Plugin plugin : this.spigotServerConfig.getPlugins())
+        {
+            plugin.prepare(pluginDir);
+        }
+        
+        // server.properties
+        final File serverProperties = new File(this.spigotServerConfig.getTempDirectory(), "server.properties"); //$NON-NLS-1$
+        final Properties properties = new Properties();
+        if (serverProperties.exists())
+        {
+            try (final FileInputStream fis = new FileInputStream(serverProperties))
+            {
+                properties.load(fis);
+            }
+        }
+        properties.setProperty("server-port", String.valueOf(this.spigotServerConfig.getMainPort())); //$NON-NLS-1$
+        properties.setProperty("level-type", this.spigotServerConfig.getDefaultWorldType()); //$NON-NLS-1$
+        for (final Map.Entry<String, String> entry : this.spigotServerConfig.getServerProperties().entrySet())
+        {
+            properties.put(entry.getKey(), entry.getValue());
+        }
+        try (final FileOutputStream fos = new FileOutputStream(serverProperties))
+        {
+            properties.store(fos, ""); //$NON-NLS-1$
+        }
+        
+        // world reset on demand
+        if (this.spigotServerConfig.isResetWorld())
+        {
+            for (final File file : new File(".").listFiles(f -> f.isDirectory() && !f.getName().equals(".") && !f.getName().equals("..") && new File(f, "uid.dat").exists())) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            {
+                deleteDirectoryRecursive(file);
+            }
+        }
+        
+        // plugin file reset on demand
+        if (this.spigotServerConfig.isResetPluginFiles())
+        {
+            for (final File file : new File("./plugins").listFiles(f -> f.isDirectory() && !f.getName().equals(".") && !f.getName().equals(".."))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            {
+                deleteDirectoryRecursive(file);
+            }
+        }
+        
+        // eula
+        System.setProperty("com.mojang.eula.agree", "true");  //$NON-NLS-1$  //$NON-NLS-2$
         this.manager.run();
     }
     

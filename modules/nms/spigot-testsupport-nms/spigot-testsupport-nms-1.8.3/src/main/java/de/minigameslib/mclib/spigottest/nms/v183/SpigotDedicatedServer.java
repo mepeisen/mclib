@@ -28,15 +28,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.jline.console.ConsoleReader;
 import org.bukkit.craftbukkit.libs.joptsimple.OptionSet;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.plugin.PluginManager;
+import org.spigotmc.Metrics;
+import org.spigotmc.SpigotConfig;
 
 import de.minigameslib.mclib.spigottest.nms.ConsoleThread;
+import io.netty.util.concurrent.EventExecutorGroup;
 import net.minecraft.server.v1_8_R2.DedicatedServer;
 import net.minecraft.server.v1_8_R2.PlayerList;
+import net.minecraft.server.v1_8_R2.RegionFileCache;
+import net.minecraft.server.v1_8_R2.ServerConnection;
 
 /**
  * @author mepeisen
@@ -85,8 +94,109 @@ class SpigotDedicatedServer extends DedicatedServer
     {
         synchronized (this)
         {
+            try
+            {
+                ((EventExecutorGroup)ServerConnection.a.c()).shutdownGracefully().await();
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+            try
+            {
+                ((EventExecutorGroup)ServerConnection.b.c()).shutdownGracefully().await();
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+            
+            final ExecutorService craftScheduler = this.getPrivateField(Bukkit.getScheduler(), "executor"); //$NON-NLS-1$
+            craftScheduler.shutdown();
+            try
+            {
+                craftScheduler.awaitTermination(2000, TimeUnit.SECONDS);
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+            
+            final Metrics metrics = this.getPrivateStaticField(SpigotConfig.class, "metrics"); //$NON-NLS-1$
+            try
+            {
+                metrics.disable();
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+            
+            this.consoleThread.done();
+            this.worlds.clear();
+            try
+            {
+                final Field field = CraftServer.class.getDeclaredField("worlds"); //$NON-NLS-1$
+                field.setAccessible(true);
+                final Map<?, ?> map = (Map<?, ?>) field.get(Bukkit.getServer());
+                map.clear();
+            }
+            catch (Throwable ex)
+            {
+                ex.printStackTrace();
+            }
+            synchronized (RegionFileCache.class)
+            {
+                RegionFileCache.a();
+            }
+            System.gc();
+            
             this.isRunning = false;
             this.notifyAll();
+        }
+    }
+
+    /**
+     * returns a private field
+     * @param obj
+     * @param name
+     * @return private field
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getPrivateField(Object obj, String name)
+    {
+        try
+        {
+            final Field field = obj.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+            return (T) field.get(obj);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * returns a private field
+     * @param clazz
+     * @param name
+     * @return private field
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T getPrivateStaticField(Class<?> clazz, String name)
+    {
+        try
+        {
+            final Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+            return (T) field.get(null);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            return null;
         }
     }
 

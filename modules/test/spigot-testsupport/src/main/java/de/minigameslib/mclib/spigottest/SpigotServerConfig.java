@@ -96,6 +96,16 @@ public class SpigotServerConfig
     private boolean localPluginAdded = false;
     
     /**
+     * Flag to control world reset on startup
+     */
+    private boolean resetWorld = false;
+    
+    /**
+     * Flag to control plugin file reset on startup
+     */
+    private boolean resetPluginFiles = false;
+    
+    /**
      * Creates a spigot server for this config.
      * 
      * @return spigot server.
@@ -119,6 +129,44 @@ public class SpigotServerConfig
         
         final SpigotServer server = new SpigotServer(this);
         return server;
+    }
+
+    /**
+     * @return {@code true} if world is reset on test startup
+     */
+    public boolean isResetWorld()
+    {
+        return this.resetWorld;
+    }
+
+    /**
+     * Sets world reset flag
+     * @param resetWorld the resetWorld to set
+     * @return this object for chaining
+     */
+    public SpigotServerConfig setResetWorld(boolean resetWorld)
+    {
+        this.resetWorld = resetWorld;
+        return this;
+    }
+
+    /**
+     * @return {@code true} if plugin files are reset on test startup
+     */
+    public boolean isResetPluginFiles()
+    {
+        return this.resetPluginFiles;
+    }
+
+    /**
+     * Sets plugin files reset flag
+     * @param resetPluginFiles the resetPluginFiles to set
+     * @return this object for chaining
+     */
+    public SpigotServerConfig setResetPluginFiles(boolean resetPluginFiles)
+    {
+        this.resetPluginFiles = resetPluginFiles;
+        return this;
     }
 
     /**

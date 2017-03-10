@@ -166,6 +166,7 @@ import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
+import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -273,7 +274,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     private GetServersPing                                               serversPing;
     
     /** the event bus. */
-    private EventBus                                                     eventBus                       = new EventBus();
+    private EventBus                                                     eventBus;
     
     /** mclib chat command */
     private MclibCommand                                                 mclibCommand                   = new MclibCommand();
@@ -415,6 +416,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
         
         Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
+        this.eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
         
         this.registerEvent(this, ComponentCreatedEvent.class);
         this.registerEvent(this, ComponentCreateEvent.class);
@@ -493,7 +495,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.serversPing = new GetServersPing();
         this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
         
-        if (this.getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_8_R2))
+        if (this.getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_8_R3))
         {
             Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
         }
@@ -715,7 +717,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         if (ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
             return;
         
-        if (this.getMinecraftVersion() == MinecraftVersionsType.V1_8_R1)
+        if (this.getMinecraftVersion().isBelow(MinecraftVersionsType.V1_8_R3))
         {
             NetworkManager1_8.hookResourcePackStatus(evt.getPlayer(), new ResourcePackHandler(this.players, this.itemService));
         }
