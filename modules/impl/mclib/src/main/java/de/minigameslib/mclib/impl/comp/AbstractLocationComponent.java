@@ -84,7 +84,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
                 final int x = core.getInt("location.x"); //$NON-NLS-1$
                 final int y = core.getInt("location.y"); //$NON-NLS-1$
                 final int z = core.getInt("location.z"); //$NON-NLS-1$
-                final World world = Bukkit.getWorld("location.world"); //$NON-NLS-1$
+                final World world = Bukkit.getWorld(core.getString("location.world")); //$NON-NLS-1$
                 this.setLocation(new Location(world, x, y, z));
                 this.readData(core);
             }
