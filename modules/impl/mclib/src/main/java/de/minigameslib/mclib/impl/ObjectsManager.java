@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -50,6 +51,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -1689,6 +1691,29 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     public boolean isHuman(Player player)
     {
         return this.entitiesByUuid.containsKey(player.getUniqueId());
+    }
+
+    /**
+     * @param evt
+     */
+    public void onSignDelete(BlockBreakEvent evt)
+    {
+        final Material material = evt.getBlock().getType();
+        if (material == Material.SIGN || material == Material.SIGN_POST || material == Material.WALL_SIGN)
+        {
+            final SignInterface sign = this.findSign(evt.getBlock());
+            if (sign != null)
+            {
+                try
+                {
+                    ((SignImpl)sign).delete0();
+                }
+                catch (McException e)
+                {
+                    LOGGER.log(Level.WARNING, "Problems deleting sign", e); //$NON-NLS-1$
+                }
+            }
+        }
     }
     
 }

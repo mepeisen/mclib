@@ -55,6 +55,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -1110,6 +1113,16 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             // server to server means: broadcast to everyone
             this.broadcastServers(id, data);
         }
+    }
+    
+    /**
+     * Sign delete event
+     * @param evt
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onSignDelete(BlockBreakEvent evt)
+    {
+        this.objectsManager.onSignDelete(evt);
     }
     
     @Override

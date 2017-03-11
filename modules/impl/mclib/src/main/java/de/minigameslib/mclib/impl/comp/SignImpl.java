@@ -62,8 +62,6 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 public class SignImpl extends AbstractLocationComponent implements SignInterface, MgEventListener
 {
     
-    // TODO fetch sign break events
-    
     /** the bukkit sign. */
     private Sign sign;
     
@@ -123,6 +121,14 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
 
+        delete0();
+    }
+
+    /**
+     * @throws McException
+     */
+    public void delete0() throws McException
+    {
         McLibInterface.instance().runInCopiedContext(() -> {
             McLibInterface.instance().setContext(SignInterface.class, this);
             super.delete();
