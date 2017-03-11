@@ -25,10 +25,11 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -38,6 +39,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.mcevent.SignDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.SignDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.SignRelocateEvent;
@@ -165,13 +167,14 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     @Override
     public Sign getBukkitSign()
     {
-        return this.sign;
+        // return the current state
+        return (Sign) this.sign.getBlock().getState();
     }
 
     @Override
     public void setLocation(Location loc) throws McException
     {
-        final Block block = loc.getBlock();
+        final BlockState block = loc.getBlock().getState();
         if (block instanceof Sign)
         {
             final Location old = this.location;
@@ -254,6 +257,20 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     public SignTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getSignId());
+    }
+
+    @Override
+    public void setLine(int index, String content)
+    {
+        final Sign s = this.getBukkitSign();
+        s.setLine(index, content);
+        s.update();
+    }
+
+    @Override
+    public void setLine(int index, LocalizedMessageInterface content, Serializable... args)
+    {
+        this.setLine(index, content.toUserMessage(McLibInterface.instance().getDefaultLocale(), args));
     }
     
 }

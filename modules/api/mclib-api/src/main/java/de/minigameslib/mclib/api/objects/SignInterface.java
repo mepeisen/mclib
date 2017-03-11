@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.objects;
 
+import java.io.Serializable;
+
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.plugin.Plugin;
@@ -31,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 
 /**
@@ -93,6 +96,21 @@ public interface SignInterface
      * @return bukkit sign.
      */
     Sign getBukkitSign();
+    
+    /**
+     * Sets line contents
+     * @param index
+     * @param content
+     */
+    void setLine(int index, String content);
+    
+    /**
+     * Sets line contents
+     * @param index
+     * @param content
+     * @param args
+     */
+    void setLine(int index, LocalizedMessageInterface content, Serializable... args);
     
     /**
      * Returns the handler.

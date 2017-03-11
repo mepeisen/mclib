@@ -46,6 +46,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -381,7 +382,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
             final SignImpl impl = new SignImpl(plugin, this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             // research sign
-            final Block block = impl.getLocation().getBlock();
+            final BlockState block = impl.getLocation().getBlock().getState();
             if (block instanceof Sign)
             {
                 impl.setSign((Sign) block);
