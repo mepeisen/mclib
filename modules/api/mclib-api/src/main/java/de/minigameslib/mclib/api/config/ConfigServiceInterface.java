@@ -24,6 +24,10 @@
 
 package de.minigameslib.mclib.api.config;
 
+import org.bukkit.plugin.Plugin;
+
+import de.minigameslib.mclib.api.util.function.McSupplier;
+
 /**
  * Configuration services.
  * 
@@ -51,5 +55,17 @@ public interface ConfigServiceInterface
      * @return config provider or {@code null} if the class was not declared by any minigame or extension.
      */
     ConfigInterface getConfigFromCfg(ConfigurationValueInterface item);
+    
+    /**
+     * Registers a configuration provider to support given class
+     * 
+     * @param plugin
+     *            the plugin registering the enumeration
+     * @param clazz
+     *            Class to handle by given provider.
+     * @param provider
+     *            Supplier to return the config interface.
+     */
+    void registerConfigProvider(final Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<ConfigInterface> provider);
     
 }
