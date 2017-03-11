@@ -232,9 +232,14 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     private final Map<Plugin, ConfigInterface>                            configurations                 = new HashMap<>();
     
     /**
+     * configuration per plugin.
+     */
+    private final Map<Plugin, Map<File, ConfigInterface>>                 configurationsPerDataFolder    = new HashMap<>();
+    
+    /**
      * configuration providers per plugin.
      */
-    private final Map<Plugin, Map<Class<?>, McSupplier<ConfigInterface>>> configProviders                = new HashMap<>();
+    private final Map<Plugin, Map<Class<?>, McSupplier<File>>> configProviders                = new HashMap<>();
     
     /** the player registry. */
     PlayerRegistry                                                        players;
@@ -707,15 +712,18 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             return null;
         }
-        final Map<Class<?>, McSupplier<ConfigInterface>> map = this.configProviders.get(plugin);
+        final Map<Class<?>, McSupplier<File>> map = this.configProviders.get(plugin);
         if (map != null)
         {
-            final McSupplier<ConfigInterface> supplier = map.get(item.getClass());
+            final McSupplier<File> supplier = map.get(item.getClass());
             if (supplier != null)
             {
                 try
                 {
-                    return supplier.get();
+                    final File dataFolder = supplier.get();
+                    return this.configurationsPerDataFolder
+                        .computeIfAbsent(plugin, key -> new HashMap<>())
+                        .computeIfAbsent(dataFolder, key -> new ConfigImpl(dataFolder, this.enumService));
                 }
                 catch (McException e)
                 {
@@ -728,7 +736,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public void registerConfigProvider(Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<ConfigInterface> provider)
+    public void registerFileProvider(Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<File> provider)
     {
         this.configProviders.computeIfAbsent(plugin, (key) -> new HashMap<>()).put(clazz, provider);
     }

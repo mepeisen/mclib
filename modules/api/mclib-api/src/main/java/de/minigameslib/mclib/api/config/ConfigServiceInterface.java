@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.config;
 
+import java.io.File;
+
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.util.function.McSupplier;
@@ -66,6 +68,6 @@ public interface ConfigServiceInterface
      * @param provider
      *            Supplier to return the config interface.
      */
-    void registerConfigProvider(final Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<ConfigInterface> provider);
+    void registerFileProvider(final Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<File> provider);
     
 }

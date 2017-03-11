@@ -79,23 +79,25 @@ public class ConfigImpl implements ConfigInterface
     // TODO support data versions and migrations
     
     /** logging. */
-    private static final Logger LOGGER = Logger.getLogger(ConfigImpl.class.getName());
+    private static final Logger                            LOGGER         = Logger.getLogger(ConfigImpl.class.getName());
     
     /**
      * The configuration files.
      */
-    private final Map<String, YmlFile>           configurations = new HashMap<>();
+    private final Map<String, YmlFile>                     configurations = new HashMap<>();
     
     /**
      * The default configurations.
      */
     private Map<String, List<ConfigurationValueInterface>> defaultConfigs = new HashMap<>();
     
-    /** the java plugin. */
-    private Plugin                                         plugin;
-    
     /** the enumeration services. */
     private EnumServiceImpl                                enumService;
+    
+    /**
+     * the root data folder.
+     */
+    private File                                           dataFolder;
     
     /**
      * Constructor.
@@ -105,12 +107,25 @@ public class ConfigImpl implements ConfigInterface
      */
     public ConfigImpl(Plugin plugin, EnumServiceImpl enumService)
     {
-        this.plugin = plugin;
+        this.dataFolder = plugin.getDataFolder();
         this.enumService = enumService;
         for (final ConfigurationValueInterface cvi : this.enumService.getEnumValues(plugin, ConfigurationValueInterface.class))
         {
             this.defaultConfigs.computeIfAbsent(cvi.getClass().getAnnotation(ConfigurationValues.class).file(), (key) -> new ArrayList<>()).add(cvi);
         }
+    }
+    
+    /**
+     * Constructor.
+     * 
+     * @param dataFolder
+     * @param enumService
+     */
+    public ConfigImpl(File dataFolder, EnumServiceImpl enumService)
+    {
+        this.dataFolder = dataFolder;
+        this.enumService = enumService;
+        // TODO default Configs
     }
     
     @Override
@@ -121,6 +136,7 @@ public class ConfigImpl implements ConfigInterface
     
     /**
      * Returns the file configuration for given file.
+     * 
      * @param file
      * @return file config
      */
@@ -137,7 +153,7 @@ public class ConfigImpl implements ConfigInterface
         
         return this.configurations.computeIfAbsent(file, (f) -> {
             YmlFile fileConfig = null;
-            final File fobj = new File(this.plugin.getDataFolder(), file);
+            final File fobj = new File(this.dataFolder, file);
             try
             {
                 if (fobj.exists())
@@ -154,14 +170,14 @@ public class ConfigImpl implements ConfigInterface
                 throw new IllegalStateException("error loading config", e1); //$NON-NLS-1$
             }
             // TODO maybe a special behaviour for config.yml to hold it in sync with plugin.getConfig?
-//            if (file.equals("config.yml")) //$NON-NLS-1$
-//            {
-//                fileConfig = this.plugin.getConfig();
-//            }
-//            else
-//            {
-//                fileConfig = new YmlFile(fobj);
-//            }
+            // if (file.equals("config.yml")) //$NON-NLS-1$
+            // {
+            // fileConfig = this.plugin.getConfig();
+            // }
+            // else
+            // {
+            // fileConfig = new YmlFile(fobj);
+            // }
             
             final List<ConfigurationValueInterface> list = this.defaultConfigs.get(file);
             if (list != null)
@@ -302,6 +318,7 @@ public class ConfigImpl implements ConfigInterface
     
     /**
      * Applys a configuration comment for given file config and path name
+     * 
      * @param fileConfig
      * @param path
      * @param annotation
@@ -327,11 +344,11 @@ public class ConfigImpl implements ConfigInterface
             }
         }
     }
-
+    
     @Override
     public void saveConfig(String file)
     {
-        final File fobj = new File(this.plugin.getDataFolder(), file);
+        final File fobj = new File(this.dataFolder, file);
         try
         {
             this.getConfigEx(file).saveFile(fobj);
