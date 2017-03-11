@@ -172,8 +172,8 @@ public abstract class AbstractLocationComponent extends AbstractComponent
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        this.saveConfig();
         this.location = loc == null ? null : loc;
+        this.saveConfig();
         this.changeLocs();
     }
     
