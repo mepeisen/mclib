@@ -26,6 +26,7 @@ package de.minigameslib.mclib.impl.cmd;
 
 import de.minigameslib.mclib.api.cmd.AbstractCompositeCommandHandler;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
+import de.minigameslib.mclib.api.cmd.HelpCommandHandler;
 import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -48,6 +49,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
      */
     public MclibCommand()
     {
+        this.subCommands.put("help", new HelpCommandHandler(this)); //$NON-NLS-1$
         this.subCommands.put("locale", new LocaleCommand()); //$NON-NLS-1$
         this.subCommands.put("defaultlocale", new DefaultLocaleCommand()); //$NON-NLS-1$
         this.subCommands.put("mainlocale", new MainLocaleCommand()); //$NON-NLS-1$
