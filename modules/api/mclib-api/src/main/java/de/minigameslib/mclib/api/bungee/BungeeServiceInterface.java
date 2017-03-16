@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.bungee;
 
+import java.util.Collection;
+
 /**
  * Service interface for bungee cord networks.
  * 
@@ -63,6 +65,6 @@ public interface BungeeServiceInterface
      * 
      * @return bungee servers.
      */
-    Iterable<BungeeServerInterface> getServers();
+    Collection<BungeeServerInterface> getServers();
     
 }

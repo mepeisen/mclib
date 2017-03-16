@@ -25,10 +25,10 @@
 package de.minigameslib.mclib.impl.cmd;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.bungee.BungeeServerInterface;
+import de.minigameslib.mclib.api.bungee.BungeeServiceInterface;
 import de.minigameslib.mclib.api.cmd.AbstractPagableCommandHandler;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.cmd.SubCommandHandlerInterface;
@@ -42,19 +42,19 @@ import de.minigameslib.mclib.api.locale.MessageComment;
  * @author mepeisen
  *
  */
-public class MainLocaleListCommand extends AbstractPagableCommandHandler implements SubCommandHandlerInterface
+public class BungeeListCommand extends AbstractPagableCommandHandler implements SubCommandHandlerInterface
 {
     
     @Override
     public boolean visible(CommandInterface command)
     {
-        return command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
+        return command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
     }
 
     @Override
     public void handle(CommandInterface command) throws McException
     {
-        command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
+        command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
         super.handle(command);
     }
 
@@ -73,7 +73,7 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
     @Override
     protected int getLineCount(CommandInterface command)
     {
-        return McLibInterface.instance().getMainLocales().size();
+        return BungeeServiceInterface.instance().getServers().size();
     }
 
     @Override
@@ -85,36 +85,38 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
     @Override
     protected Serializable[] getLines(CommandInterface command, int start, int count)
     {
-        return McLibInterface.instance().getMainLocales().stream().map(Locale::toString).skip(start).limit(count).toArray(Serializable[]::new);
+        return BungeeServiceInterface.instance().getServers().stream().map(BungeeServerInterface::getName).skip(start).limit(count).toArray(Serializable[]::new);
     }
     
     /**
      * Messages
      */
-    @LocalizedMessages("cmd.mclib_mainlocale_list")
+    @LocalizedMessages("cmd.mclib_bungee_list")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
          * Short description
          */
-        @LocalizedMessage(defaultMessage = "Display list of main locales!")
-        @MessageComment("Short description for /mclib mainlocale")
+        @LocalizedMessage(defaultMessage = "Display list of known bungee servers!")
+        @MessageComment("Short description for /mclib bungee list")
         ShortDescription,
         
         /**
          * Description
          */
         @LocalizedMessageList({
-            "Display list of main locales!"
+            "Display list of known bungee servers!",
+            "The list is displayed from cache.",
+            "New servers may take a while before entering the list."
         })
-        @MessageComment("Long description for /mclib mainlocale")
+        @MessageComment("Long description for /mclib bungee list")
         Description,
         
         /**
          * Page header
          */
-        @LocalizedMessage(defaultMessage = "main locales")
+        @LocalizedMessage(defaultMessage = "bungee servers")
         @MessageComment("Page header")
         Header
     }

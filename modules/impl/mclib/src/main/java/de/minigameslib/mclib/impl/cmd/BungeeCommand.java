@@ -24,14 +24,11 @@
 
 package de.minigameslib.mclib.impl.cmd;
 
-import java.io.Serializable;
-import java.util.Locale;
-
-import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.McLibInterface;
-import de.minigameslib.mclib.api.cmd.AbstractPagableCommandHandler;
+import de.minigameslib.mclib.api.cmd.AbstractCompositeCommandHandler;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
+import de.minigameslib.mclib.api.cmd.HelpCommandHandler;
 import de.minigameslib.mclib.api.cmd.SubCommandHandlerInterface;
+import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageList;
@@ -42,20 +39,23 @@ import de.minigameslib.mclib.api.locale.MessageComment;
  * @author mepeisen
  *
  */
-public class MainLocaleListCommand extends AbstractPagableCommandHandler implements SubCommandHandlerInterface
+public class BungeeCommand extends AbstractCompositeCommandHandler implements SubCommandHandlerInterface
 {
     
-    @Override
-    public boolean visible(CommandInterface command)
+    /**
+     * Constructor
+     */
+    public BungeeCommand()
     {
-        return command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
+        this.subCommands.put("help", new HelpCommandHandler((AbstractCompositeCommandHandler) this)); //$NON-NLS-1$
+        this.subCommands.put("list", new BungeeListCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("getservers", new BungeeGetServersCommand()); //$NON-NLS-1$
     }
 
     @Override
-    public void handle(CommandInterface command) throws McException
+    public boolean visible(CommandInterface command)
     {
-        command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
-        super.handle(command);
+        return command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
     }
 
     @Override
@@ -71,52 +71,45 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
     }
 
     @Override
-    protected int getLineCount(CommandInterface command)
+    protected void sendUsage(CommandInterface command)
     {
-        return McLibInterface.instance().getMainLocales().size();
-    }
-
-    @Override
-    protected Serializable getHeader(CommandInterface command)
-    {
-        return Messages.Header;
-    }
-
-    @Override
-    protected Serializable[] getLines(CommandInterface command, int start, int count)
-    {
-        return McLibInterface.instance().getMainLocales().stream().map(Locale::toString).skip(start).limit(count).toArray(Serializable[]::new);
+        command.send(Messages.Usage);
     }
     
     /**
      * Messages
      */
-    @LocalizedMessages("cmd.mclib_mainlocale_list")
+    @LocalizedMessages("cmd.mclib_bungee")
+    @ChildEnum({
+        BungeeListCommand.Messages.class,
+        BungeeGetServersCommand.Messages.class
+    })
     public enum Messages implements LocalizedMessageInterface
     {
+        /**
+         * Command usage
+         */
+        @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Enter " + LocalizedMessage.BLUE + "/mclib bungee help " + LocalizedMessage.GRAY + "for detailed help!")
+        @MessageComment("Command usage for /mclib bungee")
+        Usage,
         
         /**
          * Short description
          */
-        @LocalizedMessage(defaultMessage = "Display list of main locales!")
-        @MessageComment("Short description for /mclib mainlocale")
+        @LocalizedMessage(defaultMessage = "Information on bungee network!")
+        @MessageComment("Short description for /mclib bungee")
         ShortDescription,
         
         /**
          * Description
          */
         @LocalizedMessageList({
-            "Display list of main locales!"
+            "Display or manipulate your bungee network!",
+            "Usage: " + LocalizedMessageList.CODE_COLOR + "/mclib bungee list " + LocalizedMessageList.INFORMATION_COLOR + "to list your bungee servers (cached)",
+            "Usage: " + LocalizedMessageList.CODE_COLOR + "/mclib bungee getservers " + LocalizedMessageList.INFORMATION_COLOR + "to query existing bungee servers"
         })
-        @MessageComment("Long description for /mclib mainlocale")
+        @MessageComment("Long description for /mclib bungee")
         Description,
-        
-        /**
-         * Page header
-         */
-        @LocalizedMessage(defaultMessage = "main locales")
-        @MessageComment("Page header")
-        Header
     }
     
 }

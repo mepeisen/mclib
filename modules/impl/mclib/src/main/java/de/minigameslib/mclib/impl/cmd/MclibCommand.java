@@ -52,6 +52,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
         this.subCommands.put("defaultlocale", new DefaultLocaleCommand()); //$NON-NLS-1$
         this.subCommands.put("mainlocale", new MainLocaleCommand()); //$NON-NLS-1$
         // TODO this.subCommands.put("translate", new TranslateCommand()); //$NON-NLS-1$
+        this.subCommands.put("bungee", new BungeeCommand()); //$NON-NLS-1$
     }
 
     @Override
@@ -67,7 +68,8 @@ public class MclibCommand extends AbstractCompositeCommandHandler
     @ChildEnum({
         LocaleCommand.Messages.class,
         DefaultLocaleCommand.Messages.class,
-        MainLocaleCommand.Messages.class
+        MainLocaleCommand.Messages.class,
+        BungeeCommand.Messages.class
     })
     public enum Messages implements LocalizedMessageInterface
     {
@@ -108,6 +110,12 @@ public class MclibCommand extends AbstractCompositeCommandHandler
          */
         @Permission
         Translate,
+        
+        /**
+         * Bungee command
+         */
+        @Permission
+        Bungee,
     }
     
 }

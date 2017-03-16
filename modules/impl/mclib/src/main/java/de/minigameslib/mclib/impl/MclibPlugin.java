@@ -1385,7 +1385,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public Iterable<BungeeServerInterface> getServers()
+    public Collection<BungeeServerInterface> getServers()
     {
         synchronized (this.bungeeServers)
         {

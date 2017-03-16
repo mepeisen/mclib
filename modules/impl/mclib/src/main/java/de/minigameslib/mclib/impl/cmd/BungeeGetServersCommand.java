@@ -24,12 +24,10 @@
 
 package de.minigameslib.mclib.impl.cmd;
 
-import java.io.Serializable;
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.McLibInterface;
-import de.minigameslib.mclib.api.cmd.AbstractPagableCommandHandler;
 import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.cmd.SubCommandHandlerInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
@@ -42,20 +40,26 @@ import de.minigameslib.mclib.api.locale.MessageComment;
  * @author mepeisen
  *
  */
-public class MainLocaleListCommand extends AbstractPagableCommandHandler implements SubCommandHandlerInterface
+public class BungeeGetServersCommand implements SubCommandHandlerInterface
 {
     
     @Override
     public boolean visible(CommandInterface command)
     {
-        return command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
+        return command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
     }
 
     @Override
     public void handle(CommandInterface command) throws McException
     {
-        command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
-        super.handle(command);
+        command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
+        // TODO
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
+    {
+        return Collections.emptyList();
     }
 
     @Override
@@ -69,54 +73,29 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
     {
         return Messages.Description;
     }
-
-    @Override
-    protected int getLineCount(CommandInterface command)
-    {
-        return McLibInterface.instance().getMainLocales().size();
-    }
-
-    @Override
-    protected Serializable getHeader(CommandInterface command)
-    {
-        return Messages.Header;
-    }
-
-    @Override
-    protected Serializable[] getLines(CommandInterface command, int start, int count)
-    {
-        return McLibInterface.instance().getMainLocales().stream().map(Locale::toString).skip(start).limit(count).toArray(Serializable[]::new);
-    }
     
     /**
      * Messages
      */
-    @LocalizedMessages("cmd.mclib_mainlocale_list")
+    @LocalizedMessages("cmd.mclib_bungee_getservers")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
          * Short description
          */
-        @LocalizedMessage(defaultMessage = "Display list of main locales!")
-        @MessageComment("Short description for /mclib mainlocale")
+        @LocalizedMessage(defaultMessage = "Query bungee servers!")
+        @MessageComment("Short description for /mclib bungee getservers")
         ShortDescription,
         
         /**
          * Description
          */
         @LocalizedMessageList({
-            "Display list of main locales!"
+            "Query bungee servers live!"
         })
-        @MessageComment("Long description for /mclib mainlocale")
-        Description,
-        
-        /**
-         * Page header
-         */
-        @LocalizedMessage(defaultMessage = "main locales")
-        @MessageComment("Page header")
-        Header
+        @MessageComment("Long description for /mclib bungee getservers")
+        Description
     }
     
 }
