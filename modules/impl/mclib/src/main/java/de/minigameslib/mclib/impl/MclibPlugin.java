@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -531,13 +532,14 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         @Override
         public void run()
         {
-            final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
-            if (onlPlayers.size() > 0)
+            final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+            final Optional<? extends Player> player = Bukkit.getOnlinePlayers().stream().filter(p -> !osi.isHuman(p)).findFirst();
+            if (player.isPresent())
             {
                 // bungee cord ensures this is not send to the client.
                 final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
                 out2.writeUTF("GetServers"); //$NON-NLS-1$
-                onlPlayers.iterator().next().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out2.toByteArray());
+                player.get().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, out2.toByteArray());
             }
         }
         
@@ -751,15 +753,20 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
-        if (ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
+        final Player player = evt.getPlayer();
+        
+        if (ObjectServiceInterface.instance().isHuman(player))
             return;
+        
+        while (!this.bungeeQueue.isEmpty())
+        {
+            this.bungeeQueue.poll().accept(player);
+        }
         
         if (this.getMinecraftVersion().isBelow(MinecraftVersionsType.V1_8_R3))
         {
-            NetworkManager1_8.hookResourcePackStatus(evt.getPlayer(), new ResourcePackHandler(this.players, this.itemService));
+            NetworkManager1_8.hookResourcePackStatus(player, new ResourcePackHandler(this.players, this.itemService));
         }
-        
-        final Player player = evt.getPlayer();
         
         // TODO Why do we need to register bungeecord here???
         // TODO Disable Server-To-Server and BungeeCord in Non-BungeeCord environments
@@ -775,11 +782,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
         ping.write(section.createSection("data")); //$NON-NLS-1$
         this.players.getPlayer(player).sendToClient(MclibCommunication.ClientServerCore, section);
-        
-        while (!this.bungeeQueue.isEmpty())
-        {
-            this.bungeeQueue.poll().accept(player);
-        }
         
         // resources
         if (ItemServiceInterface.instance().isAutoResourceDownload())
@@ -1102,11 +1104,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 }
                 out2.writeShort(bytes.length);
                 out2.write(bytes);
-                final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
-                if (onlPlayers.size() > 0)
+                final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+                final Optional<? extends Player> player = Bukkit.getOnlinePlayers().stream().filter(p -> !osi.isHuman(p)).findFirst();
+                if (player.isPresent())
                 {
                     // bungee cord ensures this is not send to the client.
-                    onlPlayers.iterator().next().sendPluginMessage(this, BUNGEECORD_CHANNEL, bytes);
+                    player.get().sendPluginMessage(this, BUNGEECORD_CHANNEL, bytes);
                 }
                 else
                 {
@@ -1488,11 +1491,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                     }
                     out2.writeShort(bytes.length);
                     out2.write(bytes);
-                    final Collection<? extends Player> onlPlayers = Bukkit.getOnlinePlayers();
-                    if (onlPlayers.size() > 0)
+                    final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+                    final Optional<? extends Player> player = Bukkit.getOnlinePlayers().stream().filter(p -> !osi.isHuman(p)).findFirst();
+                    if (player.isPresent())
                     {
                         // bungee cord ensures this is not send to the client.
-                        onlPlayers.iterator().next().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, bytes);
+                        player.get().sendPluginMessage(MclibPlugin.this, BUNGEECORD_CHANNEL, bytes);
                     }
                     else
                     {
