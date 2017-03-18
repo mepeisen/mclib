@@ -49,6 +49,13 @@ public interface EntityHelperInterface
     Villager spawnDummyVillager(Location loc, Profession profession);
     
     /**
+     * checks if given villager was created by method {@link #spawnDummyVillager(Location, Profession)}
+     * @param villager
+     * @return {@code true} for dummy villager
+     */
+    boolean isDummyVillager(Villager villager);
+    
+    /**
      * Spawns a dummy human, not being able to move around
      * @param loc
      * @param name
@@ -56,6 +63,13 @@ public interface EntityHelperInterface
      * @return human
      */
     HumanEntity spawnDummyHuman(Location loc, String name, String skinTexture);
+    
+    /**
+     * checks if given human was created by method {@link #spawnDummyHuman(Location, String, String)}
+     * @param human
+     * @return {@code true} for dummy human
+     */
+    boolean isDummyHuman(HumanEntity human);
 
     /**
      * @param entity

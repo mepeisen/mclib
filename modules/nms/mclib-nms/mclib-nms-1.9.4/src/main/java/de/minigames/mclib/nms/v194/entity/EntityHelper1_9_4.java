@@ -265,5 +265,17 @@ public class EntityHelper1_9_4 implements EntityHelperInterface
     {
         PROPERTIES.invalidate(player.getUniqueId());
     }
+
+    @Override
+    public boolean isDummyVillager(Villager villager)
+    {
+        return villager instanceof DummyVillager1_9_4.VillagerNPC;
+    }
+
+    @Override
+    public boolean isDummyHuman(HumanEntity human)
+    {
+        return human instanceof DummyHuman1_9_4.HumanNPC;
+    }
     
 }

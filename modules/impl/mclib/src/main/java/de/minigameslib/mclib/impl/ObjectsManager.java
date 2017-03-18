@@ -109,6 +109,8 @@ import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.comp.ZoneImpl;
 import de.minigameslib.mclib.impl.comp.builder.HumanBuilder;
 import de.minigameslib.mclib.impl.comp.builder.VillagerBuilder;
+import de.minigameslib.mclib.nms.api.EntityHelperInterface;
+import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -1690,7 +1692,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     @Override
     public boolean isHuman(Player player)
     {
-        return this.entitiesByUuid.containsKey(player.getUniqueId());
+        return this.entitiesByUuid.containsKey(player.getUniqueId()) || Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).isDummyHuman(player);
     }
 
     /**

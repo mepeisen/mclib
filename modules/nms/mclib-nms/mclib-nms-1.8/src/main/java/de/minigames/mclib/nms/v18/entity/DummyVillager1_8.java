@@ -155,7 +155,7 @@ public class DummyVillager1_8 extends EntityVillager
     /**
      * Bukkit npc class
      */
-    private static final class VillagerNPC extends CraftVillager
+    protected static final class VillagerNPC extends CraftVillager
     {
         /**
          * Constructor.

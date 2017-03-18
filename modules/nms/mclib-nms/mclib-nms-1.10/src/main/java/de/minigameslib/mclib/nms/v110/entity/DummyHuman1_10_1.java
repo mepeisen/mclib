@@ -338,7 +338,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     /**
      * Bukkit npc class
      */
-    private static final class HumanNPC extends CraftPlayer
+    protected static final class HumanNPC extends CraftPlayer
     {
         
         /** craft server. */
