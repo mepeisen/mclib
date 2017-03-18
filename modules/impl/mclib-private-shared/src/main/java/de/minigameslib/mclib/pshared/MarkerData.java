@@ -124,6 +124,98 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Data fragments for marker colors.
+     */
+    public static class MarkerColorData extends AnnotatedDataFragment
+    {
+        
+        /**
+         * red color
+         */
+        @PersistentField
+        protected int r;
+        /**
+         * green color
+         */
+        @PersistentField
+        protected int g;
+        /**
+         * blue color
+         */
+        @PersistentField
+        protected int b;
+        /**
+         * alpha color
+         */
+        @PersistentField
+        protected int alpha;
+
+        /**
+         * @return the r
+         */
+        public int getR()
+        {
+            return this.r;
+        }
+
+        /**
+         * @param r the r to set
+         */
+        public void setR(int r)
+        {
+            this.r = r;
+        }
+
+        /**
+         * @return the g
+         */
+        public int getG()
+        {
+            return this.g;
+        }
+
+        /**
+         * @param g the g to set
+         */
+        public void setG(int g)
+        {
+            this.g = g;
+        }
+
+        /**
+         * @return the b
+         */
+        public int getB()
+        {
+            return this.b;
+        }
+
+        /**
+         * @param b the b to set
+         */
+        public void setB(int b)
+        {
+            this.b = b;
+        }
+
+        /**
+         * @return the alpha
+         */
+        public int getAlpha()
+        {
+            return this.alpha;
+        }
+
+        /**
+         * @param alpha the alpha to set
+         */
+        public void setAlpha(int alpha)
+        {
+            this.alpha = alpha;
+        }
+    }
+    
+    /**
      * Data fragments for block markers.
      */
     public static class CuboidMarkerData extends AnnotatedDataFragment
@@ -164,6 +256,12 @@ public class MarkerData extends AnnotatedDataFragment
          */
         @PersistentField
         protected int z2;
+        
+        /**
+         * marker color
+         */
+        @PersistentField
+        protected MarkerColorData color;
 
         /**
          * @return the x1
@@ -261,6 +359,22 @@ public class MarkerData extends AnnotatedDataFragment
             this.z2 = z2;
         }
 
+        /**
+         * @return the color
+         */
+        public MarkerColorData getColor()
+        {
+            return this.color;
+        }
+
+        /**
+         * @param color the color to set
+         */
+        public void setColor(MarkerColorData color)
+        {
+            this.color = color;
+        }
+
     }
     
     /**
@@ -286,6 +400,13 @@ public class MarkerData extends AnnotatedDataFragment
          */
         @PersistentField
         protected int z;
+        
+        /**
+         * marker color
+         */
+        @PersistentField
+        protected MarkerColorData color;
+        
 
         /**
          * @return the x
@@ -333,6 +454,22 @@ public class MarkerData extends AnnotatedDataFragment
         public void setZ(int z)
         {
             this.z = z;
+        }
+
+        /**
+         * @return the color
+         */
+        public MarkerColorData getColor()
+        {
+            return this.color;
+        }
+
+        /**
+         * @param color the color to set
+         */
+        public void setColor(MarkerColorData color)
+        {
+            this.color = color;
         }
 
     }
