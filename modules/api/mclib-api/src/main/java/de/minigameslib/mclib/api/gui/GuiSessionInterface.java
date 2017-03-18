@@ -276,6 +276,57 @@ public interface GuiSessionInterface extends DataFragment
     SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
     
     /**
+     * Creates a new marker and displays it on client with given color code.
+     * 
+     * @param component
+     *            the component to display.
+     * @param r red color
+     * @param g green color
+     * @param b blue color
+     * @param alpha alpha channel
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(ComponentInterface component, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
+     * Creates a new marker and displays it on client.
+     * 
+     * @param sign
+     *            the sign to display.
+     * @param r red color
+     * @param g green color
+     * @param b blue color
+     * @param alpha alpha channel
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(SignInterface sign, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
+     * Creates a new marker and displays it on client.
+     * 
+     * @param zone
+     *            the component to display.
+     * @param r red color
+     * @param g green color
+     * @param b blue color
+     * @param alpha alpha channel
+     * @param label 
+     * @param labelArgs 
+     * @return marker interface to control the marker.
+     * @throws McException
+     *             thrown if player has no smart gui.
+     */
+    SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException;
+    
+    /**
      * Removes all markers from sgui
      * 
      * @throws McException

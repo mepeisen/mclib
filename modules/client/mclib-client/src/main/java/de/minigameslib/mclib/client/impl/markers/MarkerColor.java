@@ -24,20 +24,20 @@
 
 package de.minigameslib.mclib.client.impl.markers;
 
+import de.minigameslib.mclib.pshared.MarkerData.MarkerColorData;
+
 /**
  * A color for the markers.
  * 
  * @author mepeisen
  */
-public enum MarkerColor
+public class MarkerColor
 {
 
     /** yellow color. */
-    YELLOW(1.0f, 1.0f, 0.0f, 0.5f),
+    public static final MarkerColor YELLOW = new MarkerColor(1.0f, 1.0f, 0.0f, 0.5f);
     /** bluecolor. */
-    BLUE(0.0f, 0.0f, 1.0f, 0.5f),
-    
-    ;
+    public static final MarkerColor BLUE = new MarkerColor(0.0f, 0.0f, 1.0f, 0.5f);
     
     /** rbg color code. */
     private final float r;
@@ -61,6 +61,18 @@ public enum MarkerColor
         this.g = g;
         this.b = b;
         this.a = a;
+    }
+    
+    /**
+     * Constructor to create marker color from given color data.
+     * @param data
+     */
+    public MarkerColor(MarkerColorData data)
+    {
+        this.r = data.getR();
+        this.g = data.getG();
+        this.b = data.getB();
+        this.a = data.getAlpha();
     }
 
     /**

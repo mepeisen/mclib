@@ -948,6 +948,98 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
+    public SGuiMarkerInterface sguiShowMarker(ComponentInterface component, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+        
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        // TODO fill plugin and type id
+        data.getMarker().setBlock(new BlockMarkerData());
+        data.getMarker().getBlock().setX(component.getLocation().getBlockX());
+        data.getMarker().getBlock().setY(component.getLocation().getBlockY());
+        data.getMarker().getBlock().setZ(component.getLocation().getBlockZ());
+        data.getMarker().getBlock().setColor(new MarkerData.MarkerColorData());
+        data.getMarker().getBlock().getColor().setR(r);
+        data.getMarker().getBlock().getColor().setG(g);
+        data.getMarker().getBlock().getColor().setB(b);
+        data.getMarker().getBlock().getColor().setAlpha(alpha);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+    
+    @Override
+    public SGuiMarkerInterface sguiShowMarker(SignInterface sign, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+        
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        // TODO fill plugin and type id
+        data.getMarker().setBlock(new BlockMarkerData());
+        data.getMarker().getBlock().setX(sign.getLocation().getBlockX());
+        data.getMarker().getBlock().setY(sign.getLocation().getBlockY());
+        data.getMarker().getBlock().setZ(sign.getLocation().getBlockZ());
+        data.getMarker().getBlock().setColor(new MarkerData.MarkerColorData());
+        data.getMarker().getBlock().getColor().setR(r);
+        data.getMarker().getBlock().getColor().setG(g);
+        data.getMarker().getBlock().getColor().setB(b);
+        data.getMarker().getBlock().getColor().setAlpha(alpha);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+    
+    @Override
+    public SGuiMarkerInterface sguiShowMarker(ZoneInterface zone, int r, int g, int b, int alpha, LocalizedMessageInterface label, Serializable... labelArgs) throws McException
+    {
+        // TODO support marker labels
+        // TODO listen for location changes and report to client.
+        checkForSmartGui();
+        initSmartGui();
+        final UUID uuid = UUID.randomUUID();
+        
+        final DisplayMarkerData data = new DisplayMarkerData();
+        data.setMarkerId(uuid.toString());
+        data.setMarker(new MarkerData());
+        data.getMarker().setCuboid(new CuboidMarkerData());
+        data.getMarker().getCuboid().setX1(zone.getCuboid().getLowLoc().getBlockX());
+        data.getMarker().getCuboid().setY1(zone.getCuboid().getLowLoc().getBlockY());
+        data.getMarker().getCuboid().setZ1(zone.getCuboid().getLowLoc().getBlockZ());
+        data.getMarker().getCuboid().setX2(zone.getCuboid().getHighLoc().getBlockX());
+        data.getMarker().getCuboid().setY2(zone.getCuboid().getHighLoc().getBlockY());
+        data.getMarker().getCuboid().setZ2(zone.getCuboid().getHighLoc().getBlockZ());
+        data.getMarker().getCuboid().setColor(new MarkerData.MarkerColorData());
+        data.getMarker().getCuboid().getColor().setR(r);
+        data.getMarker().getCuboid().getColor().setG(g);
+        data.getMarker().getCuboid().getColor().setB(b);
+        data.getMarker().getCuboid().getColor().setAlpha(alpha);
+        final DataSection section = new MemoryDataSection();
+        section.set("KEY", CoreMessages.DisplayMarker.name()); //$NON-NLS-1$
+        data.write(section.createSection("data")); //$NON-NLS-1$
+        this.player.sendToClient(MclibCommunication.ClientServerCore, section);
+        
+        return new SGuiMarker(this.player, uuid);
+    }
+    
+    @Override
     public void sguiRemoveAllMarkers() throws McException
     {
         final ResetMarkersData data = new ResetMarkersData();
