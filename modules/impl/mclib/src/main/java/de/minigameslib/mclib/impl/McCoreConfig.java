@@ -75,11 +75,25 @@ public enum McCoreConfig implements ConfigurationValueInterface
     BungeeServerName,
     
     /**
-     * The default download url of the resource pack
+     * The default download url of the resource pack (&lt;1.9)
      */
-    @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources.zip")
-    @ConfigComment({"The default download url of the resource pack"})
-    ResourcePackDownloadUrl,
+    @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources_v1.zip")
+    @ConfigComment({"The default download url of the resource pack (<1.9)"})
+    ResourcePackDownloadUrlV1,
+    
+    /**
+     * The default download url of the resource pack (1.9 and 1.10)
+     */
+    @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources_v2.zip")
+    @ConfigComment({"The default download url of the resource pack (1.9 and 1.10)"})
+    ResourcePackDownloadUrlV2,
+    
+    /**
+     * The default download url of the resource pack (&gt; 1.10)
+     */
+    @ConfigurationString(defaultValue = "http://www.minigameslib.de/mclib/mclib_core_resources_v3.zip")
+    @ConfigComment({"The default download url of the resource pack (>1.10)"})
+    ResourcePackDownloadUrlV3,
     
     /**
      * The auto download flag

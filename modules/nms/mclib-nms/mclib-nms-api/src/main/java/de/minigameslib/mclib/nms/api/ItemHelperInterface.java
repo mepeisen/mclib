@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -51,5 +52,40 @@ public interface ItemHelperInterface
      * @return item data
      */
     String getCustomData(ItemStack stack, String plugin, String key);
+    
+    /**
+     * Returns the variant for given block
+     * @param block
+     * @return numeric variant
+     */
+    int getVariant(Block block);
+    
+    /**
+     * Returns the variant for given item stack
+     * @param stack
+     * @return variant
+     */
+    int getVariant(ItemStack stack);
+    
+    /**
+     * Initializes the custom blocks
+     */
+    void initBlocks();
+    
+    /**
+     * Sets the block custom type and variant
+     * @param block
+     * @param type
+     * @param variant
+     */
+    void setBlockVariant(Block block, int type, int variant);
+    
+    /**
+     * Creates a custom item stack for given block type and variant
+     * @param type
+     * @param variant
+     * @return item stack
+     */
+    ItemStack createItemStackForBlock(int type, int variant);
     
 }

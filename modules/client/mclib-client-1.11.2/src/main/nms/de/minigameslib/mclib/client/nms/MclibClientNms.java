@@ -24,10 +24,17 @@
 
 package de.minigameslib.mclib.client.nms;
 
+import java.lang.reflect.Field;
+
+import de.minigameslib.mclib.pshared.MclibConstants;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
@@ -57,6 +64,37 @@ public class MclibClientNms
     public static WorldClient getWorld(Minecraft mc)
     {
         return mc.world;
+    }
+    
+    public static void initCustomBlocksAndItems()
+    {
+        try
+        {
+            Field field = Block.REGISTRY.getClass().getDeclaredField("maxId");
+            field.setAccessible(true);
+            field.set(Block.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+
+            field = Item.REGISTRY.getClass().getDeclaredField("maxId");
+            field.setAccessible(true);
+            field.set(Item.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+            
+            for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
+            {
+                final Block block = new MyBlock();
+                Block.REGISTRY.register(i, new ResourceLocation("mclib:custom-" + i), block);
+                Item.REGISTRY.register(i, new ResourceLocation("mclib:custom-" + i), new ItemBlock(block));
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    public static void registerBlock(int blockId, String resourceLoc, Block block, Item item)
+    {
+        Block.REGISTRY.register(blockId, new ResourceLocation(resourceLoc), block);
+        Item.REGISTRY.register(blockId, new ResourceLocation(resourceLoc), item);
     }
     
 }

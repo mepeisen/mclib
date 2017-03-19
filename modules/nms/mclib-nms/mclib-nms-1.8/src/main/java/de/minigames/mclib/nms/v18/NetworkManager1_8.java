@@ -31,7 +31,7 @@ import java.util.function.BiConsumer;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import de.minigameslib.mclib.api.items.ItemServiceInterface.ResourcePackStatus;
+import de.minigameslib.mclib.api.items.ResourceServiceInterface.ResourcePackStatus;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

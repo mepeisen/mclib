@@ -24,10 +24,9 @@
 
 package de.minigameslib.mclib.test.impl;
 
-import java.lang.reflect.Field;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,6 +38,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
+import de.minigameslib.mclib.api.items.BlockData;
+import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -57,6 +58,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyMessages.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyEntitites.class);
+        EnumServiceInterface.instance().registerEnumClass(this, MyBlocks.class);
         
         try
         {
@@ -71,34 +73,53 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         
         Bukkit.getPluginManager().registerEvents(this, this);
         
-        try
-        {
-//            System.out.println("Registering material #500");
-//            final Material[] byId = getStaticField(Material.class, "byId");
-//            byId[500] = Material.STONE;
-//            final Map<String, Material> byName = getStaticField(Material.class, "BY_NAME");
-//            byName.put("custom_stone", Material.STONE);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+//        try
+//        {
+//            final MyBlock myBlock = new MyBlock(true);
+//            net.minecraft.server.v1_10_R1.Block.REGISTRY.a(3000, new MinecraftKey("custom"), myBlock);
+//            Iterator iterator2 = myBlock.t().a().iterator();
+//            while (iterator2.hasNext()) {
+//                IBlockData iblockdata = (IBlockData)iterator2.next();
+//                int k = net.minecraft.server.v1_10_R1.Block.REGISTRY.a(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
+//                net.minecraft.server.v1_10_R1.Block.REGISTRY_ID.a(iblockdata, k);
+//            }
+//            getStaticMethod(TileEntity.class, "a", Class.class, String.class).invoke(null, MyTileEntity.class, "custom");
+//        }
+//        catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
     }
     
-    private <T> T getStaticField(Class<?> clazz, String field)
-    {
-        try
-        {
-            final Field f = clazz.getDeclaredField(field);
-            f.setAccessible(true);
-            return (T) f.get(clazz);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-        return null;
-    }
+//    private <T> T getStaticField(Class<?> clazz, String field)
+//    {
+//        try
+//        {
+//            final Field f = clazz.getDeclaredField(field);
+//            f.setAccessible(true);
+//            return (T) f.get(clazz);
+//        }
+//        catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
+//        return null;
+//    }
+//    
+//    private Method getStaticMethod(Class<?> clazz, String name, Class<?>... parameterTypes)
+//    {
+//        try
+//        {
+//            final Method m = clazz.getDeclaredMethod(name, parameterTypes);
+//            m.setAccessible(true);
+//            return m;
+//        }
+//        catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
+//        return null;
+//    }
 
     @Override
     public void onDisable()
@@ -124,11 +145,39 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     
     private void onLeftClick(McPlayerInterface player, McPlayerInteractEvent evt)
     {
-        System.out.println("Left clicked at " + evt.getBukkitEvent().getClickedBlock());
+        evt.getBukkitEvent().setCancelled(true);
+        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
+        BlockServiceInterface.instance().setBlockData(clickedBlock, MyBlocks.CopperOre, BlockData.CustomVariantId.DEFAULT);
+//        final BlockPosition position = new BlockPosition(clickedBlock.getX(), clickedBlock.getY(), clickedBlock.getZ());
+//        ((CraftWorld)clickedBlock.getWorld()).getHandle().setTypeAndData(position, Blocks.AIR.getBlockData(), 0);
+//        final IBlockData blockData = net.minecraft.server.v1_10_R1.Block.getById(3000).getBlockData();
+//        // final IBlockData blockData = Blocks.FURNACE.getBlockData();
+//        IBlockData old = ((CraftChunk)clickedBlock.getChunk()).getHandle().getBlockData(position);
+//        boolean success = ((CraftChunk)clickedBlock.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
+//        if (success) {
+//            ((CraftChunk)clickedBlock.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
+//        }
+
+//        System.out.println(blockData);
+//        System.out.println(old);
+//
+//        System.out.println(((CraftWorld)clickedBlock.getWorld()).getHandle().getType(position));
+        
+        System.out.println("Left clicked at " + clickedBlock);
     }
     
     private void onRightClick(McPlayerInterface player, McPlayerInteractEvent evt)
     {
+        evt.getBukkitEvent().setCancelled(true);
+        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
+//        final BlockPosition position = new BlockPosition(clickedBlock.getX(), clickedBlock.getY(), clickedBlock.getZ());
+//        final Chunk chunk = ((CraftWorld)clickedBlock.getWorld()).getHandle().getChunkAtWorldCoords(position);
+//        
+//        for (final Map.Entry<BlockPosition, TileEntity> entry: chunk.getTileEntities().entrySet())
+//        {
+//            System.out.println(entry.getKey() + "->" + entry.getValue());
+//        }
+        
         System.out.println("Right clicked at " + evt.getBukkitEvent().getClickedBlock());
     }
     

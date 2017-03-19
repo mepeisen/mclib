@@ -29,7 +29,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
-import de.minigameslib.mclib.api.items.ItemServiceInterface.ResourcePackStatus;
+import de.minigameslib.mclib.api.items.ResourceServiceInterface.ResourcePackStatus;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 
 /**

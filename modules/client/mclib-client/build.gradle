@@ -78,8 +78,8 @@ dependencies {
     compile "xpp3:xpp3:1.1.4c"
     compile files('src/lib/twl/TWL.jar')
     
-    compile "de.minigameslib.mclib:mclib-shared:0.0.4-SNAPSHOT"
-    compile "de.minigameslib.mclib:mclib-private-shared:0.0.4-SNAPSHOT"
+    compile "de.minigameslib.mclib:mclib-shared:0.0.5-SNAPSHOT"
+    compile "de.minigameslib.mclib:mclib-private-shared:0.0.5-SNAPSHOT"
 }
 
 task fatJar(type: Jar) {

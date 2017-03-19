@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -64,8 +65,12 @@ import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.McPlayerDeathEvent;
 import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
+import de.minigameslib.mclib.api.items.BlockId;
+import de.minigameslib.mclib.api.items.BlockServiceInterface;
+import de.minigameslib.mclib.api.items.BlockVariantId;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.items.ResourceServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
@@ -73,6 +78,7 @@ import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.McCoreConfig;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -81,16 +87,20 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
  * 
  * @author mepeisen
  */
-public class ItemServiceImpl implements ItemServiceInterface, McListener
+public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterface, ResourceServiceInterface, McListener
 {
-    
-    // TODO support version control...
     
     /** java logger */
     private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
     
     /** the item id to value map. */
-    private Map<ItemId, CustomItem> idMap = new HashMap<>();
+    private Map<ItemId, CustomItem> itemIdMap = new HashMap<>();
+    
+    /** the block id to value map. */
+    private Map<BlockId, CustomBlock> blockIdMap = new HashMap<>();
+    
+    /** the block id to value map. */
+    private Map<Integer, BlockId> blockNumIdMap = new HashMap<>();
     
     /** the custom items per material/ damage value */
     private final Map<Material, Map<Short, CustomItem>> items = new HashMap<>();
@@ -100,11 +110,22 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
      */
     public void init()
     {
+        // TODO remember items and blocks in config.
+        // TODO do not allow new items/blocks to override existing ones
+        initItems();
+        initBlocks();
+    }
+
+    /**
+     * initializes the items
+     */
+    private void initItems()
+    {
         final SortedSet<CustomItem> sorted = new TreeSet<>();
         for (final ItemId item : EnumServiceInterface.instance().getEnumValues(ItemId.class))
         {
             final CustomItem custom = new CustomItem(item.getPluginName(), item.name(), item);
-            this.idMap.put(item, custom);
+            this.itemIdMap.put(item, custom);
             sorted.add(custom);
         }
         
@@ -129,18 +150,90 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
         
         // TODO warn: too much items
     }
+
+    /**
+     * initializes the items
+     */
+    private void initBlocks()
+    {
+        final SortedSet<CustomBlock> sorted = new TreeSet<>();
+        for (final BlockId block : EnumServiceInterface.instance().getEnumValues(BlockId.class))
+        {
+            final CustomBlock custom = new CustomBlock(block.getPluginName(), block.name(), block);
+            this.blockIdMap.put(block, custom);
+            sorted.add(custom);
+        }
+        
+        for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
+        {
+            final CustomBlock block = sorted.first();
+            sorted.remove(block);
+            block.setNumId(i);
+            this.blockNumIdMap.put(i, block.getBlockId());
+            
+            if (sorted.isEmpty())
+            {
+                return;
+            }
+        }
+        
+        // TODO warn: too much blocks
+    }
+    
+    @Override
+    public ResourceVersion getResourceVersion(MinecraftVersionsType minecraftVersion)
+    {
+        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_9)) return ResourceVersion.PACK_FORMAT_1;
+        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_11)) return ResourceVersion.PACK_FORMAT_2;
+        return ResourceVersion.PACK_FORMAT_3;
+    }
     
     @Override
     public void setDownloadUrl(String url)
     {
-        McCoreConfig.ResourcePackDownloadUrl.setString(url);
-        McCoreConfig.ResourcePackDownloadUrl.saveConfig();
+        this.setDownloadUrl(url, this.getResourceVersion(McLibInterface.instance().getMinecraftVersion()));
+    }
+    
+    @Override
+    public void setDownloadUrl(String url, ResourceVersion version)
+    {
+        switch (version)
+        {
+            case PACK_FORMAT_1:
+                McCoreConfig.ResourcePackDownloadUrlV1.setString(url);
+                McCoreConfig.ResourcePackDownloadUrlV1.saveConfig();
+                break;
+            case PACK_FORMAT_2:
+                McCoreConfig.ResourcePackDownloadUrlV2.setString(url);
+                McCoreConfig.ResourcePackDownloadUrlV2.saveConfig();
+                break;
+            default:
+            case PACK_FORMAT_3:
+                McCoreConfig.ResourcePackDownloadUrlV3.setString(url);
+                McCoreConfig.ResourcePackDownloadUrlV3.saveConfig();
+                break;
+        }
     }
     
     @Override
     public String getDownloadUrl()
     {
-        return McCoreConfig.ResourcePackDownloadUrl.getString();
+        return this.getDownloadUrl(this.getResourceVersion(McLibInterface.instance().getMinecraftVersion()));
+    }
+    
+    @Override
+    public String getDownloadUrl(ResourceVersion version)
+    {
+        switch (version)
+        {
+            case PACK_FORMAT_1:
+                return McCoreConfig.ResourcePackDownloadUrlV1.getString();
+            case PACK_FORMAT_2:
+                return McCoreConfig.ResourcePackDownloadUrlV2.getString();
+            default:
+            case PACK_FORMAT_3:
+                return McCoreConfig.ResourcePackDownloadUrlV3.getString();
+        }
     }
 
     @Override
@@ -198,7 +291,7 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     @Override
     public ItemStack createItem(ItemId item, String name)
     {
-        final CustomItem custom = this.idMap.get(item);
+        final CustomItem custom = this.itemIdMap.get(item);
         final ItemStack itemStack = new ItemStack(
                 custom.getCustomType().getMaterial(),
                 1,
@@ -229,6 +322,125 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
     @Override
     public void createResourcePack(File target) throws IOException
     {
+        this.createResourcePack(target, this.getResourceVersion(McLibInterface.instance().getMinecraftVersion()));
+    }
+    
+    /**
+     * write item overrides
+     * @param jar
+     * @param material
+     * @param map
+     */
+    private void writeItemOverrides(JarOutputStream jar, Material material, Map<Short, CustomItem> map)
+    {
+        try
+        {
+            final CustomItem custom = map.values().iterator().next();
+            final JarEntry overridesJson = new JarEntry("assets/minecraft/" + custom.getCustomType().getModelsFilename()); //$NON-NLS-1$
+            overridesJson.setTime(System.currentTimeMillis());
+            jar.putNextEntry(overridesJson);
+            final StringBuilder buffer = new StringBuilder();
+            buffer.append("{ \"parent\": \""); //$NON-NLS-1$
+            buffer.append(custom.getCustomType().getParent());
+            buffer.append("\", \"textures\": { \"layer0\": \""); //$NON-NLS-1$
+            buffer.append(custom.getCustomType().getDefaultTexture());
+            buffer.append("\"}, \"overrides\": ["); //$NON-NLS-1$
+            buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
+            for (CustomItem item : map.values())
+            {
+                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
+            buffer.append("]}"); //$NON-NLS-1$
+            writeFile(jar, buffer.toString());
+        }
+        catch (IOException e)
+        {
+            LOGGER.log(Level.WARNING, "IOException writing pack.mcmeta", e); //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * write blockstates
+     * @param jar
+     * @param numId
+     * @param block
+     */
+    private void writeBlockstates(JarOutputStream jar, int numId, CustomBlock block)
+    {
+        try
+        {
+            final JarEntry blockStatesJson = new JarEntry("assets/mclib/blockstates/custom-" + numId + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+            blockStatesJson.setTime(System.currentTimeMillis());
+            jar.putNextEntry(blockStatesJson);
+            final StringBuilder buffer = new StringBuilder();
+//            buffer.append("{ \"variants\": {"); //$NON-NLS-1$
+//            buffer.append(custom.getCustomType().getParent());
+//            buffer.append("\", \"textures\": { \"layer0\": \""); //$NON-NLS-1$
+//            buffer.append(custom.getCustomType().getDefaultTexture());
+//            buffer.append("\"}, \"overrides\": ["); //$NON-NLS-1$
+//            buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
+//            for (CustomItem item : map.values())
+//            {
+//                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//            }
+//            buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
+//            buffer.append("]}"); //$NON-NLS-1$
+            writeFile(jar, buffer.toString());
+        }
+        catch (IOException e)
+        {
+            LOGGER.log(Level.WARNING, "IOException writing pack.mcmeta", e); //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * write item overrides
+     * @param jar
+     * @param material
+     * @param map
+     */
+    private void writeItemModel(JarOutputStream jar, Material material, Map<Short, CustomItem> map)
+    {
+        for (CustomItem item : map.values())
+        {
+            try
+            {
+                final List<String> textures = new ArrayList<>();
+                for (final String texture : item.getItemId().getTextures())
+                {
+                    final File path = new File(texture);
+                    final String filename = path.getName();
+                    final String file = Files.getNameWithoutExtension(filename);
+                    textures.add("items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    try
+                    {
+                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        textureEntry.setTime(System.currentTimeMillis());
+                        jar.putNextEntry(textureEntry);
+                        copyFile(jar, item.getClass().getClassLoader(), texture);
+                    }
+                    catch (IOException e)
+                    {
+                        LOGGER.log(Level.WARNING, "IOException writing texture " + item.getPluginName() + '/' + item.getEnumName() + '_' + filename, e); //$NON-NLS-1$
+                    }
+                }
+                
+                final JarEntry modelJson = new JarEntry("assets/minecraft/models/item/" + item.getPluginName() + '/' + item.getEnumName() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+                modelJson.setTime(System.currentTimeMillis());
+                jar.putNextEntry(modelJson);
+                writeFile(jar, String.format(item.getItemId().getModelJson(), textures.toArray()));
+            }
+            catch (IOException e)
+            {
+                LOGGER.log(Level.WARNING, "IOException writing item " + item.getPluginName() + '/' + item.getEnumName(), e); //$NON-NLS-1$
+            }
+        }
+    }
+    
+    @Override
+    public void createResourcePack(File target, ResourceVersion version) throws IOException
+    {
         if (!target.getParentFile().exists())
         {
             target.getParentFile().mkdirs();
@@ -242,82 +454,26 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
             final JarEntry mcmeta = new JarEntry("pack.mcmeta"); //$NON-NLS-1$
             mcmeta.setTime(System.currentTimeMillis());
             jar.putNextEntry(mcmeta);
-            if (McLibInterface.instance().getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_11))
+            switch (version)
             {
-                copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v3/pack.mcmeta"); //$NON-NLS-1$
-            }
-            else
-            {
-                copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v2/pack.mcmeta"); //$NON-NLS-1$
+                case PACK_FORMAT_1:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v1/pack.mcmeta"); //$NON-NLS-1$
+                    break;
+                case PACK_FORMAT_2:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v2/pack.mcmeta"); //$NON-NLS-1$
+                    break;
+                default:
+                case PACK_FORMAT_3:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v3/pack.mcmeta"); //$NON-NLS-1$
+                    break;
             }
             jar.closeEntry();
             
             // default model overrides
-            this.items.forEach((material, map) -> {
-                try
-                {
-                    final CustomItem custom = map.values().iterator().next();
-                    final JarEntry overridesJson = new JarEntry("assets/minecraft/" + custom.getCustomType().getModelsFilename()); //$NON-NLS-1$
-                    overridesJson.setTime(System.currentTimeMillis());
-                    jar.putNextEntry(overridesJson);
-                    final StringBuilder buffer = new StringBuilder();
-                    buffer.append("{ \"parent\": \""); //$NON-NLS-1$
-                    buffer.append(custom.getCustomType().getParent());
-                    buffer.append("\", \"textures\": { \"layer0\": \""); //$NON-NLS-1$
-                    buffer.append(custom.getCustomType().getDefaultTexture());
-                    buffer.append("\"}, \"overrides\": ["); //$NON-NLS-1$
-                    buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
-                    for (CustomItem item : map.values())
-                    {
-                        buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    }
-                    buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
-                    buffer.append("]}"); //$NON-NLS-1$
-                    writeFile(jar, buffer.toString());
-                }
-                catch (IOException e)
-                {
-                    LOGGER.log(Level.WARNING, "IOException writing pack.mcmeta", e); //$NON-NLS-1$
-                }
-            });
+            this.items.forEach((martial, map) -> this.writeItemOverrides(jar, martial, map));
             
             // model files
-            this.items.forEach((material, map) -> {
-                for (CustomItem item : map.values())
-                {
-                    try
-                    {
-                        final List<String> textures = new ArrayList<>();
-                        for (final String texture : item.getItemId().getTextures())
-                        {
-                            final File path = new File(texture);
-                            final String filename = path.getName();
-                            final String file = Files.getNameWithoutExtension(filename);
-                            textures.add("items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
-                            try
-                            {
-                                final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
-                                textureEntry.setTime(System.currentTimeMillis());
-                                jar.putNextEntry(textureEntry);
-                                copyFile(jar, item.getClass().getClassLoader(), texture);
-                            }
-                            catch (IOException e)
-                            {
-                                LOGGER.log(Level.WARNING, "IOException writing texture " + item.getPluginName() + '/' + item.getEnumName() + '_' + filename, e); //$NON-NLS-1$
-                            }
-                        }
-                        
-                        final JarEntry modelJson = new JarEntry("assets/minecraft/models/item/" + item.getPluginName() + '/' + item.getEnumName() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
-                        modelJson.setTime(System.currentTimeMillis());
-                        jar.putNextEntry(modelJson);
-                        writeFile(jar, String.format(item.getItemId().getModelJson(), textures.toArray()));
-                    }
-                    catch (IOException e)
-                    {
-                        LOGGER.log(Level.WARNING, "IOException writing item " + item.getPluginName() + '/' + item.getEnumName(), e); //$NON-NLS-1$
-                    }
-                }
-            });
+            this.items.forEach((material, map) -> this.writeItemModel(jar, material, map));
         }
     }
     
@@ -816,6 +972,58 @@ public class ItemServiceImpl implements ItemServiceInterface, McListener
             this.rightClickHandler = rightClickHandler;
         }
         
+    }
+
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal());
+    }
+
+    @Override
+    public BlockId getBlockId(ItemStack stack)
+    {
+        final int typeId = stack.getTypeId();
+        return this.blockNumIdMap.get(typeId);
+    }
+
+    @Override
+    public BlockId getBlockId(Block block)
+    {
+        final int typeId = block.getTypeId();
+        return this.blockNumIdMap.get(typeId);
+    }
+
+    @Override
+    public BlockVariantId getBlockVariantId(ItemStack stack)
+    {
+        final BlockId block = this.getBlockId(stack);
+        if (block != null)
+        {
+            final int variantId = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getVariant(stack);
+            final CustomBlock custom = this.blockIdMap.get(block);
+            return custom.getVariant(variantId);
+        }
+        return null;
+    }
+
+    @Override
+    public BlockVariantId getBlockVariantId(Block b)
+    {
+        final BlockId block = this.getBlockId(b);
+        if (block != null)
+        {
+            final int variantId = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getVariant(b);
+            final CustomBlock custom = this.blockIdMap.get(block);
+            return custom.getVariant(variantId);
+        }
+        return null;
+    }
+
+    @Override
+    public void setBlockData(Block block, BlockId id, BlockVariantId variant)
+    {
+        Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setBlockVariant(block, this.blockIdMap.get(id).getNumId(), variant.ordinal());
     }
     
 }

@@ -32,6 +32,7 @@ import de.minigameslib.mclib.client.impl.com.ComHandler;
 import de.minigameslib.mclib.client.impl.com.MclibCoreHandler;
 import de.minigameslib.mclib.client.impl.com.NetMessage;
 import de.minigameslib.mclib.client.impl.gui.MclibGuiHandler;
+import de.minigameslib.mclib.client.nms.MclibClientNms;
 import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId.CommunicationServiceInterface;
@@ -99,6 +100,8 @@ public class MclibMod implements CommunicationServiceInterface
         // sc = s[erver]c[client] (both directions)
         NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib|sc"); //$NON-NLS-1$
         NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 0, Side.CLIENT);
+        
+        MclibClientNms.initCustomBlocksAndItems();
     }
     
     /** the known endpoints. */

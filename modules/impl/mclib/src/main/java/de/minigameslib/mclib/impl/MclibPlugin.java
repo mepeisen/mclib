@@ -102,8 +102,10 @@ import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.items.ResourceServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
@@ -171,6 +173,7 @@ import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
+import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
@@ -396,6 +399,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.enumService.registerEnumClass(this, CommonItems.class);
         this.itemService = new ItemServiceImpl();
         Bukkit.getServicesManager().register(ItemServiceInterface.class, this.itemService, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ResourceServiceInterface.class, this.itemService, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(BlockServiceInterface.class, this.itemService, this, ServicePriority.Highest);
         new BukkitRunnable() {
             
             @Override
@@ -404,7 +409,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 MclibPlugin.this.itemService.init();
                 try
                 {
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources.zip")); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v2.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_2); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v3.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_3); //$NON-NLS-1$
                 }
                 catch (IOException e)
                 {
@@ -423,6 +430,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // nms services
         final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
+        factory.create(ItemHelperInterface.class).initBlocks();
         Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
@@ -784,7 +792,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.players.getPlayer(player).sendToClient(MclibCommunication.ClientServerCore, section);
         
         // resources
-        if (ItemServiceInterface.instance().isAutoResourceDownload())
+        if (ResourceServiceInterface.instance().isAutoResourceDownload())
         {
             new BukkitRunnable() {
                 
@@ -793,10 +801,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 {
                     if (player.isOnline())
                     {
-                        player.setResourcePack(ItemServiceInterface.instance().getDownloadUrl());
+                        player.setResourcePack(ResourceServiceInterface.instance().getDownloadUrl());
                     }
                 }
-            }.runTaskLater(this, ItemServiceInterface.instance().getAutoResourceTicks());
+            }.runTaskLater(this, ResourceServiceInterface.instance().getAutoResourceTicks());
         }
         
         // clear inventory

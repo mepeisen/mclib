@@ -33,7 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
-import de.minigameslib.mclib.api.items.ItemServiceInterface.ResourcePackStatus;
+import de.minigameslib.mclib.api.items.ResourceServiceInterface.ResourcePackStatus;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl.ResourcePackMarker;
 
