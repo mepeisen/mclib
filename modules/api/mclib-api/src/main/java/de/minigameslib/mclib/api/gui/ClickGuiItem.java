@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api.gui;
 
+import java.io.Serializable;
+
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.McException;
@@ -44,6 +46,9 @@ public class ClickGuiItem
     /** the items name/ title. */
     private final LocalizedMessageInterface displayName;
     
+    /** the items name/ title. */
+    private final Serializable[]            displayNameArgs;
+    
     /** the click handler. */
     private GuiItemHandler                  handler;
     
@@ -56,12 +61,15 @@ public class ClickGuiItem
      *            the display name
      * @param handler
      *            the action handler
+     * @param displayNameArgs
+     *            arguments to build the display name
      */
-    public ClickGuiItem(ItemStack itemStack, LocalizedMessageInterface displayName, GuiItemHandler handler)
+    public ClickGuiItem(ItemStack itemStack, LocalizedMessageInterface displayName, GuiItemHandler handler, Serializable... displayNameArgs)
     {
         this.itemStack = itemStack.clone();
         this.displayName = displayName;
         this.handler = handler;
+        this.displayNameArgs = displayNameArgs;
     }
     
     /**
@@ -78,6 +86,14 @@ public class ClickGuiItem
     public LocalizedMessageInterface getDisplayName()
     {
         return this.displayName;
+    }
+    
+    /**
+     * @return the displayName
+     */
+    public Serializable[] getDisplayNameArgs()
+    {
+        return this.displayNameArgs;
     }
     
     /**

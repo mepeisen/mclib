@@ -24,7 +24,7 @@
 
 package de.minigameslib.mclib.api.gui;
 
-import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import java.io.Serializable;
 
 /**
  * A single gui page.
@@ -38,9 +38,9 @@ public interface ClickGuiPageInterface
     /**
      * Returns the name of the inventory.
      * 
-     * @return inventory name.
+     * @return inventory name. Either string or a localized message
      */
-    LocalizedMessageInterface getPageName();
+    Serializable getPageName();
     
     /**
      * Returns the click items.
