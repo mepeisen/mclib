@@ -25,8 +25,10 @@
 package de.minigameslib.mclib.api.locale;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.plugin.Plugin;
 
@@ -134,6 +136,18 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
         {
             section.set("admin." + userStr.getKey().toString(), userStr.getValue()); //$NON-NLS-1$
         }
+    }
+    
+    /**
+     * Returns the languages
+     * @return languages
+     */
+    public Set<Locale> getLanguages()
+    {
+        final Set<Locale> languages = new HashSet<>();
+        this.userStrings.keySet().forEach(languages::add);
+        this.adminStrings.keySet().forEach(languages::add);
+        return languages;
     }
     
     @Override
