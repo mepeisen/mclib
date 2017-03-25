@@ -164,20 +164,23 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             sorted.add(custom);
         }
         
-        for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
+        if (!sorted.isEmpty())
         {
-            final CustomBlock block = sorted.first();
-            sorted.remove(block);
-            block.setNumId(i);
-            this.blockNumIdMap.put(i, block.getBlockId());
-            
-            if (sorted.isEmpty())
+            for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
             {
-                return;
+                final CustomBlock block = sorted.first();
+                sorted.remove(block);
+                block.setNumId(i);
+                this.blockNumIdMap.put(i, block.getBlockId());
+                
+                if (sorted.isEmpty())
+                {
+                    return;
+                }
             }
+            
+            // TODO warn: too much blocks
         }
-        
-        // TODO warn: too much blocks
     }
     
     @Override
