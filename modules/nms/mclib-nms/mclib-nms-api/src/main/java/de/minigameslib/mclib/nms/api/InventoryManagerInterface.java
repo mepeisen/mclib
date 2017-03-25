@@ -128,9 +128,9 @@ public interface InventoryManagerInterface extends Listener
     {
         int index = src.lastIndexOf(' ');
         final StringBuilder hex = new StringBuilder();
-        for (int i = index + 1; i < src.length(); i+=3)
+        for (int i = index + 1; i < src.length(); i+=2)
         {
-            hex.append(src.substring(i + 1,  i + 3));
+            hex.append(src.substring(i + 1,  i + 2));
         }
         return fromHexString(hex.toString());
     }

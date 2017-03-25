@@ -213,14 +213,17 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 else
                 {
                     final ItemStack stack = itemline[column].getItemStack().clone();
-                    final ItemMeta meta = stack.getItemMeta();
-                    final String displayName = InventoryManagerInterface.toColorsString(this.player.getBukkitPlayer().isOp()
-                            ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
-                            : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
-                            line + ":" + column //$NON-NLS-1$
-                    );
-                    meta.setDisplayName(displayName);
-                    stack.setItemMeta(meta);
+                    if (itemline[column].getDisplayName() != null)
+                    {
+                        final ItemMeta meta = stack.getItemMeta();
+                        final String displayName = InventoryManagerInterface.toColorsString(this.player.getBukkitPlayer().isOp()
+                                ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
+                                : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
+                                line + ":" + column //$NON-NLS-1$
+                        );
+                        meta.setDisplayName(displayName);
+                        stack.setItemMeta(meta);
+                    }
                     result.add(stack);
                 }
             }
@@ -345,7 +348,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         if (this.type == GuiType.ClickGui)
         {
-            if (stack.getItemMeta().hasDisplayName())
+            if (stack != null && stack.getItemMeta().hasDisplayName())
             {
                 final String item = InventoryManagerInterface.stripColoredString(stack.getItemMeta().getDisplayName());
                 final String[] splitted = item.split(":"); //$NON-NLS-1$
