@@ -206,7 +206,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             final ClickGuiItem[] itemline = (this.currentItems == null || this.currentItems.length <= line) ? null : this.currentItems[line];
             for (int column = 0; column < 9; column++)
             {
-                if (itemline == null || itemline.length <= column)
+                if (itemline == null || itemline.length <= column || itemline[column] == null)
                 {
                     result.add(new ItemStack(Material.AIR));
                 }
