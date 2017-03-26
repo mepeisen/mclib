@@ -348,7 +348,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         if (this.type == GuiType.ClickGui)
         {
-            if (stack != null && stack.getItemMeta().hasDisplayName())
+            if (stack != null && stack.getItemMeta() != null && stack.getItemMeta().hasDisplayName())
             {
                 final String item = InventoryManagerInterface.stripColoredString(stack.getItemMeta().getDisplayName());
                 final String[] splitted = item.split(":"); //$NON-NLS-1$
