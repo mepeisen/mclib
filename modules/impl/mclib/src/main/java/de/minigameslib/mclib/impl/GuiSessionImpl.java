@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -178,7 +177,11 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.agui = gui;
         this.player = player;
         
-        this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(player.getBukkitPlayer(), gui.getItem(), this);
+        final ItemStack item = gui.getItem();
+        final ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(translateToAnvilGui(meta.getDisplayName()));
+        item.setItemMeta(meta);
+        this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(player.getBukkitPlayer(), item, this);
     }
     
     /**
@@ -288,7 +291,19 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     @Override
     public void close()
     {
-        this.player.getBukkitPlayer().closeInventory();
+        if (this.type == GuiType.AnvilGui)
+        {
+            this.player.getBukkitPlayer().getOpenInventory().getTopInventory().clear();
+            this.player.getBukkitPlayer().closeInventory();
+        }
+        else if (this.type == GuiType.ClickGui)
+        {
+            this.player.getBukkitPlayer().closeInventory();
+        }
+        else if (this.type == GuiType.SmartGui)
+        {
+            // TODO close smart gui
+        }
     }
     
     @Override
@@ -323,23 +338,82 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player = null;
     }
     
+    /**
+     * Translates a string from colored string to gui string
+     * @param src
+     * @return editable gui string
+     */
+    private static String translateToAnvilGui(String src)
+    {
+        return src.replace("%", "%%").replace("§", "%"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
+    
+    /**
+     * Tranbslates a string from gui to represent colored strings
+     * @param src editable gui string
+     * @return colored string
+     */
+    private static String translateFromAnvilGui(String src)
+    {
+        final StringBuilder result = new StringBuilder();
+        boolean wasPercent = true;
+        for (final String elm : src.split("%")) //$NON-NLS-1$
+        {
+            if (elm.length() == 0)
+            {
+                if (wasPercent)
+                {
+                    wasPercent = false;
+                }
+                else
+                {
+                    result.append("%"); //$NON-NLS-1$
+                    wasPercent = true;
+                }
+            }
+            else
+            {
+                if (wasPercent)
+                {
+                    wasPercent = false;
+                }
+                else
+                {
+                    result.append("§"); //$NON-NLS-1$
+                }
+                result.append(elm);
+            }
+        }
+        return result.toString();
+    }
+    
     @Override
     public boolean onCommit(String name)
     {
+        boolean closeMe = true;
         if (this.type == GuiType.AnvilGui)
         {
             try
             {
-                this.agui.onInput(name);
+                this.agui.onInput(translateFromAnvilGui(name));
                 
-                this.type = GuiType.None;
-                this.gui = null;
-                this.agui = null;
-                this.currentItems = null;
-                this.currentName = null;
-                this.guiHelper = null;
-                this.aguiHelper = null;
-                this.player = null;
+                if (this.type == GuiType.None)
+                {
+                    // handler explicitly closed gui or opened another gui
+                    // we do not want to return the gui again
+                    closeMe = false;
+                }
+                else
+                {
+                    this.type = GuiType.None;
+                    this.gui = null;
+                    this.agui = null;
+                    this.currentItems = null;
+                    this.currentName = null;
+                    this.guiHelper = null;
+                    this.aguiHelper = null;
+                    this.player = null;
+                }
             }
             catch (McException ex)
             {
@@ -348,7 +422,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             // TODO fire event
         }
-        return true;
+        return closeMe;
     }
     
     @Override

@@ -30,6 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiId;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
@@ -77,14 +78,19 @@ public class ClickGui implements ClickGuiInterface, ClickGuiPageInterface
         }};
     }
     
-    private void foo(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
+    private void foo(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui) throws McException
     {
-        System.out.println("FOO");
+        player.openAnvilGui(new MyAnvilGui(s -> {
+            System.out.println("1: " + s);
+            player.openAnvilGui(new MyAnvilGui(s2 -> {
+                System.out.println("2: " + s2);
+            }));
+        }));
     }
     
     private void bar(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
     {
-        System.out.println("BAR");
+        //
     }
     
 }

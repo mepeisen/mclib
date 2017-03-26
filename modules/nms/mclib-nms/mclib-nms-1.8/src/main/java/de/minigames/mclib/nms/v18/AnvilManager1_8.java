@@ -119,6 +119,9 @@ public class AnvilManager1_8 implements AnvilManagerInterface
                 
                 if (this.playerInventories.get(uuid).listener.onCommit(name))
                 {
+                    // clear item before closing
+                    evt.getInventory().clear();
+                    
                     evt.getWhoClicked().closeInventory();
                     this.playerInventories.remove(uuid);
                 }
@@ -154,6 +157,7 @@ public class AnvilManager1_8 implements AnvilManagerInterface
         final UUID uuid = evt.getPlayer().getUniqueId();
         if (this.playerInventories.containsKey(uuid))
         {
+            evt.getView().getTopInventory().clear();
             this.playerInventories.remove(uuid).listener.onClose();
         }
     }
