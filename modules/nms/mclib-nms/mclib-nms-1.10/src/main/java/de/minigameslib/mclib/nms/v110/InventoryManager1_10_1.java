@@ -101,6 +101,7 @@ public class InventoryManager1_10_1 implements InventoryManagerInterface
         final UUID uuid = evt.getWhoClicked().getUniqueId();
         if (this.playerInventories.containsKey(uuid))
         {
+            evt.setCancelled(true);
             final ItemStack stack = evt.getCurrentItem();
             this.playerInventories.get(uuid).listener.onClick(stack);
         }

@@ -56,6 +56,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     public void onEnable()
     {
         EnumServiceInterface.instance().registerEnumClass(this, GuiIds.class);
+        EnumServiceInterface.instance().registerEnumClass(this, GuiIds2.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyMessages.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyEntitites.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyBlocks.class);
@@ -132,13 +133,20 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            final ItemServiceInterface itemService = ItemServiceInterface.instance();
+//            final ItemServiceInterface itemService = ItemServiceInterface.instance();
             final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-            itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
-                .onLeftClick(this::onLeftClick)
-                .onRightClick(this::onRightClick)
-                .singleUse()
-                .build();
+//            itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
+//                .onLeftClick(this::onLeftClick)
+//                .onRightClick(this::onRightClick)
+//                .singleUse()
+//                .build();
+            try {
+                player.openClickGui(new ClickGui());
+            }
+            catch (Exception ex)
+            {
+                // TODO
+            }
         }
         return super.onCommand(sender, command, label, args);
     }
