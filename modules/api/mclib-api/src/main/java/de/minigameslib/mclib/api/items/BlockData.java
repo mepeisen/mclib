@@ -40,18 +40,6 @@ public @interface BlockData
 {
     
     /**
-     * Returns the resource paths to the textures
-     * @return resource paths to textures
-     */
-    String[] textures();
-    
-    /**
-     * the custom item model json
-     * @return custom item model json
-     */
-    String modelJson();
-    
-    /**
      * the block variants (max. 16 variants)
      * @return block variants
      */

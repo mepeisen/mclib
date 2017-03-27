@@ -367,9 +367,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      * write blockstates
      * @param jar
      * @param numId
-     * @param block
+     * @param blockId
      */
-    private void writeBlockstates(JarOutputStream jar, int numId, CustomBlock block)
+    private void writeBlockstates(JarOutputStream jar, Integer numId, BlockId blockId)
     {
         try
         {
@@ -377,19 +377,45 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             blockStatesJson.setTime(System.currentTimeMillis());
             jar.putNextEntry(blockStatesJson);
             final StringBuilder buffer = new StringBuilder();
-//            buffer.append("{ \"variants\": {"); //$NON-NLS-1$
-//            buffer.append(custom.getCustomType().getParent());
-//            buffer.append("\", \"textures\": { \"layer0\": \""); //$NON-NLS-1$
-//            buffer.append(custom.getCustomType().getDefaultTexture());
-//            buffer.append("\"}, \"overrides\": ["); //$NON-NLS-1$
-//            buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
-//            for (CustomItem item : map.values())
-//            {
-//                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//            }
-//            buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
-//            buffer.append("]}"); //$NON-NLS-1$
+            buffer.append("{ \"variants\": {"); //$NON-NLS-1$
+            boolean first = true;
+            for (final BlockVariantId variant : blockId.variants())
+            {
+                if (first) first = false;
+                else buffer.append(", "); //$NON-NLS-1$
+                buffer.append("\"variant=variant_").append(variant.ordinal()).append("\": {"); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("\"model\": \"mclib:custom-").append(numId).append("-").append(variant.ordinal()).append("}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            buffer.append("}}"); //$NON-NLS-1$
             writeFile(jar, buffer.toString());
+            
+            for (final BlockVariantId variant : blockId.variants())
+            {
+                final List<String> textures = new ArrayList<>();
+                for (final String texture : variant.getTextures())
+                {
+                    final File path = new File(texture);
+                    final String filename = path.getName();
+                    final String file = Files.getNameWithoutExtension(filename);
+                    textures.add("items/" + variant.getPluginName() + '/' + variant.name() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    try
+                    {
+                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + variant.getPluginName() + '/' + variant.name() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        textureEntry.setTime(System.currentTimeMillis());
+                        jar.putNextEntry(textureEntry);
+                        copyFile(jar, variant.getClass().getClassLoader(), texture);
+                    }
+                    catch (IOException e)
+                    {
+                        LOGGER.log(Level.WARNING, "IOException writing texture " + variant.getPluginName() + '/' + variant.name() + '_' + filename, e); //$NON-NLS-1$
+                    }
+                }
+                
+                final JarEntry variantJson = new JarEntry("assets/mclib/models/block/custom-" + numId + "-" + variant.ordinal() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                variantJson.setTime(System.currentTimeMillis());
+                jar.putNextEntry(variantJson);
+                writeFile(jar, String.format(variant.getModelJson(), textures.toArray()));
+            }
         }
         catch (IOException e)
         {
@@ -477,6 +503,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             
             // model files
             this.items.forEach((material, map) -> this.writeItemModel(jar, material, map));
+            
+            this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
         }
     }
     
