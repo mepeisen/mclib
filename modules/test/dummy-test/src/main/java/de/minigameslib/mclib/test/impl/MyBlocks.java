@@ -33,7 +33,7 @@ import de.minigameslib.mclib.api.items.BlockId;
 public enum MyBlocks implements BlockId
 {
     
-    @BlockData(modelJson = "foo", textures = {})
+    @BlockData
     CopperOre;
     
 }
