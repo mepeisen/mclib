@@ -1165,7 +1165,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private CustomItem[] loadItems()
     {
-        return McCoreConfig.CustomItems.getObjectList(CustomItem.class, "list"); //$NON-NLS-1$
+        if (McCoreConfig.CustomItems.isset("list")) //$NON-NLS-1$
+        {
+            return McCoreConfig.CustomItems.getObjectList(CustomItem.class, "list"); //$NON-NLS-1$
+        }
+        return new CustomItem[0];
     }
     
     /**
@@ -1174,7 +1178,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private CustomBlock[] loadBlocks()
     {
-        return McCoreConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
+        if (McCoreConfig.CustomBlocks.isset("list")) //$NON-NLS-1$
+        {
+            return McCoreConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
+        }
+        return new CustomBlock[0];
     }
     
 }
