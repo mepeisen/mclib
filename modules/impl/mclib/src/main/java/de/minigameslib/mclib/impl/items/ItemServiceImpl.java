@@ -460,7 +460,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 if (first) first = false;
                 else buffer.append(", "); //$NON-NLS-1$
                 buffer.append("\"variant=variant_").append(variant.ordinal()).append("\": {"); //$NON-NLS-1$ //$NON-NLS-2$
-                buffer.append("\"model\": \"mclib:custom-").append(numId).append("-").append(variant.ordinal()).append("}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                buffer.append("\"model\": \"mclib:custom-").append(numId).append("-").append(variant.ordinal()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             buffer.append("}}"); //$NON-NLS-1$
             writeFile(jar, buffer.toString());
