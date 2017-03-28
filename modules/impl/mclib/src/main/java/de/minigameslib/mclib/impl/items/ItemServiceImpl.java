@@ -35,12 +35,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Stack;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -96,22 +96,26 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     /** the item id to value map. */
     private Map<ItemId, CustomItem> itemIdMap = new HashMap<>();
     
+    /** the custom items per material/ damage value */
+    private final Map<Material, Map<Short, CustomItem>> itemsPerMaterial = new HashMap<>();
+    
+    /** the block to numId map. */
+    private Map<CustomItem, Object[]> itemMap = new HashMap<>();
+    
     /** the block id to value map. */
     private Map<BlockId, CustomBlock> blockIdMap = new HashMap<>();
     
     /** the block id to value map. */
-    private Map<Integer, BlockId> blockNumIdMap = new HashMap<>();
+    private Map<Integer, CustomBlock> blockNumIdMap = new HashMap<>();
     
-    /** the custom items per material/ damage value */
-    private final Map<Material, Map<Short, CustomItem>> items = new HashMap<>();
+    /** the block to numId map. */
+    private Map<CustomBlock, Integer> blockMap = new HashMap<>();
     
     /**
      * Initialized the items from registered enumerations
      */
     public void init()
     {
-        // TODO remember items and blocks in config.
-        // TODO do not allow new items/blocks to override existing ones
         initItems();
         initBlocks();
     }
@@ -121,34 +125,72 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private void initItems()
     {
-        final SortedSet<CustomItem> sorted = new TreeSet<>();
-        for (final ItemId item : EnumServiceInterface.instance().getEnumValues(ItemId.class))
+        // load from config
+        for (final CustomItem item : this.loadItems())
         {
-            final CustomItem custom = new CustomItem(item.getPluginName(), item.name(), item);
-            this.itemIdMap.put(item, custom);
-            sorted.add(custom);
+            final Material material = item.getCustomType().getMaterial();
+            final short durability = item.getDurability();
+            this.itemsPerMaterial.computeIfAbsent(material, m -> new HashMap<>()).put(durability, item);
+            this.itemMap.put(item, new Object[]{material, durability});
         }
         
-        for (final CustomItemTypes type : CustomItemTypes.values())
-        {
-            final Map<Short, CustomItem> map = new HashMap<>();
-            this.items.put(type.getMaterial(), map);
-            for (final Durability dur : type.getDurabilities())
+        final Stack<CustomItem> newItems = new Stack<>();
+        
+        // parse items from plugins
+        final List<ItemId> enumValues = EnumServiceInterface.instance().getEnumValues(ItemId.class).stream().sorted((a, b) -> {
+            int result = a.getPluginName().compareTo(b.getPluginName());
+            if (result == 0)
             {
-                final CustomItem item = sorted.first();
-                sorted.remove(item);
-                item.setCustomDurability(dur);
-                item.setCustomType(type);
-                map.put(dur.getItemStackDurability(), item);
-                
-                if (sorted.isEmpty())
-                {
-                    return;
-                }
+                result = a.name().compareTo(b.name());
+            }
+            return result;
+        }).collect(Collectors.toList());
+        for (final ItemId item : enumValues)
+        {
+            final CustomItem custom = new CustomItem(item.getPluginName(), item.name());
+            if (this.itemMap.containsKey(custom))
+            {
+                // we found the item
+                final Object[] key = this.itemMap.get(custom);
+                final CustomItem custom2 = this.itemsPerMaterial.get(key[0]).get(key[1]);
+                custom2.setItemId(item);
+                this.itemIdMap.put(item, custom2);
+            }
+            else
+            {
+                // this is a new item
+                custom.setItemId(item);
+                newItems.add(custom);
+                this.itemIdMap.put(item, custom);
             }
         }
         
-        // TODO warn: too much items
+        if (!newItems.isEmpty())
+        {
+            for (final CustomItemTypes type : CustomItemTypes.values())
+            {
+                this.itemsPerMaterial.computeIfAbsent(type.getMaterial(), k -> new HashMap<>());
+                for (final Durability dur : type.getDurabilities())
+                {
+                    if (this.itemsPerMaterial.get(type.getMaterial()).containsKey(dur.getItemStackDurability())) continue;
+                    
+                    final CustomItem item = newItems.pop();
+                    item.setCustomDurability(dur);
+                    item.setCustomType(type);
+                    this.itemsPerMaterial.get(type.getMaterial()).put(dur.getItemStackDurability(), item);
+                    this.itemMap.put(item, new Object[]{type.getMaterial(), dur.getItemStackDurability()});
+                    
+                    if (newItems.isEmpty())
+                    {
+                        this.saveItems(this.itemMap.keySet().toArray(new CustomItem[this.itemMap.size()]));
+                        return;
+                    }
+                }
+            }
+            
+            // TODO warn: too much items
+        }
+            
     }
 
     /**
@@ -156,25 +198,57 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private void initBlocks()
     {
-        final SortedSet<CustomBlock> sorted = new TreeSet<>();
-        for (final BlockId block : EnumServiceInterface.instance().getEnumValues(BlockId.class))
+        // load from config
+        for (final CustomBlock block : this.loadBlocks())
         {
-            final CustomBlock custom = new CustomBlock(block.getPluginName(), block.name(), block);
-            this.blockIdMap.put(block, custom);
-            sorted.add(custom);
+            this.blockNumIdMap.put(block.getNumId(), block);
+            this.blockMap.put(block, block.getNumId());
         }
         
-        if (!sorted.isEmpty())
+        final Stack<CustomBlock> newBlocks = new Stack<>();
+        
+        // parse blocks from plugins
+        final List<BlockId> enumValues = EnumServiceInterface.instance().getEnumValues(BlockId.class).stream().sorted((a, b) -> {
+            int result = a.getPluginName().compareTo(b.getPluginName());
+            if (result == 0)
+            {
+                result = a.name().compareTo(b.name());
+            }
+            return result;
+        }).collect(Collectors.toList());
+        for (final BlockId block : enumValues)
+        {
+            final CustomBlock custom = new CustomBlock(block.getPluginName(), block.name());
+            if (this.blockMap.containsKey(custom))
+            {
+                // we found the block
+                final CustomBlock custom2 = this.blockNumIdMap.get(this.blockMap.get(custom));
+                custom2.setBlockId(block);
+                this.blockIdMap.put(block, custom2);
+            }
+            else
+            {
+                // this is a new block
+                custom.setBlockId(block);
+                newBlocks.add(custom);
+                this.blockIdMap.put(block, custom);
+            }
+        }
+        
+        if (!newBlocks.isEmpty())
         {
             for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
             {
-                final CustomBlock block = sorted.first();
-                sorted.remove(block);
-                block.setNumId(i);
-                this.blockNumIdMap.put(i, block.getBlockId());
+                if (this.blockNumIdMap.containsKey(i)) continue;
                 
-                if (sorted.isEmpty())
+                final CustomBlock block = newBlocks.pop();
+                block.setNumId(i);
+                this.blockNumIdMap.put(i, block);
+                this.blockMap.put(block, i);
+                
+                if (newBlocks.isEmpty())
                 {
+                    this.saveBlocks(this.blockMap.keySet().toArray(new CustomBlock[this.blockMap.size()]));
                     return;
                 }
             }
@@ -310,7 +384,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemId getItemId(ItemStack stack)
     {
-        final Map<Short, CustomItem> map = this.items.get(stack.getData().getItemType());
+        final Map<Short, CustomItem> map = this.itemsPerMaterial.get(stack.getData().getItemType());
         if (map != null)
         {
             final CustomItem item = map.get(stack.getDurability());
@@ -367,12 +441,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      * write blockstates
      * @param jar
      * @param numId
-     * @param blockId
+     * @param block
      */
-    private void writeBlockstates(JarOutputStream jar, Integer numId, BlockId blockId)
+    private void writeBlockstates(JarOutputStream jar, Integer numId, CustomBlock block)
     {
         try
         {
+            final BlockId blockId = block.getBlockId();
             final JarEntry blockStatesJson = new JarEntry("assets/mclib/blockstates/custom-" + numId + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
             blockStatesJson.setTime(System.currentTimeMillis());
             jar.putNextEntry(blockStatesJson);
@@ -433,6 +508,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         for (CustomItem item : map.values())
         {
+            if (item.getItemId() == null)
+            {
+                // TODO logging, missing item
+                continue;
+            }
             try
             {
                 final List<String> textures = new ArrayList<>();
@@ -499,10 +579,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             jar.closeEntry();
             
             // default model overrides
-            this.items.forEach((martial, map) -> this.writeItemOverrides(jar, martial, map));
+            this.itemsPerMaterial.forEach((martial, map) -> this.writeItemOverrides(jar, martial, map));
             
             // model files
-            this.items.forEach((material, map) -> this.writeItemModel(jar, material, map));
+            this.itemsPerMaterial.forEach((material, map) -> this.writeItemModel(jar, material, map));
             
             this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
         }
@@ -1015,14 +1095,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public BlockId getBlockId(ItemStack stack)
     {
         final int typeId = stack.getTypeId();
-        return this.blockNumIdMap.get(typeId);
+        final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
+        return customBlock == null ? null : customBlock.getBlockId();
     }
 
     @Override
     public BlockId getBlockId(Block block)
     {
         final int typeId = block.getTypeId();
-        return this.blockNumIdMap.get(typeId);
+        final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
+        return customBlock == null ? null : customBlock.getBlockId();
     }
 
     @Override
@@ -1055,6 +1137,44 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public void setBlockData(Block block, BlockId id, BlockVariantId variant)
     {
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setBlockVariant(block, this.blockIdMap.get(id).getNumId(), variant.ordinal());
+    }
+    
+    /**
+     * Saves the items to config
+     * @param items
+     */
+    private void saveItems(CustomItem[] items)
+    {
+        McCoreConfig.CustomItems.setObjectList(items, "list"); //$NON-NLS-1$
+        McCoreConfig.CustomItems.saveConfig();
+    }
+    
+    /**
+     * Saves the blocks to config
+     * @param blocks
+     */
+    private void saveBlocks(CustomBlock[] blocks)
+    {
+        McCoreConfig.CustomBlocks.setObjectList(blocks, "list"); //$NON-NLS-1$
+        McCoreConfig.CustomBlocks.saveConfig();
+    }
+    
+    /**
+     * loads items from config
+     * @return items
+     */
+    private CustomItem[] loadItems()
+    {
+        return McCoreConfig.CustomItems.getObjectList(CustomItem.class, "list"); //$NON-NLS-1$
+    }
+    
+    /**
+     * loads blocks from config
+     * @return blocks
+     */
+    private CustomBlock[] loadBlocks()
+    {
+        return McCoreConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
     }
     
 }

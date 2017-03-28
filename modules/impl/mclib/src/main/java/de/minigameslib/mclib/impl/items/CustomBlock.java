@@ -29,31 +29,53 @@ import java.util.Map;
 
 import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockVariantId;
+import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
  * A custom registered item.
  * 
  * @author mepeisen
  */
-class CustomBlock implements Comparable<CustomBlock>
+public class CustomBlock extends AnnotatedDataFragment
 {
     
     /** the plugin name. */
-    private final String pluginName;
+    @PersistentField
+    protected String pluginName;
     
     /** the enum name. */
-    private final String enumName;
+    @PersistentField
+    protected String enumName;
     
     /** the numeric block id. */
-    private int numId;
+    @PersistentField
+    protected int numId;
     
     /** the block id. */
-    private final BlockId blockId;
+    private BlockId blockId;
     
     /**
      * the block variants.
      */
     private final Map<Integer, BlockVariantId> variants = new HashMap<>();
+
+    /**
+     */
+    public CustomBlock()
+    {
+        // empty
+    }
+
+    /**
+     * @param pluginName
+     * @param enumName
+     */
+    public CustomBlock(String pluginName, String enumName)
+    {
+        this.pluginName = pluginName;
+        this.enumName = enumName;
+    }
 
     /**
      * @param pluginName
@@ -64,22 +86,19 @@ class CustomBlock implements Comparable<CustomBlock>
     {
         this.pluginName = pluginName;
         this.enumName = enumName;
+        this.setBlockId(blockId);
+    }
+
+    /**
+     * @param blockId the blockId to set
+     */
+    public void setBlockId(BlockId blockId)
+    {
         this.blockId = blockId;
         for (final BlockVariantId variant : blockId.variants())
         {
             this.variants.put(variant.ordinal(), variant);
         }
-    }
-
-    @Override
-    public int compareTo(CustomBlock o)
-    {
-        int result = this.pluginName.compareTo(o.pluginName);
-        if (result == 0)
-        {
-            result = this.enumName.compareTo(o.enumName);
-        }
-        return result;
     }
 
     /**
@@ -129,6 +148,43 @@ class CustomBlock implements Comparable<CustomBlock>
     public BlockVariantId getVariant(int variantId)
     {
         return this.variants.get(variantId);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.enumName == null) ? 0 : this.enumName.hashCode());
+        result = prime * result + ((this.pluginName == null) ? 0 : this.pluginName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CustomBlock other = (CustomBlock) obj;
+        if (this.enumName == null)
+        {
+            if (other.enumName != null)
+                return false;
+        }
+        else if (!this.enumName.equals(other.enumName))
+            return false;
+        if (this.pluginName == null)
+        {
+            if (other.pluginName != null)
+                return false;
+        }
+        else if (!this.pluginName.equals(other.pluginName))
+            return false;
+        return true;
     }
     
 }

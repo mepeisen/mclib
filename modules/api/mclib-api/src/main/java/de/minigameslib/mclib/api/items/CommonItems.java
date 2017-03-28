@@ -31,6 +31,10 @@ package de.minigameslib.mclib.api.items;
  */
 public enum CommonItems implements ItemId
 {
+    
+    // implementation detail: new items should be added at the end
+    // and they should be alphabetically ordered. So that a new resource
+    // zip will be backward compatible to all previous versions.
 
     /** aha-soft app icon */
     @ItemData(textures = "de/minigameslib/mclib/resources/common/textures/items/ahasoft-app/3d bar chart.png", modelJson = "{\"parent\": \"item/handheld\",\"textures\": {\"layer0\": \"%1$s\"}}")

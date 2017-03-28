@@ -52,6 +52,7 @@ public @interface BlockData
     public enum CustomVariantId implements BlockVariantId
     {
         /** custom block variant */
+        @BlockVariantData(textures = {}, modelJson = "{\"parent\": \"block/cube_all\",\"textures\": {\"all\": \"mclib:blocks/custom\"}}")
         DEFAULT;
     }
     

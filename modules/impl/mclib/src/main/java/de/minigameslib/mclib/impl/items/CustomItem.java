@@ -25,29 +25,55 @@
 package de.minigameslib.mclib.impl.items;
 
 import de.minigameslib.mclib.api.items.ItemId;
+import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
  * A custom registered item.
  * 
  * @author mepeisen
  */
-class CustomItem implements Comparable<CustomItem>
+class CustomItem extends AnnotatedDataFragment
 {
     
     /** the plugin name. */
-    private final String pluginName;
+    @PersistentField
+    protected String pluginName;
     
     /** the enum name. */
-    private final String enumName;
+    @PersistentField
+    protected String enumName;
     
     /** the type. */
-    private CustomItemTypes customType;
+    @PersistentField
+    protected CustomItemTypes customType;
+    
+    /** the item durability. */
+    @PersistentField
+    protected short durability;
     
     /** the durability. */
     private Durability customDurability;
     
     /** the item id. */
-    private final ItemId itemId;
+    private ItemId itemId;
+
+    /**
+     */
+    public CustomItem()
+    {
+        // empty
+    }
+
+    /**
+     * @param pluginName
+     * @param enumName
+     */
+    public CustomItem(String pluginName, String enumName)
+    {
+        this.pluginName = pluginName;
+        this.enumName = enumName;
+    }
 
     /**
      * @param pluginName
@@ -58,18 +84,31 @@ class CustomItem implements Comparable<CustomItem>
     {
         this.pluginName = pluginName;
         this.enumName = enumName;
-        this.itemId = itemId;
+        this.setItemId(itemId);
     }
 
-    @Override
-    public int compareTo(CustomItem o)
+    /**
+     * @return the durability
+     */
+    public short getDurability()
     {
-        int result = this.pluginName.compareTo(o.pluginName);
-        if (result == 0)
-        {
-            result = this.enumName.compareTo(o.enumName);
-        }
-        return result;
+        return this.durability;
+    }
+
+    /**
+     * @param durability the durability to set
+     */
+    public void setDurability(short durability)
+    {
+        this.durability = durability;
+    }
+
+    /**
+     * @param itemId the itemId to set
+     */
+    public void setItemId(ItemId itemId)
+    {
+        this.itemId = itemId;
     }
 
     /**
@@ -102,6 +141,7 @@ class CustomItem implements Comparable<CustomItem>
     public void setCustomDurability(Durability customDurability)
     {
         this.customDurability = customDurability;
+        this.durability = customDurability.getItemStackDurability();
     }
 
     /**
@@ -126,6 +166,43 @@ class CustomItem implements Comparable<CustomItem>
     public ItemId getItemId()
     {
         return this.itemId;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.enumName == null) ? 0 : this.enumName.hashCode());
+        result = prime * result + ((this.pluginName == null) ? 0 : this.pluginName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CustomItem other = (CustomItem) obj;
+        if (this.enumName == null)
+        {
+            if (other.enumName != null)
+                return false;
+        }
+        else if (!this.enumName.equals(other.enumName))
+            return false;
+        if (this.pluginName == null)
+        {
+            if (other.pluginName != null)
+                return false;
+        }
+        else if (!this.pluginName.equals(other.pluginName))
+            return false;
+        return true;
     }
     
 }

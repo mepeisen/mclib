@@ -27,6 +27,7 @@ package de.minigameslib.mclib.impl;
 import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationInt;
+import de.minigameslib.mclib.api.config.ConfigurationSection;
 import de.minigameslib.mclib.api.config.ConfigurationString;
 import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
@@ -110,5 +111,19 @@ public enum McCoreConfig implements ConfigurationValueInterface
         "Number of ticks to wait before sending the resource pack notification to clients",
         "Requires RespourcePackAutoDownload to be set to true"})
     ResourcePackAutoDownloadTicks,
+    
+    /**
+     * list of custom items already known by this server.
+     */
+    @ConfigurationSection
+    @ConfigComment("DO NOT EDIT! Special data section for modded worlds")
+    CustomItems,
+    
+    /**
+     * List of custom blocks already known to this server.
+     */
+    @ConfigurationSection
+    @ConfigComment("DO NOT EDIT! Special data section for modded worlds")
+    CustomBlocks,
     
 }
