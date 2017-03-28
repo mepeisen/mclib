@@ -33,7 +33,7 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
  * 
  * @author mepeisen
  */
-class CustomItem extends AnnotatedDataFragment
+public class CustomItem extends AnnotatedDataFragment
 {
     
     /** the plugin name. */
