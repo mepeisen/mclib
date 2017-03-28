@@ -24,11 +24,16 @@
 
 package de.minigameslib.mclib.api.items;
 
+import de.minigameslib.mclib.api.enums.ChildEnum;
+
 /**
  * The common items used by mclib.
  * 
  * @author mepeisen
  */
+@ChildEnum({
+    BlockData.CustomVariantId.class
+})
 public enum CommonItems implements ItemId
 {
     
