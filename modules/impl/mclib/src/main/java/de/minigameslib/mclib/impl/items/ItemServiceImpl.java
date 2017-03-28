@@ -527,7 +527,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
                         textureEntry.setTime(System.currentTimeMillis());
                         jar.putNextEntry(textureEntry);
-                        copyFile(jar, item.getClass().getClassLoader(), texture);
+                        copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);
                     }
                     catch (IOException e)
                     {
