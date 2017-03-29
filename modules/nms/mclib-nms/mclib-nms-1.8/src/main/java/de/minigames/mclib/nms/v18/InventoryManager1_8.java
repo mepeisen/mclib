@@ -31,6 +31,8 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,7 +43,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
+import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_8_R1.EntityPlayer;
+import net.minecraft.server.v1_8_R1.Item;
 
 /**
  * Inventory manager implementation.
@@ -60,7 +64,7 @@ public class InventoryManager1_8 implements InventoryManagerInterface
     public InventoryHelper openInventory(Player player, String name, ItemStack[] items, InventoryListener listener)
     {
         final Inventory inventory = Bukkit.createInventory(null, items.length, name);
-        inventory.setContents(items);
+        setContents((CraftInventoryCustom)inventory, items);
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         if (entity.activeContainer != entity.defaultContainer)
         {
@@ -71,6 +75,33 @@ public class InventoryManager1_8 implements InventoryManagerInterface
         final Helper helper = new Helper(entity, inventory, listener);
         this.playerInventories.put(player.getUniqueId(), helper);
         return helper;
+    }
+    
+    /**
+     * Sets contents; safe way for blocks that are unknown by bukkit
+     * @param inventory
+     * @param items
+     */
+    private void setContents(CraftInventoryCustom inventory, ItemStack[] items)
+    {
+        for (int i = 0; i < items.length; i++)
+        {
+            if (items[i] != null && items[i].getTypeId() >= MclibConstants.MIN_BLOCK_ID)
+            {
+                final net.minecraft.server.v1_8_R1.ItemStack nms = new net.minecraft.server.v1_8_R1.ItemStack(
+                        Item.getById(items[i].getTypeId()),
+                        items[i].getAmount(),
+                        items[i].getDurability());
+                if (items[i].hasItemMeta()) {
+                    CraftItemStack.setItemMeta(nms, items[i].getItemMeta());
+                }
+                inventory.getInventory().setItem(i, nms);
+            }
+            else
+            {
+                inventory.setItem(i, items[i]);
+            }
+        }
     }
     
     /**
