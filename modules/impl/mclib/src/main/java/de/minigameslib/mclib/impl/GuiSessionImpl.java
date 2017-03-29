@@ -51,6 +51,7 @@ import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.gui.GuiType;
 import de.minigameslib.mclib.api.gui.SGuiFormBuilderInterface;
 import de.minigameslib.mclib.api.gui.SGuiInterface;
+import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -204,6 +205,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      */
     private ItemStack[] toItemStack()
     {
+        final ItemServiceInterface items = ItemServiceInterface.instance();
         final List<ItemStack> result = new ArrayList<>();
         for (int line = 0; line < this.lineCount; line++)
         {
@@ -217,7 +219,6 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 else
                 {
                     final ItemStack stack = itemline[column].getItemStack().clone();
-                    final ItemMeta meta = stack.getItemMeta();
                     if (itemline[column].getDisplayName() != null)
                     {
                         final String displayName = InventoryManagerInterface.toColorsString(this.player.getBukkitPlayer().isOp()
@@ -225,16 +226,15 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                                 : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
                                 line + ":" + column //$NON-NLS-1$
                         );
-                        meta.setDisplayName(displayName);
+                        items.setDisplayName(stack, displayName);
                     }
                     else
                     {
-                        final String displayName = InventoryManagerInterface.toColorsString("", //$NON-NLS-1$
+                        final String displayName = InventoryManagerInterface.toColorsString(items.getDisplayName(stack),
                                 line + ":" + column //$NON-NLS-1$
                         );
-                        meta.setDisplayName(displayName);
+                        items.setDisplayName(stack, displayName);
                     }
-                    stack.setItemMeta(meta);
                     result.add(stack);
                 }
             }
@@ -432,7 +432,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             if (stack != null && stack.getItemMeta() != null && stack.getItemMeta().hasDisplayName())
             {
-                final String item = InventoryManagerInterface.stripColoredString(stack.getItemMeta().getDisplayName());
+                final String item = InventoryManagerInterface.stripColoredString(ItemServiceInterface.instance().getDisplayName(stack));
                 final String[] splitted = item.split(":"); //$NON-NLS-1$
                 if (splitted.length == 2)
                 {

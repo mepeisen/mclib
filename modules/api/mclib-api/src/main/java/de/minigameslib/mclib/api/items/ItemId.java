@@ -68,4 +68,21 @@ public interface ItemId extends McUniqueEnumInterface
         }
     }
     
+    /**
+     * Returns the provider for getting the item name.
+     * @return provider for getting the name.
+     */
+    default NameProvider nameProvider()
+    {
+        try
+        {
+            final ItemData data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemData.class);
+            return data.name().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
 }

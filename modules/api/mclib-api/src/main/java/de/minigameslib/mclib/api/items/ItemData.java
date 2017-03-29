@@ -51,4 +51,10 @@ public @interface ItemData
      */
     String modelJson();
     
+    /**
+     * Returns the provider for getting the item name.
+     * @return provider for getting the name.
+     */
+    Class<? extends NameProvider> name() default NullNameProvider.class;
+    
 }

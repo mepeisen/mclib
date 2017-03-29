@@ -52,12 +52,92 @@ public interface ItemServiceInterface
     }
     
     /**
+     * Creates a new item stack for given item id and servers default localization
+     * @param item item id
+     * @return item stack
+     */
+    ItemStack createItem(ItemId item);
+    
+    /**
+     * Creates a new item stack for given item id
+     * @param player the player used for localization
+     * @param item item id
+     * @return item stack
+     */
+    ItemStack createItem(McPlayerInterface player, ItemId item);
+    
+    /**
      * Creates a new item stack for given item id
      * @param item item id
      * @param name the custom name (already localized)
      * @return item stack
      */
     ItemStack createItem(ItemId item, String name);
+    
+    /**
+     * Creates a new item stack for given item id
+     * @param item item id
+     * @param name the custom name
+     * @param nameArgs
+     * @return item stack
+     */
+    ItemStack createItem(ItemId item, LocalizedMessageInterface name, Serializable... nameArgs);
+    
+    /**
+     * Creates a new item stack for given item id
+     * @param player the player used for localization
+     * @param item item id
+     * @param name the custom name
+     * @param nameArgs the name arguments
+     * @return item stack
+     */
+    ItemStack createItem(McPlayerInterface player, ItemId item, LocalizedMessageInterface name, Serializable... nameArgs);
+    
+    /**
+     * Returns the display name
+     * @param stack
+     * @return display name
+     */
+    String getDisplayName(ItemStack stack);
+    
+    /**
+     * Returns the description
+     * @param stack
+     * @return description
+     */
+    String[] getDescription(ItemStack stack);
+    
+    /**
+     * Sets display name of given item stack
+     * @param stack stack
+     * @param name display name (already localized)
+     */
+    void setDisplayName(ItemStack stack, String name);
+    
+    /**
+     * Sets display name of given item stack
+     * @param stack stack
+     * @param player the player used for localization
+     * @param name display name
+     * @param nameArgs the name arguments
+     */
+    void setDisplayName(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface name, Serializable... nameArgs);
+    
+    /**
+     * Sets display name of given item stack
+     * @param stack stack
+     * @param description description(already localized)
+     */
+    void setDescription(ItemStack stack, String[] description);
+    
+    /**
+     * Sets display name of given item stack
+     * @param stack stack
+     * @param player the player used for localization
+     * @param description description
+     * @param descriptionArgs the description arguments
+     */
+    void setDescription(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface description, Serializable... descriptionArgs);
     
     /**
      * Creates a new item tooling for given item id; a tooling is a single item used by players. Once used a code handler is invoked.

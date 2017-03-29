@@ -25,13 +25,18 @@
 package de.minigameslib.mclib.nms.v110;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Iterator;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.v110.blocks.CustomBlock;
@@ -130,9 +135,73 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
 
     @Override
-    public ItemStack createItemStackForBlock(int type, int variant)
+    public ItemStack createItemStackForBlock(int type, int variant, String displayName)
     {
-        return new ItemStack(type, 1, (byte) variant);
+        final ItemStack stack = new ItemStack(type, 1, (byte) variant);
+        final ItemMeta meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
+        meta.setDisplayName(displayName);
+        setMeta(stack, meta);
+        return stack;
+    }
+
+    /**
+     * @param stack
+     * @param meta
+     */
+    private void setMeta(ItemStack stack, ItemMeta meta)
+    {
+        try
+        {
+            final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
+            field.setAccessible(true);
+            field.set(stack, meta);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    @Override
+    public void setDisplayName(ItemStack stack, String displayName)
+    {
+        ItemMeta meta = getMeta(stack);
+        if (meta == null)
+        {
+            meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
+            setMeta(stack, meta);
+        }
+        meta.setDisplayName(displayName);
+    }
+
+    @Override
+    public void setDescription(ItemStack stack, String[] description)
+    {
+        ItemMeta meta = getMeta(stack);
+        if (meta == null)
+        {
+            meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
+            setMeta(stack, meta);
+        }
+        meta.setLore(Arrays.asList(description));
+    }
+
+    /**
+     * @param stack
+     * @return meta
+     */
+    private ItemMeta getMeta(ItemStack stack)
+    {
+        try
+        {
+            final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
+            field.setAccessible(true);
+            return (ItemMeta) field.get(stack);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
     }
 
     @Override
@@ -157,6 +226,20 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public String getDisplayName(ItemStack stack)
+    {
+        final ItemMeta meta = this.getMeta(stack);
+        return meta == null ? null : meta.getDisplayName();
+    }
+
+    @Override
+    public String[] getDescription(ItemStack stack)
+    {
+        final ItemMeta meta = this.getMeta(stack);
+        return meta == null ? null : meta.getLore().toArray(new String[0]);
     }
     
 }

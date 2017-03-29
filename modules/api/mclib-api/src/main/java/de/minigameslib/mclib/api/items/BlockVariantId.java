@@ -74,4 +74,21 @@ public interface BlockVariantId extends McUniqueEnumInterface
      */
     int ordinal();
     
+    /**
+     * Returns the provider for getting the item name.
+     * @return provider for getting the name.
+     */
+    default NameProvider nameProvider()
+    {
+        try
+        {
+            final BlockVariantData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockVariantData.class);
+            return data.name().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
 }

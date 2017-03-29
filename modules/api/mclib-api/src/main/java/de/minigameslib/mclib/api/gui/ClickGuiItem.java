@@ -58,7 +58,7 @@ public class ClickGuiItem
      * @param itemStack
      *            the item stack to display the gui item
      * @param displayName
-     *            the display name
+     *            the display name; null to use the default itemstack name
      * @param handler
      *            the action handler
      * @param displayNameArgs

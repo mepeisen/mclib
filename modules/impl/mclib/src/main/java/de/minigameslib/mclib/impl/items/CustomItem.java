@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.items;
 
 import de.minigameslib.mclib.api.items.ItemId;
+import de.minigameslib.mclib.api.items.NameProvider;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -57,6 +58,9 @@ public class CustomItem extends AnnotatedDataFragment
     
     /** the item id. */
     private ItemId itemId;
+    
+    /** the name provider. */
+    private NameProvider nameProvider;
 
     /**
      */
@@ -88,6 +92,14 @@ public class CustomItem extends AnnotatedDataFragment
     }
 
     /**
+     * @return the nameProvider
+     */
+    public NameProvider getNameProvider()
+    {
+        return this.nameProvider;
+    }
+
+    /**
      * @return the durability
      */
     public short getDurability()
@@ -109,6 +121,7 @@ public class CustomItem extends AnnotatedDataFragment
     public void setItemId(ItemId itemId)
     {
         this.itemId = itemId;
+        this.nameProvider = itemId.nameProvider();
     }
 
     /**

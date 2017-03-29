@@ -24,8 +24,13 @@
 
 package de.minigameslib.mclib.api.items;
 
+import java.io.Serializable;
+
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
  * A service to register custom blocks.
@@ -52,6 +57,45 @@ public interface BlockServiceInterface
      * @return item stack
      */
     ItemStack createItem(BlockId id, BlockVariantId variant);
+    
+    /**
+     * Creates a new item stack for given block id
+     * @param id the block
+     * @param variant the block variant
+     * @param name the display name (already localized)
+     * @return item stack
+     */
+    ItemStack createItem(BlockId id, BlockVariantId variant, String name);
+    
+    /**
+     * Creates a new item stack for given block id
+     * @param id the block
+     * @param variant the block variant
+     * @param name the display name (already localized)
+     * @param nameArgs name arguments
+     * @return item stack
+     */
+    ItemStack createItem(BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs);
+    
+    /**
+     * Creates a new item stack for given block id
+     * @param player the player used for localization
+     * @param id the block
+     * @param variant the block variant
+     * @return item stack
+     */
+    ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant);
+    
+    /**
+     * Creates a new item stack for given block id
+     * @param player the player used for localization
+     * @param id the block
+     * @param variant the block variant
+     * @param name the display name (already localized)
+     * @param nameArgs name arguments
+     * @return item stack
+     */
+    ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs);
     
     /**
      * Returns block id from item stack

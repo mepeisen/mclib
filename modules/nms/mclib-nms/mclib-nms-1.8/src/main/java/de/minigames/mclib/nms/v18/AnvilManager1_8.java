@@ -37,7 +37,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import net.minecraft.server.v1_8_R1.BlockPosition;
@@ -107,15 +106,8 @@ public class AnvilManager1_8 implements AnvilManagerInterface
             if (evt.getRawSlot() == 2)
             {
                 final ItemStack stack = evt.getCurrentItem();
-                String name = ""; //$NON-NLS-1$
-                if (stack.hasItemMeta())
-                {
-                    final ItemMeta meta = stack.getItemMeta();
-                    if (meta.hasDisplayName())
-                    {
-                        name = meta.getDisplayName();
-                    }
-                }
+                String name = new ItemHelper1_8().getDisplayName(stack);
+                if (name == null) name = ""; //$NON-NLS-1$
                 
                 if (this.playerInventories.get(uuid).listener.onCommit(name))
                 {

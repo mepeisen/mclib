@@ -37,39 +37,22 @@ import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
 public interface BlockId extends McUniqueEnumInterface
 {
     
-//    /**
-//     * Returns the resource paths to the textures
-//     * @return resource paths to textures
-//     */
-//    default String[] getTextures()
-//    {
-//        try
-//        {
-//            final BlockData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockData.class);
-//            return data.textures();
-//        }
-//        catch (NoSuchFieldException ex)
-//        {
-//            throw new IllegalStateException(ex);
-//        }
-//    }
-//    
-//    /**
-//     * the custom item model json
-//     * @return custom item model json
-//     */
-//    default String getModelJson()
-//    {
-//        try
-//        {
-//            final BlockData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockData.class);
-//            return data.modelJson();
-//        }
-//        catch (NoSuchFieldException ex)
-//        {
-//            throw new IllegalStateException(ex);
-//        }
-//    }
+    /**
+     * Returns the provider for getting the item name.
+     * @return provider for getting the name.
+     */
+    default NameProvider nameProvider()
+    {
+        try
+        {
+            final BlockData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockData.class);
+            return data.name().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
     
     /**
      * Returns the configured variants.

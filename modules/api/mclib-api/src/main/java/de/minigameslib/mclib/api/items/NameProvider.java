@@ -24,37 +24,16 @@
 
 package de.minigameslib.mclib.api.items;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
- * @author mepeisen
- *
+ * Name provider for returning default item name.
  */
-@Retention(RUNTIME)
-@Target(FIELD)
-public @interface BlockVariantData
+public interface NameProvider
 {
-    
     /**
-     * Returns the resource paths to the textures
-     * @return resource paths to textures
+     * the name provider.
+     * @return name provider.
      */
-    String[] textures();
-    
-    /**
-     * the custom item model json
-     * @return custom item model json
-     */
-    String modelJson();
-    
-    /**
-     * Returns the provider for getting the item name.
-     * @return provider for getting the name.
-     */
-    Class<? extends NameProvider> name() default NullNameProvider.class;
-    
+    LocalizedMessageInterface getName();
 }

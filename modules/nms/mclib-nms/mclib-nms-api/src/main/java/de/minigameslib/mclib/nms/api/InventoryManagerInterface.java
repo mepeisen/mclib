@@ -109,7 +109,10 @@ public interface InventoryManagerInterface extends Listener
     {
         final String target = toHexString(hiddenString);
         final StringBuilder builder = new StringBuilder();
-        builder.append(name);
+        if (name != null)
+        {
+            builder.append(name);
+        }
         builder.append(' ');
         for (int i = 0; i < target.length(); i++)
         {

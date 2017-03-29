@@ -84,8 +84,37 @@ public interface ItemHelperInterface
      * Creates a custom item stack for given block type and variant
      * @param type
      * @param variant
+     * @param displayName 
      * @return item stack
      */
-    ItemStack createItemStackForBlock(int type, int variant);
+    ItemStack createItemStackForBlock(int type, int variant, String displayName);
+    
+    /**
+     * Sets the display name
+     * @param stack
+     * @param displayName
+     */
+    void setDisplayName(ItemStack stack, String displayName);
+    
+    /**
+     * Sets description
+     * @param stack
+     * @param description
+     */
+    void setDescription(ItemStack stack, String[] description);
+    
+    /**
+     * Returns the display name
+     * @param stack
+     * @return display name
+     */
+    String getDisplayName(ItemStack stack);
+    
+    /**
+     * Returns the description
+     * @param stack
+     * @return description
+     */
+    String[] getDescription(ItemStack stack);
     
 }

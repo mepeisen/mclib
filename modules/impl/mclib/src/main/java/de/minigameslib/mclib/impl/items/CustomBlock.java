@@ -29,6 +29,7 @@ import java.util.Map;
 
 import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockVariantId;
+import de.minigameslib.mclib.api.items.NameProvider;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -59,6 +60,9 @@ public class CustomBlock extends AnnotatedDataFragment
      * the block variants.
      */
     private final Map<Integer, BlockVariantId> variants = new HashMap<>();
+    
+    /** the name provider. */
+    private NameProvider nameProvider;
 
     /**
      */
@@ -99,6 +103,15 @@ public class CustomBlock extends AnnotatedDataFragment
         {
             this.variants.put(variant.ordinal(), variant);
         }
+        this.nameProvider = blockId.nameProvider();
+    }
+
+    /**
+     * @return the nameProvider
+     */
+    public NameProvider getNameProvider()
+    {
+        return this.nameProvider;
     }
 
     /**

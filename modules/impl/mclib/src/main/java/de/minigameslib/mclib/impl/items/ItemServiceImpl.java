@@ -377,9 +377,33 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final ItemMeta meta = itemStack.getItemMeta();
         meta.spigot().setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
-        meta.setDisplayName(name);
+        meta.setDisplayName(name == null ? "" : name); //$NON-NLS-1$
         itemStack.setItemMeta(meta);
         return itemStack;
+    }
+    
+    @Override
+    public ItemStack createItem(ItemId item)
+    {
+        return createItem(item, this.itemIdMap.get(item).getNameProvider().getName());
+    }
+    
+    @Override
+    public ItemStack createItem(ItemId item, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return createItem(item, name == null ? null : name.toUserMessage(McLibInterface.instance().getDefaultLocale(), nameArgs));
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, ItemId item)
+    {
+        return createItem(player, item, this.itemIdMap.get(item).getNameProvider().getName());
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, ItemId item, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return createItem(item, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
     
     @Override
@@ -1089,7 +1113,31 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(BlockId id, BlockVariantId variant)
     {
-        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal());
+        return this.createItem(id, variant, this.blockIdMap.get(id).getNameProvider().getName());
+    }
+    
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return this.createItem(id, variant, name == null ? null : name.toUserMessage(McLibInterface.instance().getDefaultLocale(), nameArgs));
+    }
+    
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant, String name)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(), name == null ? "" : name); //$NON-NLS-1$
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant)
+    {
+        return this.createItem(player, id, variant, this.blockIdMap.get(id).getNameProvider().getName());
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return this.createItem(id, variant, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
 
     @Override
@@ -1184,6 +1232,42 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             return McCoreConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
         }
         return new CustomBlock[0];
+    }
+
+    @Override
+    public void setDisplayName(ItemStack stack, String name)
+    {
+        Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setDisplayName(stack, name);
+    }
+
+    @Override
+    public void setDisplayName(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        this.setDisplayName(stack, player.encodeMessage(name, nameArgs)[0]);
+    }
+
+    @Override
+    public void setDescription(ItemStack stack, String[] description)
+    {
+        Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setDescription(stack, description);
+    }
+
+    @Override
+    public void setDescription(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface description, Serializable... descriptionArgs)
+    {
+        this.setDescription(stack, player.encodeMessage(description, descriptionArgs));
+    }
+
+    @Override
+    public String getDisplayName(ItemStack stack)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getDisplayName(stack);
+    }
+
+    @Override
+    public String[] getDescription(ItemStack stack)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getDescription(stack);
     }
     
 }
