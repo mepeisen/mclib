@@ -153,7 +153,7 @@ public class ItemHelper1_8_3 implements ItemHelperInterface
      * @param stack
      * @param meta
      */
-    private void setMeta(ItemStack stack, ItemMeta meta)
+    public static void setMeta(ItemStack stack, ItemMeta meta)
     {
         try
         {
@@ -195,10 +195,15 @@ public class ItemHelper1_8_3 implements ItemHelperInterface
      * @param stack
      * @return meta
      */
-    private ItemMeta getMeta(ItemStack stack)
+    public static ItemMeta getMeta(ItemStack stack)
     {
         try
         {
+            if (stack instanceof CraftItemStack)
+            {
+                return stack.getItemMeta();
+            }
+
             final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             return (ItemMeta) field.get(stack);

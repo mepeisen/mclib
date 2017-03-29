@@ -31,6 +31,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R2.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftInventoryCustom;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -38,6 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -133,9 +135,29 @@ public class InventoryManager1_8_3 implements InventoryManagerInterface
         if (this.playerInventories.containsKey(uuid))
         {
             evt.setCancelled(true);
-            final ItemStack stack = evt.getCurrentItem();
+            final ItemStack stack = getCurrentItem(evt);
             this.playerInventories.get(uuid).listener.onClick(stack);
         }
+    }
+    
+    /**
+     * @param evt
+     * @return item stack
+     */
+    private ItemStack getCurrentItem(InventoryClickEvent evt)
+    {
+        if (evt.getSlotType() == InventoryType.SlotType.OUTSIDE) {
+            return evt.getCurrentItem();
+        }
+        final int rawSlot = evt.getRawSlot();
+        final net.minecraft.server.v1_8_R2.ItemStack stack = ((CraftInventory)evt.getView().getTopInventory()).getInventory().getItem(rawSlot);
+        if (Item.getId(stack.getItem()) >= MclibConstants.MIN_BLOCK_ID)
+        {
+            final ItemStack result = new ItemStack(Item.getId(stack.getItem()), stack.count, (short) stack.getData());
+            ItemHelper1_8_3.setMeta(result, CraftItemStack.getItemMeta(stack));
+            return result;
+        }
+        return CraftItemStack.asCraftMirror(stack);
     }
     
     /**

@@ -40,8 +40,6 @@ import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Function;
-
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.v111.blocks.CustomBlock;
 import de.minigameslib.mclib.pshared.MclibConstants;
@@ -154,7 +152,7 @@ public class ItemHelper1_11 implements ItemHelperInterface
      * @param stack
      * @param meta
      */
-    private void setMeta(ItemStack stack, ItemMeta meta)
+    public static void setMeta(ItemStack stack, ItemMeta meta)
     {
         try
         {
@@ -196,10 +194,15 @@ public class ItemHelper1_11 implements ItemHelperInterface
      * @param stack
      * @return meta
      */
-    private ItemMeta getMeta(ItemStack stack)
+    public static ItemMeta getMeta(ItemStack stack)
     {
         try
         {
+            if (stack instanceof CraftItemStack)
+            {
+                return stack.getItemMeta();
+            }
+
             final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             return (ItemMeta) field.get(stack);
