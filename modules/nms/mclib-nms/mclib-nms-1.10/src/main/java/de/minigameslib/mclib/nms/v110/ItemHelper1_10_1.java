@@ -25,8 +25,11 @@
 package de.minigameslib.mclib.nms.v110;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,15 +37,17 @@ import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.common.base.Function;
 
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.v110.blocks.CustomBlock;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_10_R1.BlockPosition;
 import net.minecraft.server.v1_10_R1.IBlockData;
+import net.minecraft.server.v1_10_R1.ItemMultiTexture;
 import net.minecraft.server.v1_10_R1.MinecraftKey;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
@@ -209,16 +214,29 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         try
         {
+            final Method itemMth = net.minecraft.server.v1_10_R1.Item.class.getDeclaredMethod("a", net.minecraft.server.v1_10_R1.Block.class, net.minecraft.server.v1_10_R1.Item.class); //$NON-NLS-1$
+            itemMth.setAccessible(true);
+            
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
                 final CustomBlock myBlock = new CustomBlock();
-                net.minecraft.server.v1_10_R1.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock);
+                net.minecraft.server.v1_10_R1.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
                 Iterator<IBlockData> iterator2 = myBlock.t().a().iterator();
                 while (iterator2.hasNext()) {
                     IBlockData iblockdata = iterator2.next();
                     int k = net.minecraft.server.v1_10_R1.Block.REGISTRY.a(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
                     net.minecraft.server.v1_10_R1.Block.REGISTRY_ID.a(iblockdata, k);
                 }
+                
+                itemMth.invoke(null, myBlock, new ItemMultiTexture(myBlock, myBlock, new Function<net.minecraft.server.v1_10_R1.ItemStack, String>() {
+                    @Override
+                    @Nullable
+                    public String apply(@Nullable net.minecraft.server.v1_10_R1.ItemStack paramItemStack)
+                    {
+                        return CustomBlock.EnumCustomVariant.values()[paramItemStack.getData()].getName();
+                    }
+                }).b("mclib:custom_" + i)); //$NON-NLS-1$
+                
                 // getStaticMethod(TileEntity.class, "a", Class.class, String.class).invoke(null, MyTileEntity.class, "custom");
             }
         }
