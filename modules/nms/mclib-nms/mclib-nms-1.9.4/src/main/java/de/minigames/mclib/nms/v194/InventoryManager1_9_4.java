@@ -159,6 +159,10 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
             return null;
         }
         final net.minecraft.server.v1_9_R2.ItemStack stack = ((CraftInventory)evt.getView().getTopInventory()).getInventory().getItem(rawSlot);
+        if (stack == null)
+        {
+            return null;
+        }
         if (Item.getId(stack.getItem()) >= MclibConstants.MIN_BLOCK_ID)
         {
             final ItemStack result = new ItemStack(Item.getId(stack.getItem()), stack.count, (short) stack.getData());
