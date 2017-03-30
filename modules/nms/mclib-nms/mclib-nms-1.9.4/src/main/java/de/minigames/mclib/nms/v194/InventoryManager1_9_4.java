@@ -46,8 +46,10 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
+import net.minecraft.server.v1_9_R2.Block;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.Item;
+import net.minecraft.server.v1_9_R2.Items;
 
 /**
  * Inventory manager implementation.
@@ -95,7 +97,10 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
                         items[i].getAmount(),
                         items[i].getDurability());
                 if (items[i].hasItemMeta()) {
-                    CraftItemStack.setItemMeta(nms, items[i].getItemMeta());
+                    final net.minecraft.server.v1_9_R2.ItemStack temp = new net.minecraft.server.v1_9_R2.ItemStack(Items.APPLE);
+                    CraftItemStack.setItemMeta(temp, items[i].getItemMeta());
+                    nms.setTag(temp.getTag());
+                    
                 }
                 inventory.getInventory().setItem(i, nms);
             }
@@ -150,6 +155,9 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
             return evt.getCurrentItem();
         }
         final int rawSlot = evt.getRawSlot();
+        if (rawSlot >= evt.getView().getTopInventory().getSize()) {
+            return null;
+        }
         final net.minecraft.server.v1_9_R2.ItemStack stack = ((CraftInventory)evt.getView().getTopInventory()).getInventory().getItem(rawSlot);
         if (Item.getId(stack.getItem()) >= MclibConstants.MIN_BLOCK_ID)
         {
