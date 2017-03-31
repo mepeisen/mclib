@@ -149,13 +149,13 @@ public class MclibCoreHandler implements ComHandler
         {
             final BlockMarkerData data = fragment.getMarker().getBlock();
             final BlockMarker marker = new BlockMarker(data.getX(), data.getY(), data.getZ(), data.getColor() == null ? MarkerColor.BLUE : new MarkerColor(data.getColor()));
-            MclibMod.clientProxy.setMarker(markerId, marker);
+            MclibMod.proxy.setMarker(markerId, marker);
         }
         else if (fragment.getMarker().getCuboid() != null)
         {
             final CuboidMarkerData data = fragment.getMarker().getCuboid();
             final CuboidMarker marker = new CuboidMarker(data.getX1(), data.getY1(), data.getZ1(), data.getX2(), data.getY2(), data.getZ2(), data.getColor() == null ? MarkerColor.BLUE : new MarkerColor(data.getColor()));
-            MclibMod.clientProxy.setMarker(markerId, marker);
+            MclibMod.proxy.setMarker(markerId, marker);
         }
     }
     
@@ -165,7 +165,7 @@ public class MclibCoreHandler implements ComHandler
      */
     private void removeMarker(MessageContext context, RemoveMarkerData fragment)
     {
-        MclibMod.clientProxy.removeMarker(fragment.getMarkerId());
+        MclibMod.proxy.removeMarker(fragment.getMarkerId());
     }
     
     /**
@@ -174,7 +174,7 @@ public class MclibCoreHandler implements ComHandler
      */
     private void resetMarkers(MessageContext context, ResetMarkersData fragment)
     {
-        MclibMod.clientProxy.resetMarkers();
+        MclibMod.proxy.resetMarkers();
     }
 
     /**

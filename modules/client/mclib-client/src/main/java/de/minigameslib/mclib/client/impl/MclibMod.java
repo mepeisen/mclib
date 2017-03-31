@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -64,8 +65,8 @@ public class MclibMod implements CommunicationServiceInterface
     public static final String          VERSION  = "VERSIONNUMBER"; //$NON-NLS-1$
     
     /** the client stuff proxy. */
-    @SidedProxy(clientSide = "de.minigameslib.mclib.client.impl.ClientProxy")
-    public static ClientProxy           clientProxy;
+    @SidedProxy(clientSide = "de.minigameslib.mclib.client.impl.ClientProxy", serverSide = "de.minigameslib.mclib.client.impl.ServerProxy")
+    public static CommonProxy           proxy;
     
     /** minecraft instance. */
     public Minecraft                    mc;
@@ -91,7 +92,7 @@ public class MclibMod implements CommunicationServiceInterface
         this.mc = Minecraft.getMinecraft();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new MclibGuiHandler());
         
-        MinecraftForge.EVENT_BUS.register(clientProxy);
+        MinecraftForge.EVENT_BUS.register(proxy);
         NetworkRegistry.INSTANCE.registerGuiHandler(MclibMod.instance, new MclibGuiHandler());
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
@@ -100,8 +101,18 @@ public class MclibMod implements CommunicationServiceInterface
         // sc = s[erver]c[client] (both directions)
         NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("mclib|sc"); //$NON-NLS-1$
         NETWORK.registerMessage(NetMessage.Handle.class, NetMessage.class, 0, Side.CLIENT);
-        
+    }
+    
+    /**
+     * Pre-Initialization.
+     * 
+     * @param event
+     */
+    @EventHandler
+    public void init(FMLPreInitializationEvent event)
+    {
         MclibClientNms.initCustomBlocksAndItems();
+        proxy.registerItemRenderers();
     }
     
     /** the known endpoints. */

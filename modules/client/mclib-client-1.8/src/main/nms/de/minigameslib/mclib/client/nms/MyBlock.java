@@ -48,15 +48,27 @@ public class MyBlock extends Block
     
     public static final PropertyEnum VARIANT = PropertyEnum.<MyBlock.EnumType>create("variant", MyBlock.EnumType.class);
 
+    private String name;
+
     /**
      */
-    protected MyBlock()
+    protected MyBlock(String name)
     {
         super(Material.rock);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, MyBlock.EnumType.VARIANT_0));
+        setUnlocalizedName(name);
+        // setRegistryName(name);
+        this.name = name;
         // TODO this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     }
 
+    /**
+     * @return the name
+     */
+    public String getName()
+    {
+        return this.name;
+    }
     /**
      * Gets the metadata of the item this Block can drop. This method is called when the block gets destroyed. It
      * returns the metadata of the dropped item based on the old metadata of the block.

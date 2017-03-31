@@ -73,54 +73,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         }
         
         Bukkit.getPluginManager().registerEvents(this, this);
-        
-//        try
-//        {
-//            final MyBlock myBlock = new MyBlock(true);
-//            net.minecraft.server.v1_10_R1.Block.REGISTRY.a(3000, new MinecraftKey("custom"), myBlock);
-//            Iterator iterator2 = myBlock.t().a().iterator();
-//            while (iterator2.hasNext()) {
-//                IBlockData iblockdata = (IBlockData)iterator2.next();
-//                int k = net.minecraft.server.v1_10_R1.Block.REGISTRY.a(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
-//                net.minecraft.server.v1_10_R1.Block.REGISTRY_ID.a(iblockdata, k);
-//            }
-//            getStaticMethod(TileEntity.class, "a", Class.class, String.class).invoke(null, MyTileEntity.class, "custom");
-//        }
-//        catch (Exception ex)
-//        {
-//            ex.printStackTrace();
-//        }
     }
-    
-//    private <T> T getStaticField(Class<?> clazz, String field)
-//    {
-//        try
-//        {
-//            final Field f = clazz.getDeclaredField(field);
-//            f.setAccessible(true);
-//            return (T) f.get(clazz);
-//        }
-//        catch (Exception ex)
-//        {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
-//    
-//    private Method getStaticMethod(Class<?> clazz, String name, Class<?>... parameterTypes)
-//    {
-//        try
-//        {
-//            final Method m = clazz.getDeclaredMethod(name, parameterTypes);
-//            m.setAccessible(true);
-//            return m;
-//        }
-//        catch (Exception ex)
-//        {
-//            ex.printStackTrace();
-//        }
-//        return null;
-//    }
 
     @Override
     public void onDisable()
@@ -133,19 +86,28 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-//            final ItemServiceInterface itemService = ItemServiceInterface.instance();
-            final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-//            itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
-//                .onLeftClick(this::onLeftClick)
-//                .onRightClick(this::onRightClick)
-//                .singleUse()
-//                .build();
-            try {
-                player.openClickGui(new ClickGui());
-            }
-            catch (Exception ex)
+            boolean flg = true;
+            if (flg)
             {
-                // TODO
+                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+                try
+                {
+                    player.openClickGui(new ClickGui());
+                }
+                catch (Exception ex)
+                {
+                    // TODO
+                }
+            }
+            else
+            {
+                final ItemServiceInterface itemService = ItemServiceInterface.instance();
+                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+                itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
+                    .onLeftClick(this::onLeftClick)
+                    .onRightClick(this::onRightClick)
+                    .singleUse()
+                    .build();
             }
         }
         return super.onCommand(sender, command, label, args);

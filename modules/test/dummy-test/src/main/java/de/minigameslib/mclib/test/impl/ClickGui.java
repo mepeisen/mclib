@@ -36,6 +36,8 @@ import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
+import de.minigameslib.mclib.api.items.BlockData;
+import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
@@ -74,7 +76,7 @@ public class ClickGui implements ClickGuiInterface, ClickGuiPageInterface
     {
         return new ClickGuiItem[][]{{
             new ClickGuiItem(new ItemStack(Material.RED_SANDSTONE), CommonMessages.InvokeOnConsole, this::foo),
-            new ClickGuiItem(new ItemStack(Material.RED_SANDSTONE), null, this::bar)
+            new ClickGuiItem(BlockServiceInterface.instance().createItem(MyBlocks.CopperOre, BlockData.CustomVariantId.DEFAULT, CommonMessages.InvokeIngame), null, this::bar)
         }};
     }
     

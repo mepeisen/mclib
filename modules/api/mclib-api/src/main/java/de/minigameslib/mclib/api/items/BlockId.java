@@ -38,6 +38,40 @@ public interface BlockId extends McUniqueEnumInterface
 {
     
     /**
+     * Returns the resource paths to the textures
+     * @return resource paths to textures
+     */
+    default String[] getTextures()
+    {
+        try
+        {
+            final BlockVariantData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockVariantData.class);
+            return data == null ? null : data.textures();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * the custom item model json
+     * @return custom item model json
+     */
+    default String getModelJson()
+    {
+        try
+        {
+            final BlockVariantData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockVariantData.class);
+            return data == null ? null : data.modelJson();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * Returns the provider for getting the item name.
      * @return provider for getting the name.
      */

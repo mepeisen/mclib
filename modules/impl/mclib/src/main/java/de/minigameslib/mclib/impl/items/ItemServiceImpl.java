@@ -489,6 +489,32 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             buffer.append("}}"); //$NON-NLS-1$
             writeFile(jar, buffer.toString());
             
+            // add block textures
+            final List<String> blockTextures = new ArrayList<>();
+            final String[] blockTexturesArray = blockId.getTextures();
+            if (blockTexturesArray != null)
+            {
+                for (final String texture : blockTexturesArray)
+                {
+                    final File path = new File(texture);
+                    final String filename = path.getName();
+                    final String file = Files.getNameWithoutExtension(filename);
+                    blockTextures.add("items/" + blockId.getPluginName() + '/' + blockId.name() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    try
+                    {
+                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + blockId.getPluginName() + '/' + blockId.name() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        textureEntry.setTime(System.currentTimeMillis());
+                        jar.putNextEntry(textureEntry);
+                        copyFile(jar, blockId.getClass().getClassLoader(), texture);
+                    }
+                    catch (IOException e)
+                    {
+                        LOGGER.log(Level.WARNING, "IOException writing texture " + blockId.getPluginName() + '/' + blockId.name() + '_' + filename, e); //$NON-NLS-1$
+                    }
+                }
+            }
+            
+            // parse variants
             for (final BlockVariantId variant : blockId.variants())
             {
                 final List<String> textures = new ArrayList<>();
@@ -510,11 +536,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         LOGGER.log(Level.WARNING, "IOException writing texture " + variant.getPluginName() + '/' + variant.name() + '_' + filename, e); //$NON-NLS-1$
                     }
                 }
+                textures.addAll(blockTextures);
                 
                 final JarEntry variantJson = new JarEntry("assets/mclib/models/block/custom-" + numId + "-" + variant.ordinal() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 variantJson.setTime(System.currentTimeMillis());
                 jar.putNextEntry(variantJson);
-                writeFile(jar, String.format(variant.getModelJson(), textures.toArray()));
+                final String blockJson = blockId.getModelJson();
+                writeFile(jar, String.format(blockJson != null && blockJson.length() > 0 ? blockJson : variant.getModelJson(), textures.toArray()));
             }
         }
         catch (IOException e)

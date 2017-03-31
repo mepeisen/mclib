@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.client.nms;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.block.Block;
@@ -32,11 +33,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
 /**
  * Nms helper class.
@@ -70,19 +74,27 @@ public class MclibClientNms
     {
         try
         {
-            Field field = Block.REGISTRY.getClass().getDeclaredField("maxId");
+            Field field = Block.REGISTRY.getClass().getDeclaredField("maxId"); //$NON-NLS-1$
             field.setAccessible(true);
             field.set(Block.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
-
-            field = Item.REGISTRY.getClass().getDeclaredField("maxId");
+            
+            field = Item.REGISTRY.getClass().getDeclaredField("maxId"); //$NON-NLS-1$
             field.setAccessible(true);
             field.set(Item.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+
+            final Method itemAdd = Item.REGISTRY.getClass().getDeclaredMethod("add", int.class, ResourceLocation.class, IForgeRegistryEntry.class); //$NON-NLS-1$
+            itemAdd.setAccessible(true);
+            final Method blockAdd = Block.REGISTRY.getClass().getDeclaredMethod("add", int.class, ResourceLocation.class, IForgeRegistryEntry.class); //$NON-NLS-1$
+            blockAdd.setAccessible(true);
             
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
-                final Block block = new MyBlock();
-                Block.REGISTRY.register(i, new ResourceLocation("mclib:custom-" + i), block);
-                Item.REGISTRY.register(i, new ResourceLocation("mclib:custom-" + i), new ItemBlock(block));
+                final Block block = new MyBlock("custom-" + i); //$NON-NLS-1$
+                blockAdd.invoke(Block.REGISTRY, i, block.getRegistryName(), block);
+                
+                final ItemBlock item = new MyItemBlock(block);
+                item.setRegistryName(block.getRegistryName());
+                itemAdd.invoke(Item.REGISTRY, i, item.getRegistryName(), item);
             }
         }
         catch (Exception ex)
@@ -91,10 +103,18 @@ public class MclibClientNms
         }
     }
     
-    public static void registerBlock(int blockId, String resourceLoc, Block block, Item item)
+    public static void registerItemRenderers()
     {
-        Block.REGISTRY.register(blockId, new ResourceLocation(resourceLoc), block);
-        Item.REGISTRY.register(blockId, new ResourceLocation(resourceLoc), item);
+        for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
+        {
+            final Block block = Block.REGISTRY.getObjectById(i);
+            final Item item = Item.getItemFromBlock(block);
+            for (final MyBlock.EnumType type : MyBlock.EnumType.values())
+            {
+                final ModelResourceLocation model = new ModelResourceLocation(item.getRegistryName(), "variant=" + type.toString());
+                ModelLoader.setCustomModelResourceLocation(item, type.ordinal(), model);
+            }
+        }
     }
     
 }

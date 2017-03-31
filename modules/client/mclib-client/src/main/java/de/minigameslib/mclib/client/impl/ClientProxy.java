@@ -48,11 +48,8 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
  * 
  * @author mepeisen
  */
-public class ClientProxy
+public class ClientProxy extends CommonProxy
 {
-    
-    /** minecraft instance. */
-    private static Minecraft        mc          = Minecraft.getMinecraft();
     
     /** key binding to activate MINIGAMES gui. */
     private static final KeyBinding KEY_BINDING = new KeyBinding("Sample GUI", Keyboard.KEY_M, "MINIGAMES"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -176,29 +173,28 @@ public class ClientProxy
         }
     }
 
-    /**
-     * @param markerId
-     * @param marker
-     */
+    @Override
     public void setMarker(String markerId, MarkerInterface marker)
     {
         this.markers.put(markerId, marker);
     }
 
-    /**
-     * @param markerId
-     */
+    @Override
     public void removeMarker(String markerId)
     {
         this.markers.remove(markerId);
     }
 
-    /**
-     * 
-     */
+    @Override
     public void resetMarkers()
     {
         this.markers.clear();
+    }
+
+    @Override
+    public void registerItemRenderers()
+    {
+        MclibClientNms.registerItemRenderers();
     }
     
 }

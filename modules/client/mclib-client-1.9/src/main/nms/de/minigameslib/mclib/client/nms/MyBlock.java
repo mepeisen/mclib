@@ -49,15 +49,27 @@ public class MyBlock extends Block
     
     public static final PropertyEnum<MyBlock.EnumType> VARIANT = PropertyEnum.<MyBlock.EnumType>create("variant", MyBlock.EnumType.class);
 
+    private String name;
+
     /**
      */
-    protected MyBlock()
+    protected MyBlock(String name)
     {
         super(Material.rock);
         this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, MyBlock.EnumType.VARIANT_0));
+        setUnlocalizedName(name);
+        setRegistryName(name);
+        this.name = name;
         // TODO this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
     }
 
+    /**
+     * @return the name
+     */
+    public String getName()
+    {
+        return this.name;
+    }
     /**
      * Gets the localized name of this block. Used for the statistics page.
      */

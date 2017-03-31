@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.client.nms;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.block.Block;
@@ -32,11 +33,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameData;
 
 /**
  * Nms helper class.
@@ -77,12 +81,23 @@ public class MclibClientNms
             field = Item.itemRegistry.getClass().getDeclaredField("maxId");
             field.setAccessible(true);
             field.set(Item.itemRegistry, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+
+            final Method itemAdd = GameData.class.getDeclaredMethod("registerItem", Item.class, String.class, int.class); //$NON-NLS-1$
+            itemAdd.setAccessible(true);
+            final Method blockAdd = GameData.class.getDeclaredMethod("registerBlock", Block.class, String.class, int.class); //$NON-NLS-1$
+            blockAdd.setAccessible(true);
+            
+            final Method getGameData = GameData.class.getDeclaredMethod("getMain"); //$NON-NLS-1$
+            getGameData.setAccessible(true);
+            final GameData gameData = (GameData) getGameData.invoke(null);
             
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
-                final Block block = new MyBlock();
-                Block.blockRegistry.register(i, new ResourceLocation("mclib:custom-" + i), block);
-                Item.itemRegistry.register(i, new ResourceLocation("mclib:custom-" + i), new ItemBlock(block));
+                final Block block = new MyBlock("custom-" + i); //$NON-NLS-1$
+                blockAdd.invoke(gameData, block, "mclib:custom-" + i, i); //$NON-NLS-1$
+                
+                final ItemBlock item = new MyItemBlock(block);
+                itemAdd.invoke(gameData, item, "mclib:custom-" + i, i); //$NON-NLS-1$
             }
         }
         catch (Exception ex)
@@ -91,10 +106,18 @@ public class MclibClientNms
         }
     }
     
-    public static void registerBlock(int blockId, String resourceLoc, Block block, Item item)
+    public static void registerItemRenderers()
     {
-        Block.blockRegistry.register(blockId, new ResourceLocation(resourceLoc), block);
-        Item.itemRegistry.register(blockId, new ResourceLocation(resourceLoc), item);
+        for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
+        {
+            final Block block = (Block) Block.blockRegistry.getObjectById(i);
+            final Item item = Item.getItemFromBlock(block);
+            for (final MyBlock.EnumType type : MyBlock.EnumType.values())
+            {
+                final ModelResourceLocation model = new ModelResourceLocation(new ResourceLocation("mclib", "custom-" + i), "variant=" + type.toString());
+                ModelLoader.setCustomModelResourceLocation(item, type.ordinal(), model);
+            }
+        }
     }
     
 }
