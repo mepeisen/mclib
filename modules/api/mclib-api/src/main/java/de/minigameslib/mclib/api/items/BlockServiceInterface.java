@@ -25,7 +25,9 @@
 package de.minigameslib.mclib.api.items;
 
 import java.io.Serializable;
+import java.util.Random;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -132,5 +134,15 @@ public interface BlockServiceInterface
      * @param variant block variant
      */
     void setBlockData(Block block, BlockId id, BlockVariantId variant);
+    
+    /**
+     * Creates a minable vein at given location
+     * @param random
+     * @param location
+     * @param block
+     * @param variant
+     * @param size
+     */
+    void createMinable(Random random, Location location, BlockId block, BlockVariantId variant, int size);
     
 }

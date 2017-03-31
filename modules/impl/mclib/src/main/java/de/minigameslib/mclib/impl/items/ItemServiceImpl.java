@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -43,6 +44,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
@@ -1296,6 +1298,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public String[] getDescription(ItemStack stack)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getDescription(stack);
+    }
+
+    @Override
+    public void createMinable(Random random, Location location, BlockId block, BlockVariantId variant, int size)
+    {
+        final int blockId = this.blockIdMap.get(block).getNumId();
+        final int meta = variant.ordinal();
+        Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createMinable(random, location, blockId, meta, size);
     }
     
 }

@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import java.util.Random;
+
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -116,5 +119,14 @@ public interface ItemHelperInterface
      * @return description
      */
     String[] getDescription(ItemStack stack);
+
+    /**
+     * @param random
+     * @param location
+     * @param blockId
+     * @param meta
+     * @param size
+     */
+    void createMinable(Random random, Location location, int blockId, int meta, int size);
     
 }

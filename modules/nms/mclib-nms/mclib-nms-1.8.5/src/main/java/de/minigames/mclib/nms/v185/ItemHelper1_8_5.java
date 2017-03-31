@@ -28,9 +28,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_8_R3.CraftChunk;
@@ -51,6 +53,7 @@ import net.minecraft.server.v1_8_R3.Item;
 import net.minecraft.server.v1_8_R3.ItemMultiTexture;
 import net.minecraft.server.v1_8_R3.MinecraftKey;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.WorldGenMinable;
 
 /**
  * @author mepeisen
@@ -263,6 +266,16 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
     {
         final ItemMeta meta = this.getMeta(stack);
         return meta == null ? null : meta.getLore().toArray(new String[0]);
+    }
+
+    @Override
+    public void createMinable(Random random, Location location, int blockId, int meta, int size)
+    {
+        final BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(blockId);
+        final IBlockData data = block.fromLegacyData(meta);
+        final WorldGenMinable minable = new WorldGenMinable(data, size);
+        minable.generate(((CraftWorld)location.getWorld()).getHandle(), random, pos);
     }
     
 }
