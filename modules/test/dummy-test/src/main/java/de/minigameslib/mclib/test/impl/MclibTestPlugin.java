@@ -64,7 +64,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         try
         {
             ObjectServiceInterface.instance().register(MyEntitites.Dummy, DummyEntity.class);
-            ObjectServiceInterface.instance().resumeObjects(this);
+            ObjectServiceInterface.instance().resumeObjects(this, null);
         }
         catch (McException e)
         {

@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -191,6 +192,12 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     /** the loaded plugin sets. To detect duplicate loading. */
     private final Set<String>                                                                                                    loadedPlugins           = new HashSet<>();
     
+    /** the lazy plugin loading. */
+    private final Map<Plugin, Consumer<ResumeReport>>                                                                            lazyPluginLoading       = new HashMap<>();
+    
+    /** flag for successful initialization. */
+    private boolean                                                                                                              initialized             = false;
+    
     /** the players registry. */
     private final PlayerRegistry                                                                                                 players;
     
@@ -274,7 +281,28 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     }
     
     @Override
-    public ResumeReport resumeObjects(Plugin plugin)
+    public void resumeObjects(Plugin plugin, Consumer<ResumeReport> reportConsumer)
+    {
+        if (this.initialized)
+        {
+            final ResumeReport report = this.resumeObjects(plugin);
+            if (reportConsumer != null)
+            {
+                reportConsumer.accept(report);
+            }
+        }
+        else
+        {
+            this.lazyPluginLoading.put(plugin, reportConsumer);
+        }
+    }
+    
+    /**
+     * resume objects for given plugin
+     * @param plugin
+     * @return resume report
+     */
+    private ResumeReport resumeObjects(Plugin plugin)
     {
         final String pluginName = plugin.getName();
         if (this.loadedPlugins.contains(pluginName))
@@ -1694,7 +1722,7 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
     {
         return this.entitiesByUuid.containsKey(player.getUniqueId()) || Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).isDummyHuman(player);
     }
-
+    
     /**
      * @param evt
      */
@@ -1708,13 +1736,43 @@ class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServi
             {
                 try
                 {
-                    ((SignImpl)sign).delete0();
+                    ((SignImpl) sign).delete0();
                 }
                 catch (McException e)
                 {
                     LOGGER.log(Level.WARNING, "Problems deleting sign", e); //$NON-NLS-1$
                 }
             }
+        }
+    }
+    
+    /**
+     * World was loaded, resuming objects of given world.
+     * 
+     * @param world
+     */
+    public void onWorldLoaded(World world)
+    {
+        // TODO lazy loading of objects from foreign worlds?
+        // currently we load the objects in first server tick.
+    }
+    
+    /**
+     * initialize object manager
+     */
+    public void init()
+    {
+        if (!this.initialized)
+        {
+            this.initialized = true;
+            this.lazyPluginLoading.entrySet().forEach(e -> {
+                final ResumeReport report = this.resumeObjects(e.getKey());
+                if (e.getValue() != null)
+                {
+                    e.getValue().accept(report);
+                }
+            });
+            this.lazyPluginLoading.clear();
         }
     }
     

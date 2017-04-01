@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.objects;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -141,9 +142,9 @@ public interface ObjectServiceInterface
      * Tries to resume objects.
      * 
      * @param plugin
-     * @return report of resuming components.
+     * @param reportConsumer A consumer getting the report for the underlying object loading.
      */
-    ResumeReport resumeObjects(Plugin plugin);
+    void resumeObjects(Plugin plugin, Consumer<ResumeReport> reportConsumer);
     
     /**
      * The report during resumes.

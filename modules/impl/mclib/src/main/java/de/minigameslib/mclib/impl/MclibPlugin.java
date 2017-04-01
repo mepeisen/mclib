@@ -61,6 +61,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -206,108 +207,108 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /**
      * plugin channel for messages between servers and clients
      */
-    private static final String                                           MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
+    private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for messages between bungee servers
      */
-    private static final String                                           MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
+    private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for BungeeCord
      */
-    private static final String                                           BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
+    private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
     
     /** the overall minecraft server versioon. */
-    private static final MinecraftVersionsType                            SERVER_VERSION                 = MclibPlugin.getServerVersion();
+    private static final MinecraftVersionsType                           SERVER_VERSION                 = MclibPlugin.getServerVersion();
     
     /** context helper. */
-    private final McContextImpl                                           context                        = new McContextImpl();
+    private final McContextImpl                                          context                        = new McContextImpl();
     
     /** enum service helper. */
-    private final EnumServiceImpl                                         enumService                    = new EnumServiceImpl();
+    private final EnumServiceImpl                                        enumService                    = new EnumServiceImpl();
     
     /** message service helper. */
-    private MessageServiceInterface                                       msgService                     = new MessageServiceImpl(this.enumService);
+    private MessageServiceInterface                                      msgService                     = new MessageServiceImpl(this.enumService);
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, ConfigInterface>                            configurations                 = new HashMap<>();
+    private final Map<Plugin, ConfigInterface>                           configurations                 = new HashMap<>();
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, Map<File, ConfigInterface>>                 configurationsPerDataFolder    = new HashMap<>();
+    private final Map<Plugin, Map<File, ConfigInterface>>                configurationsPerDataFolder    = new HashMap<>();
     
     /**
      * configuration providers per plugin.
      */
-    private final Map<Plugin, Map<Class<?>, McSupplier<File>>> configProviders                = new HashMap<>();
+    private final Map<Plugin, Map<Class<?>, McSupplier<File>>>           configProviders                = new HashMap<>();
     
     /** the player registry. */
-    PlayerRegistry                                                        players;
+    PlayerRegistry                                                       players;
     
     /** the objects manager. */
-    private ObjectsManager                                                objectsManager;
+    ObjectsManager                                                       objectsManager;
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>>       peerEndpoints                  = new HashMap<>();
+    private final Map<String, Map<String, CommunicationEndpointId>>      peerEndpoints                  = new HashMap<>();
     
     /** the known handlers. */
-    private final Map<CommunicationEndpointId, CommunicationPeerHandler>  peerHandlers                   = new ConcurrentHashMap<>();
+    private final Map<CommunicationEndpointId, CommunicationPeerHandler> peerHandlers                   = new ConcurrentHashMap<>();
     
     /** the known handlers. */
-    private final Map<String, List<CommunicationEndpointId>>              peerEndpointPlugins            = new ConcurrentHashMap<>();
+    private final Map<String, List<CommunicationEndpointId>>             peerEndpointPlugins            = new ConcurrentHashMap<>();
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>>       bungeeEndpoints                = new HashMap<>();
+    private final Map<String, Map<String, CommunicationEndpointId>>      bungeeEndpoints                = new HashMap<>();
     
     /** the known handlers. */
-    final Map<CommunicationEndpointId, CommunicationBungeeHandler>        bungeeHandlers                 = new ConcurrentHashMap<>();
+    final Map<CommunicationEndpointId, CommunicationBungeeHandler>       bungeeHandlers                 = new ConcurrentHashMap<>();
     
     /** the known handlers. */
-    private final Map<String, List<CommunicationEndpointId>>              bungeeEndpointPlugins          = new ConcurrentHashMap<>();
+    private final Map<String, List<CommunicationEndpointId>>             bungeeEndpointPlugins          = new ConcurrentHashMap<>();
     
     /** type of endpoints: true is a client endpoint, false a server endpoint */
-    private final Map<CommunicationEndpointId, Boolean>                   endpointTypes                  = new HashMap<>();
+    private final Map<CommunicationEndpointId, Boolean>                  endpointTypes                  = new HashMap<>();
     
     /** the current bungee server (myself) */
-    private final LocalBungeeServer                                       currentBungee                  = new LocalBungeeServer();
+    private final LocalBungeeServer                                      currentBungee                  = new LocalBungeeServer();
     
     /** the known other bungee servers from network. */
-    private final Map<String, BungeeServerInterface>                      bungeeServers                  = new HashMap<>();
+    private final Map<String, BungeeServerInterface>                     bungeeServers                  = new HashMap<>();
     
     /**
      * queue for bungee messages.
      */
-    final Queue<Consumer<Player>>                                         bungeeQueue                    = new ConcurrentLinkedQueue<>();
+    final Queue<Consumer<Player>>                                        bungeeQueue                    = new ConcurrentLinkedQueue<>();
     
     /**
      * the get servers ping.
      */
-    private GetServersPing                                                serversPing;
+    private GetServersPing                                               serversPing;
     
     /** the event bus. */
-    private EventBus                                                      eventBus;
+    private EventBus                                                     eventBus;
     
     /** mclib chat command */
-    private MclibCommand                                                  mclibCommand                   = new MclibCommand();
+    private MclibCommand                                                 mclibCommand                   = new MclibCommand();
     
     /**
      * plugin instance
      */
-    private static MclibPlugin                                            instance;
+    private static MclibPlugin                                           instance;
     
     /**
      * asynchronous thread pools
      */
-    private final ExecutorService                                         executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
+    private final ExecutorService                                        executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
     
     /**
      * the item service impl
      */
-    ItemServiceImpl                                                       itemService;
+    ItemServiceImpl                                                      itemService;
     
     static
     {
@@ -484,6 +485,14 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             // TODO what do we do at this point?
             // having no object manager will cause a dead plugin at all
         }
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                MclibPlugin.this.objectsManager.init();
+            }
+        }.runTaskLaterAsynchronously(this, 1);
         
         // nms event listeners
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
@@ -570,6 +579,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL, this);
         Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
         Bukkit.getMessenger().unregisterIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
+    }
+    
+    /**
+     * World loaded.
+     * 
+     * @param evt
+     */
+    @EventHandler
+    public void onWorldLoaded(WorldLoadEvent evt)
+    {
+        this.objectsManager.onWorldLoaded(evt.getWorld());
     }
     
     /**
@@ -731,9 +751,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 try
                 {
                     final File dataFolder = supplier.get();
-                    return this.configurationsPerDataFolder
-                        .computeIfAbsent(plugin, key -> new HashMap<>())
-                        .computeIfAbsent(dataFolder, key -> new ConfigImpl(dataFolder, this.enumService));
+                    return this.configurationsPerDataFolder.computeIfAbsent(plugin, key -> new HashMap<>()).computeIfAbsent(dataFolder, key -> new ConfigImpl(dataFolder, this.enumService));
                 }
                 catch (McException e)
                 {
