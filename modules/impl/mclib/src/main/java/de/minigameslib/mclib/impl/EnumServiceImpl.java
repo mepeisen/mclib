@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.enums.EnumerationListener;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 
@@ -62,6 +64,16 @@ class EnumServiceImpl implements EnumServiceInterface
     
     /** map from enumeration valur oto registering plugin. */
     private final Map<Enum<?>, Plugin> pluginsByEnum = new HashMap<>();
+    
+    /**
+     * enumeration listeners by plugin
+     */
+    private final Map<Plugin, List<EnumerationListener<?>>> listenersByPlugin = new HashMap<>();
+    
+    /**
+     * Listeners by class
+     */
+    private final Map<Class<?>, List<EnumerationListener<?>>> listeners = new HashMap<>();
 
     @Override
     public <T extends Enum<?> & EnumerationValue> void registerEnumClass(Plugin plugin, Class<T> clazz)
@@ -76,12 +88,14 @@ class EnumServiceImpl implements EnumServiceInterface
      */
     private <T extends Enum<?>> void registerEnumClass0(Plugin plugin, Class<T> clazz)
     {
+        final List<T> newEnums = new ArrayList<>();
         synchronized (this.enumsByPlugin)
         {
             final Set<Enum<?>> set = this.enumsByPlugin.computeIfAbsent(plugin, (p) -> new HashSet<>());
             final List<Map<String, UniqueEnumerationValue>> uniqueMaps = this.getUniqueMap(plugin, clazz);
-            for (final Enum<?> ev : clazz.getEnumConstants())
+            for (final T ev : clazz.getEnumConstants())
             {
+                newEnums.add(ev);
                 if (this.pluginsByEnum.containsKey(ev))
                 {
                     LOGGER.log(Level.SEVERE, "Duplicate registration of enum " + clazz.getName() + ":" + ev.name()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -103,6 +117,8 @@ class EnumServiceImpl implements EnumServiceInterface
                     }
                 }
             }
+            
+            this.listeners.entrySet().stream().filter(e -> e.getKey().isAssignableFrom(clazz)).forEach(e -> e.getValue().forEach(l -> callListener(plugin, e.getKey(), clazz, newEnums, l)));
         }
         if (clazz.getAnnotation(ChildEnum.class) != null)
         {
@@ -111,6 +127,34 @@ class EnumServiceImpl implements EnumServiceInterface
                 this.registerEnumClass0(plugin, childClazz);
             }
         }
+    }
+    
+    /**
+     * Calls listener class for new plugins
+     * @param plugin
+     * @param listenerClass
+     * @param realClass
+     * @param values
+     * @param listener
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends EnumerationValue, Q extends T> void callListener(Plugin plugin, Class<?> listenerClass, Class<?> realClass, List<?> values, EnumerationListener<?> listener)
+    {
+        callListener2(plugin, (Class<T>) listenerClass, (Class<Q>) realClass, (List<Q>) values, (EnumerationListener<T>) listener);
+    }
+    
+    /**
+     * Calls listener class for new plugins
+     * @param plugin
+     * @param listenerClass
+     * @param realClass
+     * @param values
+     * @param listener
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends EnumerationValue, Q extends T> void callListener2(Plugin plugin, Class<T> listenerClass, Class<Q> realClass, List<Q> values, EnumerationListener<T> listener)
+    {
+        listener.onEnumRegistered(plugin, realClass, values.toArray((T[])Array.newInstance(listenerClass, values.size())));
     }
 
     /**
@@ -143,6 +187,12 @@ class EnumServiceImpl implements EnumServiceInterface
             {
                 set.forEach(this.pluginsByEnum::remove);
                 this.enumsByPlugin.remove(set);
+            }
+            
+            final List<EnumerationListener<?>> list = this.listenersByPlugin.remove(plugin);
+            if (list != null)
+            {
+                list.forEach(listener -> this.listeners.values().forEach(list2 -> list2.remove(listener)));
             }
         }
     }
@@ -227,6 +277,16 @@ class EnumServiceImpl implements EnumServiceInterface
             }
         }
         return null;
+    }
+
+    @Override
+    public <T extends EnumerationValue> void registerEnumerationListener(Plugin plugin, Class<T> clazz, EnumerationListener<T> listener)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            this.listenersByPlugin.computeIfAbsent(plugin, k -> new ArrayList<>()).add(listener);
+            this.listeners.computeIfAbsent(clazz, k -> new ArrayList<>()).add(listener);
+        }
     }
     
 }

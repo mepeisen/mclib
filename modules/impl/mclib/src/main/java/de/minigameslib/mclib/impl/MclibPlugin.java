@@ -406,7 +406,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             @Override
             public void run()
             {
-                MclibPlugin.this.itemService.init();
                 try
                 {
                     MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
@@ -519,6 +518,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
         }
+        MclibPlugin.this.itemService.init();
     }
     
     /**
@@ -925,6 +925,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         if (!evt.getPlugin().isEnabled())
         {
+            this.enumService.unregisterAllEnumerations(evt.getPlugin());
             this.objectsManager.onDisable(evt.getPlugin());
             this.players.onDisable(evt.getPlugin());
             this.eventBus.onDisable(evt.getPlugin());

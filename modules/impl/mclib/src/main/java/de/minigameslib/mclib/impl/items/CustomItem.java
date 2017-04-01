@@ -121,7 +121,7 @@ public class CustomItem extends AnnotatedDataFragment
     public void setItemId(ItemId itemId)
     {
         this.itemId = itemId;
-        this.nameProvider = itemId.nameProvider();
+        this.nameProvider = itemId == null ? null : itemId.nameProvider();
     }
 
     /**

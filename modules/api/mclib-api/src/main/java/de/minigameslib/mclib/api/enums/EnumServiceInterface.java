@@ -62,6 +62,10 @@ public interface EnumServiceInterface
     /**
      * Unregisters all enumeration classes of given plugin.
      * 
+     * <p>
+     * Optional method; will be called automatically on each disabled plugin.
+     * </p>
+     * 
      * @param plugin
      *            plugin that is disabled.
      */
@@ -123,5 +127,13 @@ public interface EnumServiceInterface
      * @return enumeration values
      */
     <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz);
+    
+    /**
+     * Registers a listener to watch for changes in enumerations
+     * @param plugin the plugin registering the listener
+     * @param clazz enumeration class
+     * @param listener enumeration listener
+     */
+    <T extends EnumerationValue> void registerEnumerationListener(Plugin plugin, Class<T> clazz, EnumerationListener<T> listener);
     
 }

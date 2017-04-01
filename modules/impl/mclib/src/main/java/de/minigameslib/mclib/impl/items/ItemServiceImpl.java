@@ -42,6 +42,7 @@ import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -61,6 +62,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.enums.EnumerationListener;
 import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McInventoryClickEvent;
 import de.minigameslib.mclib.api.event.McListener;
@@ -96,7 +98,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
     
     /** the item id to value map. */
-    private Map<ItemId, CustomItem> itemIdMap = new HashMap<>();
+    protected Map<ItemId, CustomItem> itemIdMap = new HashMap<>();
     
     /** the custom items per material/ damage value */
     private final Map<Material, Map<Short, CustomItem>> itemsPerMaterial = new HashMap<>();
@@ -105,7 +107,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     private Map<CustomItem, Object[]> itemMap = new HashMap<>();
     
     /** the block id to value map. */
-    private Map<BlockId, CustomBlock> blockIdMap = new HashMap<>();
+    protected Map<BlockId, CustomBlock> blockIdMap = new HashMap<>();
     
     /** the block id to value map. */
     private Map<Integer, CustomBlock> blockNumIdMap = new HashMap<>();
@@ -118,8 +120,74 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     public void init()
     {
+        EnumServiceInterface.instance().registerEnumerationListener((Plugin) McLibInterface.instance(), BlockId.class, new BlockListener());
+        EnumServiceInterface.instance().registerEnumerationListener((Plugin) McLibInterface.instance(), ItemId.class, new ItemListener());
         initItems();
         initBlocks();
+    }
+    
+    /**
+     * Listener to watch for new block registrations
+     * @author mepeisen
+     */
+    private class BlockListener implements EnumerationListener<BlockId>
+    {
+
+        /**
+         * Constructor
+         */
+        public BlockListener()
+        {
+            // empty
+        }
+
+        @Override
+        public void onEnumRegistered(Plugin plugin, Class<? extends BlockId> clazz, BlockId[] values)
+        {
+            ItemServiceImpl.this.initBlocks(Arrays.stream(values));
+        }
+
+        @Override
+        public void onEnumRemoved(Plugin plugin, Class<? extends BlockId> clazz, BlockId[] values)
+        {
+            for (final BlockId blockId : values)
+            {
+                ItemServiceImpl.this.blockIdMap.remove(blockId).setBlockId(null);
+            }
+        }
+        
+    }
+    
+    /**
+     * Listener to watch for new item registrations
+     * @author mepeisen
+     */
+    private class ItemListener implements EnumerationListener<ItemId>
+    {
+
+        /**
+         * Constructor
+         */
+        public ItemListener()
+        {
+            // empty
+        }
+
+        @Override
+        public void onEnumRegistered(Plugin plugin, Class<? extends ItemId> clazz, ItemId[] values)
+        {
+            ItemServiceImpl.this.initItems(Arrays.stream(values));
+        }
+
+        @Override
+        public void onEnumRemoved(Plugin plugin, Class<? extends ItemId> clazz, ItemId[] values)
+        {
+            for (final ItemId itemId : values)
+            {
+                ItemServiceImpl.this.itemIdMap.remove(itemId).setItemId(null);
+            }
+        }
+        
     }
 
     /**
@@ -136,10 +204,19 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.itemMap.put(item, new Object[]{material, durability});
         }
         
+        final Stream<ItemId> stream = EnumServiceInterface.instance().getEnumValues(ItemId.class).stream();
+        initItems(stream);
+    }
+
+    /**
+     * @param stream
+     */
+    protected void initItems(final Stream<ItemId> stream)
+    {
         final Stack<CustomItem> newItems = new Stack<>();
         
         // parse items from plugins
-        final List<ItemId> enumValues = EnumServiceInterface.instance().getEnumValues(ItemId.class).stream().sorted((a, b) -> {
+        final List<ItemId> enumValues = stream.sorted((a, b) -> {
             int result = a.getPluginName().compareTo(b.getPluginName());
             if (result == 0)
             {
@@ -193,7 +270,6 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             
             // TODO warn: too much items
         }
-            
     }
 
     /**
@@ -207,11 +283,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.blockNumIdMap.put(block.getNumId(), block);
             this.blockMap.put(block, block.getNumId());
         }
-        
+
+        final Stream<BlockId> stream = EnumServiceInterface.instance().getEnumValues(BlockId.class).stream();
+        initBlocks(stream);
+    }
+
+    /**
+     * @param stream
+     */
+    protected void initBlocks(final Stream<BlockId> stream)
+    {
         final Stack<CustomBlock> newBlocks = new Stack<>();
         
         // parse blocks from plugins
-        final List<BlockId> enumValues = EnumServiceInterface.instance().getEnumValues(BlockId.class).stream().sorted((a, b) -> {
+        final List<BlockId> enumValues = stream.sorted((a, b) -> {
             int result = a.getPluginName().compareTo(b.getPluginName());
             if (result == 0)
             {

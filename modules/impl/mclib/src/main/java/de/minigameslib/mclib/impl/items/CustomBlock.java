@@ -99,11 +99,19 @@ public class CustomBlock extends AnnotatedDataFragment
     public void setBlockId(BlockId blockId)
     {
         this.blockId = blockId;
-        for (final BlockVariantId variant : blockId.variants())
+        if (blockId == null)
         {
-            this.variants.put(variant.ordinal(), variant);
+            this.nameProvider = null;
+            this.variants.clear();
         }
-        this.nameProvider = blockId.nameProvider();
+        else
+        {
+            for (final BlockVariantId variant : blockId.variants())
+            {
+                this.variants.put(variant.ordinal(), variant);
+            }
+            this.nameProvider = blockId.nameProvider();
+        }
     }
 
     /**
