@@ -492,7 +492,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             {
                 MclibPlugin.this.objectsManager.init();
             }
-        }.runTaskLaterAsynchronously(this, 1);
+        }.runTaskLater(this, 1);
         
         // nms event listeners
         Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
