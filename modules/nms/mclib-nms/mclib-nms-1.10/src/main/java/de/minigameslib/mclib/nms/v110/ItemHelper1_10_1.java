@@ -228,8 +228,15 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             final Method itemMth = net.minecraft.server.v1_10_R1.Item.class.getDeclaredMethod("a", net.minecraft.server.v1_10_R1.Block.class, net.minecraft.server.v1_10_R1.Item.class); //$NON-NLS-1$
             itemMth.setAccessible(true);
             
+            final Field byId = Material.class.getDeclaredField("byId"); //$NON-NLS-1$
+            byId.setAccessible(true);
+            final Material[] materials = Arrays.copyOf((Material[]) byId.get(null), 5000);
+            byId.set(null, materials);
+            
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
+                materials[i] = Material.STONE; // may not be clever but otherwise bukkit will not really understand what we are doing; we cannot extend the materials enum here :-(
+                
                 final CustomBlock myBlock = new CustomBlock();
                 net.minecraft.server.v1_10_R1.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
                 Iterator<IBlockData> iterator2 = myBlock.t().a().iterator();
