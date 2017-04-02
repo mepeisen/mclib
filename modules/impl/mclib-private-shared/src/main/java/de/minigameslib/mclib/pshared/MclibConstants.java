@@ -35,11 +35,11 @@ public interface MclibConstants
     /**
      * the minimum block id for custom blocks.
      */
-    int MIN_BLOCK_ID = 4500;
+    int MIN_BLOCK_ID = 3500;
     
     /**
      * the maximum block id for custom blocks.
      */
-    int MAX_BLOCK_ID = 6000;
+    int MAX_BLOCK_ID = 3999;
     
 }
