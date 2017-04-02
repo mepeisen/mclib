@@ -26,8 +26,10 @@ package de.minigameslib.mclib.client.nms;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import de.minigameslib.mclib.pshared.MclibConstants;
+import de.minigameslib.mclib.pshared.PingData.BlockMetaData;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -116,5 +118,13 @@ public class MclibClientNms
             }
         }
     }
+
+	public static void setItemMeta(List<BlockMetaData> meta)
+	{
+		for (final BlockMetaData data : meta)
+		{
+			Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
+		}
+	}
     
 }

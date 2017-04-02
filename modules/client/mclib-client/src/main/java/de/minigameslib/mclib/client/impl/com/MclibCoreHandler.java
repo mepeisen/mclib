@@ -43,6 +43,7 @@ import de.minigameslib.mclib.client.impl.gui.widgets.MultiWidget;
 import de.minigameslib.mclib.client.impl.markers.BlockMarker;
 import de.minigameslib.mclib.client.impl.markers.CuboidMarker;
 import de.minigameslib.mclib.client.impl.markers.MarkerColor;
+import de.minigameslib.mclib.client.nms.MclibClientNms;
 import de.minigameslib.mclib.client.impl.gui.widgets.MessageBox;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.ButtonData;
@@ -183,6 +184,11 @@ public class MclibCoreHandler implements ComHandler
      */
     private void answerPing(MessageContext context, PingData fragment)
     {
+    	// parse block info
+    	if (fragment.getMeta() != null)
+    	{
+    		MclibClientNms.setItemMeta(fragment.getMeta());
+    	}
         // send pong to server.
         final PongData answer = new PongData();
         // TODO add extensions
