@@ -24,7 +24,11 @@
 
 package de.minigameslib.mclib.pshared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
  * Data Fragment for the {@link CoreMessages#Ping} message.
@@ -34,6 +38,102 @@ import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 public class PingData extends AnnotatedDataFragment
 {
     
-    // empty
+    /**
+     * the block meta data.
+     */
+    @PersistentField
+    protected List<BlockMetaData> meta = new ArrayList<>();
+    
+    /**
+     * Adds new meta data
+     * @param id
+     * @param hardness
+     * @param resistance
+     */
+    public void addMeta(int id, float hardness, float resistance)
+    {
+        final BlockMetaData m = new BlockMetaData();
+        m.setId(id);
+        m.setHardness(hardness);
+        m.setResistance(resistance);
+        this.meta.add(m);
+    }
+    
+    /**
+     * Returns the list of meta data
+     * @return the meta
+     */
+    public List<BlockMetaData> getMeta()
+    {
+        return this.meta;
+    }
+
+    /**
+     * Single block data.
+     */
+    public static class BlockMetaData extends AnnotatedDataFragment
+    {
+        
+        /** numeric block id. */
+        @PersistentField
+        protected int id;
+        
+        /** hardness */
+        @PersistentField
+        protected float h;
+        
+        /** resistance */
+        @PersistentField
+        protected float r;
+
+        /**
+         * @return the id
+         */
+        public int getId()
+        {
+            return this.id;
+        }
+
+        /**
+         * @param id the id to set
+         */
+        public void setId(int id)
+        {
+            this.id = id;
+        }
+
+        /**
+         * @return the h
+         */
+        public float getHardness()
+        {
+            return this.h;
+        }
+
+        /**
+         * @param h the h to set
+         */
+        public void setHardness(float h)
+        {
+            this.h = h;
+        }
+
+        /**
+         * @return the r
+         */
+        public float getResistance()
+        {
+            return this.r;
+        }
+
+        /**
+         * @param r the r to set
+         */
+        public void setResistance(float r)
+        {
+            this.r = r;
+        }
+        
+    }
     
 }

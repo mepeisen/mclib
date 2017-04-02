@@ -804,6 +804,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // try to ping the client mod.
         final PingData ping = new PingData();
+        this.itemService.populate(ping);
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$
         ping.write(section.createSection("data")); //$NON-NLS-1$

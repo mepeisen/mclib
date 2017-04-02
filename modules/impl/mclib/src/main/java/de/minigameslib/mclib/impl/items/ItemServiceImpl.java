@@ -86,6 +86,7 @@ import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.MclibConstants;
+import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
@@ -1447,6 +1448,23 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             return player.getBukkitPlayer().getInventory().addItem(stack).get(0);
         }
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).addToInventory(player.getBukkitPlayer().getInventory(), stack);
+    }
+
+    /**
+     * Populate ping data with block info
+     * @param ping
+     */
+    public void populate(PingData ping)
+    {
+        for (final BlockId block : this.blockIdMap.keySet())
+        {
+            final int blockId = this.blockIdMap.get(block).getNumId();
+            final BlockMeta meta = block.meta();
+            ping.addMeta(
+                    blockId,
+                    meta == null ? 0 : meta.hardness(),
+                    meta == null ? 0 : meta.resistance());
+        }
     }
     
 }
