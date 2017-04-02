@@ -1,6 +1,6 @@
 @echo off
 
-set /a COUNTA=4500
+set /a COUNTA=3500
 
 setlocal enableextensions disabledelayedexpansion
 
@@ -19,4 +19,4 @@ rem         endlocal
 rem     )
 
 set /a COUNTA+=1
-if %COUNTA% lss 6001 goto LOOP
+if %COUNTA% lss 4000 goto LOOP
