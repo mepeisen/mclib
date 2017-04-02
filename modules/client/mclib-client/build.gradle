@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "http://nexus.xworlds.eu/nexus/content/repositories/minecraftforge/"
         }
         maven {
             name = "sonatype"
@@ -78,8 +78,8 @@ dependencies {
     compile "xpp3:xpp3:1.1.4c"
     compile files('src/lib/twl/TWL.jar')
     
-    compile "de.minigameslib.mclib:mclib-shared:0.0.5-SNAPSHOT"
-    compile "de.minigameslib.mclib:mclib-private-shared:0.0.5-SNAPSHOT"
+    compile "de.minigameslib.mclib:mclib-shared:0.0.6-SNAPSHOT"
+    compile "de.minigameslib.mclib:mclib-private-shared:0.0.6-SNAPSHOT"
 }
 
 task fatJar(type: Jar) {

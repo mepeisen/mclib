@@ -581,6 +581,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
             for (CustomItem item : map.values())
             {
+                if (item == null) continue;
                 buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
