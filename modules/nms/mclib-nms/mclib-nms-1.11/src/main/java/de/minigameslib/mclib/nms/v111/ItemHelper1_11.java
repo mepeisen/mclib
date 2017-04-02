@@ -37,12 +37,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_11_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
+import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.v111.blocks.CustomBlock;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_11_R1.BlockPosition;
@@ -275,6 +278,79 @@ public class ItemHelper1_11 implements ItemHelperInterface
         final IBlockData data = block.fromLegacyData(meta);
         final WorldGenMinable minable = new WorldGenMinable(data, size);
         minable.generate(((CraftWorld)location.getWorld()).getHandle(), random, pos);
+    }
+    
+    @Override
+    public ItemStack addToInventory(Inventory inventory, ItemStack item)
+    {
+        final int typeId = item.getTypeId();
+        final int meta = this.getVariant(item);
+        
+        while (true)
+        {
+            int firstPartial = firstPartial(inventory, typeId, meta);
+            if (firstPartial == -1)
+            {
+                int firstFree = inventory.firstEmpty();
+                if (firstFree == -1)
+                {
+                    return item;
+                }
+                if (item.getAmount() > inventory.getMaxStackSize())
+                {
+                    final ItemStack stack = new ItemStack(typeId, inventory.getMaxStackSize(), (short) meta);
+                    InventoryManager1_11.setContents((CraftInventory) inventory, stack, firstFree);
+                    item.setAmount(item.getAmount() - inventory.getMaxStackSize());
+                }
+                InventoryManager1_11.setContents((CraftInventory) inventory, item, firstFree);
+                break;
+            }
+            ItemStack partialItem = inventory.getItem(firstPartial);
+            int amount = item.getAmount();
+            int partialAmount = partialItem.getAmount();
+            int maxAmount = partialItem.getMaxStackSize();
+            
+            if (amount + partialAmount <= maxAmount)
+            {
+                partialItem.setAmount(amount + partialAmount);
+                InventoryManager1_11.setContents((CraftInventory) inventory, partialItem, firstPartial);
+                break;
+            }
+            
+            partialItem.setAmount(maxAmount);
+            
+            InventoryManager1_11.setContents((CraftInventory) inventory, partialItem, firstPartial);
+            item.setAmount(amount + partialAmount - maxAmount);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns the first partial
+     * @param inv
+     * @param typeId
+     * @param meta
+     * @return partial index
+     */
+    private int firstPartial(Inventory inv, int typeId, int meta)
+    {
+        ItemStack[] inventory = inv.getStorageContents();
+        for (int i = 0; i < inventory.length; ++i)
+        {
+            ItemStack item = inventory[i];
+            if ((item != null) && (item.getTypeId() == typeId) && (item.getAmount() < item.getMaxStackSize()) && meta == getVariant(item))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule)
+    {
+        ((CustomBlock)net.minecraft.server.v1_11_R1.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
     }
     
 }

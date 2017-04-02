@@ -112,4 +112,38 @@ public interface BlockId extends McUniqueEnumInterface
         }
     }
     
+    /**
+     * The drop rule
+     * @return the drop rule
+     */
+    default BlockDropRuleInterface dropRule()
+    {
+        try
+        {
+            final BlockDropRule data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockDropRule.class);
+            return data == null ? null : data.value().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The meta data
+     * @return block meta data
+     */
+    default BlockMeta meta()
+    {
+        try
+        {
+            final BlockMeta data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockMeta.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
 }

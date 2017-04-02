@@ -197,4 +197,12 @@ public interface ItemServiceInterface
      */
     ItemId getItemId(ItemStack stack);
     
+    /**
+     * Adds given item stack to player inventory. Safe method for custom items and blocks.
+     * @param player
+     * @param stack
+     * @return left over items; null if item was fully added
+     */
+    ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack);
+    
 }

@@ -28,6 +28,7 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -128,5 +129,22 @@ public interface ItemHelperInterface
      * @param size
      */
     void createMinable(Random random, Location location, int blockId, int meta, int size);
+    
+    /**
+     * Adds given item to inventory
+     * @param inventory
+     * @param stack
+     * @return left over items; {@code null} if item could be added completly
+     */
+    ItemStack addToInventory(Inventory inventory, ItemStack stack);
+    
+    /**
+     * Sets block meta values
+     * @param blockId
+     * @param hardness
+     * @param resistence
+     * @param dropRule
+     */
+    void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule);
     
 }

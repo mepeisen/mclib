@@ -46,7 +46,6 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
-import net.minecraft.server.v1_9_R2.Block;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.Item;
 import net.minecraft.server.v1_9_R2.Items;
@@ -90,24 +89,35 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
     {
         for (int i = 0; i < items.length; i++)
         {
-            if (items[i] != null && items[i].getTypeId() >= MclibConstants.MIN_BLOCK_ID)
-            {
-                final net.minecraft.server.v1_9_R2.ItemStack nms = new net.minecraft.server.v1_9_R2.ItemStack(
-                        Item.getById(items[i].getTypeId()),
-                        items[i].getAmount(),
-                        items[i].getDurability());
-                if (items[i].hasItemMeta()) {
-                    final net.minecraft.server.v1_9_R2.ItemStack temp = new net.minecraft.server.v1_9_R2.ItemStack(Items.APPLE);
-                    CraftItemStack.setItemMeta(temp, items[i].getItemMeta());
-                    nms.setTag(temp.getTag());
-                    
-                }
-                inventory.getInventory().setItem(i, nms);
+            setContents(inventory, items[i], i);
+        }
+    }
+    
+    /**
+     * Sets contents; safe way for blocks that are unknown by bukkit
+     * @param inventory
+     * @param item
+     * @param index
+     */
+    public static void setContents(CraftInventory inventory, ItemStack item, int index)
+    {
+        if (item != null && item.getTypeId() >= MclibConstants.MIN_BLOCK_ID)
+        {
+            final net.minecraft.server.v1_9_R2.ItemStack nms = new net.minecraft.server.v1_9_R2.ItemStack(
+                    Item.getById(item.getTypeId()),
+                    item.getAmount(),
+                    item.getDurability());
+            if (item.hasItemMeta()) {
+                final net.minecraft.server.v1_9_R2.ItemStack temp = new net.minecraft.server.v1_9_R2.ItemStack(Items.APPLE);
+                CraftItemStack.setItemMeta(temp, item.getItemMeta());
+                nms.setTag(temp.getTag());
+                
             }
-            else
-            {
-                inventory.setItem(i, items[i]);
-            }
+            inventory.getInventory().setItem(index, nms);
+        }
+        else
+        {
+            inventory.setItem(index, item);
         }
     }
     

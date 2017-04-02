@@ -37,8 +37,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_9_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -46,6 +48,7 @@ import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v194.blocks.CustomBlock;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
+import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_9_R2.BlockPosition;
 import net.minecraft.server.v1_9_R2.IBlockData;
@@ -78,7 +81,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
                     tag = new NBTTagCompound();
                     nms.setTag(tag);
                 }
-                tag.setString("mclib:customdata:" + plugin + ":" + key, value);  //$NON-NLS-1$//$NON-NLS-2$
+                tag.setString("mclib:customdata:" + plugin + ":" + key, value); //$NON-NLS-1$//$NON-NLS-2$
             }
             catch (Exception ex)
             {
@@ -100,7 +103,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
                 NBTTagCompound tag = nms.getTag();
                 if (tag != null)
                 {
-                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key);  //$NON-NLS-1$//$NON-NLS-2$
+                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key); //$NON-NLS-1$//$NON-NLS-2$
                     if (value != null && value.length() > 0)
                     {
                         return value;
@@ -114,35 +117,36 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
         }
         return null;
     }
-
+    
     @Override
     public int getVariant(Block block)
     {
         final BlockPosition pos = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        return ((CustomBlock.EnumCustomVariant) ((CraftWorld)block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT)).ordinal();
+        return ((CustomBlock.EnumCustomVariant) ((CraftWorld) block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT)).ordinal();
     }
-
+    
     @Override
     public int getVariant(ItemStack stack)
     {
         return stack.getData().getData();
     }
-
+    
     @Override
     public void setBlockVariant(Block block, int type, int variant)
     {
         final BlockPosition position = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        ((CraftWorld)block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_9_R2.Blocks.AIR.getBlockData(), 0);
+        ((CraftWorld) block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_9_R2.Blocks.AIR.getBlockData(), 0);
         final IBlockData blockData = net.minecraft.server.v1_9_R2.Block.getById(type).getBlockData();
         blockData.set(CustomBlock.VARIANT, CustomBlock.EnumCustomVariant.values()[variant]);
         // final IBlockData blockData = Blocks.FURNACE.getBlockData();
-        IBlockData old = ((CraftChunk)block.getChunk()).getHandle().getBlockData(position);
-        boolean success = ((CraftChunk)block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
-        if (success) {
-            ((CraftChunk)block.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
+        IBlockData old = ((CraftChunk) block.getChunk()).getHandle().getBlockData(position);
+        boolean success = ((CraftChunk) block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
+        if (success)
+        {
+            ((CraftChunk) block.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
         }
     }
-
+    
     @Override
     public ItemStack createItemStackForBlock(int type, int variant, String displayName)
     {
@@ -152,7 +156,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
         setMeta(stack, meta);
         return stack;
     }
-
+    
     /**
      * @param stack
      * @param meta
@@ -170,7 +174,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
-
+    
     @Override
     public void setDisplayName(ItemStack stack, String displayName)
     {
@@ -182,7 +186,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
         }
         meta.setDisplayName(displayName);
     }
-
+    
     @Override
     public void setDescription(ItemStack stack, String[] description)
     {
@@ -194,7 +198,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
         }
         meta.setLore(Arrays.asList(description));
     }
-
+    
     /**
      * @param stack
      * @return meta
@@ -216,7 +220,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
-
+    
     @Override
     public void initBlocks()
     {
@@ -230,7 +234,8 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
                 final CustomBlock myBlock = new CustomBlock();
                 net.minecraft.server.v1_9_R2.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock);
                 Iterator<IBlockData> iterator2 = myBlock.t().a().iterator();
-                while (iterator2.hasNext()) {
+                while (iterator2.hasNext())
+                {
                     IBlockData iblockdata = iterator2.next();
                     int k = net.minecraft.server.v1_9_R2.Block.REGISTRY.a(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
                     net.minecraft.server.v1_9_R2.Block.REGISTRY_ID.a(iblockdata, k);
@@ -252,21 +257,21 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
             ex.printStackTrace();
         }
     }
-
+    
     @Override
     public String getDisplayName(ItemStack stack)
     {
         final ItemMeta meta = this.getMeta(stack);
         return meta == null ? null : meta.getDisplayName();
     }
-
+    
     @Override
     public String[] getDescription(ItemStack stack)
     {
         final ItemMeta meta = this.getMeta(stack);
         return meta == null ? null : meta.getLore().toArray(new String[0]);
     }
-
+    
     @Override
     public void createMinable(Random random, Location location, int blockId, int meta, int size)
     {
@@ -274,7 +279,80 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
         final net.minecraft.server.v1_9_R2.Block block = net.minecraft.server.v1_9_R2.Block.getById(blockId);
         final IBlockData data = block.fromLegacyData(meta);
         final WorldGenMinable minable = new WorldGenMinable(data, size);
-        minable.generate(((CraftWorld)location.getWorld()).getHandle(), random, pos);
+        minable.generate(((CraftWorld) location.getWorld()).getHandle(), random, pos);
+    }
+    
+    @Override
+    public ItemStack addToInventory(Inventory inventory, ItemStack item)
+    {
+        final int typeId = item.getTypeId();
+        final int meta = this.getVariant(item);
+        
+        while (true)
+        {
+            int firstPartial = firstPartial(inventory, typeId, meta);
+            if (firstPartial == -1)
+            {
+                int firstFree = inventory.firstEmpty();
+                if (firstFree == -1)
+                {
+                    return item;
+                }
+                if (item.getAmount() > inventory.getMaxStackSize())
+                {
+                    final ItemStack stack = new ItemStack(typeId, inventory.getMaxStackSize(), (short) meta);
+                    InventoryManager1_9_4.setContents((CraftInventory) inventory, stack, firstFree);
+                    item.setAmount(item.getAmount() - inventory.getMaxStackSize());
+                }
+                InventoryManager1_9_4.setContents((CraftInventory) inventory, item, firstFree);
+                break;
+            }
+            ItemStack partialItem = inventory.getItem(firstPartial);
+            int amount = item.getAmount();
+            int partialAmount = partialItem.getAmount();
+            int maxAmount = partialItem.getMaxStackSize();
+            
+            if (amount + partialAmount <= maxAmount)
+            {
+                partialItem.setAmount(amount + partialAmount);
+                InventoryManager1_9_4.setContents((CraftInventory) inventory, partialItem, firstPartial);
+                break;
+            }
+            
+            partialItem.setAmount(maxAmount);
+            
+            InventoryManager1_9_4.setContents((CraftInventory) inventory, partialItem, firstPartial);
+            item.setAmount(amount + partialAmount - maxAmount);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns the first partial
+     * @param inv
+     * @param typeId
+     * @param meta
+     * @return partial index
+     */
+    private int firstPartial(Inventory inv, int typeId, int meta)
+    {
+        ItemStack[] inventory = inv.getStorageContents();
+        for (int i = 0; i < inventory.length; ++i)
+        {
+            ItemStack item = inventory[i];
+            if ((item != null) && (item.getTypeId() == typeId) && (item.getAmount() < item.getMaxStackSize()) && meta == getVariant(item))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule)
+    {
+        ((CustomBlock)net.minecraft.server.v1_9_R2.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
     }
     
 }

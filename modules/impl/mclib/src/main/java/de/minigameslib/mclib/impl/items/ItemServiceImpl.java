@@ -69,7 +69,9 @@ import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.McPlayerDeathEvent;
 import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
+import de.minigameslib.mclib.api.items.BlockDropRuleInterface;
 import de.minigameslib.mclib.api.items.BlockId;
+import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.BlockVariantId;
 import de.minigameslib.mclib.api.items.ItemId;
@@ -81,6 +83,7 @@ import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.McCoreConfig;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
+import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
@@ -293,6 +296,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     protected void initBlocks(final Stream<BlockId> stream)
     {
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         final Stack<CustomBlock> newBlocks = new Stack<>();
         
         // parse blocks from plugins
@@ -342,6 +346,46 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             }
             
             // TODO warn: too much blocks
+        }
+        
+        // init data
+        for (final BlockId block : enumValues)
+        {
+            final int blockId = this.blockIdMap.get(block).getNumId();
+            final BlockMeta meta = block.meta();
+            final BlockDropRuleInterface dropRule = block.dropRule();
+            helper.setBlockMeta(
+                    blockId,
+                    meta == null ? 0 : meta.hardness(),
+                    meta == null ? 0 : meta.resistance(),
+                    dropRule == null ? null : new NmsDropRuleInterface() {
+                        
+                        @Override
+                        public int getExpDrop(int variant, Random random, int enchantmentLevel)
+                        {
+                            return dropRule.getExpDrop(block, block.variants()[variant], random, enchantmentLevel);
+                        }
+                        
+                        @Override
+                        public int getDropVariant(int variant)
+                        {
+                            final BlockVariantId v = dropRule.getDropVariant(block, block.variants()[variant]);
+                            return v == null ? 0 : v.ordinal();
+                        }
+                        
+                        @Override
+                        public int getDropType(int variant, Random random, int fortune)
+                        {
+                            final BlockId b = dropRule.getDropType(block, block.variants()[variant], random, fortune);
+                            return b == null ? 0 : ItemServiceImpl.this.blockIdMap.get(b).getNumId();
+                        }
+                        
+                        @Override
+                        public int getDropCount(Random random, int fortune)
+                        {
+                            return dropRule.getDropCount(random, fortune);
+                        }
+                    });
         }
     }
     
@@ -1391,6 +1435,17 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final int blockId = this.blockIdMap.get(block).getNumId();
         final int meta = variant.ordinal();
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createMinable(random, location, blockId, meta, size);
+    }
+
+    @Override
+    public ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack)
+    {
+        final int typeId = stack.getTypeId();
+        if (typeId < MclibConstants.MIN_BLOCK_ID)
+        {
+            return player.getBukkitPlayer().getInventory().addItem(stack).get(0);
+        }
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).addToInventory(player.getBukkitPlayer().getInventory(), stack);
     }
     
 }

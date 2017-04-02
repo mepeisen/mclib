@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.nms.v110.blocks;
 
+import java.util.Random;
+
+import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import net.minecraft.server.v1_10_R1.Block;
 import net.minecraft.server.v1_10_R1.BlockStateEnum;
 import net.minecraft.server.v1_10_R1.BlockStateList;
@@ -32,6 +35,7 @@ import net.minecraft.server.v1_10_R1.IBlockData;
 import net.minecraft.server.v1_10_R1.IBlockState;
 import net.minecraft.server.v1_10_R1.INamable;
 import net.minecraft.server.v1_10_R1.Material;
+import net.minecraft.server.v1_10_R1.SoundEffectType;
 
 /**
  * @author mepeisen
@@ -46,10 +50,37 @@ public class CustomBlock extends Block
         super(Material.STONE);
         w(this.blockStateList.getBlockData().set(VARIANT, EnumCustomVariant.VARIANT_0));
         a(CreativeModeTab.b);
+        a(SoundEffectType.d); // stone
+    }
+    
+    /** the nms drop rule. */
+    private NmsDropRuleInterface dropRule;
+    
+    public void setMeta(float hardness, float resistence, NmsDropRuleInterface dropRule)
+    {
+        this.c(hardness);
+        this.b(resistence);
+        this.dropRule = dropRule;
     }
 
+    @Override
+    public net.minecraft.server.v1_10_R1.Item getDropType(IBlockData iblockdata, Random random, int i) {
+        return this.dropRule == null ? super.getDropType(iblockdata, random, i) : net.minecraft.server.v1_10_R1.Item.getById(this.dropRule.getDropType(this.toLegacyData(iblockdata), random, i));
+    }
+
+    @Override
+    public int getDropCount(int i, Random random) {
+        return this.dropRule == null ? super.getDropCount(i, random) : this.dropRule.getDropCount(random, i);
+    }
+
+    @Override
+    public int getExpDrop(net.minecraft.server.v1_10_R1.World world, IBlockData data, int i) {
+        return this.dropRule == null ? super.getExpDrop(world, data, i) : this.dropRule.getExpDrop(this.toLegacyData(data), world.random, i);
+    }
+
+    @Override
     public int getDropData(IBlockData paramIBlockData) {
-        return ((EnumCustomVariant) paramIBlockData.get(VARIANT)).ordinal();
+        return this.dropRule == null ? super.getDropData(paramIBlockData) : this.dropRule.getDropVariant(this.toLegacyData(paramIBlockData));
     }
 
     public IBlockData fromLegacyData(int paramInt) {
