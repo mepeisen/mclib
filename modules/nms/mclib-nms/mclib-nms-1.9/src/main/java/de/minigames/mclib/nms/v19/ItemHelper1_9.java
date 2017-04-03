@@ -56,6 +56,7 @@ import net.minecraft.server.v1_9_R1.Item;
 import net.minecraft.server.v1_9_R1.ItemMultiTexture;
 import net.minecraft.server.v1_9_R1.MinecraftKey;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.RecipesFurnace;
 import net.minecraft.server.v1_9_R1.WorldGenMinable;
 
 /**
@@ -362,6 +363,15 @@ public class ItemHelper1_9 implements ItemHelperInterface
     public void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
         ((CustomBlock)net.minecraft.server.v1_9_R1.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
+    }
+
+    @Override
+    public void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience)
+    {
+        RecipesFurnace.getInstance().a(
+                InventoryManager1_9.convertToNms(new ItemStack(blockId, 1, (short) variant)),
+                InventoryManager1_9.convertToNms(stack),
+                experience);
     }
     
 }

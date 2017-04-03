@@ -69,6 +69,23 @@ public interface ItemId extends McUniqueEnumInterface
     }
     
     /**
+     * The furnace recipe
+     * @return the furnace recipe
+     */
+    default FurnaceRecipeInterface furnaceRecipe()
+    {
+        try
+        {
+            final FurnaceRecipe data = this.getClass().getDeclaredField(this.name()).getAnnotation(FurnaceRecipe.class);
+            return data == null ? null : data.value().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * Returns the provider for getting the item name.
      * @return provider for getting the name.
      */

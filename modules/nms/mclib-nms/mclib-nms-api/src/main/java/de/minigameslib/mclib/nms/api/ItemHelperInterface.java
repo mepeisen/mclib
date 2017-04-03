@@ -146,5 +146,13 @@ public interface ItemHelperInterface
      * @param dropRule
      */
     void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule);
+
+    /**
+     * @param blockId
+     * @param variant
+     * @param stack
+     * @param experience
+     */
+    void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience);
     
 }

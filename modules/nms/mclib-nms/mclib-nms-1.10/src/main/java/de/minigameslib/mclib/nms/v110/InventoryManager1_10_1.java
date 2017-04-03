@@ -103,22 +103,32 @@ public class InventoryManager1_10_1 implements InventoryManagerInterface
     {
         if (item != null && item.getTypeId() >= MclibConstants.MIN_BLOCK_ID)
         {
-            final net.minecraft.server.v1_10_R1.ItemStack nms = new net.minecraft.server.v1_10_R1.ItemStack(
-                    Item.getById(item.getTypeId()),
-                    item.getAmount(),
-                    item.getDurability());
-            if (item.hasItemMeta()) {
-                final net.minecraft.server.v1_10_R1.ItemStack temp = new net.minecraft.server.v1_10_R1.ItemStack(Items.APPLE);
-                CraftItemStack.setItemMeta(temp, item.getItemMeta());
-                nms.setTag(temp.getTag());
-                
-            }
+            final net.minecraft.server.v1_10_R1.ItemStack nms = convertToNms(item);
             inventory.getInventory().setItem(index, nms);
         }
         else
         {
             inventory.setItem(index, item);
         }
+    }
+
+    /**
+     * @param item
+     * @return nms stack
+     */
+    public static net.minecraft.server.v1_10_R1.ItemStack convertToNms(ItemStack item)
+    {
+        final net.minecraft.server.v1_10_R1.ItemStack nms = new net.minecraft.server.v1_10_R1.ItemStack(
+                Item.getById(item.getTypeId()),
+                item.getAmount(),
+                item.getDurability());
+        if (item.hasItemMeta()) {
+            final net.minecraft.server.v1_10_R1.ItemStack temp = new net.minecraft.server.v1_10_R1.ItemStack(Items.APPLE);
+            CraftItemStack.setItemMeta(temp, item.getItemMeta());
+            nms.setTag(temp.getTag());
+            
+        }
+        return nms;
     }
     
     /**

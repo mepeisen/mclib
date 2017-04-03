@@ -74,6 +74,7 @@ import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.BlockVariantId;
+import de.minigameslib.mclib.api.items.FurnaceRecipeInterface;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
@@ -267,12 +268,17 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     if (newItems.isEmpty())
                     {
                         this.saveItems(this.itemMap.keySet().toArray(new CustomItem[this.itemMap.size()]));
-                        return;
+                        break;
                     }
                 }
             }
             
-            // TODO warn: too much items
+            if (!newItems.isEmpty())
+            {
+                // TODO warn: too much items
+            }
+            
+            // TODO support items furnaceRecipe
         }
     }
 
@@ -342,11 +348,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 if (newBlocks.isEmpty())
                 {
                     this.saveBlocks(this.blockMap.keySet().toArray(new CustomBlock[this.blockMap.size()]));
-                    return;
+                    break;
                 }
             }
             
-            // TODO warn: too much blocks
+            if (!newBlocks.isEmpty())
+            {
+                // TODO warn: too much blocks
+            }
         }
         
         // init data
@@ -355,6 +364,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final int blockId = this.blockIdMap.get(block).getNumId();
             final BlockMeta meta = block.meta();
             final BlockDropRuleInterface dropRule = block.dropRule();
+            final FurnaceRecipeInterface furnaceRecipe = block.furnaceRecipe();
             helper.setBlockMeta(
                     blockId,
                     meta == null ? 0 : meta.hardness(),
@@ -387,6 +397,18 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                             return dropRule.getDropCount(random, fortune);
                         }
                     });
+            for (final BlockVariantId variant : block.variants())
+            {
+                final FurnaceRecipeInterface variantFurnace = variant.furnaceRecipe();
+                if (variantFurnace != null)
+                {
+                    helper.installFurnaceRecipe(blockId, variant.ordinal(), variantFurnace.getReceipe(null, block, variant), variantFurnace.getExperience(null, block, variant));
+                }
+                else if (furnaceRecipe != null)
+                {
+                    helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant));
+                }
+            }
         }
     }
     
