@@ -54,5 +54,11 @@ public class MgPlayerInteractAtEntityEvent extends AbstractMinigameEvent<PlayerI
     {
         return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getRightClicked());
     }
+
+    @Override
+    public boolean isOffhand()
+    {
+        return false;
+    }
     
 }

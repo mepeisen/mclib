@@ -47,4 +47,10 @@ public interface McPlayerInteractAtEntityEvent extends MinecraftEvent<PlayerInte
     
     // TODO default stubbings
     
+    /**
+     * Checks if event is fired from off hand. If true the event should be ignored.
+     * @return off hand check.
+     */
+    boolean isOffhand();
+    
 }

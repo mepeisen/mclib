@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.nms.v110.event;
 
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import de.minigameslib.mclib.api.event.McPlayerInteractAtEntityEvent;
 import de.minigameslib.mclib.api.objects.EntityInterface;
@@ -53,6 +54,12 @@ public class MgPlayerInteractAtEntityEvent extends AbstractMinigameEvent<PlayerI
     public EntityInterface getEntity()
     {
         return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getRightClicked());
+    }
+
+    @Override
+    public boolean isOffhand()
+    {
+        return this.getBukkitEvent().getHand() == EquipmentSlot.OFF_HAND;
     }
     
 }
