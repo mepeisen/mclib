@@ -825,9 +825,10 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 (name, section) -> section.isList(name)),
         
         /** primitive map type. */
+        @SuppressWarnings("unchecked")
         Map(
                 (name, section) -> section.getPrimitiveMap(name),
-                (name, section, value) -> section.set(name, value),
+                (name, section, value) -> section.setPrimitiveMap(name, (Map<String, ?>)value),
                 (name, section) -> section.isSection(name)),
         
         /** data section type. */
