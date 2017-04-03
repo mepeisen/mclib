@@ -62,10 +62,9 @@ public class PlayerRegistry
      */
     public PlayerRegistry(File workDir)
     {
-        // TODO read max size and access timeout from config
         this.players = CacheBuilder.newBuilder().
-                maximumSize(10000).
-                expireAfterAccess(10, TimeUnit.MINUTES).
+                maximumSize(McCoreConfig.PlayerRegistrySize.getInt()).
+                expireAfterAccess(McCoreConfig.PlayerRegistryAccessMinutes.getInt(), TimeUnit.MINUTES).
                 build(new CacheLoader<UUID, McPlayerImpl>(){
                     @Override
                     public McPlayerImpl load(UUID key) throws Exception

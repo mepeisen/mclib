@@ -342,7 +342,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public void onEnable()
     {
         instance = this;
-        this.players = new PlayerRegistry(new File(this.getDataFolder(), "players")); //$NON-NLS-1$
         
         switch (SERVER_VERSION)
         {
@@ -395,6 +394,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
         
         Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
+        
+        this.players = new PlayerRegistry(new File(this.getDataFolder(), "players")); //$NON-NLS-1$
         
         // item service
         this.enumService.registerEnumClass(this, CommonItems.class);
@@ -804,6 +805,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // try to ping the client mod.
         final PingData ping = new PingData();
+        ping.setApi(this.getApiVersion());
         this.itemService.populate(ping);
         final DataSection section = new MemoryDataSection();
         section.set("KEY", CoreMessages.Ping.name()); //$NON-NLS-1$

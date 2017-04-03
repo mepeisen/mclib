@@ -24,8 +24,8 @@
 
 package de.minigameslib.mclib.pshared;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
@@ -42,14 +42,36 @@ public class PongData extends AnnotatedDataFragment
      * The installed client extensions.
      */
     @PersistentField
-    protected List<String> clientExtensions = new ArrayList<>();
+    protected Map<String, Integer> ext = new HashMap<>();
+    
+    /**
+     * Api version of client
+     */
+    @PersistentField
+    protected int api;
 
     /**
      * @return the clientExtensions
      */
-    public List<String> getClientExtensions()
+    public Map<String, Integer> getClientExtensions()
     {
-        return this.clientExtensions;
+        return this.ext;
+    }
+
+    /**
+     * @return the api
+     */
+    public int getApi()
+    {
+        return this.api;
+    }
+
+    /**
+     * @param api the api to set
+     */
+    public void setApi(int api)
+    {
+        this.api = api;
     }
     
 }

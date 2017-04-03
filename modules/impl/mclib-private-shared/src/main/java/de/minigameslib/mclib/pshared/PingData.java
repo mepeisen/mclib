@@ -45,6 +45,28 @@ public class PingData extends AnnotatedDataFragment
     protected List<BlockMetaData> meta = new ArrayList<>();
     
     /**
+     * Api version of server
+     */
+    @PersistentField
+    protected int api;
+
+    /**
+     * @return the api
+     */
+    public int getApi()
+    {
+        return this.api;
+    }
+
+    /**
+     * @param api the api to set
+     */
+    public void setApi(int api)
+    {
+        this.api = api;
+    }
+    
+    /**
      * Adds new meta data
      * @param id
      * @param hardness

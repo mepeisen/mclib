@@ -126,4 +126,18 @@ public enum McCoreConfig implements ConfigurationValueInterface
     @ConfigComment("DO NOT EDIT! Special data section for modded worlds")
     CustomBlocks,
     
+    /**
+     * maximum size of player registry
+     */
+    @ConfigurationInt(defaultValue = 10000)
+    @ConfigComment({"maximum size of player registry", "lower the value if you have memory problems"})
+    PlayerRegistrySize,
+    
+    /**
+     * player registry cache timeout in minutes
+     */
+    @ConfigurationInt(defaultValue = 30)
+    @ConfigComment({"player registry cache timeout in minutes", "lower the value if you have memory problems"})
+    PlayerRegistryAccessMinutes,
+    
 }

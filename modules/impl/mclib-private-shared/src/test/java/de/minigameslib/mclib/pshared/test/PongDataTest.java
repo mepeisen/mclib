@@ -47,9 +47,9 @@ public class PongDataTest
     public void testMe()
     {
         final PongData data = new PongData();
-        data.getClientExtensions().add("winid"); //$NON-NLS-1$
+        data.getClientExtensions().put("winid", 16); //$NON-NLS-1$
         assertEquals(1, data.getClientExtensions().size());
-        assertEquals("winid", data.getClientExtensions().get(0)); //$NON-NLS-1$
+        assertEquals(16, data.getClientExtensions().get("winid").intValue()); //$NON-NLS-1$
 
         final MemoryDataSection section = new MemoryDataSection();
         section.set("FOO", data); //$NON-NLS-1$

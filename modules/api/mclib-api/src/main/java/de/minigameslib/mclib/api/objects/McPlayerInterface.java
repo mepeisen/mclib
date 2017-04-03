@@ -35,10 +35,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
+import de.minigameslib.mclib.api.McContext.ContextRunnable;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
-import de.minigameslib.mclib.api.McContext.ContextRunnable;
+import de.minigameslib.mclib.api.cli.ClientInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
@@ -182,7 +183,15 @@ public interface McPlayerInterface extends PlayerDataFragment
     // gui
     
     /**
+     * Returns information on clients.
+     * 
+     * @return client information.
+     */
+    ClientInterface getClient();
+    
+    /**
      * Checks if the player has a smart gui installed.
+     * 
      * @return {@code true} if the player has a smart gui; the mclib client mod.
      */
     boolean hasSmartGui();
@@ -219,7 +228,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     /**
      * Sends a raw message to player; can be used to create chat hovers or clickable chat texts.
      * 
-     * @param raw a raw message
+     * @param raw
+     *            a raw message
      * 
      * @throws McException
      *             thrown if the player is not online.
@@ -242,10 +252,8 @@ public interface McPlayerInterface extends PlayerDataFragment
      * Returns the zone this player is currently in.
      * 
      * <p>
-     * This will always be the last zone the player entered if the player is within multiple zones.
-     * If the players leaves this zones the framework will check if he is still inside another zone
-     * and will return that zone. If the player is still inside multiple zones when leaving the
-     * returned zone will be random.
+     * This will always be the last zone the player entered if the player is within multiple zones. If the players leaves this zones the framework will check if he is still inside another zone and
+     * will return that zone. If the player is still inside multiple zones when leaving the returned zone will be random.
      * </p>
      * 
      * @return zone or {@code null} if this player is currently not within any zone.
@@ -254,6 +262,7 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Checks if the player is within given zone.
+     * 
      * @param zone
      * @return {@code true} if player is inside given zone.
      */
@@ -261,6 +270,7 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Checks if the player is inside at least one of the given zones.
+     * 
      * @param zone
      * @return {@code true} if player is at least inside one of the given zones.
      */
@@ -268,6 +278,7 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Checks if the player is inside every of the given zones.
+     * 
      * @param zone
      * @return {@code true} if player is inside of the given zones.
      */
@@ -277,8 +288,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * Returns a zone the player is within and that is of given type.
      * 
      * <p>
-     * This method returns the "primary zone". If the zones are overlapping this may be
-     * a random  
+     * This method returns the "primary zone". If the zones are overlapping this may be a random
      * </p>
      * 
      * @param type
@@ -288,6 +298,7 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Checks if the player is inside at least one of the given zones of given type.
+     * 
      * @param type
      * @return {@code true} if player is at least inside one of the given zones.
      */
@@ -295,12 +306,14 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Returns the zone the player is within.
+     * 
      * @return zone list
      */
     Collection<ZoneInterface> getZones();
     
     /**
      * Returns the zone of given types the player is within
+     * 
      * @param type
      * @return zone list
      */
@@ -361,23 +374,28 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Register player related event handlers only active if this player is involved in events.
+     * 
      * @param plugin
      * @param clazz
      * @param handler
-     * @throws IllegalStateException thrown if player is offline
+     * @throws IllegalStateException
+     *             thrown if player is offline
      */
     <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
     
     /**
      * Registers an event handler object for events on this player. Methods tagged with McEventHandler are considered as event handlers.
+     * 
      * @param plugin
      * @param listener
-     * @throws IllegalStateException thrown if player is offline
+     * @throws IllegalStateException
+     *             thrown if player is offline
      */
     void registerHandlers(Plugin plugin, McListener listener);
     
     /**
      * Remove a registered event handler.
+     * 
      * @param plugin
      * @param clazz
      * @param handler
@@ -386,6 +404,7 @@ public interface McPlayerInterface extends PlayerDataFragment
     
     /**
      * Remove a registered event handler.
+     * 
      * @param plugin
      * @param listener
      */
@@ -398,10 +417,13 @@ public interface McPlayerInterface extends PlayerDataFragment
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     default BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
@@ -418,10 +440,9 @@ public interface McPlayerInterface extends PlayerDataFragment
             return null;
         }
     }
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
      * Schedules this in the Bukkit scheduler to run asynchronously.
      * </p>
@@ -430,11 +451,15 @@ public interface McPlayerInterface extends PlayerDataFragment
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
      */
     default BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
@@ -451,7 +476,7 @@ public interface McPlayerInterface extends PlayerDataFragment
             return null;
         }
     }
-
+    
     /**
      * Schedules this to run after the specified number of server ticks.
      * 
@@ -459,11 +484,15 @@ public interface McPlayerInterface extends PlayerDataFragment
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     default BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
@@ -480,24 +509,26 @@ public interface McPlayerInterface extends PlayerDataFragment
             return null;
         }
     }
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
-     * Schedules this to run asynchronously after the specified number of
-     * server ticks.
+     * Schedules this to run asynchronously after the specified number of server ticks.
      * </p>
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     default BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
@@ -514,22 +545,27 @@ public interface McPlayerInterface extends PlayerDataFragment
             return null;
         }
     }
-
+    
     /**
-     * Schedules this to repeatedly run until cancelled, starting after the
-     * specified number of server ticks.
+     * Schedules this to repeatedly run until cancelled, starting after the specified number of server ticks.
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param period the ticks to wait between runs
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param period
+     *            the ticks to wait between runs
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
      * @see BukkitScheduler#runTaskTimer(Plugin, Runnable, long, long)
      */
     default BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
@@ -547,29 +583,31 @@ public interface McPlayerInterface extends PlayerDataFragment
             return null;
         }
     }
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
-     * Schedules this to repeatedly run asynchronously until cancelled,
-     * starting after the specified number of server ticks.
+     * Schedules this to repeatedly run asynchronously until cancelled, starting after the specified number of server ticks.
      * </p>
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * <p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task for the first
-     *     time
-     * @param period the ticks to wait between runs
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task for the first time
+     * @param period
+     *            the ticks to wait between runs
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
-     * @see BukkitScheduler#runTaskTimerAsynchronously(Plugin, Runnable, long,
-     *     long)
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
+     * @see BukkitScheduler#runTaskTimerAsynchronously(Plugin, Runnable, long, long)
      */
     default BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
     {

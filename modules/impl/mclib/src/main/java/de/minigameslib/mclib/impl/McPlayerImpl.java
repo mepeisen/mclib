@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +52,7 @@ import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.cli.ClientInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.McPlayerMoveEvent;
 import de.minigameslib.mclib.api.event.McPlayerTeleportEvent;
@@ -100,7 +100,7 @@ import net.jodah.expiringmap.ExpiringMap;
  * @author mepeisen
  *
  */
-class McPlayerImpl implements McPlayerInterface, MgEventListener
+class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterface
 {
     
     /** logger. */
@@ -131,7 +131,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     private boolean                             hasForgeMod;
     
     /** list of client extensions that were reported by client mod. */
-    private Set<String>                         clientExtensions = new HashSet<>();
+    private Map<String, Integer>                clientExtensions = new HashMap<>();
+    
+    /**
+     * the client api version.
+     */
+    private int                                 clientApi = -1;
     
     /** the raw actions. */
     private final ExpiringMap<UUID, McRunnable> rawActions       = ExpiringMap.builder().variableExpiration().build();
@@ -228,8 +233,9 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
         this.hasForgeMod = true;
         if (fragment != null)
         {
-            this.clientExtensions.addAll(fragment.getClientExtensions());
+            this.clientExtensions.putAll(fragment.getClientExtensions());
         }
+        this.clientApi = fragment.getApi();
     }
     
     /**
@@ -821,6 +827,24 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
+    }
+
+    @Override
+    public McPlayerInterface getPlayer()
+    {
+        return this;
+    }
+
+    @Override
+    public int getApiVersion()
+    {
+        return this.clientApi;
+    }
+
+    @Override
+    public ClientInterface getClient()
+    {
+        return this;
     }
     
 }

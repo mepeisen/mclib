@@ -34,6 +34,7 @@ import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McStorage;
+import de.minigameslib.mclib.api.cli.ClientInterface;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
@@ -261,6 +262,12 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     public void unregisterHandlers(Plugin plugin, McListener listener)
     {
         this.target.unregisterHandlers(plugin, listener);
+    }
+
+    @Override
+    public ClientInterface getClient()
+    {
+        return this.target.getClient();
     }
     
 }
