@@ -343,6 +343,213 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         instance = this;
         
+        // detect server version
+        detectServerVersionAndInstallNms();
+        
+        Bukkit.getPluginManager().registerEvents(this, this);
+        
+        // mclib enumerations
+        this.enumService.registerEnumClass(this, CommonMessages.class);
+        this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
+        this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
+        this.enumService.registerEnumClass(this, McCoreConfig.class);
+        
+        // public api services
+        registerPublicServices();
+        
+        this.players = new PlayerRegistry(new File(this.getDataFolder(), "players")); //$NON-NLS-1$
+        
+        // item service
+        initItemsAndBlocksAndResources();
+        
+        CommunicationEndpointId.CommunicationServiceCache.init(this);
+        
+        // nms services
+        initNms();
+        
+        registerMclibEvents();
+        
+        initObjectsManager();
+        
+        // nms event listeners
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(InventoryManagerInterface.class), this);
+        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(AnvilManagerInterface.class), this);
+        
+        // communication endpoints
+        initNetworking();
+        
+        if (this.getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_8_R3))
+        {
+            Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
+        }
+        MclibPlugin.this.itemService.init();
+    }
+
+    /**
+     * 
+     */
+    private void initNetworking()
+    {
+        this.registerPeerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
+        
+        // network
+        // sc = s[erver]c[client] (both directions)
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
+        // bc = b[ungee]c[oord]
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL, this);
+        // bungeecord
+        Bukkit.getMessenger().registerOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
+        
+        final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("GetServer"); //$NON-NLS-1$
+        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out.toByteArray()));
+        final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
+        out2.writeUTF("GetServers"); //$NON-NLS-1$
+        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out2.toByteArray()));
+        
+        this.serversPing = new GetServersPing();
+        this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
+    }
+
+    /**
+     * 
+     */
+    private void initObjectsManager()
+    {
+        try
+        {
+            this.objectsManager = new ObjectsManager(this.getDataFolder(), this.players);
+            Bukkit.getServicesManager().register(ObjectServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
+            Bukkit.getServicesManager().register(NpcServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
+        }
+        catch (McException ex)
+        {
+            this.getLogger().log(Level.SEVERE, "Problems creating objects manager", ex); //$NON-NLS-1$
+            // TODO what do we do at this point?
+            // having no object manager will cause a dead plugin at all
+        }
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                MclibPlugin.this.objectsManager.init();
+            }
+        }.runTaskLater(this, 1);
+    }
+
+    /**
+     * 
+     */
+    private void initNms()
+    {
+        final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
+        factory.create(ItemHelperInterface.class).initBlocks();
+        Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
+        
+        Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
+        this.eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    }
+
+    /**
+     * 
+     */
+    private void registerMclibEvents()
+    {
+        this.registerEvent(this, ComponentCreatedEvent.class);
+        this.registerEvent(this, ComponentCreateEvent.class);
+        this.registerEvent(this, ComponentDeletedEvent.class);
+        this.registerEvent(this, ComponentDeleteEvent.class);
+        this.registerEvent(this, ComponentRelocatedEvent.class);
+        this.registerEvent(this, ComponentRelocateEvent.class);
+        this.registerEvent(this, EntityCreatedEvent.class);
+        this.registerEvent(this, EntityCreateEvent.class);
+        this.registerEvent(this, EntityDeletedEvent.class);
+        this.registerEvent(this, EntityDeleteEvent.class);
+        this.registerEvent(this, EntityEnteredZoneEvent.class);
+        this.registerEvent(this, EntityLeftZoneEvent.class);
+        this.registerEvent(this, ObjectCreatedEvent.class);
+        this.registerEvent(this, ObjectCreateEvent.class);
+        this.registerEvent(this, ObjectDeletedEvent.class);
+        this.registerEvent(this, ObjectDeleteEvent.class);
+        this.registerEvent(this, PlayerCloseGuiEvent.class);
+        this.registerEvent(this, PlayerDisplayGuiPageEvent.class);
+        this.registerEvent(this, PlayerEnteredZoneEvent.class);
+        this.registerEvent(this, PlayerGuiClickEvent.class);
+        this.registerEvent(this, PlayerLeftZoneEvent.class);
+        this.registerEvent(this, PlayerOpenGuiEvent.class);
+        this.registerEvent(this, SignCreatedEvent.class);
+        this.registerEvent(this, SignCreateEvent.class);
+        this.registerEvent(this, SignDeletedEvent.class);
+        this.registerEvent(this, SignDeleteEvent.class);
+        this.registerEvent(this, SignRelocatedEvent.class);
+        this.registerEvent(this, SignRelocateEvent.class);
+        this.registerEvent(this, ZoneCreatedEvent.class);
+        this.registerEvent(this, ZoneCreateEvent.class);
+        this.registerEvent(this, ZoneDeletedEvent.class);
+        this.registerEvent(this, ZoneDeleteEvent.class);
+        this.registerEvent(this, ZoneRelocatedEvent.class);
+        this.registerEvent(this, ZoneRelocateEvent.class);
+    }
+
+    /**
+     * 
+     */
+    private void initItemsAndBlocksAndResources()
+    {
+        this.enumService.registerEnumClass(this, CommonItems.class);
+        this.itemService = new ItemServiceImpl();
+        Bukkit.getServicesManager().register(ItemServiceInterface.class, this.itemService, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ResourceServiceInterface.class, this.itemService, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(BlockServiceInterface.class, this.itemService, this, ServicePriority.Highest);
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                try
+                {
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v2.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_2); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v3.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_3); //$NON-NLS-1$
+                }
+                catch (IOException e)
+                {
+                    MclibPlugin.this.getLogger().log(Level.WARNING, "Error creating resource pack", e); //$NON-NLS-1$
+                }
+            }
+        }.runTaskLaterAsynchronously(this, 2);
+    }
+
+    /**
+     * 
+     */
+    private void registerPublicServices()
+    {
+        Bukkit.getServicesManager().register(EnumServiceInterface.class, this.enumService, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ConfigServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(MessageServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(PermissionServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(McContext.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
+        
+        Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
+    }
+
+    /**
+     * 
+     */
+    private void detectServerVersionAndInstallNms()
+    {
         switch (SERVER_VERSION)
         {
             case Unknown:
@@ -379,156 +586,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 Bukkit.getServicesManager().register(NmsFactory.class, new NmsFactory1_9_4(), this, ServicePriority.Highest);
                 break;
         }
-        
-        Bukkit.getPluginManager().registerEvents(this, this);
-        
-        // public api services
-        Bukkit.getServicesManager().register(EnumServiceInterface.class, this.enumService, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(ConfigServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(MessageServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(PermissionServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(McContext.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(McLibInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
-        
-        Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
-        
-        this.players = new PlayerRegistry(new File(this.getDataFolder(), "players")); //$NON-NLS-1$
-        
-        // item service
-        this.enumService.registerEnumClass(this, CommonItems.class);
-        this.itemService = new ItemServiceImpl();
-        Bukkit.getServicesManager().register(ItemServiceInterface.class, this.itemService, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(ResourceServiceInterface.class, this.itemService, this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(BlockServiceInterface.class, this.itemService, this, ServicePriority.Highest);
-        new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                try
-                {
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v2.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_2); //$NON-NLS-1$
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v3.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_3); //$NON-NLS-1$
-                }
-                catch (IOException e)
-                {
-                    MclibPlugin.this.getLogger().log(Level.WARNING, "Error creating resource pack", e); //$NON-NLS-1$
-                }
-            }
-        }.runTaskLaterAsynchronously(this, 2);
-        
-        CommunicationEndpointId.CommunicationServiceCache.init(this);
-        
-        // mclib enumerations
-        this.enumService.registerEnumClass(this, CommonMessages.class);
-        this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
-        this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
-        this.enumService.registerEnumClass(this, McCoreConfig.class);
-        
-        // nms services
-        final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
-        factory.create(ItemHelperInterface.class).initBlocks();
-        Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
-        Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);
-        
-        Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
-        this.eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
-        
-        this.registerEvent(this, ComponentCreatedEvent.class);
-        this.registerEvent(this, ComponentCreateEvent.class);
-        this.registerEvent(this, ComponentDeletedEvent.class);
-        this.registerEvent(this, ComponentDeleteEvent.class);
-        this.registerEvent(this, ComponentRelocatedEvent.class);
-        this.registerEvent(this, ComponentRelocateEvent.class);
-        this.registerEvent(this, EntityCreatedEvent.class);
-        this.registerEvent(this, EntityCreateEvent.class);
-        this.registerEvent(this, EntityDeletedEvent.class);
-        this.registerEvent(this, EntityDeleteEvent.class);
-        this.registerEvent(this, EntityEnteredZoneEvent.class);
-        this.registerEvent(this, EntityLeftZoneEvent.class);
-        this.registerEvent(this, ObjectCreatedEvent.class);
-        this.registerEvent(this, ObjectCreateEvent.class);
-        this.registerEvent(this, ObjectDeletedEvent.class);
-        this.registerEvent(this, ObjectDeleteEvent.class);
-        this.registerEvent(this, PlayerCloseGuiEvent.class);
-        this.registerEvent(this, PlayerDisplayGuiPageEvent.class);
-        this.registerEvent(this, PlayerEnteredZoneEvent.class);
-        this.registerEvent(this, PlayerGuiClickEvent.class);
-        this.registerEvent(this, PlayerLeftZoneEvent.class);
-        this.registerEvent(this, PlayerOpenGuiEvent.class);
-        this.registerEvent(this, SignCreatedEvent.class);
-        this.registerEvent(this, SignCreateEvent.class);
-        this.registerEvent(this, SignDeletedEvent.class);
-        this.registerEvent(this, SignDeleteEvent.class);
-        this.registerEvent(this, SignRelocatedEvent.class);
-        this.registerEvent(this, SignRelocateEvent.class);
-        this.registerEvent(this, ZoneCreatedEvent.class);
-        this.registerEvent(this, ZoneCreateEvent.class);
-        this.registerEvent(this, ZoneDeletedEvent.class);
-        this.registerEvent(this, ZoneDeleteEvent.class);
-        this.registerEvent(this, ZoneRelocatedEvent.class);
-        this.registerEvent(this, ZoneRelocateEvent.class);
-        
-        try
-        {
-            this.objectsManager = new ObjectsManager(this.getDataFolder(), this.players);
-            Bukkit.getServicesManager().register(ObjectServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
-            Bukkit.getServicesManager().register(NpcServiceInterface.class, this.objectsManager, this, ServicePriority.Highest);
-        }
-        catch (McException ex)
-        {
-            this.getLogger().log(Level.SEVERE, "Problems creating objects manager", ex); //$NON-NLS-1$
-            // TODO what do we do at this point?
-            // having no object manager will cause a dead plugin at all
-        }
-        new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                MclibPlugin.this.objectsManager.init();
-            }
-        }.runTaskLater(this, 1);
-        
-        // nms event listeners
-        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(EventSystemInterface.class), this);
-        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(InventoryManagerInterface.class), this);
-        Bukkit.getPluginManager().registerEvents(Bukkit.getServicesManager().load(AnvilManagerInterface.class), this);
-        
-        // communication endpoints
-        this.registerPeerHandler(this, MclibCommunication.ClientServerCore, new MclibCoreHandler());
-        
-        // network
-        // sc = s[erver]c[client] (both directions)
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL);
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_CLIENT_CHANNEL, this);
-        // bc = b[ungee]c[oord]
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL);
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, MCLIB_SERVER_TO_SERVER_CHANNEL, this);
-        // bungeecord
-        Bukkit.getMessenger().registerOutgoingPluginChannel(this, BUNGEECORD_CHANNEL);
-        Bukkit.getMessenger().registerIncomingPluginChannel(this, BUNGEECORD_CHANNEL, this);
-        
-        final ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("GetServer"); //$NON-NLS-1$
-        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out.toByteArray()));
-        final ByteArrayDataOutput out2 = ByteStreams.newDataOutput();
-        out2.writeUTF("GetServers"); //$NON-NLS-1$
-        this.bungeeQueue.add(p -> p.sendPluginMessage(this, BUNGEECORD_CHANNEL, out2.toByteArray()));
-        
-        this.serversPing = new GetServersPing();
-        this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
-        
-        if (this.getMinecraftVersion().isAtLeast(MinecraftVersionsType.V1_8_R3))
-        {
-            Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
-        }
-        MclibPlugin.this.itemService.init();
     }
     
     /**
