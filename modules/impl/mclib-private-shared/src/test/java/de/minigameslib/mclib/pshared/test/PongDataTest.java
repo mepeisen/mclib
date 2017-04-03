@@ -56,7 +56,7 @@ public class PongDataTest
         
         final PongData data2 = section.getFragment(PongData.class, "FOO"); //$NON-NLS-1$
         assertEquals(1, data2.getClientExtensions().size());
-        assertEquals("winid", data2.getClientExtensions().get(0)); //$NON-NLS-1$
+        assertEquals(16, data2.getClientExtensions().get("winid").intValue()); //$NON-NLS-1$
     }
     
 }
