@@ -234,8 +234,8 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         if (fragment != null)
         {
             this.clientExtensions.putAll(fragment.getClientExtensions());
+            this.clientApi = fragment.getApi();
         }
-        this.clientApi = fragment.getApi();
     }
     
     /**
