@@ -130,7 +130,19 @@ public class PingData extends AnnotatedDataFragment
         
         /** durability */
         @PersistentField
-        protected int durability;
+        protected int dur;
+        
+        /**
+         * The attack damage
+         */
+        @PersistentField
+        protected float dmg;
+        
+        /**
+         * The attack speed
+         */
+        @PersistentField
+        protected float speed;
 
         /**
          * @return the id
@@ -153,7 +165,7 @@ public class PingData extends AnnotatedDataFragment
          */
         public int getDurability()
         {
-            return this.durability;
+            return this.dur;
         }
 
         /**
@@ -161,7 +173,39 @@ public class PingData extends AnnotatedDataFragment
          */
         public void setDurability(int durability)
         {
-            this.durability = durability;
+            this.dur = durability;
+        }
+
+        /**
+         * @return the damage
+         */
+        public float getDamage()
+        {
+            return this.dmg;
+        }
+
+        /**
+         * @param damage the damage to set
+         */
+        public void setDamage(float damage)
+        {
+            this.dmg = damage;
+        }
+
+        /**
+         * @return the speed
+         */
+        public float getSpeed()
+        {
+            return this.speed;
+        }
+
+        /**
+         * @param speed the speed to set
+         */
+        public void setSpeed(float speed)
+        {
+            this.speed = speed;
         }
     }
 
