@@ -42,7 +42,13 @@ public class PingData extends AnnotatedDataFragment
      * the block meta data.
      */
     @PersistentField
-    protected List<BlockMetaData> meta = new ArrayList<>();
+    protected List<BlockMetaData> blocks = new ArrayList<>();
+    
+    /**
+     * the item meta data.
+     */
+    @PersistentField
+    protected List<ItemMetaData> items = new ArrayList<>();
     
     /**
      * Api version of server
@@ -78,16 +84,85 @@ public class PingData extends AnnotatedDataFragment
         m.setId(id);
         m.setHardness(hardness);
         m.setResistance(resistance);
-        this.meta.add(m);
+        this.blocks.add(m);
+    }
+    
+    /**
+     * Adds new meta data
+     * @param id
+     * @param durability
+     */
+    public void addMeta(int id, int durability)
+    {
+        final ItemMetaData m = new ItemMetaData();
+        m.setId(id);
+        m.setDurability(durability);
+        this.items.add(m);
     }
     
     /**
      * Returns the list of meta data
      * @return the meta
      */
-    public List<BlockMetaData> getMeta()
+    public List<BlockMetaData> getBlocks()
     {
-        return this.meta;
+        return this.blocks;
+    }
+    
+    /**
+     * Returns the list of meta data
+     * @return the meta
+     */
+    public List<ItemMetaData> getItems()
+    {
+        return this.items;
+    }
+
+    /**
+     * Single item data.
+     */
+    public static class ItemMetaData extends AnnotatedDataFragment
+    {
+        
+        /** numeric item id. */
+        @PersistentField
+        protected int id;
+        
+        /** durability */
+        @PersistentField
+        protected int durability;
+
+        /**
+         * @return the id
+         */
+        public int getId()
+        {
+            return this.id;
+        }
+
+        /**
+         * @param id the id to set
+         */
+        public void setId(int id)
+        {
+            this.id = id;
+        }
+
+        /**
+         * @return the durability
+         */
+        public int getDurability()
+        {
+            return this.durability;
+        }
+
+        /**
+         * @param durability the durability to set
+         */
+        public void setDurability(int durability)
+        {
+            this.durability = durability;
+        }
     }
 
     /**
