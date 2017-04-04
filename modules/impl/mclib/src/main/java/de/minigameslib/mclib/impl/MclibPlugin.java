@@ -1023,6 +1023,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         if (evt.getPlugin().isEnabled())
         {
             this.objectsManager.onEnable(evt.getPlugin());
+            this.itemService.onEnable(evt.getPlugin());
         }
     }
     

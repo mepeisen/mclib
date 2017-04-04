@@ -24,9 +24,11 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -154,5 +156,64 @@ public interface ItemHelperInterface
      * @param experience
      */
     void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param receipe
+     * @param experience
+     */
+    void installFurnaceRecipe(Material material, short itemStackDurability, ItemStack receipe, float experience);
+
+    /**
+     * Initializes the given item material and hack the item class
+     * @param material
+     */
+    void initNmsItem(Material material);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param stackSize
+     */
+    void setStackSize(Material material, short itemStackDurability, int stackSize);
+
+    /**
+     * @param blockId
+     * @param stackSize
+     */
+    void setStackSize(int blockId, int stackSize);
+
+    /**
+     * @param item
+     * @param amount
+     * @param shape
+     * @param shapedItems
+     */
+    void installShapedRecipe(ItemStack item, int amount, String[] shape, Map<Character, ItemStack> shapedItems);
+
+    /**
+     * @param blockId
+     * @param variant
+     * @param amount
+     * @param shape
+     * @param shapedItems
+     */
+    void installShapedRecipe(int blockId, int variant, int amount, String[] shape, Map<Character, ItemStack> shapedItems);
+
+    /**
+     * @param item
+     * @param amount
+     * @param shapelessItems
+     */
+    void installShapelessRecipe(ItemStack item, int amount, ItemStack[] shapelessItems);
+
+    /**
+     * @param blockId
+     * @param variant
+     * @param amount
+     * @param shapelessItems
+     */
+    void installShapelessRecipe(int blockId, int variant, int amount, ItemStack[] shapelessItems);
     
 }

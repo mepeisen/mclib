@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -40,6 +41,7 @@ import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.util.CraftMagicNumbers;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,6 +53,7 @@ import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.CraftingManager;
 import net.minecraft.server.v1_9_R1.IBlockData;
 import net.minecraft.server.v1_9_R1.Item;
 import net.minecraft.server.v1_9_R1.ItemMultiTexture;
@@ -372,6 +375,124 @@ public class ItemHelper1_9 implements ItemHelperInterface
                 InventoryManager1_9.convertToNms(new ItemStack(blockId, 1, (short) variant)),
                 InventoryManager1_9.convertToNms(stack),
                 experience);
+    }
+    
+    @Override
+    public void installFurnaceRecipe(Material material, short itemStackDurability, ItemStack receipe, float experience)
+    {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void initNmsItem(Material material)
+    {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void setStackSize(Material material, short itemStackDurability, int stackSize)
+    {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void setStackSize(int blockId, int stackSize)
+    {
+        Item.getById(blockId).d(stackSize);
+    }
+    
+    @Override
+    public void installShapedRecipe(ItemStack item, int amount, String[] shape, Map<Character, ItemStack> ingred)
+    {
+        int datalen = shape.length;
+        datalen += ingred.size() * 2;
+        int i = 0;
+        Object[] data = new Object[datalen];
+        for (; i < shape.length; ++i)
+        {
+            data[i] = shape[i];
+        }
+        for (Iterator<Character> localIterator = ingred.keySet().iterator(); localIterator.hasNext();)
+        {
+            char c = localIterator.next().charValue();
+            ItemStack mdata = ingred.get(Character.valueOf(c));
+            if (mdata != null)
+            {
+                data[i] = Character.valueOf(c);
+                ++i;
+                int id = mdata.getTypeId();
+                short dmg = mdata.getDurability();
+                data[i] = new net.minecraft.server.v1_9_R1.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
+                ++i;
+            }
+        }
+        final net.minecraft.server.v1_9_R1.ItemStack nms = InventoryManager1_9.convertToNms(item);
+        nms.count = amount;
+        CraftingManager.getInstance().registerShapedRecipe(nms, data);
+        CraftingManager.getInstance().sort();
+    }
+    
+    @Override
+    public void installShapedRecipe(int blockId, int variant, int amount, String[] shape, Map<Character, ItemStack> ingred)
+    {
+        int datalen = shape.length;
+        datalen += ingred.size() * 2;
+        int i = 0;
+        Object[] data = new Object[datalen];
+        for (; i < shape.length; ++i)
+        {
+            data[i] = shape[i];
+        }
+        for (Iterator<Character> localIterator = ingred.keySet().iterator(); localIterator.hasNext();)
+        {
+            char c = localIterator.next().charValue();
+            ItemStack mdata = ingred.get(Character.valueOf(c));
+            if (mdata != null)
+            {
+                data[i] = Character.valueOf(c);
+                ++i;
+                int id = mdata.getTypeId();
+                short dmg = mdata.getDurability();
+                data[i] = new net.minecraft.server.v1_9_R1.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
+                ++i;
+            }
+        }
+        final net.minecraft.server.v1_9_R1.ItemStack nms = new net.minecraft.server.v1_9_R1.ItemStack(Item.getById(blockId), amount, (short) variant);
+        CraftingManager.getInstance().registerShapedRecipe(nms, data);
+        CraftingManager.getInstance().sort();
+    }
+    
+    @Override
+    public void installShapelessRecipe(ItemStack item, int amount, ItemStack[] shapelessItems)
+    {
+        Object[] data = new Object[shapelessItems.length];
+        int i = 0;
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+            int id = mdata.getTypeId();
+            short dmg = mdata.getDurability();
+            data[i] = new net.minecraft.server.v1_9_R1.ItemStack(CraftMagicNumbers.getItem(id), mdata.getAmount(), dmg);
+            ++i;
+        }
+        final net.minecraft.server.v1_9_R1.ItemStack nms = InventoryManager1_9.convertToNms(item);
+        nms.count = amount;
+        CraftingManager.getInstance().registerShapelessRecipe(nms, data);
+        CraftingManager.getInstance().sort();
+    }
+    
+    @Override
+    public void installShapelessRecipe(int blockId, int variant, int amount, ItemStack[] shapelessItems)
+    {
+        Object[] data = new Object[shapelessItems.length];
+        int i = 0;
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+            int id = mdata.getTypeId();
+            short dmg = mdata.getDurability();
+            data[i] = new net.minecraft.server.v1_9_R1.ItemStack(CraftMagicNumbers.getItem(id), mdata.getAmount(), dmg);
+            ++i;
+        }
+        final net.minecraft.server.v1_9_R1.ItemStack nms = new net.minecraft.server.v1_9_R1.ItemStack(Item.getById(blockId), amount, (short) variant);
+        CraftingManager.getInstance().registerShapelessRecipe(nms, data);
+        CraftingManager.getInstance().sort();
     }
     
 }

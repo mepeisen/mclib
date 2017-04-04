@@ -74,6 +74,11 @@ import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.BlockVariantId;
+import de.minigameslib.mclib.api.items.CraftingItemInterface;
+import de.minigameslib.mclib.api.items.CraftingRecipes;
+import de.minigameslib.mclib.api.items.CraftingShapedItem;
+import de.minigameslib.mclib.api.items.CraftingShapedRecipe;
+import de.minigameslib.mclib.api.items.CraftingShapelessRecipe;
 import de.minigameslib.mclib.api.items.FurnaceRecipeInterface;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
@@ -100,25 +105,30 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
 {
     
     /** java logger */
-    private static final Logger LOGGER = Logger.getLogger(ItemServiceImpl.class.getName());
+    private static final Logger                         LOGGER           = Logger.getLogger(ItemServiceImpl.class.getName());
     
     /** the item id to value map. */
-    protected Map<ItemId, CustomItem> itemIdMap = new HashMap<>();
+    protected Map<ItemId, CustomItem>                   itemIdMap        = new HashMap<>();
     
     /** the custom items per material/ damage value */
     private final Map<Material, Map<Short, CustomItem>> itemsPerMaterial = new HashMap<>();
     
     /** the block to numId map. */
-    private Map<CustomItem, Object[]> itemMap = new HashMap<>();
+    private Map<CustomItem, Object[]>                   itemMap          = new HashMap<>();
     
     /** the block id to value map. */
-    protected Map<BlockId, CustomBlock> blockIdMap = new HashMap<>();
+    protected Map<BlockId, CustomBlock>                 blockIdMap       = new HashMap<>();
     
     /** the block id to value map. */
-    private Map<Integer, CustomBlock> blockNumIdMap = new HashMap<>();
+    private Map<Integer, CustomBlock>                   blockNumIdMap    = new HashMap<>();
     
     /** the block to numId map. */
-    private Map<CustomBlock, Integer> blockMap = new HashMap<>();
+    private Map<CustomBlock, Integer>                   blockMap         = new HashMap<>();
+    
+    /**
+     * a list of lazy initialization runnables; invoked by fetching PluginEnableEvent-
+     */
+    private Map<String, List<Runnable>>                 lazyPluginInit   = new HashMap<>();
     
     /**
      * Initialized the items from registered enumerations
@@ -127,17 +137,31 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         EnumServiceInterface.instance().registerEnumerationListener((Plugin) McLibInterface.instance(), BlockId.class, new BlockListener());
         EnumServiceInterface.instance().registerEnumerationListener((Plugin) McLibInterface.instance(), ItemId.class, new ItemListener());
+        initNmsItems();
         initItems();
         initBlocks();
     }
     
     /**
+     * init the nms items
+     */
+    private void initNmsItems()
+    {
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        for (final CustomItemTypes type : CustomItemTypes.values())
+        {
+            helper.initNmsItem(type.getMaterial());
+        }
+    }
+    
+    /**
      * Listener to watch for new block registrations
+     * 
      * @author mepeisen
      */
     private class BlockListener implements EnumerationListener<BlockId>
     {
-
+        
         /**
          * Constructor
          */
@@ -145,13 +169,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             // empty
         }
-
+        
         @Override
         public void onEnumRegistered(Plugin plugin, Class<? extends BlockId> clazz, BlockId[] values)
         {
             ItemServiceImpl.this.initBlocks(Arrays.stream(values));
         }
-
+        
         @Override
         public void onEnumRemoved(Plugin plugin, Class<? extends BlockId> clazz, BlockId[] values)
         {
@@ -165,11 +189,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Listener to watch for new item registrations
+     * 
      * @author mepeisen
      */
     private class ItemListener implements EnumerationListener<ItemId>
     {
-
+        
         /**
          * Constructor
          */
@@ -177,13 +202,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             // empty
         }
-
+        
         @Override
         public void onEnumRegistered(Plugin plugin, Class<? extends ItemId> clazz, ItemId[] values)
         {
             ItemServiceImpl.this.initItems(Arrays.stream(values));
         }
-
+        
         @Override
         public void onEnumRemoved(Plugin plugin, Class<? extends ItemId> clazz, ItemId[] values)
         {
@@ -194,7 +219,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
     }
-
+    
     /**
      * initializes the items
      */
@@ -206,19 +231,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final Material material = item.getCustomType().getMaterial();
             final short durability = item.getDurability();
             this.itemsPerMaterial.computeIfAbsent(material, m -> new HashMap<>()).put(durability, item);
-            this.itemMap.put(item, new Object[]{material, durability});
+            this.itemMap.put(item, new Object[] { material, durability });
         }
         
         final Stream<ItemId> stream = EnumServiceInterface.instance().getEnumValues(ItemId.class).stream();
         initItems(stream);
     }
-
+    
     /**
      * @param stream
      */
     protected void initItems(final Stream<ItemId> stream)
     {
         final Stack<CustomItem> newItems = new Stack<>();
+        final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         
         // parse items from plugins
         final List<ItemId> enumValues = stream.sorted((a, b) -> {
@@ -257,13 +283,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 this.itemsPerMaterial.computeIfAbsent(type.getMaterial(), k -> new HashMap<>());
                 for (final Durability dur : type.getDurabilities())
                 {
-                    if (this.itemsPerMaterial.get(type.getMaterial()).containsKey(dur.getItemStackDurability())) continue;
+                    if (this.itemsPerMaterial.get(type.getMaterial()).containsKey(dur.getItemStackDurability()))
+                        continue;
                     
                     final CustomItem item = newItems.pop();
                     item.setCustomDurability(dur);
                     item.setCustomType(type);
                     this.itemsPerMaterial.get(type.getMaterial()).put(dur.getItemStackDurability(), item);
-                    this.itemMap.put(item, new Object[]{type.getMaterial(), dur.getItemStackDurability()});
+                    this.itemMap.put(item, new Object[] { type.getMaterial(), dur.getItemStackDurability() });
                     
                     if (newItems.isEmpty())
                     {
@@ -277,11 +304,87 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             {
                 // TODO warn: too much items
             }
+        }
+        
+        // init data
+        for (final ItemId item : enumValues)
+        {
+            final CustomItem custom = this.itemIdMap.get(item);
             
-            // TODO support items furnaceRecipe
+            // furnaceRecipe
+            final FurnaceRecipeInterface furnaceRecipe = item.furnaceRecipe();
+            if (furnaceRecipe != null)
+            {
+                this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installFurnaceRecipe(custom.getCustomType().getMaterial(),
+                        custom.getCustomDurability().getItemStackDurability(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+            }
+            
+            // stack size
+            if (item.stackSize() > 1)
+            {
+                helper.setStackSize(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), item.stackSize());
+            }
+            
+            // crafting
+            final CraftingRecipes crafting = item.recipes();
+            if (crafting != null)
+            {
+                for (final CraftingShapedRecipe shaped : crafting.shaped())
+                {
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installShapedRecipe(
+                            createItem(item), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                }
+                for (final CraftingShapelessRecipe shapeless : crafting.shapeless())
+                {
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installShapelessRecipe(
+                            createItem(item), shapeless.amount(), toShapelessItems(shapeless.items())));
+                }
+            }
         }
     }
-
+    
+    /**
+     * @param items
+     * @return shapeless items
+     */
+    private ItemStack[] toShapelessItems(Class<? extends CraftingItemInterface>[] items)
+    {
+        final ItemStack[] result = new ItemStack[items.length];
+        for (int i = 0; i < items.length; i++)
+        {
+            try
+            {
+                result[i] = items[i].newInstance().item();
+            }
+            catch (InstantiationException | IllegalAccessException e)
+            {
+                throw new IllegalStateException(e);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * @param items
+     * @return shaped item map
+     */
+    private Map<Character, ItemStack> toShapedItems(CraftingShapedItem[] items)
+    {
+        final Map<Character, ItemStack> result = new HashMap<>();
+        for (final CraftingShapedItem item : items)
+        {
+            try
+            {
+                result.put(item.shape(), item.item().newInstance().item());
+            }
+            catch (InstantiationException | IllegalAccessException e)
+            {
+                throw new IllegalStateException(e);
+            }
+        }
+        return result;
+    }
+    
     /**
      * initializes the items
      */
@@ -293,11 +396,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.blockNumIdMap.put(block.getNumId(), block);
             this.blockMap.put(block, block.getNumId());
         }
-
+        
         final Stream<BlockId> stream = EnumServiceInterface.instance().getEnumValues(BlockId.class).stream();
         initBlocks(stream);
     }
-
+    
     /**
      * @param stream
      */
@@ -338,7 +441,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
             {
-                if (this.blockNumIdMap.containsKey(i)) continue;
+                if (this.blockNumIdMap.containsKey(i))
+                    continue;
                 
                 final CustomBlock block = newBlocks.pop();
                 block.setNumId(i);
@@ -362,61 +466,113 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         for (final BlockId block : enumValues)
         {
             final int blockId = this.blockIdMap.get(block).getNumId();
+            
+            // meta and drop rule
             final BlockMeta meta = block.meta();
             final BlockDropRuleInterface dropRule = block.dropRule();
+            setBlockMeta(helper, block, blockId, meta, dropRule);
+            
+            // stack size
+            final int stackSize = block.stackSize();
+            if (stackSize != 64)
+            {
+                helper.setStackSize(blockId, stackSize);
+            }
+            
+            // furnace recipe/ stack sizes / crafting
             final FurnaceRecipeInterface furnaceRecipe = block.furnaceRecipe();
-            helper.setBlockMeta(
-                    blockId,
-                    meta == null ? 0 : meta.hardness(),
-                    meta == null ? 0 : meta.resistance(),
-                    dropRule == null ? null : new NmsDropRuleInterface() {
-                        
-                        @Override
-                        public int getExpDrop(int variant, Random random, int enchantmentLevel)
-                        {
-                            return dropRule.getExpDrop(block, block.variants()[variant], random, enchantmentLevel);
-                        }
-                        
-                        @Override
-                        public int getDropVariant(int variant)
-                        {
-                            final BlockVariantId v = dropRule.getDropVariant(block, block.variants()[variant]);
-                            return v == null ? 0 : v.ordinal();
-                        }
-                        
-                        @Override
-                        public int getDropType(int variant, Random random, int fortune)
-                        {
-                            final BlockId b = dropRule.getDropType(block, block.variants()[variant], random, fortune);
-                            return b == null ? 0 : ItemServiceImpl.this.blockIdMap.get(b).getNumId();
-                        }
-                        
-                        @Override
-                        public int getDropCount(Random random, int fortune)
-                        {
-                            return dropRule.getDropCount(random, fortune);
-                        }
-                    });
+            final CraftingRecipes blockRecipes = block.recipes();
             for (final BlockVariantId variant : block.variants())
             {
                 final FurnaceRecipeInterface variantFurnace = variant.furnaceRecipe();
                 if (variantFurnace != null)
                 {
-                    helper.installFurnaceRecipe(blockId, variant.ordinal(), variantFurnace.getReceipe(null, block, variant), variantFurnace.getExperience(null, block, variant));
+                    this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                            .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), variantFurnace.getReceipe(null, block, variant), variantFurnace.getExperience(null, block, variant)));
                 }
                 else if (furnaceRecipe != null)
                 {
-                    helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant));
+                    this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                            .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant)));
+                }
+                
+                final CraftingRecipes variantRecipes = variant.recipes();
+                if (variantRecipes != null)
+                {
+                    for (final CraftingShapedRecipe shaped : variantRecipes.shaped())
+                    {
+                        this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                                .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                    }
+                    for (final CraftingShapelessRecipe shapeless : variantRecipes.shapeless())
+                    {
+                        this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                                .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
+                    }
+                }
+                if (blockRecipes != null)
+                {
+                    for (final CraftingShapedRecipe shaped : blockRecipes.shaped())
+                    {
+                        this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                                .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                    }
+                    for (final CraftingShapelessRecipe shapeless : blockRecipes.shapeless())
+                    {
+                        this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
+                                .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
+                    }
                 }
             }
         }
     }
     
+    /**
+     * @param helper
+     * @param block
+     * @param blockId
+     * @param meta
+     * @param dropRule
+     */
+    private void setBlockMeta(final ItemHelperInterface helper, final BlockId block, final int blockId, final BlockMeta meta, final BlockDropRuleInterface dropRule)
+    {
+        helper.setBlockMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance(), dropRule == null ? null : new NmsDropRuleInterface() {
+            
+            @Override
+            public int getExpDrop(int variant, Random random, int enchantmentLevel)
+            {
+                return dropRule.getExpDrop(block, block.variants()[variant], random, enchantmentLevel);
+            }
+            
+            @Override
+            public int getDropVariant(int variant)
+            {
+                final BlockVariantId v = dropRule.getDropVariant(block, block.variants()[variant]);
+                return v == null ? 0 : v.ordinal();
+            }
+            
+            @Override
+            public int getDropType(int variant, Random random, int fortune)
+            {
+                final BlockId b = dropRule.getDropType(block, block.variants()[variant], random, fortune);
+                return b == null ? 0 : ItemServiceImpl.this.blockIdMap.get(b).getNumId();
+            }
+            
+            @Override
+            public int getDropCount(Random random, int fortune)
+            {
+                return dropRule.getDropCount(random, fortune);
+            }
+        });
+    }
+    
     @Override
     public ResourceVersion getResourceVersion(MinecraftVersionsType minecraftVersion)
     {
-        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_9)) return ResourceVersion.PACK_FORMAT_1;
-        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_11)) return ResourceVersion.PACK_FORMAT_2;
+        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_9))
+            return ResourceVersion.PACK_FORMAT_1;
+        if (minecraftVersion.isBelow(MinecraftVersionsType.V1_11))
+            return ResourceVersion.PACK_FORMAT_2;
         return ResourceVersion.PACK_FORMAT_3;
     }
     
@@ -467,40 +623,40 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 return McCoreConfig.ResourcePackDownloadUrlV3.getString();
         }
     }
-
+    
     @Override
     public boolean isAutoResourceDownload()
     {
         return McCoreConfig.ResourcePackAutoDownload.getBoolean();
     }
-
+    
     @Override
     public void setAutoResourceDownload(boolean newValue)
     {
         McCoreConfig.ResourcePackAutoDownload.setBoolean(newValue);
         McCoreConfig.ResourcePackAutoDownload.saveConfig();
     }
-
+    
     @Override
     public int getAutoResourceTicks()
     {
         return McCoreConfig.ResourcePackAutoDownloadTicks.getInt();
     }
-
+    
     @Override
     public void setAutoResourceTicks(int ticks)
     {
         McCoreConfig.ResourcePackAutoDownload.setInt(ticks);
         McCoreConfig.ResourcePackAutoDownload.saveConfig();
     }
-
+    
     @Override
     public ResourcePackStatus getState(McPlayerInterface player)
     {
         final ResourcePackMarker marker = player.getSessionStorage().get(ResourcePackMarker.class);
         return marker == null ? null : marker.getState();
     }
-
+    
     @Override
     public void forceDownload(McPlayerInterface player, McRunnable success)
     {
@@ -524,10 +680,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ItemStack createItem(ItemId item, String name)
     {
         final CustomItem custom = this.itemIdMap.get(item);
-        final ItemStack itemStack = new ItemStack(
-                custom.getCustomType().getMaterial(),
-                1,
-                custom.getCustomDurability().getItemStackDurability());
+        final ItemStack itemStack = new ItemStack(custom.getCustomType().getMaterial(), 1, custom.getCustomDurability().getItemStackDurability());
         final ItemMeta meta = itemStack.getItemMeta();
         meta.spigot().setUnbreakable(true);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
@@ -574,7 +727,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         return null;
     }
-
+    
     @Override
     public void createResourcePack(File target) throws IOException
     {
@@ -583,6 +736,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * write item overrides
+     * 
      * @param jar
      * @param material
      * @param map
@@ -604,8 +758,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$
             for (CustomItem item : map.values())
             {
-                if (item == null) continue;
-                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()).append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                if (item == null)
+                    continue;
+                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()) //$NON-NLS-1$ //$NON-NLS-2$
+                        .append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$
             }
             buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
             buffer.append("]}"); //$NON-NLS-1$
@@ -619,6 +775,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * write blockstates
+     * 
      * @param jar
      * @param numId
      * @param block
@@ -636,8 +793,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             boolean first = true;
             for (final BlockVariantId variant : blockId.variants())
             {
-                if (first) first = false;
-                else buffer.append(", "); //$NON-NLS-1$
+                if (first)
+                    first = false;
+                else
+                    buffer.append(", "); //$NON-NLS-1$
                 buffer.append("\"variant=variant_").append(variant.ordinal()).append("\": {"); //$NON-NLS-1$ //$NON-NLS-2$
                 buffer.append("\"model\": \"mclib:custom-").append(numId).append("-").append(variant.ordinal()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
@@ -708,6 +867,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * write item overrides
+     * 
      * @param jar
      * @param material
      * @param map
@@ -799,7 +959,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     /**
      * @param jar
      * @param content
-     * @throws IOException 
+     * @throws IOException
      */
     private void writeFile(JarOutputStream jar, String content) throws IOException
     {
@@ -810,7 +970,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      * @param jar
      * @param classLoader
      * @param name
-     * @throws IOException 
+     * @throws IOException
      */
     private void copyFile(JarOutputStream jar, ClassLoader classLoader, String name) throws IOException
     {
@@ -823,50 +983,50 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 {
                     int count = bis.read(buffer);
                     if (count == -1)
-                      break;
+                        break;
                     jar.write(buffer, 0, count);
                 }
             }
         }
     }
-
+    
     /**
      * @param inventory
      */
     public void clearTools(PlayerInventory inventory)
-    {        
+    {
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         
         // clears tooling items
         for (int i = 0; i < inventory.getSize(); i++)
         {
             final ItemStack item = inventory.getItem(i);
-            if (helper.getCustomData(item, "mclib", "clearOnJoin") != null)  //$NON-NLS-1$//$NON-NLS-2$
+            if (helper.getCustomData(item, "mclib", "clearOnJoin") != null) //$NON-NLS-1$//$NON-NLS-2$
             {
                 inventory.setItem(i, new ItemStack(Material.AIR));
             }
         }
     }
-
+    
     @Override
     public ToolBuilderInterface prepareTool(ItemId item, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
     {
         return new ToolBuilderInterface() {
             
             /** flag for single use */
-            private boolean singleUse;
+            private boolean                                                singleUse;
             
             /** right click handler */
             private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClick;
             
             /** left click handler */
             private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClick;
-
+            
             /** description */
-            private LocalizedMessageInterface description;
-
+            private LocalizedMessageInterface                              description;
+            
             /** description arguments */
-            private Serializable[] descriptionArgs;
+            private Serializable[]                                         descriptionArgs;
             
             @Override
             public ToolBuilderInterface singleUse()
@@ -941,7 +1101,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 for (int i = 0; i < inventory.getSize(); i++)
                 {
                     final ItemStack invitem = inventory.getItem(i);
-                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
                     {
                         slot = i;
                         break;
@@ -962,9 +1122,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
                 inventory.setItem(slot, stack);
                 stack = inventory.getItem(slot); // forces to use the correct NMS class
-
-                helper.addCustomData(stack, "mclib", "clearOnJoin", "1");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                helper.addCustomData(stack, "mclib", "customTooling", "1");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                
+                helper.addCustomData(stack, "mclib", "clearOnJoin", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                helper.addCustomData(stack, "mclib", "customTooling", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                 marker.setOneUse(this.singleUse);
                 marker.setLeftClickHandler(this.leftClick);
                 marker.setRightClickHandler(this.rightClick);
@@ -976,6 +1136,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Player death event; cancels the drop of the tooling item...
+     * 
      * @param evt
      */
     @McEventHandler
@@ -985,7 +1146,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final List<ItemStack> stacks = evt.getBukkitEvent().getDrops();
         for (int i = 0; i < stacks.size(); i++)
         {
-            if (helper.getCustomData(stacks.get(i), "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+            if (helper.getCustomData(stacks.get(i), "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
             {
                 stacks.remove(i);
                 break;
@@ -995,13 +1156,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * On drop items; cancels drop of tooling item...
+     * 
      * @param evt
      */
     @McEventHandler
     public void onPlayerDrop(McPlayerDropItemEvent evt)
     {
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
-        if (helper.getCustomData(evt.getBukkitEvent().getItemDrop().getItemStack(), "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+        if (helper.getCustomData(evt.getBukkitEvent().getItemDrop().getItemStack(), "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
         {
             evt.getBukkitEvent().setCancelled(true);
         }
@@ -1009,6 +1171,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * On inventory action; cancels drop of tooling item into other inventories...
+     * 
      * @param evt
      */
     @McEventHandler
@@ -1016,7 +1179,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         final ItemStack cursor = evt.getBukkitEvent().getCursor();
-        if (cursor != null && helper.getCustomData(cursor, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+        if (cursor != null && helper.getCustomData(cursor, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
         {
             switch (evt.getBukkitEvent().getAction())
             {
@@ -1057,6 +1220,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Player mouse click
+     * 
      * @param evt
      */
     @McEventHandler
@@ -1128,7 +1292,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         for (int i = 0; i < inventory.getSize(); i++)
                         {
                             final ItemStack invitem = inventory.getItem(i);
-                            if (helper.getCustomData(invitem, "mclib", "customTooling") != null)  //$NON-NLS-1$//$NON-NLS-2$
+                            if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
                             {
                                 inventory.setItem(i, new ItemStack(Material.AIR));
                                 evt.getPlayer().getBukkitPlayer().updateInventory();
@@ -1142,7 +1306,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             }
         }
     }
-
+    
     /**
      * A marker for players that downloaded the resource pack.
      */
@@ -1152,12 +1316,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         @PersistentField
         private ResourcePackStatus state;
         /** runnable for success. */
-        private McRunnable success;
+        private McRunnable         success;
         /** runnable for failure. */
-        private McRunnable failure;
+        private McRunnable         failure;
         /** runnable for declined. */
-        private McRunnable declined;
-
+        private McRunnable         declined;
+        
         /**
          * @param state
          */
@@ -1168,6 +1332,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         
         /**
          * Constructor
+         * 
          * @param success
          * @param failure
          * @param declined
@@ -1178,15 +1343,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.failure = failure;
             this.declined = declined;
         }
-
+        
         /**
-         * @param state the state to set
+         * @param state
+         *            the state to set
          */
         public void setState(ResourcePackStatus state)
         {
             this.state = state;
         }
-
+        
         /**
          * @return the state
          */
@@ -1194,7 +1360,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.state;
         }
-
+        
         /**
          * @return the success
          */
@@ -1202,7 +1368,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.success;
         }
-
+        
         /**
          * @return the failure
          */
@@ -1210,7 +1376,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.failure;
         }
-
+        
         /**
          * @return the declined
          */
@@ -1220,7 +1386,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
     }
-
+    
     /**
      * A marker for players that have installed tools
      */
@@ -1231,7 +1397,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
          * boolean for destroying of tool upon use
          */
         @PersistentField
-        private boolean isOneUse;
+        private boolean                                                isOneUse;
         
         /**
          * non persistent left click handler.
@@ -1242,7 +1408,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
          * non persistent right click handler.
          */
         private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler;
-
+        
         /**
          * @return the isOneUse
          */
@@ -1250,15 +1416,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.isOneUse;
         }
-
+        
         /**
-         * @param isOneUse the isOneUse to set
+         * @param isOneUse
+         *            the isOneUse to set
          */
         public void setOneUse(boolean isOneUse)
         {
             this.isOneUse = isOneUse;
         }
-
+        
         /**
          * @return the leftClickHandler
          */
@@ -1266,15 +1433,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.leftClickHandler;
         }
-
+        
         /**
-         * @param leftClickHandler the leftClickHandler to set
+         * @param leftClickHandler
+         *            the leftClickHandler to set
          */
         public void setLeftClickHandler(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClickHandler)
         {
             this.leftClickHandler = leftClickHandler;
         }
-
+        
         /**
          * @return the rightClickHandler
          */
@@ -1282,9 +1450,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.rightClickHandler;
         }
-
+        
         /**
-         * @param rightClickHandler the rightClickHandler to set
+         * @param rightClickHandler
+         *            the rightClickHandler to set
          */
         public void setRightClickHandler(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler)
         {
@@ -1292,7 +1461,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
     }
-
+    
     @Override
     public ItemStack createItem(BlockId id, BlockVariantId variant)
     {
@@ -1308,7 +1477,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(BlockId id, BlockVariantId variant, String name)
     {
-        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(), name == null ? "" : name); //$NON-NLS-1$
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(),
+                name == null ? "" : name); //$NON-NLS-1$
     }
     
     @Override
@@ -1322,7 +1492,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         return this.createItem(id, variant, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
-
+    
     @Override
     public BlockId getBlockId(ItemStack stack)
     {
@@ -1330,7 +1500,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
         return customBlock == null ? null : customBlock.getBlockId();
     }
-
+    
     @Override
     public BlockId getBlockId(Block block)
     {
@@ -1338,7 +1508,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
         return customBlock == null ? null : customBlock.getBlockId();
     }
-
+    
     @Override
     public BlockVariantId getBlockVariantId(ItemStack stack)
     {
@@ -1351,7 +1521,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         return null;
     }
-
+    
     @Override
     public BlockVariantId getBlockVariantId(Block b)
     {
@@ -1364,7 +1534,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         return null;
     }
-
+    
     @Override
     public void setBlockData(Block block, BlockId id, BlockVariantId variant)
     {
@@ -1373,6 +1543,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Saves the items to config
+     * 
      * @param items
      */
     private void saveItems(CustomItem[] items)
@@ -1383,6 +1554,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Saves the blocks to config
+     * 
      * @param blocks
      */
     private void saveBlocks(CustomBlock[] blocks)
@@ -1393,6 +1565,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * loads items from config
+     * 
      * @return items
      */
     private CustomItem[] loadItems()
@@ -1406,6 +1579,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * loads blocks from config
+     * 
      * @return blocks
      */
     private CustomBlock[] loadBlocks()
@@ -1416,43 +1590,43 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         return new CustomBlock[0];
     }
-
+    
     @Override
     public void setDisplayName(ItemStack stack, String name)
     {
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setDisplayName(stack, name);
     }
-
+    
     @Override
     public void setDisplayName(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface name, Serializable... nameArgs)
     {
         this.setDisplayName(stack, player.encodeMessage(name, nameArgs)[0]);
     }
-
+    
     @Override
     public void setDescription(ItemStack stack, String[] description)
     {
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).setDescription(stack, description);
     }
-
+    
     @Override
     public void setDescription(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface description, Serializable... descriptionArgs)
     {
         this.setDescription(stack, player.encodeMessage(description, descriptionArgs));
     }
-
+    
     @Override
     public String getDisplayName(ItemStack stack)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getDisplayName(stack);
     }
-
+    
     @Override
     public String[] getDescription(ItemStack stack)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getDescription(stack);
     }
-
+    
     @Override
     public void createMinable(Random random, Location location, BlockId block, BlockVariantId variant, int size)
     {
@@ -1460,7 +1634,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final int meta = variant.ordinal();
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createMinable(random, location, blockId, meta, size);
     }
-
+    
     @Override
     public ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack)
     {
@@ -1471,9 +1645,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).addToInventory(player.getBukkitPlayer().getInventory(), stack);
     }
-
+    
     /**
      * Populate ping data with block info
+     * 
      * @param ping
      */
     public void populate(PingData ping)
@@ -1482,10 +1657,21 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             final int blockId = this.blockIdMap.get(block).getNumId();
             final BlockMeta meta = block.meta();
-            ping.addMeta(
-                    blockId,
-                    meta == null ? 0 : meta.hardness(),
-                    meta == null ? 0 : meta.resistance());
+            ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
+        }
+    }
+    
+    /**
+     * On plugin enable
+     * 
+     * @param plugin
+     */
+    public void onEnable(Plugin plugin)
+    {
+        final List<Runnable> list = this.lazyPluginInit.remove(plugin.getName());
+        if (list != null)
+        {
+            list.forEach(Runnable::run);
         }
     }
     

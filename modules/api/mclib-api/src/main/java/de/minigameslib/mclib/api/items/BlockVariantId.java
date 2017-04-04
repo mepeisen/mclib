@@ -52,6 +52,23 @@ public interface BlockVariantId extends McUniqueEnumInterface
     }
     
     /**
+     * Returns the crafting recipes
+     * @return crafting recipes
+     */
+    default CraftingRecipes recipes()
+    {
+        try
+        {
+            final CraftingRecipes data = this.getClass().getDeclaredField(this.name()).getAnnotation(CraftingRecipes.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * the custom item model json
      * @return custom item model json
      */
