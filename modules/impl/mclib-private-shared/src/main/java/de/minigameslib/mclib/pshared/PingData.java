@@ -91,12 +91,16 @@ public class PingData extends AnnotatedDataFragment
      * Adds new meta data
      * @param id
      * @param durability
+     * @param attackSpeed 
+     * @param attackDmg 
      */
-    public void addMeta(int id, int durability)
+    public void addMeta(int id, int durability, double attackSpeed, double attackDmg)
     {
         final ItemMetaData m = new ItemMetaData();
         m.setId(id);
         m.setDurability(durability);
+        m.setSpeed(attackSpeed);
+        m.setDamage(attackDmg);
         this.items.add(m);
     }
     
@@ -136,13 +140,13 @@ public class PingData extends AnnotatedDataFragment
          * The attack damage
          */
         @PersistentField
-        protected float dmg;
+        protected double dmg;
         
         /**
          * The attack speed
          */
         @PersistentField
-        protected float speed;
+        protected double speed;
 
         /**
          * @return the id
@@ -179,7 +183,7 @@ public class PingData extends AnnotatedDataFragment
         /**
          * @return the damage
          */
-        public float getDamage()
+        public double getDamage()
         {
             return this.dmg;
         }
@@ -187,7 +191,7 @@ public class PingData extends AnnotatedDataFragment
         /**
          * @param damage the damage to set
          */
-        public void setDamage(float damage)
+        public void setDamage(double damage)
         {
             this.dmg = damage;
         }
@@ -195,7 +199,7 @@ public class PingData extends AnnotatedDataFragment
         /**
          * @return the speed
          */
-        public float getSpeed()
+        public double getSpeed()
         {
             return this.speed;
         }
@@ -203,7 +207,7 @@ public class PingData extends AnnotatedDataFragment
         /**
          * @param speed the speed to set
          */
-        public void setSpeed(float speed)
+        public void setSpeed(double speed)
         {
             this.speed = speed;
         }
