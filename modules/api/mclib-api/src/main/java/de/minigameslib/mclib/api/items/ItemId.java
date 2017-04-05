@@ -35,6 +35,23 @@ public interface ItemId extends McUniqueEnumInterface
 {
     
     /**
+     * Returns the mod item flag
+     * @return mod item flag
+     */
+    default boolean isModded()
+    {
+        try
+        {
+            final ItemData data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemData.class);
+            return data.modEnabled();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * Returns the resource paths to the textures
      * @return resource paths to textures
      */
@@ -129,6 +146,40 @@ public interface ItemId extends McUniqueEnumInterface
         {
             final ItemStackSize data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemStackSize.class);
             return data == null ? 1 : data.value();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The meta data
+     * @return item meta data
+     */
+    default ItemMeta meta()
+    {
+        try
+        {
+            final ItemMeta data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemMeta.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The durability data
+     * @return item durability data
+     */
+    default ItemDurability durability()
+    {
+        try
+        {
+            final ItemDurability data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemDurability.class);
+            return data;
         }
         catch (NoSuchFieldException ex)
         {

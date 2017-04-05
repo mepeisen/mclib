@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
@@ -41,7 +43,6 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemFactory;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -49,8 +50,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v185.blocks.CustomBlock;
+import de.minigames.mclib.nms.v185.items.CustomItem;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
+import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.CraftingManager;
@@ -69,6 +72,9 @@ import net.minecraft.server.v1_8_R3.WorldGenMinable;
 public class ItemHelper1_8_5 implements ItemHelperInterface
 {
     
+    /** Logger */
+    private static final Logger LOGGER = Logger.getLogger(ItemHelper1_8_5.class.getName());
+    
     @Override
     public void addCustomData(ItemStack stack, String plugin, String key, String value)
     {
@@ -85,11 +91,11 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
                     tag = new NBTTagCompound();
                     nms.setTag(tag);
                 }
-                tag.setString("mclib:customdata:" + plugin + ":" + key, value);  //$NON-NLS-1$//$NON-NLS-2$
+                tag.setString("mclib:customdata:" + plugin + ":" + key, value); //$NON-NLS-1$//$NON-NLS-2$
             }
             catch (Exception ex)
             {
-                // TODO logging
+                LOGGER.log(Level.WARNING, "Problems adding custom data to itemstack", ex); //$NON-NLS-1$
             }
         }
     }
@@ -107,7 +113,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
                 NBTTagCompound tag = nms.getTag();
                 if (tag != null)
                 {
-                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key);  //$NON-NLS-1$//$NON-NLS-2$
+                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key); //$NON-NLS-1$//$NON-NLS-2$
                     if (value != null && value.length() > 0)
                     {
                         return value;
@@ -116,42 +122,45 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             }
             catch (Exception ex)
             {
-                // TODO logging
+                LOGGER.log(Level.WARNING, "Problems receiving custom data from itemstack", ex); //$NON-NLS-1$
             }
         }
         return null;
     }
-
+    
     @Override
     public int getVariant(Block block)
     {
         final BlockPosition pos = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        return ((CustomBlock.EnumCustomVariant) ((CraftWorld)block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT)).ordinal();
+        return ((CraftWorld) block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT).ordinal();
     }
-
+    
+    @SuppressWarnings("deprecation")
     @Override
     public int getVariant(ItemStack stack)
     {
         return stack.getData().getData();
     }
-
+    
     @Override
     public void setBlockVariant(Block block, int type, int variant)
     {
         final BlockPosition position = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        ((CraftWorld)block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_8_R3.Blocks.AIR.getBlockData(), 0);
+        ((CraftWorld) block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_8_R3.Blocks.AIR.getBlockData(), 0);
         final IBlockData blockData = net.minecraft.server.v1_8_R3.Block.getById(type).getBlockData();
         blockData.set(CustomBlock.VARIANT, CustomBlock.EnumCustomVariant.values()[variant]);
         // final IBlockData blockData = Blocks.FURNACE.getBlockData();
-        boolean success = ((CraftChunk)block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
-        if (success) {
-            ((CraftChunk)block.getChunk()).getHandle().getWorld().notify(position);
+        boolean success = ((CraftChunk) block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
+        if (success)
+        {
+            ((CraftChunk) block.getChunk()).getHandle().getWorld().notify(position);
         }
     }
-
+    
     @Override
     public ItemStack createItemStackForBlock(int type, int variant, String displayName)
     {
+        @SuppressWarnings("deprecation")
         final ItemStack stack = new ItemStack(type, 1, (byte) variant);
         final ItemMeta meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
         meta.setDisplayName(displayName);
@@ -159,6 +168,17 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         return stack;
     }
 
+    @Override
+    public ItemStack createItemStackForItem(int numId, String name)
+    {
+        @SuppressWarnings("deprecation")
+        final ItemStack stack = new ItemStack(numId, 1);
+        final ItemMeta meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
+        meta.setDisplayName(name);
+        setMeta(stack, meta);
+        return stack;
+    }
+    
     /**
      * @param stack
      * @param meta
@@ -176,7 +196,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
-
+    
     @Override
     public void setDisplayName(ItemStack stack, String displayName)
     {
@@ -188,7 +208,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         }
         meta.setDisplayName(displayName);
     }
-
+    
     @Override
     public void setDescription(ItemStack stack, String[] description)
     {
@@ -200,7 +220,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         }
         meta.setLore(Arrays.asList(description));
     }
-
+    
     /**
      * @param stack
      * @return meta
@@ -213,7 +233,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             {
                 return stack.getItemMeta();
             }
-
+            
             final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             return (ItemMeta) field.get(stack);
@@ -223,7 +243,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
-
+    
     @Override
     public void initBlocks()
     {
@@ -244,7 +264,8 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
                 final CustomBlock myBlock = new CustomBlock();
                 net.minecraft.server.v1_8_R3.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
                 Iterator<IBlockData> iterator2 = myBlock.P().a().iterator();
-                while (iterator2.hasNext()) {
+                while (iterator2.hasNext())
+                {
                     IBlockData iblockdata = iterator2.next();
                     int k = net.minecraft.server.v1_8_R3.Block.REGISTRY.b(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
                     net.minecraft.server.v1_8_R3.Block.d.a(iblockdata, k);
@@ -264,24 +285,51 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Problems initializing modded blocks", ex); //$NON-NLS-1$
         }
     }
-
+    
+    @Override
+    public void initItems()
+    {
+        try
+        {
+            final Method itemMth = net.minecraft.server.v1_8_R3.Item.class.getDeclaredMethod("a", int.class, String.class, net.minecraft.server.v1_8_R3.Item.class); //$NON-NLS-1$
+            itemMth.setAccessible(true);
+            
+            final Field byId = Material.class.getDeclaredField("byId"); //$NON-NLS-1$
+            byId.setAccessible(true);
+            final Material[] materials = Arrays.copyOf((Material[]) byId.get(null), 5000);
+            byId.set(null, materials);
+            
+            for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
+            {
+                materials[i] = Material.DIAMOND_AXE; // may not be clever but otherwise bukkit will not really understand what we are doing; we cannot extend the materials enum here :-(
+                
+                final CustomItem myItem = new CustomItem();
+                itemMth.invoke(null, i, "custom_" + i, myItem.c("mclib:custom_" + i)); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
+        }
+    }
+    
     @Override
     public String getDisplayName(ItemStack stack)
     {
-        final ItemMeta meta = this.getMeta(stack);
+        final ItemMeta meta = ItemHelper1_8_5.getMeta(stack);
         return meta == null ? null : meta.getDisplayName();
     }
-
+    
     @Override
     public String[] getDescription(ItemStack stack)
     {
-        final ItemMeta meta = this.getMeta(stack);
+        final ItemMeta meta = ItemHelper1_8_5.getMeta(stack);
         return meta == null ? null : meta.getLore().toArray(new String[0]);
     }
-
+    
     @Override
     public void createMinable(Random random, Location location, int blockId, int meta, int size)
     {
@@ -289,12 +337,13 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(blockId);
         final IBlockData data = block.fromLegacyData(meta);
         final WorldGenMinable minable = new WorldGenMinable(data, size);
-        minable.generate(((CraftWorld)location.getWorld()).getHandle(), random, pos);
+        minable.generate(((CraftWorld) location.getWorld()).getHandle(), random, pos);
     }
     
     @Override
     public ItemStack addToInventory(Inventory inventory, ItemStack item)
     {
+        @SuppressWarnings("deprecation")
         final int typeId = item.getTypeId();
         final int meta = this.getVariant(item);
         
@@ -310,6 +359,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
                 }
                 if (item.getAmount() > inventory.getMaxStackSize())
                 {
+                    @SuppressWarnings("deprecation")
                     final ItemStack stack = new ItemStack(typeId, inventory.getMaxStackSize(), (short) meta);
                     InventoryManager1_8_5.setContents((CraftInventory) inventory, stack, firstFree);
                     item.setAmount(item.getAmount() - inventory.getMaxStackSize());
@@ -340,11 +390,13 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
     
     /**
      * Returns the first partial
+     * 
      * @param inv
      * @param typeId
      * @param meta
      * @return partial index
      */
+    @SuppressWarnings("deprecation")
     private int firstPartial(Inventory inv, int typeId, int meta)
     {
         ItemStack[] inventory = inv.getContents();
@@ -358,38 +410,43 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
         }
         return -1;
     }
-
+    
     @Override
     public void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
-        ((CustomBlock)net.minecraft.server.v1_8_R3.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
+        ((CustomBlock) net.minecraft.server.v1_8_R3.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
     }
-
+    
+    @SuppressWarnings("deprecation")
     @Override
     public void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience)
     {
-        RecipesFurnace.getInstance().a(
-                InventoryManager1_8_5.convertToNms(new ItemStack(blockId, 1, (short) variant)),
-                InventoryManager1_8_5.convertToNms(stack),
-                experience);
+        RecipesFurnace.getInstance().a(InventoryManager1_8_5.convertToNms(new ItemStack(blockId, 1, (short) variant)), InventoryManager1_8_5.convertToNms(stack), experience);
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    public void installFurnaceRecipe(int itemId, ItemStack receipe, float experience)
+    {
+        RecipesFurnace.getInstance().a(InventoryManager1_8_5.convertToNms(new ItemStack(itemId, 1)), InventoryManager1_8_5.convertToNms(receipe), experience);
     }
     
     @Override
     public void installFurnaceRecipe(Material material, short itemStackDurability, ItemStack receipe, float experience)
     {
-        // TODO Auto-generated method stub
+        LOGGER.log(Level.WARNING, "Problems installing furnace recipe for unmodded items; not yet supported"); //$NON-NLS-1$
     }
     
     @Override
     public void initNmsItem(Material material)
     {
-        // TODO Auto-generated method stub
+        // silently ignore; may be used in future versions to support unmodded items in recipe etc.
     }
     
     @Override
     public void setStackSize(Material material, short itemStackDurability, int stackSize)
     {
-        // TODO Auto-generated method stub
+        LOGGER.log(Level.WARNING, "Problems setting stack size for unmodded items; not yet supported"); //$NON-NLS-1$
     }
     
     @Override
@@ -417,6 +474,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             {
                 data[i] = Character.valueOf(c);
                 ++i;
+                @SuppressWarnings("deprecation")
                 int id = mdata.getTypeId();
                 short dmg = mdata.getDurability();
                 data[i] = new net.minecraft.server.v1_8_R3.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
@@ -448,6 +506,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             {
                 data[i] = Character.valueOf(c);
                 ++i;
+                @SuppressWarnings("deprecation")
                 int id = mdata.getTypeId();
                 short dmg = mdata.getDurability();
                 data[i] = new net.minecraft.server.v1_8_R3.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
@@ -464,10 +523,12 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        {
+            @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
             short dmg = mdata.getDurability();
-            data[i] = new net.minecraft.server.v1_8_R3.ItemStack(CraftMagicNumbers.getItem(id), mdata.getAmount(), dmg);
+            data[i] = new net.minecraft.server.v1_8_R3.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
             ++i;
         }
         final net.minecraft.server.v1_8_R3.ItemStack nms = InventoryManager1_8_5.convertToNms(item);
@@ -481,15 +542,46 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        {
+            @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
             short dmg = mdata.getDurability();
-            data[i] = new net.minecraft.server.v1_8_R3.ItemStack(CraftMagicNumbers.getItem(id), mdata.getAmount(), dmg);
+            data[i] = new net.minecraft.server.v1_8_R3.ItemStack(Item.getById(id), mdata.getAmount(), dmg);
             ++i;
         }
         final net.minecraft.server.v1_8_R3.ItemStack nms = new net.minecraft.server.v1_8_R3.ItemStack(Item.getById(blockId), amount, (short) variant);
         CraftingManager.getInstance().registerShapelessRecipe(nms, data);
         CraftingManager.getInstance().sort();
+    }
+
+    @Override
+    public void setItemMeta(int itemId, double damage, double speed, float damageVsEntity, int itemEnchantability)
+    {
+        final CustomItem item = (CustomItem) Item.getById(itemId);
+        item.setAttackModifiers(damage, speed);
+        item.setDmgVsEntity(damageVsEntity);
+        item.setItemEnchantability(itemEnchantability);
+    }
+
+    @Override
+    public void setItemMeta(Material material, short itemStackDurability, double damage, double speed, float damageVsEntity, int itemEnchantability)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void setItemRules(int itemId, int durability, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomItem item = (CustomItem) Item.getById(itemId);
+        item.setMaxDurability(durability);
+        item.setItemRules(nmsItemRule);
+    }
+
+    @Override
+    public void setItemRules(Material material, short itemStackDurability, int durability, NmsItemRuleInterface nmsItemRule)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item rules for unmodded items; not yet supported"); //$NON-NLS-1$
     }
     
 }

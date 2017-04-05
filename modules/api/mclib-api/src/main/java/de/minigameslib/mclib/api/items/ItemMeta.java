@@ -25,42 +25,44 @@
 package de.minigameslib.mclib.api.items;
 
 import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Some item meta data
+ * 
  * @author mepeisen
  *
  */
-@Retention(RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
-public @interface ItemData
+public @interface ItemMeta
 {
     
     /**
-     * Returns the resource paths to the textures
-     * @return resource paths to textures
+     * the attack damage
+     * @return attack damage
      */
-    String[] textures();
+    double damage();
     
     /**
-     * the custom item model json
-     * @return custom item model json
+     * the attack speed
+     * @return attack speed
      */
-    String modelJson();
+    double speed();
+
+    /**
+     * Returns the amount of damage this item will deal. One heart of damage is equal to 2 damage points.
+     * @return Returns the amount of damage this item will deal. One heart of damage is equal to 2 damage points.
+     */
+    float damageVsEntity();
     
     /**
-     * Returns true for modded items
-     * @return true for modded items supporting durability, meta and other options
+     * Return the enchantability factor of the item, most of the time is based on material
+     * @return Return the enchantability factor of the item, most of the time is based on material
      */
-    boolean modEnabled() default false;
-    
-    /**
-     * Returns the provider for getting the item name.
-     * @return provider for getting the name.
-     */
-    Class<? extends NameProvider> name() default NullNameProvider.class;
+    int getItemEnchantability();
     
 }

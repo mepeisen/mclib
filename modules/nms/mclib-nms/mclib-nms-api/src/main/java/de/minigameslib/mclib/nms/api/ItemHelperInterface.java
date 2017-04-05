@@ -79,6 +79,11 @@ public interface ItemHelperInterface
     void initBlocks();
     
     /**
+     * Initializes the custom items
+     */
+    void initItems();
+    
+    /**
      * Sets the block custom type and variant
      * @param block
      * @param type
@@ -166,6 +171,13 @@ public interface ItemHelperInterface
     void installFurnaceRecipe(Material material, short itemStackDurability, ItemStack receipe, float experience);
 
     /**
+     * @param itemId
+     * @param receipe
+     * @param experience
+     */
+    void installFurnaceRecipe(int itemId, ItemStack receipe, float experience);
+
+    /**
      * Initializes the given item material and hack the item class
      * @param material
      */
@@ -179,10 +191,10 @@ public interface ItemHelperInterface
     void setStackSize(Material material, short itemStackDurability, int stackSize);
 
     /**
-     * @param blockId
+     * @param blockOrItemId
      * @param stackSize
      */
-    void setStackSize(int blockId, int stackSize);
+    void setStackSize(int blockOrItemId, int stackSize);
 
     /**
      * @param item
@@ -215,5 +227,46 @@ public interface ItemHelperInterface
      * @param shapelessItems
      */
     void installShapelessRecipe(int blockId, int variant, int amount, ItemStack[] shapelessItems);
+
+    /**
+     * @param numId
+     * @param name
+     * @return item stack
+     */
+    ItemStack createItemStackForItem(int numId, String name);
+
+    /**
+     * @param itemId
+     * @param damage
+     * @param speed
+     * @param damageVsEntity
+     * @param itemEnchantability
+     */
+    void setItemMeta(int itemId, double damage, double speed, float damageVsEntity, int itemEnchantability);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param damage
+     * @param speed
+     * @param damageVsEntity
+     * @param itemEnchantability
+     */
+    void setItemMeta(Material material, short itemStackDurability, double damage, double speed, float damageVsEntity, int itemEnchantability);
+
+    /**
+     * @param itemId
+     * @param durability
+     * @param nmsItemRule
+     */
+    void setItemRules(int itemId, int durability, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param durability
+     * @param nmsItemRule
+     */
+    void setItemRules(Material material, short itemStackDurability, int durability, NmsItemRuleInterface nmsItemRule);
     
 }

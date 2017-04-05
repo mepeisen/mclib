@@ -48,6 +48,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -80,6 +82,10 @@ import de.minigameslib.mclib.api.items.CraftingShapedItem;
 import de.minigameslib.mclib.api.items.CraftingShapedRecipe;
 import de.minigameslib.mclib.api.items.CraftingShapelessRecipe;
 import de.minigameslib.mclib.api.items.FurnaceRecipeInterface;
+import de.minigameslib.mclib.api.items.ItemDurability;
+import de.minigameslib.mclib.api.items.ItemDurability.ItemDigInterface;
+import de.minigameslib.mclib.api.items.ItemDurability.ItemDmgInterface;
+import de.minigameslib.mclib.api.items.ItemDurability.ItemRepairInterface;
 import de.minigameslib.mclib.api.items.ItemId;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
@@ -91,6 +97,7 @@ import de.minigameslib.mclib.impl.McCoreConfig;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
@@ -114,13 +121,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     private final Map<Material, Map<Short, CustomItem>> itemsPerMaterial = new HashMap<>();
     
     /** the block to numId map. */
-    private Map<CustomItem, Object[]>                   itemMap          = new HashMap<>();
+    private Map<CustomItem, ItemInfo>                   itemMap          = new HashMap<>();
     
     /** the block id to value map. */
     protected Map<BlockId, CustomBlock>                 blockIdMap       = new HashMap<>();
     
     /** the block id to value map. */
-    private Map<Integer, CustomBlock>                   blockNumIdMap    = new HashMap<>();
+    protected Map<Integer, CustomBlock>                 blockNumIdMap    = new HashMap<>();
+    
+    /** the item id to value map. */
+    private Map<Integer, CustomItem>                    itemNumIdMap     = new HashMap<>();
     
     /** the block to numId map. */
     private Map<CustomBlock, Integer>                   blockMap         = new HashMap<>();
@@ -151,6 +161,81 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         for (final CustomItemTypes type : CustomItemTypes.values())
         {
             helper.initNmsItem(type.getMaterial());
+        }
+    }
+    
+    /**
+     * @author mepeisen
+     *
+     */
+    private final class NmsItemRule implements NmsItemRuleInterface
+    {
+        /**
+         * 
+         */
+        private final ItemDmgInterface    dmg;
+        /**
+         * 
+         */
+        private final ItemRepairInterface rep;
+        /**
+         * 
+         */
+        private final ItemDigInterface    dig;
+        
+        /**
+         * @param dmg
+         * @param rep
+         * @param dig
+         */
+        protected NmsItemRule(ItemDmgInterface dmg, ItemRepairInterface rep, ItemDigInterface dig)
+        {
+            this.dmg = dmg;
+            this.rep = rep;
+            this.dig = dig;
+        }
+        
+        @Override
+        public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)
+        {
+            return this.rep.getIsRepairable(toRepair, repair);
+        }
+        
+        @SuppressWarnings("deprecation")
+        @Override
+        public float getHarvestSpeed(ItemStack stack, int blockId, int variantId)
+        {
+            if (blockId < MclibConstants.MIN_BLOCK_ID)
+            {
+                return this.dig.getHarvestSpeed(stack, Material.getMaterial(blockId));
+            }
+            final BlockId block = ItemServiceImpl.this.blockNumIdMap.get(blockId).getBlockId();
+            return this.dig.getHarvestSpeed(stack, block, block.variants()[variantId]);
+        }
+        
+        @Override
+        public int getDamageByEntity(ItemStack stack, Entity target, Player player)
+        {
+            return this.dmg.getDamageByEntity(stack, target, player);
+        }
+        
+        @Override
+        public int getDamageByBlock(ItemStack stack, int blockId, int variantId, Location location, Player player)
+        {
+            return this.dig.getDamageByBlock(stack, location.getBlock(), player);
+        }
+        
+        @Override
+        public boolean canHarvest(int block, int variant)
+        {
+            final BlockId blockId = ItemServiceImpl.this.blockNumIdMap.get(block).getBlockId();
+            return this.dig.canHarvest(blockId, blockId.variants()[variant]);
+        }
+        
+        @Override
+        public boolean canHarvest(Material material)
+        {
+            return this.dig.canHarvest(material);
         }
     }
     
@@ -228,10 +313,18 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         // load from config
         for (final CustomItem item : this.loadItems())
         {
-            final Material material = item.getCustomType().getMaterial();
-            final short durability = item.getDurability();
-            this.itemsPerMaterial.computeIfAbsent(material, m -> new HashMap<>()).put(durability, item);
-            this.itemMap.put(item, new Object[] { material, durability });
+            if (item.getNumId() > 0)
+            {
+                this.itemNumIdMap.put(item.getNumId(), item);
+                this.itemMap.put(item, new ItemInfo(null, (short) 0, item.getNumId()));
+            }
+            else
+            {
+                final Material material = item.getCustomType().getMaterial();
+                final short durability = item.getDurability();
+                this.itemsPerMaterial.computeIfAbsent(material, m -> new HashMap<>()).put(durability, item);
+                this.itemMap.put(item, new ItemInfo(material, durability, 0));
+            }
         }
         
         final Stream<ItemId> stream = EnumServiceInterface.instance().getEnumValues(ItemId.class).stream();
@@ -243,7 +336,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     protected void initItems(final Stream<ItemId> stream)
     {
-        final Stack<CustomItem> newItems = new Stack<>();
+        final Stack<CustomItem> newSimpleItems = new Stack<>();
+        final Stack<CustomItem> newModdedItems = new Stack<>();
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         
         // parse items from plugins
@@ -261,8 +355,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             if (this.itemMap.containsKey(custom))
             {
                 // we found the item
-                final Object[] key = this.itemMap.get(custom);
-                final CustomItem custom2 = this.itemsPerMaterial.get(key[0]).get(key[1]);
+                final ItemInfo key = this.itemMap.get(custom);
+                final CustomItem custom2 = key.getNumId() > 0 ? this.itemNumIdMap.get(key.getNumId()) : this.itemsPerMaterial.get(key.getMaterial()).get(key.getDurability());
                 custom2.setItemId(item);
                 custom2.setCustomDurability(custom2.getCustomType().getDurabilities()[custom2.getDurability() - 1]);
                 this.itemIdMap.put(item, custom2);
@@ -271,12 +365,19 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             {
                 // this is a new item
                 custom.setItemId(item);
-                newItems.add(custom);
+                if (item.isModded())
+                {
+                    newModdedItems.add(custom);
+                }
+                else
+                {
+                    newSimpleItems.add(custom);
+                }
                 this.itemIdMap.put(item, custom);
             }
         }
         
-        if (!newItems.isEmpty())
+        if (!newSimpleItems.isEmpty())
         {
             for (final CustomItemTypes type : CustomItemTypes.values())
             {
@@ -286,13 +387,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     if (this.itemsPerMaterial.get(type.getMaterial()).containsKey(dur.getItemStackDurability()))
                         continue;
                     
-                    final CustomItem item = newItems.pop();
+                    final CustomItem item = newSimpleItems.pop();
                     item.setCustomDurability(dur);
                     item.setCustomType(type);
                     this.itemsPerMaterial.get(type.getMaterial()).put(dur.getItemStackDurability(), item);
-                    this.itemMap.put(item, new Object[] { type.getMaterial(), dur.getItemStackDurability() });
+                    this.itemMap.put(item, new ItemInfo(type.getMaterial(), dur.getItemStackDurability(), 0));
                     
-                    if (newItems.isEmpty())
+                    if (newSimpleItems.isEmpty())
                     {
                         this.saveItems(this.itemMap.keySet().toArray(new CustomItem[this.itemMap.size()]));
                         break;
@@ -300,9 +401,34 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
             }
             
-            if (!newItems.isEmpty())
+            if (!newSimpleItems.isEmpty())
             {
-                // TODO warn: too much items
+                LOGGER.severe("Too much simple items. Items will be broken"); //$NON-NLS-1$
+            }
+        }
+        
+        if (!newModdedItems.isEmpty())
+        {
+            for (int i = MclibConstants.MIN_ITEM_ID; i < MclibConstants.MAX_ITEM_ID; i++)
+            {
+                if (this.itemNumIdMap.containsKey(i))
+                    continue;
+                
+                final CustomItem item = newModdedItems.pop();
+                item.setNumId(i);
+                this.itemNumIdMap.put(i, item);
+                this.itemMap.put(item, new ItemInfo(null, (short) 0, i));
+                
+                if (newModdedItems.isEmpty())
+                {
+                    this.saveItems(this.itemMap.keySet().toArray(new CustomItem[this.itemMap.size()]));
+                    break;
+                }
+            }
+            
+            if (!newModdedItems.isEmpty())
+            {
+                LOGGER.severe("Too much modded items. Items will be broken"); //$NON-NLS-1$
             }
         }
         
@@ -315,14 +441,29 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final FurnaceRecipeInterface furnaceRecipe = item.furnaceRecipe();
             if (furnaceRecipe != null)
             {
-                this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installFurnaceRecipe(custom.getCustomType().getMaterial(),
-                        custom.getCustomDurability().getItemStackDurability(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+                if (custom.getNumId() > 0)
+                {
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
+                            .add(() -> helper.installFurnaceRecipe(custom.getNumId(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+                }
+                else
+                {
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installFurnaceRecipe(custom.getCustomType().getMaterial(),
+                            custom.getCustomDurability().getItemStackDurability(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+                }
             }
             
             // stack size
             if (item.stackSize() > 1)
             {
-                helper.setStackSize(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), item.stackSize());
+                if (custom.getNumId() > 0)
+                {
+                    helper.setStackSize(custom.getNumId(), item.stackSize());
+                }
+                else
+                {
+                    helper.setStackSize(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), item.stackSize());
+                }
             }
             
             // crafting
@@ -331,13 +472,52 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             {
                 for (final CraftingShapedRecipe shaped : crafting.shaped())
                 {
-                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installShapedRecipe(
-                            createItem(item), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
+                            .add(() -> helper.installShapedRecipe(createItem(item), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
                 }
                 for (final CraftingShapelessRecipe shapeless : crafting.shapeless())
                 {
-                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installShapelessRecipe(
-                            createItem(item), shapeless.amount(), toShapelessItems(shapeless.items())));
+                    this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
+                            .add(() -> helper.installShapelessRecipe(createItem(item), shapeless.amount(), toShapelessItems(shapeless.items())));
+                }
+            }
+            
+            // meta
+            final de.minigameslib.mclib.api.items.ItemMeta meta = item.meta();
+            if (meta != null)
+            {
+                if (custom.getNumId() > 0)
+                {
+                    helper.setItemMeta(custom.getNumId(), meta.damage(), meta.speed(), meta.damageVsEntity(), meta.getItemEnchantability());
+                }
+                else
+                {
+                    helper.setItemMeta(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), meta.damage(), meta.speed(), meta.damageVsEntity(),
+                            meta.getItemEnchantability());
+                }
+            }
+            
+            // durability
+            final ItemDurability durability = item.durability();
+            if (durability != null)
+            {
+                try
+                {
+                    final ItemDurability.ItemDigInterface dig = durability.digRule().newInstance();
+                    final ItemDurability.ItemDmgInterface dmg = durability.dmgRule().newInstance();
+                    final ItemDurability.ItemRepairInterface rep = durability.repairRule().newInstance();
+                    if (custom.getNumId() > 0)
+                    {
+                        helper.setItemRules(custom.getNumId(), durability.durability(), new NmsItemRule(dmg, rep, dig));
+                    }
+                    else
+                    {
+                        helper.setItemRules(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), durability.durability(), new NmsItemRule(dmg, rep, dig));
+                    }
+                }
+                catch (InstantiationException | IllegalAccessException e)
+                {
+                    throw new IllegalStateException(e);
                 }
             }
         }
@@ -458,7 +638,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             
             if (!newBlocks.isEmpty())
             {
-                // TODO warn: too much blocks
+                LOGGER.severe("Too much modded blocks. Blocks will be broken"); //$NON-NLS-1$
             }
         }
         
@@ -680,6 +860,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ItemStack createItem(ItemId item, String name)
     {
         final CustomItem custom = this.itemIdMap.get(item);
+        if (custom.getNumId() > 0)
+        {
+            return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForItem(custom.getNumId(), name);
+        }
+        
         final ItemStack itemStack = new ItemStack(custom.getCustomType().getMaterial(), 1, custom.getCustomDurability().getItemStackDurability());
         final ItemMeta meta = itemStack.getItemMeta();
         meta.spigot().setUnbreakable(true);
@@ -713,9 +898,15 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         return createItem(item, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public ItemId getItemId(ItemStack stack)
     {
+        if (stack.getTypeId() >= MclibConstants.MIN_ITEM_ID)
+        {
+            final CustomItem custom = this.itemNumIdMap.get(stack.getTypeId());
+            return custom == null ? null : custom.getItemId();
+        }
         final Map<Short, CustomItem> map = this.itemsPerMaterial.get(stack.getData().getItemType());
         if (map != null)
         {
@@ -785,6 +976,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         try
         {
             final BlockId blockId = block.getBlockId();
+            if (blockId == null)
+            {
+                LOGGER.warning("Missing block " + block.getPluginName() + "/" + block.getEnumName() + "\nThis may not be a problem if the block is no more in use."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return;
+            }
+            
             final JarEntry blockStatesJson = new JarEntry("assets/mclib/blockstates/custom-" + numId + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
             blockStatesJson.setTime(System.currentTimeMillis());
             jar.putNextEntry(blockStatesJson);
@@ -878,7 +1075,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             if (item.getItemId() == null)
             {
-                // TODO logging, missing item
+                LOGGER.warning("Missing item " + item.getPluginName() + "/" + item.getEnumName() + "\nThis may not be a problem if the item is no more in use."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 continue;
             }
             try
@@ -953,9 +1150,53 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.itemsPerMaterial.forEach((material, map) -> this.writeItemModel(jar, material, map));
             
             this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
+            
+            this.itemNumIdMap.forEach((numId, item) -> this.writeItems(jar, numId, item));
         }
     }
     
+    /**
+     * @param jar
+     * @param numId
+     * @param item
+     */
+    private void writeItems(JarOutputStream jar, Integer numId, CustomItem item)
+    {
+        try
+        {
+            // textures
+            final List<String> textures = new ArrayList<>();
+            for (final String texture : item.getItemId().getTextures())
+            {
+                final File path = new File(texture);
+                final String filename = path.getName();
+                final String file = Files.getNameWithoutExtension(filename);
+                textures.add("items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                try
+                {
+                    final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                    textureEntry.setTime(System.currentTimeMillis());
+                    jar.putNextEntry(textureEntry);
+                    copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);
+                }
+                catch (IOException e)
+                {
+                    LOGGER.log(Level.WARNING, "IOException writing texture " + item.getPluginName() + '/' + item.getEnumName() + '_' + filename, e); //$NON-NLS-1$
+                }
+            }
+            
+            // model json
+            final JarEntry modelJson = new JarEntry("assets/mclib/models/item/custom-" + numId + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+            modelJson.setTime(System.currentTimeMillis());
+            jar.putNextEntry(modelJson);
+            writeFile(jar, String.format(item.getItemId().getModelJson(), textures.toArray()));
+        }
+        catch (IOException e)
+        {
+            LOGGER.log(Level.WARNING, "IOException writing item " + item.getPluginName() + '/' + item.getEnumName(), e); //$NON-NLS-1$
+        }
+    }
+
     /**
      * @param jar
      * @param content
@@ -1011,6 +1252,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ToolBuilderInterface prepareTool(ItemId item, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
     {
+        if (item.isModded())
+            throw new IllegalStateException("modded items not yet supported"); // TODO support modded items (check for client mod) //$NON-NLS-1$
         return new ToolBuilderInterface() {
             
             /** flag for single use */
@@ -1496,6 +1739,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public BlockId getBlockId(ItemStack stack)
     {
+        @SuppressWarnings("deprecation")
         final int typeId = stack.getTypeId();
         final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
         return customBlock == null ? null : customBlock.getBlockId();
@@ -1504,6 +1748,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public BlockId getBlockId(Block block)
     {
+        @SuppressWarnings("deprecation")
         final int typeId = block.getTypeId();
         final CustomBlock customBlock = this.blockNumIdMap.get(typeId);
         return customBlock == null ? null : customBlock.getBlockId();
@@ -1638,6 +1883,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack)
     {
+        @SuppressWarnings("deprecation")
         final int typeId = stack.getTypeId();
         if (typeId < MclibConstants.MIN_BLOCK_ID)
         {
@@ -1647,7 +1893,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Populate ping data with block info
+     * Populate ping data with block/item info
      * 
      * @param ping
      */
@@ -1658,6 +1904,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final int blockId = this.blockIdMap.get(block).getNumId();
             final BlockMeta meta = block.meta();
             ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
+        }
+        for (final ItemId item : this.itemIdMap.keySet())
+        {
+            final int itemId = this.itemIdMap.get(item).getNumId();
+            if (itemId > 0)
+            {
+                final de.minigameslib.mclib.api.items.ItemMeta meta = item.meta();
+                final ItemDurability durability = item.durability();
+                ping.addMeta(itemId, durability == null ? 0 : durability.durability(), meta == null ? 0.0f : meta.speed(), meta == null ? 0.0f : meta.damage());
+            }
         }
     }
     
@@ -1672,6 +1928,55 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (list != null)
         {
             list.forEach(Runnable::run);
+        }
+    }
+    
+    /**
+     * the item info
+     */
+    private static final class ItemInfo
+    {
+        /** material */
+        private final Material material;
+        /** durability */
+        private final short    durability;
+        /** numeric id */
+        private final int      numId;
+        
+        /**
+         * @param material
+         * @param durability
+         * @param numId
+         */
+        public ItemInfo(Material material, short durability, int numId)
+        {
+            this.material = material;
+            this.durability = durability;
+            this.numId = numId;
+        }
+        
+        /**
+         * @return the material
+         */
+        public Material getMaterial()
+        {
+            return this.material;
+        }
+        
+        /**
+         * @return the durability
+         */
+        public short getDurability()
+        {
+            return this.durability;
+        }
+        
+        /**
+         * @return the numId
+         */
+        public int getNumId()
+        {
+            return this.numId;
         }
     }
     

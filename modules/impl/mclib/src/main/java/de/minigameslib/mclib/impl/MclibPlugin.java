@@ -449,6 +449,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
         factory.create(ItemHelperInterface.class).initBlocks();
+        factory.create(ItemHelperInterface.class).initItems();
         Bukkit.getServicesManager().register(EventSystemInterface.class, factory.create(EventSystemInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(InventoryManagerInterface.class, factory.create(InventoryManagerInterface.class), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(AnvilManagerInterface.class, factory.create(AnvilManagerInterface.class), this, ServicePriority.Highest);

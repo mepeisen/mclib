@@ -53,6 +53,12 @@ public class CustomItem extends AnnotatedDataFragment
     @PersistentField
     protected short durability;
     
+    /**
+     * the numeric item id for modded items
+     */
+    @PersistentField
+    protected int numId;
+    
     /** the durability. */
     private Durability customDurability;
     
@@ -89,6 +95,22 @@ public class CustomItem extends AnnotatedDataFragment
         this.pluginName = pluginName;
         this.enumName = enumName;
         this.setItemId(itemId);
+    }
+
+    /**
+     * @return the numId
+     */
+    public int getNumId()
+    {
+        return this.numId;
+    }
+
+    /**
+     * @param numId the numId to set
+     */
+    public void setNumId(int numId)
+    {
+        this.numId = numId;
     }
 
     /**
