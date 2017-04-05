@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.api.items;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
 
 /**
@@ -154,14 +157,14 @@ public interface ItemId extends McUniqueEnumInterface
     }
     
     /**
-     * The meta data
-     * @return item meta data
+     * The armor data
+     * @return item armor data
      */
-    default ItemMeta meta()
+    default ItemArmor armor()
     {
         try
         {
-            final ItemMeta data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemMeta.class);
+            final ItemArmor data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemArmor.class);
             return data;
         }
         catch (NoSuchFieldException ex)
@@ -171,20 +174,123 @@ public interface ItemId extends McUniqueEnumInterface
     }
     
     /**
-     * The durability data
-     * @return item durability data
+     * The sword data
+     * @return item sword data
      */
-    default ItemDurability durability()
+    default ItemSword sword()
     {
         try
         {
-            final ItemDurability data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemDurability.class);
+            final ItemSword data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemSword.class);
             return data;
         }
         catch (NoSuchFieldException ex)
         {
             throw new IllegalStateException(ex);
         }
+    }
+    
+    /**
+     * The shovel data
+     * @return item shovel data
+     */
+    default ItemShovel shovel()
+    {
+        try
+        {
+            final ItemShovel data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemShovel.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The pickaxe data
+     * @return item sword data
+     */
+    default ItemPickaxe pickaxe()
+    {
+        try
+        {
+            final ItemPickaxe data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemPickaxe.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The hoe data
+     * @return item hoe data
+     */
+    default ItemHoe hoe()
+    {
+        try
+        {
+            final ItemHoe data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemHoe.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * The axe data
+     * @return item axe data
+     */
+    default ItemAxe axe()
+    {
+        try
+        {
+            final ItemAxe data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemAxe.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
+     * class of items
+     */
+    enum ItemClass
+    {
+        /** armor */
+        Armor,
+        /** sword/weapon */
+        Sword,
+        /** hoe */
+        Hoe,
+        /** axe */
+        Axe,
+        /** pickaxe */
+        Pickaxe,
+        /** shovel */
+        Shovel
+    }
+    
+    /**
+     * Returns the item classes of this item
+     * @return item classes
+     */
+    default ItemClass[] getItemClasses()
+    {
+        final List<ItemClass> result = new ArrayList<>();
+        if (this.armor() != null) result.add(ItemClass.Armor);
+        if (this.sword() != null) result.add(ItemClass.Sword);
+        if (this.hoe() != null) result.add(ItemClass.Hoe);
+        if (this.axe() != null) result.add(ItemClass.Axe);
+        if (this.pickaxe() != null) result.add(ItemClass.Pickaxe);
+        if (this.shovel() != null) result.add(ItemClass.Shovel);
+        return result.toArray(new ItemClass[result.size()]);
     }
     
 }

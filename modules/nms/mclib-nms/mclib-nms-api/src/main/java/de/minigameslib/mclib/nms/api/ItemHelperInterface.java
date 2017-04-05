@@ -33,6 +33,8 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
+
 /**
  * A helper for item stacks
  * 
@@ -236,37 +238,133 @@ public interface ItemHelperInterface
     ItemStack createItemStackForItem(int numId, String name);
 
     /**
-     * @param itemId
-     * @param damage
-     * @param speed
-     * @param damageVsEntity
+     * @param numId
+     * @param dmgReduceAmount
+     * @param durability
      * @param itemEnchantability
+     * @param toughness
+     * @param slot
+     * @param nmsItemRule
      */
-    void setItemMeta(int itemId, double damage, double speed, float damageVsEntity, int itemEnchantability);
+    void initArmor(int numId, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule);
 
     /**
      * @param material
      * @param itemStackDurability
-     * @param damage
-     * @param speed
-     * @param damageVsEntity
-     * @param itemEnchantability
-     */
-    void setItemMeta(Material material, short itemStackDurability, double damage, double speed, float damageVsEntity, int itemEnchantability);
-
-    /**
-     * @param itemId
+     * @param dmgReduceAmount
      * @param durability
+     * @param itemEnchantability
+     * @param toughness
+     * @param slot
      * @param nmsItemRule
      */
-    void setItemRules(int itemId, int durability, NmsItemRuleInterface nmsItemRule);
+    void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param numId
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initAxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
 
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
      * @param nmsItemRule
      */
-    void setItemRules(Material material, short itemStackDurability, int durability, NmsItemRuleInterface nmsItemRule);
+    void initAxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param numId
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initPickaxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initPickaxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param numId
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initHoe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initHoe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param numId
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initShovel(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param durability 
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initShovel(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param numId
+     * @param durability 
+     * @param damageVsEntity
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initSword(int numId, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
+
+    /**
+     * @param material
+     * @param itemStackDurability
+     * @param durability 
+     * @param damageVsEntity
+     * @param damage
+     * @param itemEnchantability
+     * @param speed
+     * @param nmsItemRule
+     */
+    void initSword(Material material, short itemStackDurability, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
     
 }

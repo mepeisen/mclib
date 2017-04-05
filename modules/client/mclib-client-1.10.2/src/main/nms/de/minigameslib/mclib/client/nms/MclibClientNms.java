@@ -30,6 +30,7 @@ import java.util.List;
 
 import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.pshared.PingData.BlockMetaData;
+import de.minigameslib.mclib.pshared.PingData.ItemMetaData;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -78,11 +79,11 @@ public class MclibClientNms
         {
             Field field = Block.REGISTRY.getClass().getDeclaredField("maxId"); //$NON-NLS-1$
             field.setAccessible(true);
-            field.set(Block.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+            field.set(Block.REGISTRY, Integer.valueOf(MclibConstants.MAX_ITEM_ID));
             
             field = Item.REGISTRY.getClass().getDeclaredField("maxId"); //$NON-NLS-1$
             field.setAccessible(true);
-            field.set(Item.REGISTRY, Integer.valueOf(MclibConstants.MAX_BLOCK_ID));
+            field.set(Item.REGISTRY, Integer.valueOf(MclibConstants.MAX_ITEM_ID));
 
             final Method itemAdd = Item.REGISTRY.getClass().getDeclaredMethod("add", int.class, ResourceLocation.class, IForgeRegistryEntry.class); //$NON-NLS-1$
             itemAdd.setAccessible(true);
@@ -96,6 +97,12 @@ public class MclibClientNms
                 
                 final ItemBlock item = new MyItemBlock(block);
                 item.setRegistryName(block.getRegistryName());
+                itemAdd.invoke(Item.REGISTRY, i, item.getRegistryName(), item);
+            }
+            
+            for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
+            {
+                final Item item = new MyItem("custom-" + i); //$NON-NLS-1$
                 itemAdd.invoke(Item.REGISTRY, i, item.getRegistryName(), item);
             }
         }
@@ -119,11 +126,22 @@ public class MclibClientNms
         }
     }
 
-    public static void setItemMeta(List<BlockMetaData> meta)
+    public static void setBlockMeta(List<BlockMetaData> meta)
     {
         for (final BlockMetaData data : meta)
         {
             Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
+        }
+    }
+
+    /**
+     * @param items
+     */
+    public static void setItemMeta(List<ItemMetaData> items)
+    {
+        for (final ItemMetaData data : items)
+        {
+            ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
         }
     }
     

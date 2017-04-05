@@ -66,11 +66,6 @@ public class CustomItem extends Item
     private boolean              attackModifiersUsed = false;
     
     /**
-     * Dmg vs entity (see entity living)
-     */
-    private float                dmgVsEntity;
-    
-    /**
      * item enchantability
      */
     private int                  itemEnchantability;
@@ -94,16 +89,6 @@ public class CustomItem extends Item
     }
     
     /**
-     * Sets the dmg vs entity data
-     * 
-     * @param dmgVsEntity
-     */
-    public void setDmgVsEntity(float dmgVsEntity)
-    {
-        this.dmgVsEntity = dmgVsEntity;
-    }
-    
-    /**
      * Sets the itemEnchantability
      * 
      * @param itemEnchantability
@@ -118,13 +103,6 @@ public class CustomItem extends Item
     {
         return this.itemEnchantability;
     }
-    
-    // TODO only works with ItemSword instance
-    // See EntityLiving.
-    // public float g()
-    // {
-    // return this.dmgVsEntity;
-    // }
     
     @Override
     public Item setMaxDurability(int paramInt)

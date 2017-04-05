@@ -19,4 +19,12 @@ rem         endlocal
 rem     )
 
 set /a COUNTA+=1
-if %COUNTA% lss 4000 goto LOOP
+if %COUNTA% lss 3750 goto LOOP
+
+set /a COUNTA=3750
+
+:LOOP2
+copy models\items.json src\main\resources\assets\mclib\models\item\custom-%COUNTA%.json
+
+set /a COUNTA+=1
+if %COUNTA% lss 4000 goto LOOP2

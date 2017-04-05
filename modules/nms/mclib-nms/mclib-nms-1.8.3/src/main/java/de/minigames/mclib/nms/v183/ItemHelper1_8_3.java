@@ -50,7 +50,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v183.blocks.CustomBlock;
+import de.minigames.mclib.nms.v183.items.CustomArmor;
+import de.minigames.mclib.nms.v183.items.CustomAxe;
+import de.minigames.mclib.nms.v183.items.CustomHoe;
 import de.minigames.mclib.nms.v183.items.CustomItem;
+import de.minigames.mclib.nms.v183.items.CustomPickaxe;
+import de.minigames.mclib.nms.v183.items.CustomShovel;
+import de.minigames.mclib.nms.v183.items.CustomSword;
+import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
@@ -59,10 +66,12 @@ import net.minecraft.server.v1_8_R2.BlockPosition;
 import net.minecraft.server.v1_8_R2.CraftingManager;
 import net.minecraft.server.v1_8_R2.IBlockData;
 import net.minecraft.server.v1_8_R2.Item;
+import net.minecraft.server.v1_8_R2.ItemArmor;
 import net.minecraft.server.v1_8_R2.ItemMultiTexture;
 import net.minecraft.server.v1_8_R2.MinecraftKey;
 import net.minecraft.server.v1_8_R2.NBTTagCompound;
 import net.minecraft.server.v1_8_R2.RecipesFurnace;
+import net.minecraft.server.v1_8_R2.RegistryID;
 import net.minecraft.server.v1_8_R2.WorldGenMinable;
 
 /**
@@ -554,34 +563,172 @@ public class ItemHelper1_8_3 implements ItemHelperInterface
         CraftingManager.getInstance().registerShapelessRecipe(nms, data);
         CraftingManager.getInstance().sort();
     }
-
-    @Override
-    public void setItemMeta(int itemId, double damage, double speed, float damageVsEntity, int itemEnchantability)
+    
+    /**
+     * Replaces a custom item with given modded (=special) item
+     * @param itemId
+     * @param newItem
+     */
+    private void replaceModdedItem(int itemId, Item newItem)
     {
-        final CustomItem item = (CustomItem) Item.getById(itemId);
-        item.setAttackModifiers(damage, speed);
-        item.setDmgVsEntity(damageVsEntity);
-        item.setItemEnchantability(itemEnchantability);
+        try
+        {
+            final Field bMapField = net.minecraft.server.v1_8_R2.RegistryMaterials.class.getDeclaredField("b"); //$NON-NLS-1$
+            bMapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final Map<Item, MinecraftKey> bMap = (Map<Item, MinecraftKey>) bMapField.get(Item.REGISTRY);
+            
+            final Field aMapField = net.minecraft.server.v1_8_R2.RegistryMaterials.class.getDeclaredField("a"); //$NON-NLS-1$
+            aMapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final RegistryID<Item> aMap = (RegistryID<Item>) aMapField.get(Item.REGISTRY);
+            
+            bMap.put(newItem, bMap.remove(Item.getById(itemId)));
+            aMap.a(newItem, itemId);
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * @param slot
+     * @return item slot
+     */
+    private int toItemSlot(ArmorSlot slot)
+    {
+        switch (slot)
+        {
+            case Boots:
+                return 3;
+            case Chestplate:
+                return 1;
+            case Helmet:
+                return 0;
+            case Leggins:
+                return 2;
+            default:
+                return 0;
+        }
     }
 
     @Override
-    public void setItemMeta(Material material, short itemStackDurability, double damage, double speed, float damageVsEntity, int itemEnchantability)
+    public void initArmor(int numId, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomArmor armor = new CustomArmor(toItemSlot(slot));
+        armor.setItemEnchantability(itemEnchantability);
+        armor.setItemRules(nmsItemRule);
+        armor.setMaxDurability(durability);
+        try
+        {
+            final Field field1 = ItemArmor.class.getDeclaredField("c"); //$NON-NLS-1$
+            field1.setAccessible(true);
+            field1.set(armor, dmgReduceAmount);
+            
+            // not supported by < 1.9.4
+//            final Field field2 = ItemArmor.class.getDeclaredField("e"); //$NON-NLS-1$
+//            field2.setAccessible(true);
+//            field2.set(armor, toughness);
+            
+            this.replaceModdedItem(numId, armor);
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
 
     @Override
-    public void setItemRules(int itemId, int durability, NmsItemRuleInterface nmsItemRule)
+    public void initAxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
-        final CustomItem item = (CustomItem) Item.getById(itemId);
-        item.setMaxDurability(durability);
-        item.setItemRules(nmsItemRule);
+        final CustomAxe axe = new CustomAxe();
+        axe.setMaxDurability(durability);
+        axe.setAttackModifiers(damage, speed);
+        axe.setItemEnchantability(itemEnchantability);
+        axe.setItemRules(nmsItemRule);
+        this.replaceModdedItem(numId, axe);
     }
 
     @Override
-    public void setItemRules(Material material, short itemStackDurability, int durability, NmsItemRuleInterface nmsItemRule)
+    public void initAxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
-        LOGGER.log(Level.WARNING, "Problems installing item rules for unmodded items; not yet supported"); //$NON-NLS-1$
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void initPickaxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomPickaxe pickaxe = new CustomPickaxe();
+        pickaxe.setMaxDurability(durability);
+        pickaxe.setAttackModifiers(damage, speed);
+        pickaxe.setItemEnchantability(itemEnchantability);
+        pickaxe.setItemRules(nmsItemRule);
+        this.replaceModdedItem(numId, pickaxe);
+    }
+
+    @Override
+    public void initPickaxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void initHoe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomHoe hoe = new CustomHoe();
+        hoe.setMaxDurability(durability);
+        hoe.setAttackModifiers(damage, speed);
+        hoe.setItemEnchantability(itemEnchantability);
+        hoe.setItemRules(nmsItemRule);
+        this.replaceModdedItem(numId, hoe);
+    }
+
+    @Override
+    public void initHoe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void initShovel(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomShovel shovel = new CustomShovel();
+        shovel.setMaxDurability(durability);
+        shovel.setAttackModifiers(damage, speed);
+        shovel.setItemEnchantability(itemEnchantability);
+        shovel.setItemRules(nmsItemRule);
+        this.replaceModdedItem(numId, shovel);
+    }
+
+    @Override
+    public void initShovel(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void initSword(int numId, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        final CustomSword sword = new CustomSword();
+        sword.setDmgVsEntity(damageVsEntity);
+        sword.setMaxDurability(durability);
+        sword.setAttackModifiers(damage, speed);
+        sword.setItemEnchantability(itemEnchantability);
+        sword.setItemRules(nmsItemRule);
+        this.replaceModdedItem(numId, sword);
+    }
+
+    @Override
+    public void initSword(Material material, short itemStackDurability, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    {
+        LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
     
 }

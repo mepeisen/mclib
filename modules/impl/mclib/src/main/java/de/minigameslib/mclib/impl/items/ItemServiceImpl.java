@@ -82,12 +82,18 @@ import de.minigameslib.mclib.api.items.CraftingShapedItem;
 import de.minigameslib.mclib.api.items.CraftingShapedRecipe;
 import de.minigameslib.mclib.api.items.CraftingShapelessRecipe;
 import de.minigameslib.mclib.api.items.FurnaceRecipeInterface;
-import de.minigameslib.mclib.api.items.ItemDurability;
-import de.minigameslib.mclib.api.items.ItemDurability.ItemDigInterface;
-import de.minigameslib.mclib.api.items.ItemDurability.ItemDmgInterface;
-import de.minigameslib.mclib.api.items.ItemDurability.ItemRepairInterface;
+import de.minigameslib.mclib.api.items.ItemArmor;
+import de.minigameslib.mclib.api.items.ItemAxe;
+import de.minigameslib.mclib.api.items.ItemDigInterface;
+import de.minigameslib.mclib.api.items.ItemDmgInterface;
+import de.minigameslib.mclib.api.items.ItemHoe;
 import de.minigameslib.mclib.api.items.ItemId;
+import de.minigameslib.mclib.api.items.ItemId.ItemClass;
+import de.minigameslib.mclib.api.items.ItemPickaxe;
+import de.minigameslib.mclib.api.items.ItemRepairInterface;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.items.ItemShovel;
+import de.minigameslib.mclib.api.items.ItemSword;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -482,47 +488,169 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
             }
             
-            // meta
-            final de.minigameslib.mclib.api.items.ItemMeta meta = item.meta();
-            if (meta != null)
+            // aspects
+            final ItemClass[] classes = item.getItemClasses();
+            if (classes.length > 0)
             {
-                if (custom.getNumId() > 0)
+                if (classes.length > 1)
                 {
-                    helper.setItemMeta(custom.getNumId(), meta.damage(), meta.speed(), meta.damageVsEntity(), meta.getItemEnchantability());
+                    LOGGER.warning("Multiple item classes used for " + item.getPluginName() + "/" + item.name() + ". Only first item class will be applied."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
-                else
-                {
-                    helper.setItemMeta(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), meta.damage(), meta.speed(), meta.damageVsEntity(),
-                            meta.getItemEnchantability());
-                }
-            }
-            
-            // durability
-            final ItemDurability durability = item.durability();
-            if (durability != null)
-            {
                 try
                 {
-                    final ItemDurability.ItemDigInterface dig = durability.digRule().newInstance();
-                    final ItemDurability.ItemDmgInterface dmg = durability.dmgRule().newInstance();
-                    final ItemDurability.ItemRepairInterface rep = durability.repairRule().newInstance();
-                    if (custom.getNumId() > 0)
+                    switch (classes[0])
                     {
-                        helper.setItemRules(custom.getNumId(), durability.durability(), new NmsItemRule(dmg, rep, dig));
-                    }
-                    else
-                    {
-                        helper.setItemRules(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), durability.durability(), new NmsItemRule(dmg, rep, dig));
+                        case Armor:
+                            this.initArmor(helper, custom, item, item.armor());
+                            break;
+                        case Axe:
+                            this.initAxe(helper, custom, item, item.axe());
+                            break;
+                        case Hoe:
+                            this.initHoe(helper, custom, item, item.hoe());
+                            break;
+                        case Pickaxe:
+                            this.initPickaxe(helper, custom, item, item.pickaxe());
+                            break;
+                        case Shovel:
+                            this.initShovel(helper, custom, item, item.shovel());
+                            break;
+                        case Sword:
+                            this.initSword(helper, custom, item, item.sword());
+                            break;
+                        default:
+                            LOGGER.warning("Unknown item class for " + item.getPluginName() + "/" + item.name() + ": " + classes[0]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            break;
                     }
                 }
-                catch (InstantiationException | IllegalAccessException e)
+                catch (Exception ex)
                 {
-                    throw new IllegalStateException(e);
+                    LOGGER.log(Level.WARNING, "Problems applying item class", ex); //$NON-NLS-1$
                 }
             }
         }
     }
     
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param sword
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initSword(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemSword sword) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initSword(custom.getNumId(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+        }
+        else
+        {
+            helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+        }
+    }
+
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param shovel
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initShovel(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemShovel shovel) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initShovel(custom.getNumId(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+        }
+        else
+        {
+            helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+        }
+    }
+
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param pickaxe
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initPickaxe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemPickaxe pickaxe) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initPickaxe(custom.getNumId(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+        }
+        else
+        {
+            helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+        }
+    }
+
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param hoe
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initHoe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemHoe hoe) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initHoe(custom.getNumId(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(), new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+        }
+        else
+        {
+            helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(), new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+        }
+    }
+
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param axe
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initAxe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemAxe axe) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initAxe(custom.getNumId(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(), new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+        }
+        else
+        {
+            helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(), new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+        }
+    }
+
+    /**
+     * @param helper 
+     * @param custom
+     * @param item
+     * @param armor
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
+     */
+    private void initArmor(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemArmor armor) throws InstantiationException, IllegalAccessException
+    {
+        if (custom.getNumId() > 0)
+        {
+            helper.initArmor(custom.getNumId(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
+        }
+        else
+        {
+            helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
+        }
+    }
+
     /**
      * @param items
      * @return shapeless items
@@ -1910,9 +2038,39 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final int itemId = this.itemIdMap.get(item).getNumId();
             if (itemId > 0)
             {
-                final de.minigameslib.mclib.api.items.ItemMeta meta = item.meta();
-                final ItemDurability durability = item.durability();
-                ping.addMeta(itemId, durability == null ? 0 : durability.durability(), meta == null ? 0.0f : meta.speed(), meta == null ? 0.0f : meta.damage());
+                final ItemClass[] classes = item.getItemClasses();
+                if (classes.length > 0)
+                {
+                    switch (item.getItemClasses()[0])
+                    {
+                        case Armor:
+                            final ItemArmor armor = item.armor();
+                            ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f);
+                            break;
+                        case Axe:
+                            final ItemAxe axe = item.axe();
+                            ping.addMeta(itemId, axe.durability(), axe.speed(), axe.damage());
+                            break;
+                        case Hoe:
+                            final ItemHoe hoe = item.hoe();
+                            ping.addMeta(itemId, hoe.durability(), hoe.speed(), hoe.damage());
+                            break;
+                        case Pickaxe:
+                            final ItemPickaxe pickaxe = item.pickaxe();
+                            ping.addMeta(itemId, pickaxe.durability(), pickaxe.speed(), pickaxe.damage());
+                            break;
+                        case Shovel:
+                            final ItemShovel shovel = item.shovel();
+                            ping.addMeta(itemId, shovel.durability(), shovel.speed(), shovel.damage());
+                            break;
+                        case Sword:
+                            final ItemSword sword = item.sword();
+                            ping.addMeta(itemId, sword.durability(), sword.speed(), sword.damage());
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
     }

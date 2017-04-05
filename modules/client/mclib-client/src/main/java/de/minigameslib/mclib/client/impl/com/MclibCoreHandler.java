@@ -185,9 +185,13 @@ public class MclibCoreHandler implements ComHandler
     private void answerPing(MessageContext context, PingData fragment)
     {
     	// parse block info
-    	if (fragment.getMeta() != null)
+    	if (fragment.getBlocks() != null)
     	{
-    		MclibClientNms.setItemMeta(fragment.getMeta());
+    		MclibClientNms.setBlockMeta(fragment.getBlocks());
+    	}
+    	if (fragment.getItems() != null)
+    	{
+            MclibClientNms.setItemMeta(fragment.getItems());
     	}
         // send pong to server.
         final PongData answer = new PongData();
