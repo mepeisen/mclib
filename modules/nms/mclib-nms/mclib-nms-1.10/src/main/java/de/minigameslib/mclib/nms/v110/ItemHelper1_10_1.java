@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.nms.v110;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -46,10 +47,12 @@ import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import com.google.common.base.Function;
 
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
+import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
@@ -253,6 +256,47 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
+    
+    /**
+     * Creates a local bukkit material.
+     * @param materials
+     * @param byName
+     * @param id
+     * @param name
+     * @param ctor
+     * @param maxStack
+     * @param durability
+     * @return new bukkit material.
+     */
+    private Material createBukkitMaterial(Material[] materials, Map<String, Material> byName, int id, String name, Constructor<? extends MaterialData> ctor, int maxStack, short durability)
+    {
+        final Material result = EnumFactory.addEnum(Material.class, name);
+        setPrivateField(result, "id", id); //$NON-NLS-1$
+        setPrivateField(result, "ctor", ctor); //$NON-NLS-1$
+        setPrivateField(result, "maxStack", maxStack); //$NON-NLS-1$
+        setPrivateField(result, "durability", durability); //$NON-NLS-1$
+        return result;
+    }
+    
+    /**
+     * Sets a private field
+     * @param target
+     * @param name
+     * @param value
+     */
+    private void setPrivateField(Object target, String name, Object value)
+    {
+        try
+        {
+            final Field f = target.getClass().getDeclaredField(name);
+            f.setAccessible(true);
+            f.set(target, value);
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
+        }
+    }
 
     @Override
     public void initItems()
@@ -267,9 +311,16 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             final Material[] materials = Arrays.copyOf((Material[]) byId.get(null), 5000);
             byId.set(null, materials);
             
+            final Field byName = Material.class.getDeclaredField("BY_NAME"); //$NON-NLS-1$
+            byName.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final Map<String, Material> names = (Map<String, Material>) byName.get(null);
+            
+            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor();
+            
             for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
             {
-                materials[i] = Material.DIAMOND_AXE; // may not be clever but otherwise bukkit will not really understand what we are doing; we cannot extend the materials enum here :-(
+                materials[i] = createBukkitMaterial(materials, names, i, "custom_"+i, ctor, 64, (short) 0); //$NON-NLS-1$
                 
                 final CustomItem myItem = new CustomItem();
                 itemMth.invoke(null, i, "custom_"+i, myItem.c("mclib:custom_" + i)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -294,9 +345,16 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             final Material[] materials = Arrays.copyOf((Material[]) byId.get(null), 5000);
             byId.set(null, materials);
             
+            final Field byName = Material.class.getDeclaredField("BY_NAME"); //$NON-NLS-1$
+            byName.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final Map<String, Material> names = (Map<String, Material>) byName.get(null);
+            
+            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor();
+            
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
-                materials[i] = Material.STONE; // may not be clever but otherwise bukkit will not really understand what we are doing; we cannot extend the materials enum here :-(
+                materials[i] = createBukkitMaterial(materials, names, i, "custom_"+i, ctor, 64, (short) 0); //$NON-NLS-1$
                 
                 final CustomBlock myBlock = new CustomBlock();
                 net.minecraft.server.v1_10_R1.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
