@@ -365,7 +365,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 final ItemInfo key = this.itemMap.get(custom);
                 final CustomItem custom2 = key.getNumId() > 0 ? this.itemNumIdMap.get(key.getNumId()) : this.itemsPerMaterial.get(key.getMaterial()).get(key.getDurability());
                 custom2.setItemId(item);
-                custom2.setCustomDurability(custom2.getCustomType().getDurabilities()[custom2.getDurability() - 1]);
+                if (key.getNumId() == 0)
+                {
+                    custom2.setCustomDurability(custom2.getCustomType().getDurabilities()[custom2.getDurability() - 1]);
+                }
                 this.itemIdMap.put(item, custom2);
             }
             else
