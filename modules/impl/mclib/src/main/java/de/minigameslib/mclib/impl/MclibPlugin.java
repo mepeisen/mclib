@@ -353,6 +353,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
         this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
         this.enumService.registerEnumClass(this, McCoreConfig.class);
+        this.enumService.registerEnumClass(this, McModdedWorldConfig.class);
         
         // public api services
         registerPublicServices();

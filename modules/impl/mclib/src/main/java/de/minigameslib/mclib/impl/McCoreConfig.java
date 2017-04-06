@@ -113,20 +113,6 @@ public enum McCoreConfig implements ConfigurationValueInterface
     ResourcePackAutoDownloadTicks,
     
     /**
-     * list of custom items already known by this server.
-     */
-    @ConfigurationSection
-    @ConfigComment("DO NOT EDIT! Special data section for modded worlds")
-    CustomItems,
-    
-    /**
-     * List of custom blocks already known to this server.
-     */
-    @ConfigurationSection
-    @ConfigComment("DO NOT EDIT! Special data section for modded worlds")
-    CustomBlocks,
-    
-    /**
      * maximum size of player registry
      */
     @ConfigurationInt(defaultValue = 10000)

@@ -100,6 +100,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.impl.McCoreConfig;
+import de.minigameslib.mclib.impl.McModdedWorldConfig;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
@@ -1931,8 +1932,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private void saveItems(CustomItem[] items)
     {
-        McCoreConfig.CustomItems.setObjectList(items, "list"); //$NON-NLS-1$
-        McCoreConfig.CustomItems.saveConfig();
+        McModdedWorldConfig.CustomItems.setObjectList(items, "list"); //$NON-NLS-1$
+        McModdedWorldConfig.CustomItems.saveConfig();
     }
     
     /**
@@ -1942,8 +1943,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private void saveBlocks(CustomBlock[] blocks)
     {
-        McCoreConfig.CustomBlocks.setObjectList(blocks, "list"); //$NON-NLS-1$
-        McCoreConfig.CustomBlocks.saveConfig();
+        McModdedWorldConfig.CustomBlocks.setObjectList(blocks, "list"); //$NON-NLS-1$
+        McModdedWorldConfig.CustomBlocks.saveConfig();
     }
     
     /**
@@ -1953,9 +1954,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private CustomItem[] loadItems()
     {
-        if (McCoreConfig.CustomItems.isset("list")) //$NON-NLS-1$
+        if (McModdedWorldConfig.CustomItems.isset("list")) //$NON-NLS-1$
         {
-            return McCoreConfig.CustomItems.getObjectList(CustomItem.class, "list"); //$NON-NLS-1$
+            return McModdedWorldConfig.CustomItems.getObjectList(CustomItem.class, "list"); //$NON-NLS-1$
         }
         return new CustomItem[0];
     }
@@ -1967,9 +1968,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private CustomBlock[] loadBlocks()
     {
-        if (McCoreConfig.CustomBlocks.isset("list")) //$NON-NLS-1$
+        if (McModdedWorldConfig.CustomBlocks.isset("list")) //$NON-NLS-1$
         {
-            return McCoreConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
+            return McModdedWorldConfig.CustomBlocks.getObjectList(CustomBlock.class, "list"); //$NON-NLS-1$
         }
         return new CustomBlock[0];
     }
