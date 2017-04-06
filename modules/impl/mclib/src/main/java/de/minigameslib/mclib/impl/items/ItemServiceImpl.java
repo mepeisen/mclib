@@ -386,7 +386,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         
         if (!newSimpleItems.isEmpty())
         {
-            for (final CustomItemTypes type : CustomItemTypes.values())
+            outer: for (final CustomItemTypes type : CustomItemTypes.values())
             {
                 this.itemsPerMaterial.computeIfAbsent(type.getMaterial(), k -> new HashMap<>());
                 for (final Durability dur : type.getDurabilities())
@@ -403,7 +403,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     if (newSimpleItems.isEmpty())
                     {
                         this.saveItems(this.itemMap.keySet().toArray(new CustomItem[this.itemMap.size()]));
-                        break;
+                        break outer;
                     }
                 }
             }
