@@ -37,8 +37,7 @@ import sun.reflect.FieldAccessor;
 import sun.reflect.ReflectionFactory;
 
 /**
- *
- * {@linkplain "https://www.niceideas.ch/roller2/badtrash/entry/java_create_enum_instances_dynamically"}
+ * Taken from "https://www.niceideas.ch/roller2/badtrash/entry/java_create_enum_instances_dynamically"
  * 
  * @author mepeisen
  */
