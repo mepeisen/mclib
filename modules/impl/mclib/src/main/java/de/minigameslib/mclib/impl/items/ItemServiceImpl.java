@@ -773,7 +773,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         // init data
         for (final BlockId block : enumValues)
         {
-            final int blockId = this.blockIdMap.get(block).getNumId();
+            final int blockId = blockToNumId(block);
             
             // meta and drop rule
             final BlockMeta meta = block.meta();
@@ -833,6 +833,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
             }
         }
+    }
+
+    /**
+     * @param block
+     * @return num id
+     */
+    private int blockToNumId(final BlockId block)
+    {
+        final int blockId = this.blockIdMap.get(block).getNumId();
+        return blockId;
     }
     
     /**
@@ -2003,7 +2013,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public void createMinable(Random random, Location location, BlockId block, BlockVariantId variant, int size)
     {
-        final int blockId = this.blockIdMap.get(block).getNumId();
+        final int blockId = blockToNumId(block);
         final int meta = variant.ordinal();
         Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createMinable(random, location, blockId, meta, size);
     }
@@ -2029,7 +2039,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         for (final BlockId block : this.blockIdMap.keySet())
         {
-            final int blockId = this.blockIdMap.get(block).getNumId();
+            final int blockId = blockToNumId(block);
             final BlockMeta meta = block.meta();
             ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
         }
@@ -2136,6 +2146,414 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             return this.numId;
         }
+    }
+
+    @Override
+    public boolean isPlant(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPlant(material);
+    }
+
+    @Override
+    public boolean isPlant(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPlant(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isGourd(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGourd(material);
+    }
+
+    @Override
+    public boolean isGourd(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGourd(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCoral(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCoral(material);
+    }
+
+    @Override
+    public boolean isCoral(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCoral(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isGrass(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGrass(material);
+    }
+
+    @Override
+    public boolean isGrass(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGrass(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isWood(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWood(material);
+    }
+
+    @Override
+    public boolean isWood(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWood(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isRock(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRock(material);
+    }
+
+    @Override
+    public boolean isRock(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRock(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isOre(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isOre(material);
+    }
+
+    @Override
+    public boolean isOre(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isOre(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isHeavy(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isHeavy(material);
+    }
+
+    @Override
+    public boolean isHeavy(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isHeavy(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isWater(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWater(material);
+    }
+
+    @Override
+    public boolean isWater(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWater(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isLava(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLava(material);
+    }
+
+    @Override
+    public boolean isLava(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLava(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isLeaves(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLeaves(material);
+    }
+
+    @Override
+    public boolean isLeaves(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLeaves(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isVine(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isVine(material);
+    }
+
+    @Override
+    public boolean isVine(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isVine(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isSponge(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSponge(material);
+    }
+
+    @Override
+    public boolean isSponge(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSponge(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCloth(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCloth(material);
+    }
+
+    @Override
+    public boolean isCloth(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCloth(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isFire(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isFire(material);
+    }
+
+    @Override
+    public boolean isFire(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isFire(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isSand(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSand(material);
+    }
+
+    @Override
+    public boolean isSand(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSand(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCircuits(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCircuits(material);
+    }
+
+    @Override
+    public boolean isCircuits(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCircuits(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCarpet(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCarpet(material);
+    }
+
+    @Override
+    public boolean isCarpet(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCarpet(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isGlass(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGlass(material);
+    }
+
+    @Override
+    public boolean isGlass(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGlass(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isRedstoneLight(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRedstoneLight(material);
+    }
+
+    @Override
+    public boolean isRedstoneLight(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRedstoneLight(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isTnt(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isTnt(material);
+    }
+
+    @Override
+    public boolean isTnt(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isTnt(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isIce(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isIce(material);
+    }
+
+    @Override
+    public boolean isIce(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isIce(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isPackedIce(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPackedIce(material);
+    }
+
+    @Override
+    public boolean isPackedIce(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPackedIce(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isSnow(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSnow(material);
+    }
+
+    @Override
+    public boolean isSnow(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSnow(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCraftedSnow(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCraftedSnow(material);
+    }
+
+    @Override
+    public boolean isCraftedSnow(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCraftedSnow(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCactus(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCactus(material);
+    }
+
+    @Override
+    public boolean isCactus(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCactus(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isClay(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isClay(material);
+    }
+
+    @Override
+    public boolean isClay(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isClay(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isDragonEgg(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isDragonEgg(material);
+    }
+
+    @Override
+    public boolean isDragonEgg(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isDragonEgg(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isPortal(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPortal(material);
+    }
+
+    @Override
+    public boolean isPortal(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPortal(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isCake(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCake(material);
+    }
+
+    @Override
+    public boolean isCake(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCake(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isWeb(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWeb(material);
+    }
+
+    @Override
+    public boolean isWeb(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWeb(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isPiston(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPiston(material);
+    }
+
+    @Override
+    public boolean isPiston(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPiston(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isBarrier(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isBarrier(material);
+    }
+
+    @Override
+    public boolean isBarrier(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isBarrier(blockToNumId(block));
+    }
+
+    @Override
+    public boolean isStructureVoid(Material material)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isStructureVoid(material);
+    }
+
+    @Override
+    public boolean isStructureVoid(BlockId block)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isStructureVoid(blockToNumId(block));
     }
     
 }

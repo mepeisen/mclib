@@ -730,5 +730,512 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isPlant(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.PLANT;
+    }
+
+    @Override
+    public boolean isPlant(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.PLANT;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isGourd(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.PUMPKIN;
+    }
+
+    @Override
+    public boolean isGourd(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.PUMPKIN;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCoral(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.CORAL;
+    }
+
+    @Override
+    public boolean isCoral(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.CORAL;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isGrass(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.GRASS;
+    }
+
+    @Override
+    public boolean isGrass(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.GRASS;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isWood(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.WOOD;
+    }
+
+    @Override
+    public boolean isWood(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.WOOD;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isRock(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.STONE;
+    }
+
+    @Override
+    public boolean isRock(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.STONE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isOre(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.ORE;
+    }
+
+    @Override
+    public boolean isOre(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.ORE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isHeavy(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.HEAVY;
+    }
+
+    @Override
+    public boolean isHeavy(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.HEAVY;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isWater(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.WATER;
+    }
+
+    @Override
+    public boolean isWater(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.WATER;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isLava(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.LAVA;
+    }
+
+    @Override
+    public boolean isLava(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.LAVA;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isLeaves(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.LEAVES;
+    }
+
+    @Override
+    public boolean isLeaves(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.LEAVES;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isVine(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.REPLACEABLE_PLANT;
+    }
+
+    @Override
+    public boolean isVine(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.REPLACEABLE_PLANT;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isSponge(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.SPONGE;
+    }
+
+    @Override
+    public boolean isSponge(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.SPONGE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCloth(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.CLOTH;
+    }
+
+    @Override
+    public boolean isCloth(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.CLOTH;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isFire(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.FIRE;
+    }
+
+    @Override
+    public boolean isFire(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.FIRE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isSand(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.SAND;
+    }
+
+    @Override
+    public boolean isSand(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.SAND;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCircuits(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.ORIENTABLE;
+    }
+
+    @Override
+    public boolean isCircuits(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.ORIENTABLE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCarpet(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.WOOL;
+    }
+
+    @Override
+    public boolean isCarpet(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.WOOL;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isGlass(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.SHATTERABLE;
+    }
+
+    @Override
+    public boolean isGlass(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.SHATTERABLE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isRedstoneLight(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.BUILDABLE_GLASS;
+    }
+
+    @Override
+    public boolean isRedstoneLight(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.BUILDABLE_GLASS;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isTnt(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.TNT;
+    }
+
+    @Override
+    public boolean isTnt(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.TNT;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isIce(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.ICE;
+    }
+
+    @Override
+    public boolean isIce(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.ICE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isPackedIce(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.PACKED_ICE;
+    }
+
+    @Override
+    public boolean isPackedIce(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.PACKED_ICE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isSnow(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.SNOW_LAYER;
+    }
+
+    @Override
+    public boolean isSnow(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.SNOW_LAYER;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCraftedSnow(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.SNOW_BLOCK;
+    }
+
+    @Override
+    public boolean isCraftedSnow(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.SNOW_BLOCK;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCactus(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.CACTUS;
+    }
+
+    @Override
+    public boolean isCactus(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.CACTUS;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isClay(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.CLAY;
+    }
+
+    @Override
+    public boolean isClay(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.CLAY;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isDragonEgg(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.DRAGON_EGG;
+    }
+
+    @Override
+    public boolean isDragonEgg(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.DRAGON_EGG;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isPortal(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.PORTAL;
+    }
+
+    @Override
+    public boolean isPortal(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.PORTAL;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isCake(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.CAKE;
+    }
+
+    @Override
+    public boolean isCake(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.CAKE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isWeb(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.WEB;
+    }
+
+    @Override
+    public boolean isWeb(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.WEB;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isPiston(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.PISTON;
+    }
+
+    @Override
+    public boolean isPiston(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.PISTON;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isBarrier(Material material)
+    {
+        final net.minecraft.server.v1_8_R3.Block block = net.minecraft.server.v1_8_R3.Block.getById(material.getId());
+        return block.getMaterial() == net.minecraft.server.v1_8_R3.Material.BANNER;
+    }
+
+    @Override
+    public boolean isBarrier(int block)
+    {
+        final net.minecraft.server.v1_8_R3.Block nms = net.minecraft.server.v1_8_R3.Block.getById(block);
+        return nms.getMaterial() == net.minecraft.server.v1_8_R3.Material.BANNER;
+    }
+
+    @Override
+    public boolean isStructureVoid(Material material)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isStructureVoid(int block)
+    {
+        return false;
+    }
     
 }

@@ -367,4 +367,482 @@ public interface ItemHelperInterface
      */
     void initSword(Material material, short itemStackDurability, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
     
+    // access to classic vanilly materials
+    
+    /**
+     * Checks for plant
+     * @param material
+     * @return {@code true} if given material is PLANT
+     */
+    boolean isPlant(Material material);
+    
+    /**
+     * Checks for plant
+     * @param block
+     * @return {@code true} if given material is PLANT
+     */
+    boolean isPlant(int block);
+    
+    /**
+     * Checks for gourd
+     * @param material
+     * @return {@code true} if given material is GOURD
+     */
+    boolean isGourd(Material material);
+    
+    /**
+     * Checks for gourd
+     * @param block
+     * @return {@code true} if given material is GOURD
+     */
+    boolean isGourd(int block);
+    
+    /**
+     * Checks for coral
+     * @param material
+     * @return {@code true} if given material is coral
+     */
+    boolean isCoral(Material material);
+    
+    /**
+     * Checks for coral
+     * @param block
+     * @return {@code true} if given material is coral
+     */
+    boolean isCoral(int block);
+    
+    /**
+     * Checks for grass
+     * @param material
+     * @return {@code true} if given material is GRASS
+     */
+    boolean isGrass(Material material);
+    
+    /**
+     * Checks for grass
+     * @param block
+     * @return {@code true} if given material is GRASS
+     */
+    boolean isGrass(int block);
+    
+    /**
+     * Checks for wood
+     * @param material
+     * @return {@code true} if given material is WOOD
+     */
+    boolean isWood(Material material);
+    
+    /**
+     * Checks for wood
+     * @param block
+     * @return {@code true} if given material is WOOD
+     */
+    boolean isWood(int block);
+    
+    /**
+     * Checks for rock
+     * @param material
+     * @return {@code true} if given material is ROCK (forge) / STONE (spigot)
+     */
+    boolean isRock(Material material);
+    
+    /**
+     * Checks for rock
+     * @param block
+     * @return {@code true} if given material is ROCK (forge) / STONE (spigot)
+     */
+    boolean isRock(int block);
+    
+    /**
+     * Checks for iron/ ore
+     * @param material
+     * @return {@code true} if given material is IRON (forge)/ ORE (spigot)
+     */
+    boolean isOre(Material material);
+    
+    /**
+     * Checks for iron/ ore
+     * @param block
+     * @return {@code true} if given material is IRON (forge)/ ORE (spigot)
+     */
+    boolean isOre(int block);
+    
+    /**
+     * Checks for anvil/ heavy
+     * @param material
+     * @return {@code true} if given material is ANVIL (forge)/ HEAVY (spigot)
+     */
+    boolean isHeavy(Material material);
+    
+    /**
+     * Checks for anvil/ heavy
+     * @param block
+     * @return {@code true} if given material is ANVIL (forge)/ HEAVY (spigot)
+     */
+    boolean isHeavy(int block);
+    
+    /**
+     * Checks for water
+     * @param material
+     * @return {@code true} if given material is WATER
+     */
+    boolean isWater(Material material);
+    
+    /**
+     * Checks for water
+     * @param block
+     * @return {@code true} if given material is WATER
+     */
+    boolean isWater(int block);
+    
+    /**
+     * Checks for lava
+     * @param material
+     * @return {@code true} if given material is LAVA
+     */
+    boolean isLava(Material material);
+    
+    /**
+     * Checks for lava
+     * @param block
+     * @return {@code true} if given material is LAVA
+     */
+    boolean isLava(int block);
+    
+    /**
+     * Checks for leaves
+     * @param material
+     * @return {@code true} if given material is LEAVES
+     */
+    boolean isLeaves(Material material);
+    
+    /**
+     * Checks for leaves
+     * @param block
+     * @return {@code true} if given material is LEAVES
+     */
+    boolean isLeaves(int block);
+    
+    /**
+     * Checks for vine
+     * @param material
+     * @return {@code true} if given material is VINE
+     */
+    boolean isVine(Material material);
+    
+    /**
+     * Checks for vine
+     * @param block
+     * @return {@code true} if given material is VINE
+     */
+    boolean isVine(int block);
+    
+    /**
+     * Checks for sponge
+     * @param material
+     * @return {@code true} if given material is SPONGE
+     */
+    boolean isSponge(Material material);
+    
+    /**
+     * Checks for sponge
+     * @param block
+     * @return {@code true} if given material is SPONGE
+     */
+    boolean isSponge(int block);
+    
+    /**
+     * Checks for cloth
+     * @param material
+     * @return {@code true} if given material is CLOTH
+     */
+    boolean isCloth(Material material);
+    
+    /**
+     * Checks for cloth
+     * @param block
+     * @return {@code true} if given material is CLOTH
+     */
+    boolean isCloth(int block);
+    
+    /**
+     * Checks for fire
+     * @param material
+     * @return {@code true} if given material is FIRE
+     */
+    boolean isFire(Material material);
+    
+    /**
+     * Checks for fire
+     * @param block
+     * @return {@code true} if given material is FIRE
+     */
+    boolean isFire(int block);
+    
+    /**
+     * Checks for sand
+     * @param material
+     * @return {@code true} if given material is SAND
+     */
+    boolean isSand(Material material);
+    
+    /**
+     * Checks for sand
+     * @param block
+     * @return {@code true} if given material is SAND
+     */
+    boolean isSand(int block);
+    
+    /**
+     * Checks for circuits
+     * @param material
+     * @return {@code true} if given material is CIRCUITS
+     */
+    boolean isCircuits(Material material);
+    
+    /**
+     * Checks for circuits
+     * @param block
+     * @return {@code true} if given material is CIRCUITS
+     */
+    boolean isCircuits(int block);
+    
+    /**
+     * Checks for carpet
+     * @param material
+     * @return {@code true} if given material is CARPET
+     */
+    boolean isCarpet(Material material);
+    
+    /**
+     * Checks for carpet
+     * @param block
+     * @return {@code true} if given material is CARPET
+     */
+    boolean isCarpet(int block);
+    
+    /**
+     * Checks for glass
+     * @param material
+     * @return {@code true} if given material is GLASS
+     */
+    boolean isGlass(Material material);
+    
+    /**
+     * Checks for glass
+     * @param block
+     * @return {@code true} if given material is GLASS
+     */
+    boolean isGlass(int block);
+    
+    /**
+     * Checks for redstone light
+     * @param material
+     * @return {@code true} if given material is REDSTONE_LIGHT
+     */
+    boolean isRedstoneLight(Material material);
+    
+    /**
+     * Checks for redstone light
+     * @param block
+     * @return {@code true} if given material is REDSTONE_LIGHT
+     */
+    boolean isRedstoneLight(int block);
+    
+    /**
+     * Checks for tnt
+     * @param material
+     * @return {@code true} if given material is TNT
+     */
+    boolean isTnt(Material material);
+    
+    /**
+     * Checks for tnt
+     * @param block
+     * @return {@code true} if given material is TNT
+     */
+    boolean isTnt(int block);
+    
+    /**
+     * Checks for ice
+     * @param material
+     * @return {@code true} if given material is ICE
+     */
+    boolean isIce(Material material);
+    
+    /**
+     * Checks for ice
+     * @param block
+     * @return {@code true} if given material is ICE
+     */
+    boolean isIce(int block);
+    
+    /**
+     * Checks for packed ice
+     * @param material
+     * @return {@code true} if given material is PACKED_ICE
+     */
+    boolean isPackedIce(Material material);
+    
+    /**
+     * Checks for packed ice
+     * @param block
+     * @return {@code true} if given material is PACKED_ICE
+     */
+    boolean isPackedIce(int block);
+    
+    /**
+     * Checks for snow
+     * @param material
+     * @return {@code true} if given material is SNOW
+     */
+    boolean isSnow(Material material);
+    
+    /**
+     * Checks for snow
+     * @param block
+     * @return {@code true} if given material is SNOW
+     */
+    boolean isSnow(int block);
+    
+    /**
+     * Checks for crafted snow
+     * @param material
+     * @return {@code true} if given material is CRAFTED_SNOW
+     */
+    boolean isCraftedSnow(Material material);
+    
+    /**
+     * Checks for crafted snow
+     * @param block
+     * @return {@code true} if given material is CRAFTED_SNOW
+     */
+    boolean isCraftedSnow(int block);
+    
+    /**
+     * Checks for cactus
+     * @param material
+     * @return {@code true} if given material is CACTUS
+     */
+    boolean isCactus(Material material);
+    
+    /**
+     * Checks for cactus
+     * @param block
+     * @return {@code true} if given material is CACTUS
+     */
+    boolean isCactus(int block);
+    
+    /**
+     * Checks for clay
+     * @param material
+     * @return {@code true} if given material is CLAY
+     */
+    boolean isClay(Material material);
+    
+    /**
+     * Checks for clay
+     * @param block
+     * @return {@code true} if given material is CLAY
+     */
+    boolean isClay(int block);
+    
+    /**
+     * Checks for dragon egg
+     * @param material
+     * @return {@code true} if given material is DRAGON_EGG
+     */
+    boolean isDragonEgg(Material material);
+    
+    /**
+     * Checks for dragon egg
+     * @param block
+     * @return {@code true} if given material is DRAGON_EGG
+     */
+    boolean isDragonEgg(int block);
+    
+    /**
+     * Checks for portal
+     * @param material
+     * @return {@code true} if given material is PORTAL
+     */
+    boolean isPortal(Material material);
+    
+    /**
+     * Checks for portal
+     * @param block
+     * @return {@code true} if given material is PORTAL
+     */
+    boolean isPortal(int block);
+    
+    /**
+     * Checks for cake
+     * @param material
+     * @return {@code true} if given material is CAKE
+     */
+    boolean isCake(Material material);
+    
+    /**
+     * Checks for cake
+     * @param block
+     * @return {@code true} if given material is CAKE
+     */
+    boolean isCake(int block);
+    
+    /**
+     * Checks for web
+     * @param material
+     * @return {@code true} if given material is WEB
+     */
+    boolean isWeb(Material material);
+    
+    /**
+     * Checks for web
+     * @param block
+     * @return {@code true} if given material is WEB
+     */
+    boolean isWeb(int block);
+    
+    /**
+     * Checks for piston
+     * @param material
+     * @return {@code true} if given material is PISTON
+     */
+    boolean isPiston(Material material);
+    
+    /**
+     * Checks for piston
+     * @param block
+     * @return {@code true} if given material is PISTON
+     */
+    boolean isPiston(int block);
+    
+    /**
+     * Checks for Barrier
+     * @param material
+     * @return {@code true} if given material is BARRIER
+     */
+    boolean isBarrier(Material material);
+    
+    /**
+     * Checks for barrier
+     * @param block
+     * @return {@code true} if given material is BARRIER
+     */
+    boolean isBarrier(int block);
+    
+    /**
+     * Checks for structure void
+     * @param material
+     * @return {@code true} if given material is STRUCTURE_VOID
+     */
+    boolean isStructureVoid(Material material);
+    
+    /**
+     * Checks for structure void
+     * @param block
+     * @return {@code true} if given material is STRCTURE_VOID
+     */
+    boolean isStructureVoid(int block);
+    
 }
