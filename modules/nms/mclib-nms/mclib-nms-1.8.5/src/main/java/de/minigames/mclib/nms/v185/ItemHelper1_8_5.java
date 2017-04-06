@@ -315,7 +315,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             @SuppressWarnings("unchecked")
             final Map<String, Material> names = (Map<String, Material>) byName.get(null);
             
-            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor();
+            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor(int.class, byte.class);
             
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
@@ -367,7 +367,7 @@ public class ItemHelper1_8_5 implements ItemHelperInterface
             @SuppressWarnings("unchecked")
             final Map<String, Material> names = (Map<String, Material>) byName.get(null);
             
-            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor();
+            final Constructor<? extends MaterialData> ctor = MaterialData.class.getDeclaredConstructor(int.class, byte.class);
             
             for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
             {
