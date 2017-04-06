@@ -123,6 +123,13 @@ public class MclibClientNms
                 ModelLoader.setCustomModelResourceLocation(item, type.ordinal(), model);
             }
         }
+        
+        for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
+        {
+            final Item item = Item.getItemById(i);
+            final ModelResourceLocation model = new ModelResourceLocation(item.getRegistryName(), "inventory");
+            ModelLoader.setCustomModelResourceLocation(item, 0, model);
+        }
     }
 
     public static void setBlockMeta(List<BlockMetaData> meta)
