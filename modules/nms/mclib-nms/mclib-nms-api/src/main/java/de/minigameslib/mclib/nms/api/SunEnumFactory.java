@@ -55,7 +55,7 @@ public class SunEnumFactory
         // next we change the modifier in the Field instance to
         // not be final anymore, thus tricking reflection into
         // letting us modify the static final field
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        Field modifiersField = Field.class.getDeclaredField("modifiers"); //$NON-NLS-1$
         modifiersField.setAccessible(true);
         int modifiers = modifiersField.getInt(field);
 
@@ -79,9 +79,9 @@ public class SunEnumFactory
     }
 
     private static void cleanEnumCache(Class<?> enumClass) throws NoSuchFieldException, IllegalAccessException {
-        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK
+        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK //$NON-NLS-1$
                                                         // 1.5/6
-        blankField(enumClass, "enumConstants"); // IBM JDK
+        blankField(enumClass, "enumConstants"); // IBM JDK //$NON-NLS-1$
     }
 
     private static ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
@@ -111,13 +111,16 @@ public class SunEnumFactory
      *            the class of the enum to be modified
      * @param enumName
      *            the name of the new enum instance to be added to the class.
+     * @param argTypes 
+     * @param args 
+     * @return 
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName) {
+    public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName, Class<?>[] argTypes, Object[] args) {
 
         // 0. Sanity checks
         if (!Enum.class.isAssignableFrom(enumType)) {
-            throw new RuntimeException("class " + enumType + " is not an instance of Enum");
+            throw new RuntimeException("class " + enumType + " is not an instance of Enum"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // 1. Lookup "$VALUES" holder in enum class and get previous enum
@@ -125,7 +128,7 @@ public class SunEnumFactory
         Field valuesField = null;
         Field[] fields = enumType.getDeclaredFields();
         for (Field field : fields) {
-            if (field.getName().contains("$VALUES")) {
+            if (field.getName().contains("$VALUES")) { //$NON-NLS-1$
                 valuesField = field;
                 break;
             }
@@ -136,15 +139,15 @@ public class SunEnumFactory
 
             // 2. Copy it
             T[] previousValues = (T[]) valuesField.get(enumType);
-            List<T> values = new ArrayList<T>(Arrays.asList(previousValues));
+            List<T> values = new ArrayList<>(Arrays.asList(previousValues));
 
             // 3. build new enum
             T newValue = (T) makeEnum(enumType, // The target enum class
                     enumName, // THE NEW ENUM INSTANCE TO BE DYNAMICALLY ADDED
-                    values.size(), new Class<?>[] {}, // could be used to pass
+                    values.size(), argTypes, // could be used to pass
                                                         // values to the enum
                                                         // constuctor if needed
-                    new Object[] {}); // could be used to pass values to the
+                    args); // could be used to pass values to the
                                         // enum constuctor if needed
 
             // 4. add new value

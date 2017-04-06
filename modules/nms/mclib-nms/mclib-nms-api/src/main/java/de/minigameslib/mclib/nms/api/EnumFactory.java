@@ -35,11 +35,13 @@ public class EnumFactory
      * Addsa an enumeration value dynamically to given enum
      * @param enumType
      * @param enumName
+     * @param argTypes 
+     * @param args 
      * @return enum instance value
      */
-    public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName)
+    public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName, Class<?>[] argTypes, Object[] args)
     {
-        return SunEnumFactory.addEnum(enumType, enumName);
+        return SunEnumFactory.addEnum(enumType, enumName, argTypes, args);
     }
     
 }

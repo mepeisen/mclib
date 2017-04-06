@@ -270,11 +270,8 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
      */
     private Material createBukkitMaterial(Material[] materials, Map<String, Material> byName, int id, String name, Constructor<? extends MaterialData> ctor, int maxStack, short durability)
     {
-        final Material result = EnumFactory.addEnum(Material.class, name);
-        setPrivateField(result, "id", id); //$NON-NLS-1$
+        final Material result = EnumFactory.addEnum(Material.class, name, new Class<?>[]{int.class, int.class, int.class}, new Object[]{id, maxStack, durability});
         setPrivateField(result, "ctor", ctor); //$NON-NLS-1$
-        setPrivateField(result, "maxStack", maxStack); //$NON-NLS-1$
-        setPrivateField(result, "durability", durability); //$NON-NLS-1$
         return result;
     }
     
