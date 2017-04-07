@@ -26,6 +26,7 @@ package de.minigameslib.mclib.api.items;
 
 import java.io.Serializable;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
@@ -150,6 +151,16 @@ public interface ItemServiceInterface
     ToolBuilderInterface prepareTool(ItemId item, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs);
     
     /**
+     * Creates a new item tooling for given item stack; a tooling is a single item used by players. Once used a code handler is invoked.
+     * @param stack item stack to be used
+     * @param player the player getting the item
+     * @param title the items display name
+     * @param titleArgs arguments for itemms display name
+     * @return item builder
+     */
+    ToolBuilderInterface prepareTool(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs);
+    
+    /**
      * the item builder
      */
     public interface ToolBuilderInterface
@@ -187,6 +198,22 @@ public interface ItemServiceInterface
          * @return this object for chaining
          */
         ToolBuilderInterface singleUse();
+        
+        /**
+         * marks this tool for multi use (default)
+         * @return this object for chaining
+         */
+        ToolBuilderInterface multiUse();
+        
+        /**
+         * Sets tool in given inventory at given slot
+         * @param inventory target inventory
+         * @param slot target slot
+         * @param removeExisting {@code true} to remove existing items on given slot
+         * @param overridePlayerTools {@code true} to override existing player tools; {@code false} to create more than one tool
+         * @return this object for chaining
+         */
+        ToolBuilderInterface withInventory(Inventory inventory, int slot, boolean removeExisting, boolean overridePlayerTools);
         
     }
     

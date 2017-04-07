@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
+import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Level;
@@ -51,6 +53,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -171,6 +174,186 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
     }
     
+    /**
+     * Impl of tool builder.
+     * 
+     * @author mepeisen
+     */
+    private class ToolBuilderImpl implements ToolBuilderInterface
+    {
+        /** flag for single use */
+        private boolean                                                singleUse;
+        /** right click handler */
+        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClick;
+        /** left click handler */
+        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClick;
+        /** description */
+        private LocalizedMessageInterface                              description;
+        /** description arguments */
+        private Serializable[]                                         descriptionArgs;
+
+        /**
+         * the player
+         */
+        private final McPlayerInterface player;
+        /**
+         * the item factory
+         */
+        private final Supplier<ItemStack> itemFactory;
+        
+        /** the target inventory. */
+        private Inventory targetInventory;
+        /** target slot; -1 for any free slot */
+        private int targetSlot;
+        /** {@code true} to override existing items in {@code targetSlot} */
+        private boolean targetRemoveExisting;
+        /** {qcode true} to override any existing tooling; only if {@code targetSlot} if not set */
+        private boolean overridePlayerTools = true;
+        
+        /**
+         * @param player
+         * @param itemFactory
+         */
+        public ToolBuilderImpl(McPlayerInterface player, Supplier<ItemStack> itemFactory)
+        {
+            this.player = player;
+            this.itemFactory = itemFactory;
+        }
+
+        @Override
+        public ToolBuilderInterface singleUse()
+        {
+            this.singleUse = true;
+            return this;
+        }
+        
+        @Override
+        public ToolBuilderInterface multiUse()
+        {
+            this.singleUse = false;
+            return this;
+        }
+        
+        @Override
+        public ToolBuilderInterface onRightClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
+        {
+            this.rightClick = handler;
+            return this;
+        }
+        
+        @Override
+        public ToolBuilderInterface onLeftClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
+        {
+            this.leftClick = handler;
+            return this;
+        }
+        
+        @Override
+        public ToolBuilderInterface description(LocalizedMessageInterface desc, Serializable... descargs)
+        {
+            this.description = desc;
+            this.descriptionArgs = descargs;
+            return this;
+        }
+        
+        @Override
+        public ToolBuilderInterface withInventory(Inventory inventory, int slot, boolean removeExisting, boolean opt)
+        {
+            this.targetInventory = inventory;
+            this.targetSlot = slot;
+            this.targetRemoveExisting = removeExisting;
+            this.overridePlayerTools = opt;
+            return this;
+        }
+        
+        @Override
+        public void build()
+        {
+            ToolMarker marker = this.player.getSessionStorage().get(ToolMarker.class);
+            if (marker == null)
+            {
+                marker = new ToolMarker();
+                this.player.getSessionStorage().set(ToolMarker.class, marker);
+                this.player.registerHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
+            }
+            
+            final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+            final Inventory inventory = this.targetInventory == null ? this.player.getBukkitPlayer().getInventory() : this.targetInventory;
+            
+            if (this.targetSlot >= 0)
+            {
+                final ItemStack invitem = inventory.getItem(this.targetSlot);
+                if (invitem != null)
+                {
+                    if (!this.targetRemoveExisting)
+                    {
+                        return;
+                    }
+                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+                    {
+                        ItemServiceImpl.this.deleteTooling(inventory, this.targetSlot, invitem, helper, marker);
+                    }
+                }
+                
+                this.setTooling(inventory, this.targetSlot, helper, marker);
+                return;
+            }
+            
+            // search existing tooling
+            int slot = -1;
+            if (this.overridePlayerTools)
+            {
+                for (int i = 0; i < inventory.getSize(); i++)
+                {
+                    final ItemStack invitem = inventory.getItem(i);
+                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+                    {
+                        slot = i;
+                        ItemServiceImpl.this.deleteTooling(inventory, i, invitem, helper, marker);
+                        break;
+                    }
+                }
+            }
+            if (slot == -1)
+            {
+                slot = inventory.firstEmpty();
+            }
+
+            this.setTooling(inventory, slot, helper, marker);
+        }
+        
+        /**
+         * Sets tooling item to given slot
+         * @param inventory
+         * @param slot
+         * @param helper
+         * @param marker
+         */
+        private void setTooling(Inventory inventory, int slot, final ItemHelperInterface helper, ToolMarker marker)
+        {
+            // preplace item stack
+            ItemStack stack = this.itemFactory.get();
+            if (this.description != null)
+            {
+                helper.setDescription(stack, this.player.encodeMessage(this.description, this.descriptionArgs));
+            }
+            inventory.setItem(slot, stack);
+            stack = inventory.getItem(slot); // forces to use the correct NMS class
+            
+            final String uuid = UUID.randomUUID().toString();
+            helper.addCustomData(stack, "mclib", "clearOnJoin", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            helper.addCustomData(stack, "mclib", "customTooling", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            helper.addCustomData(stack, "mclib", "toolingId", uuid); //$NON-NLS-1$//$NON-NLS-2$
+            final ToolData data = new ToolData();
+            data.setOneUse(this.singleUse);
+            data.setLeftClickHandler(this.leftClick);
+            data.setRightClickHandler(this.rightClick);
+            marker.getTools().put(uuid, data);
+            
+            this.player.getBukkitPlayer().updateInventory();
+        }
+    }
+
     /**
      * @author mepeisen
      *
@@ -338,6 +521,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         initItems(stream);
     }
     
+    /**
+     * @param inventory
+     * @param targetSlot
+     * @param invitem
+     * @param helper 
+     * @param marker 
+     */
+    public void deleteTooling(Inventory inventory, int targetSlot, ItemStack invitem, ItemHelperInterface helper, ToolMarker marker)
+    {
+        final String id = helper.getCustomData(invitem, "mclib", "toolingId"); //$NON-NLS-1$//$NON-NLS-2$
+        marker.getTools().remove(id);
+        inventory.setItem(targetSlot, null);
+    }
+
     /**
      * @param stream
      */
@@ -1396,52 +1593,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         if (item.isModded())
             throw new IllegalStateException("modded items not yet supported"); // TODO support modded items (check for client mod) //$NON-NLS-1$
-        return new ToolBuilderInterface() {
-            
-            /** flag for single use */
-            private boolean                                                singleUse;
-            
-            /** right click handler */
-            private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClick;
-            
-            /** left click handler */
-            private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClick;
-            
-            /** description */
-            private LocalizedMessageInterface                              description;
-            
-            /** description arguments */
-            private Serializable[]                                         descriptionArgs;
-            
-            @Override
-            public ToolBuilderInterface singleUse()
-            {
-                this.singleUse = true;
-                return this;
-            }
-            
-            @Override
-            public ToolBuilderInterface onRightClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
-            {
-                this.rightClick = handler;
-                return this;
-            }
-            
-            @Override
-            public ToolBuilderInterface onLeftClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler)
-            {
-                this.leftClick = handler;
-                return this;
-            }
-            
-            @Override
-            public ToolBuilderInterface description(LocalizedMessageInterface desc, Serializable... descargs)
-            {
-                this.description = desc;
-                this.descriptionArgs = descargs;
-                return this;
-            }
-            
+        return new ToolBuilderImpl(player, ()->createItem(player, item, title, titleArgs)){
             @Override
             public void build()
             {
@@ -1470,53 +1622,18 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         return;
                 }
                 
-                ToolMarker marker = player.getSessionStorage().get(ToolMarker.class);
-                if (marker == null)
-                {
-                    marker = new ToolMarker();
-                    player.getSessionStorage().set(ToolMarker.class, marker);
-                    player.registerHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
-                }
-                
-                final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
-                final PlayerInventory inventory = player.getBukkitPlayer().getInventory();
-                
-                // search existing tooling
-                int slot = -1;
-                for (int i = 0; i < inventory.getSize(); i++)
-                {
-                    final ItemStack invitem = inventory.getItem(i);
-                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
-                    {
-                        slot = i;
-                        break;
-                    }
-                }
-                if (slot == -1)
-                {
-                    slot = inventory.firstEmpty();
-                }
-                
-                // preplace item stack
-                ItemStack stack = ItemServiceImpl.this.createItem(item, player.encodeMessage(title, titleArgs)[0]);
-                if (this.description != null)
-                {
-                    final ItemMeta meta = stack.getItemMeta();
-                    meta.setLore(Arrays.asList(player.encodeMessage(this.description, this.descriptionArgs)));
-                    stack.setItemMeta(meta);
-                }
-                inventory.setItem(slot, stack);
-                stack = inventory.getItem(slot); // forces to use the correct NMS class
-                
-                helper.addCustomData(stack, "mclib", "clearOnJoin", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                helper.addCustomData(stack, "mclib", "customTooling", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                marker.setOneUse(this.singleUse);
-                marker.setLeftClickHandler(this.leftClick);
-                marker.setRightClickHandler(this.rightClick);
-                
-                player.getBukkitPlayer().updateInventory();
+                super.build();
             }
         };
+    }
+    
+    @Override
+    public ToolBuilderInterface prepareTool(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
+    {
+        return new ToolBuilderImpl(player, ()->{
+            this.setDisplayName(stack, player, title, titleArgs);
+            return stack;
+        });
     }
     
     /**
@@ -1618,20 +1735,22 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             if (stack != null && helper.getCustomData(stack, "mclib", "customTooling") != null)//$NON-NLS-1$//$NON-NLS-2$
             {
                 evt.getBukkitEvent().setCancelled(true);
+                final String id = helper.getCustomData(stack, "mclib", "toolingId"); //$NON-NLS-1$//$NON-NLS-2$
                 
                 final ToolMarker marker = evt.getPlayer().getSessionStorage().get(ToolMarker.class);
-                if (marker != null)
+                final ToolData data = marker == null ? null : marker.getTools().get(id);
+                if (marker != null && data != null)
                 {
                     boolean clear = false;
                     if (evt.getBukkitEvent().getAction() == Action.LEFT_CLICK_BLOCK)
                     {
-                        if (marker.getLeftClickHandler() != null)
+                        if (data.getLeftClickHandler() != null)
                         {
                             try
                             {
                                 try
                                 {
-                                    marker.getLeftClickHandler().accept(evt.getPlayer(), evt);
+                                    data.getLeftClickHandler().accept(evt.getPlayer(), evt);
                                 }
                                 catch (RuntimeException ex)
                                 {
@@ -1648,13 +1767,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     }
                     else if (evt.getBukkitEvent().getAction() == Action.RIGHT_CLICK_BLOCK)
                     {
-                        if (marker.getRightClickHandler() != null)
+                        if (data.getRightClickHandler() != null)
                         {
                             try
                             {
                                 try
                                 {
-                                    marker.getRightClickHandler().accept(evt.getPlayer(), evt);
+                                    data.getRightClickHandler().accept(evt.getPlayer(), evt);
                                 }
                                 catch (RuntimeException ex)
                                 {
@@ -1670,21 +1789,25 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         }
                     }
                     
-                    if (clear && marker.isOneUse())
+                    if (clear && data.isOneUse())
                     {
                         // search and clear existing tooling
                         final PlayerInventory inventory = evt.getPlayer().getBukkitPlayer().getInventory();
                         for (int i = 0; i < inventory.getSize(); i++)
                         {
                             final ItemStack invitem = inventory.getItem(i);
-                            if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+                            if (id.equals(helper.getCustomData(invitem, "mclib", "toolingId")) && helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
                             {
                                 inventory.setItem(i, new ItemStack(Material.AIR));
                                 evt.getPlayer().getBukkitPlayer().updateInventory();
-                                evt.getPlayer().unregisterHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
-                                evt.getPlayer().getSessionStorage().set(ToolMarker.class, null);
                                 break;
                             }
+                        }
+                        marker.getTools().remove(id);
+                        if (marker.getTools().size() == 0)
+                        {
+                            evt.getPlayer().unregisterHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
+                            evt.getPlayer().getSessionStorage().set(ToolMarker.class, null);
                         }
                     }
                 }
@@ -1773,26 +1896,49 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * A marker for players that have installed tools
+     * Tool data helper
+     * @author mepeisen
      */
     public static final class ToolMarker extends AnnotatedDataFragment
+    {
+        
+        /**
+         * tools
+         */
+        @PersistentField
+        protected Map<String, ToolData> tools = new HashMap<>();
+
+        /**
+         * @return the tools
+         */
+        public Map<String, ToolData> getTools()
+        {
+            return this.tools;
+        }
+        
+    }
+    
+    /**
+     * A marker for players that have installed tools
+     */
+    public static final class ToolData extends AnnotatedDataFragment
     {
         
         /**
          * boolean for destroying of tool upon use
          */
         @PersistentField
-        private boolean                                                isOneUse;
+        protected boolean                                                isOneUse;
         
         /**
          * non persistent left click handler.
          */
-        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClickHandler;
+        protected McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClickHandler;
         
         /**
          * non persistent right click handler.
          */
-        private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler;
+        protected McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler;
         
         /**
          * @return the isOneUse
