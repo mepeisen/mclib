@@ -90,7 +90,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         {
             return Collections.emptyList();
         }
-        return getVisibleCommands(command).map(e -> e.getKey()).filter(elm -> elm.startsWith(lastArg)).collect(Collectors.toList());
+        return getVisibleCommands(command).map(e -> e.getKey()).filter(elm -> elm.toLowerCase().startsWith(lastArg)).collect(Collectors.toList());
     }
 
     /**

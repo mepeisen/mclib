@@ -108,7 +108,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
     {
         if (command.getArgs().length == 0)
         {
-            return McLibInterface.instance().getMainLocales().stream().map(Locale::toString).filter(l -> l.startsWith(lastArg)).collect(Collectors.toList());
+            return McLibInterface.instance().getMainLocales().stream().map(Locale::toString).filter(l -> l.toLowerCase().startsWith(lastArg)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }

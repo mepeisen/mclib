@@ -137,7 +137,7 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
             }
             return handler.onTabComplete(command.consumeArgs(1), lastArg);
         }
-        return new ArrayList<>(this.subCommands.keySet()).stream().filter(elm -> elm.startsWith(lastArg)).collect(Collectors.toList());
+        return new ArrayList<>(this.subCommands.keySet()).stream().filter(elm -> elm.toLowerCase().startsWith(lastArg)).collect(Collectors.toList());
     }
 
     /**
