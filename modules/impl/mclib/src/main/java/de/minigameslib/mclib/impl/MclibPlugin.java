@@ -864,6 +864,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // try to ping the client mod.
         final PingData ping = new PingData();
+        ping.setLogin(true);
         ping.setApi(this.getApiVersion());
         this.itemService.populate(ping);
         final DataSection section = new MemoryDataSection();
