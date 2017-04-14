@@ -69,10 +69,10 @@ public class MarkerColor
      */
     public MarkerColor(MarkerColorData data)
     {
-        this.r = data.getR() / 256;
-        this.g = data.getG() / 256;
-        this.b = data.getB() / 256;
-        this.a = data.getAlpha() / 256;
+        this.r = (data.getR() / 256f);
+        this.g = (data.getG() / 256f);
+        this.b = (data.getB() / 256f);
+        this.a = (data.getAlpha() / 256f);
     }
 
     /**
