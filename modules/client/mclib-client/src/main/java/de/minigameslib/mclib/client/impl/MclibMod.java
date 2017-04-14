@@ -45,6 +45,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -113,6 +114,16 @@ public class MclibMod implements CommunicationServiceInterface
     {
         MclibClientNms.initCustomBlocksAndItems();
         proxy.registerItemRenderers();
+    }
+    
+    /**
+     * On logout event
+     * @param event
+     */
+    @EventHandler
+    public void onLogout(PlayerLoggedOutEvent event)
+    {
+        proxy.resetMarkers();
     }
     
     /** the known endpoints. */

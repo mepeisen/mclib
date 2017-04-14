@@ -200,6 +200,10 @@ public class MclibCoreHandler implements ComHandler
         section.set("KEY", CoreMessages.Pong.name()); //$NON-NLS-1$
         answer.write(section.createSection("data")); //$NON-NLS-1$
         MclibCommunication.ClientServerCore.send(section);
+        if (fragment.isLogin())
+        {
+            MclibMod.proxy.resetMarkers();
+        }
     }
 
     /**
