@@ -55,6 +55,12 @@ public class PingData extends AnnotatedDataFragment
      */
     @PersistentField
     protected int api;
+    
+    /**
+     * Ping is sent on player login
+     */
+    @PersistentField
+    protected boolean login;
 
     /**
      * @return the api
@@ -72,6 +78,22 @@ public class PingData extends AnnotatedDataFragment
         this.api = api;
     }
     
+    /**
+     * @return the login
+     */
+    public boolean isLogin()
+    {
+        return this.login;
+    }
+
+    /**
+     * @param login the login to set
+     */
+    public void setLogin(boolean login)
+    {
+        this.login = login;
+    }
+
     /**
      * Adds new meta data
      * @param id
