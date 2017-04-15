@@ -215,6 +215,28 @@ public interface McPlayerInterface extends PlayerDataFragment
     GuiSessionInterface openClickGui(ClickGuiInterface gui) throws McException;
     
     /**
+     * Lets the player opening a new gui session; nests current gui to be re-used upon close of current gui.
+     * 
+     * @param gui
+     *            gui to display
+     * @return gui session
+     * @throws McException
+     *             thrown if the player is not online.
+     */
+    GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException;
+    
+    /**
+     * Lets the player opening a new anvil gui session; nests current gui to be re-used upon close of current gui.
+     * 
+     * @param gui
+     *            anvil gui to display
+     * @return gui session
+     * @throws McException
+     *             thrown if the player is not online.
+     */
+    GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException;
+    
+    /**
      * Lets the player opening a new anvil gui session.
      * 
      * @param gui

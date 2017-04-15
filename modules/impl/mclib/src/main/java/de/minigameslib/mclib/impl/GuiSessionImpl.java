@@ -97,35 +97,43 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
 {
     
     /** logger. */
-    private static final Logger LOGGER         = Logger.getLogger(GuiSessionImpl.class.getName());
+    private static final Logger   LOGGER         = Logger.getLogger(GuiSessionImpl.class.getName());
     
     /** the current gui type. */
-    private GuiType             type           = GuiType.None;
+    private GuiType               type           = GuiType.None;
     
     /** the gui interface. */
-    private ClickGuiInterface   gui;
+    private ClickGuiInterface     gui;
     /** anvil gui interface. */
-    private AnvilGuiInterface   agui;
+    private AnvilGuiInterface     agui;
     /** the arena player. */
-    private McPlayerImpl        player;
+    private McPlayerImpl          player;
     /** the current inventory name. */
-    private Serializable        currentName;
+    private Serializable          currentName;
     /** the current items. */
-    private ClickGuiItem[][]    currentItems;
+    private ClickGuiItem[][]      currentItems;
+    /** the current clock gui page */
+    private ClickGuiPageInterface currentPage;
     /** the line count. */
-    private int                 lineCount;
+    private int                   lineCount;
     
     /** gui instance. */
-    private InventoryHelper     guiHelper;
+    private InventoryHelper       guiHelper;
     
     /** anvil gui instance. */
-    private AnvilHelper         aguiHelper;
+    private AnvilHelper           aguiHelper;
     
     /** the smart gui helper. */
-    private SGuiHelper          smartGui;
+    private SGuiHelper            smartGui;
     
     /** the session storage. */
-    private StorageImpl         sessionStorage = new StorageImpl();
+    private StorageImpl           sessionStorage = new StorageImpl();
+
+    /** previous session */
+    private GuiSessionInterface   prevSession;
+
+    /** pause flag */
+    private boolean isPaused;
     
     /**
      * Constructor
@@ -140,8 +148,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.type = GuiType.ClickGui;
         this.gui = gui;
         this.player = player;
-        this.currentName = gui.getInitialPage().getPageName();
-        this.currentItems = gui.getInitialPage().getItems();
+        this.currentPage = gui.getInitialPage();
+        this.currentName = this.currentPage.getPageName();
+        this.currentItems = this.currentPage.getItems();
         this.lineCount = gui.getLineCount();
         
         final String name = toName(this.player, this.currentName);
@@ -151,6 +160,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /**
      * Converts given serializable to string
+     * 
      * @param p
      * @param src
      * @return string
@@ -159,7 +169,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         if (src instanceof LocalizedMessageInterface)
         {
-            return p.getBukkitPlayer().isOp() ? ((LocalizedMessageInterface)src).toAdminMessage(p.getPreferredLocale()) : ((LocalizedMessageInterface)src).toUserMessage(p.getPreferredLocale());
+            return p.getBukkitPlayer().isOp() ? ((LocalizedMessageInterface) src).toAdminMessage(p.getPreferredLocale()) : ((LocalizedMessageInterface) src).toUserMessage(p.getPreferredLocale());
         }
         return src.toString();
     }
@@ -221,17 +231,16 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     final ItemStack stack = itemline[column].getItemStack().clone();
                     if (itemline[column].getDisplayName() != null)
                     {
-                        final String displayName = InventoryManagerInterface.toColorsString(this.player.getBukkitPlayer().isOp()
-                                ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
-                                : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
+                        final String displayName = InventoryManagerInterface.toColorsString(
+                                this.player.getBukkitPlayer().isOp() ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
+                                        : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
                                 line + ":" + column //$NON-NLS-1$
                         );
                         items.setDisplayName(stack, displayName);
                     }
                     else
                     {
-                        final String displayName = InventoryManagerInterface.toColorsString(items.getDisplayName(stack),
-                                line + ":" + column //$NON-NLS-1$
+                        final String displayName = InventoryManagerInterface.toColorsString(items.getDisplayName(stack), line + ":" + column //$NON-NLS-1$
                         );
                         items.setDisplayName(stack, displayName);
                     }
@@ -281,11 +290,18 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     @Override
     public void setNewPage(ClickGuiPageInterface page)
     {
+        this.currentPage = page;
         this.currentName = page.getPageName();
         this.currentItems = page.getItems();
         final String name = toName(this.player, this.currentName);
         final ItemStack[] items = this.toItemStack();
         this.guiHelper.setNewPage(name, items);
+    }
+    
+    @Override
+    public void refreshClickGui()
+    {
+        this.setNewPage(this.currentPage);
     }
     
     @Override
@@ -306,6 +322,54 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
     }
     
+    /**
+     * Pause this session
+     */
+    protected void pause()
+    {
+        this.isPaused = true;
+        this.close();
+        this.isPaused = false;
+    }
+    
+    /**
+     * Resume this session
+     */
+    protected void resume()
+    {
+        if (this.type == GuiType.AnvilGui)
+        {
+            final ItemStack item = this.agui.getItem();
+            final ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(translateToAnvilGui(meta.getDisplayName()));
+            item.setItemMeta(meta);
+            this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(this.player.getBukkitPlayer(), item, this);
+        }
+        else if (this.type == GuiType.ClickGui)
+        {
+            this.currentName = this.currentPage.getPageName();
+            this.currentItems = this.currentPage.getItems();
+            this.lineCount = this.gui.getLineCount();
+            
+            final String name = toName(this.player, this.currentName);
+            final ItemStack[] items = this.toItemStack();
+            this.guiHelper = Bukkit.getServicesManager().load(InventoryManagerInterface.class).openInventory(this.player.getBukkitPlayer(), name, items, this);
+        }
+        else if (this.type == GuiType.SmartGui)
+        {
+            // TODO resume smart gui
+        }
+    }
+
+    /**
+     * @param oldSession
+     */
+    public void setPrevSession(GuiSessionInterface oldSession)
+    {
+        this.prevSession = oldSession;
+        ((GuiSessionImpl) oldSession).pause();
+    }
+    
     @Override
     public McStorage getGuiStorage()
     {
@@ -315,6 +379,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     @Override
     public void onClose()
     {
+        if (this.isPaused)
+        {
+            // do nothing on close event
+            return;
+        }
+        
         if (this.type == GuiType.AnvilGui)
         {
             // TODO fire event
@@ -332,14 +402,21 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.agui = null;
         this.currentItems = null;
         this.currentName = null;
+        this.currentPage = null;
         this.guiHelper = null;
         this.aguiHelper = null;
         this.smartGui = null;
         this.player = null;
+        
+        if (this.prevSession != null)
+        {
+            ((GuiSessionImpl)this.prevSession).resume();
+        }
     }
-    
+
     /**
      * Translates a string from colored string to gui string
+     * 
      * @param src
      * @return editable gui string
      */
@@ -350,7 +427,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /**
      * Tranbslates a string from gui to represent colored strings
-     * @param src editable gui string
+     * 
+     * @param src
+     *            editable gui string
      * @return colored string
      */
     private static String translateFromAnvilGui(String src)
@@ -410,6 +489,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     this.agui = null;
                     this.currentItems = null;
                     this.currentName = null;
+                    this.currentPage = null;
                     this.guiHelper = null;
                     this.aguiHelper = null;
                     this.player = null;

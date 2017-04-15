@@ -30,6 +30,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
+
 /**
  * A single configuration value.
  * 
@@ -50,5 +52,11 @@ public @interface ConfigurationEnumList
      * @return Name of configuration value; empty string to use the constant name.
      */
     String name() default "";
+    
+    /**
+     * enum class hint
+     * @return enum class hint
+     */
+    Class<? extends EnumerationValue> clazz();
     
 }

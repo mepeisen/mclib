@@ -27,7 +27,6 @@ package de.minigameslib.mclib.impl;
 import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationInt;
-import de.minigameslib.mclib.api.config.ConfigurationSection;
 import de.minigameslib.mclib.api.config.ConfigurationString;
 import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;

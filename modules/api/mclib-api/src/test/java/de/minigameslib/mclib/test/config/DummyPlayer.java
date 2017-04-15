@@ -270,5 +270,19 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
         // empty
         return null;
     }
+
+    @Override
+    public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
+    {
+        // empty
+        return null;
+    }
+
+    @Override
+    public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
+    {
+        // empty
+        return null;
+    }
     
 }

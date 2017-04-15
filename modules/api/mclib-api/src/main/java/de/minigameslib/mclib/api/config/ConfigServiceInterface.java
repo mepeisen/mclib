@@ -28,6 +28,9 @@ import java.io.File;
 
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 
 /**
@@ -69,5 +72,24 @@ public interface ConfigServiceInterface
      *            Supplier to return the config interface.
      */
     void registerFileProvider(final Plugin plugin, Class<? extends ConfigurationValueInterface> clazz, McSupplier<File> provider);
+    
+    /**
+     * Creates a gui editor item for editing given configuration variable
+     * @param config configuration variable to edit
+     * @param onChange listener for config changes
+     * @param contextProvider a function to setup context before reading or storing values 
+     * @return editor item
+     * @throws McException 
+     */
+    ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException;
+    
+    /**
+     * Creates a gui editor item for editing given configuration variable
+     * @param config configuration variable to edit
+     * @param onChange listener for config changes
+     * @return editor item
+     * @throws McException 
+     */
+    ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException;
     
 }

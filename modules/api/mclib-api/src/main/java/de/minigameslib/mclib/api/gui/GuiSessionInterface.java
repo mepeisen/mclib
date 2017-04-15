@@ -68,6 +68,11 @@ public interface GuiSessionInterface extends DataFragment
     ClickGuiInterface getClickGui();
     
     /**
+     * refresh contents of current click gui.
+     */
+    void refreshClickGui();
+    
+    /**
      * Returns the current anvil gui reference.
      * 
      * @return current anvil gui.

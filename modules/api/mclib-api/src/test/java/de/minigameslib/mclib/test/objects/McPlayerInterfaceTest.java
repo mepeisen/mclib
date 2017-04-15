@@ -371,6 +371,20 @@ public class McPlayerInterfaceTest
             // dummy
             return null;
         }
+
+        @Override
+        public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
+        {
+            // empty
+            return null;
+        }
+
+        @Override
+        public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
+        {
+            // empty
+            return null;
+        }
         
     }
     

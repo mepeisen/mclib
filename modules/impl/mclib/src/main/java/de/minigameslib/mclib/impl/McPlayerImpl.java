@@ -523,6 +523,20 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }
+
+    @Override
+    public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
+        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
+        if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
+        {
+            newSession.setPrevSession(oldSession);
+        }
+        storage.set(GuiSessionInterface.class, newSession);
+        return newSession;
+    }
     
     @Override
     public GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException
@@ -534,6 +548,20 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
             oldSession.close();
         }
         final GuiSessionInterface newSession = new GuiSessionImpl(gui, this);
+        storage.set(GuiSessionInterface.class, newSession);
+        return newSession;
+    }
+
+    @Override
+    public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
+    {
+        final McStorage storage = this.getSessionStorage();
+        final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
+        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
+        if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
+        {
+            newSession.setPrevSession(oldSession);
+        }
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }

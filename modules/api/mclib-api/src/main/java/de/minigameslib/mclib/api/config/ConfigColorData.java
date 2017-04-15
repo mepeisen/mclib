@@ -56,12 +56,23 @@ public class ConfigColorData extends ColorData
     }
 
     /**
+     * Constructor
+     * @param red
+     * @param green
+     * @param blue
+     */
+    public ConfigColorData(int red, int green, int blue)
+    {
+        super((byte) red, (byte) green, (byte) blue);
+    }
+
+    /**
      * Converts this color to a bukkit color.
      * @return bukkit color.
      */
     public Color toBukkitColor()
     {
-        return Color.fromRGB(this.getRed(), this.getGreen(), this.getBlue());
+        return Color.fromRGB(this.getRedAsInt(), this.getGreenAsInt(), this.getBlueAsInt());
     }
     
     /**
@@ -71,7 +82,7 @@ public class ConfigColorData extends ColorData
      */
     public static ConfigColorData fromBukkitColor(Color bukkitColor)
     {
-        return new ConfigColorData((byte) bukkitColor.getRed(), (byte) bukkitColor.getGreen(), (byte) bukkitColor.getBlue());
+        return new ConfigColorData(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
     }
     
 }

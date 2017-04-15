@@ -102,6 +102,7 @@ import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
+import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
@@ -159,6 +160,7 @@ import de.minigameslib.mclib.api.skin.SkinServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
+import de.minigameslib.mclib.gui.cfg.AbstractConfigOption;
 import de.minigameslib.mclib.impl.cmd.MclibCommand;
 import de.minigameslib.mclib.impl.com.PlayerProxy;
 import de.minigameslib.mclib.impl.comp.ComponentId;
@@ -351,6 +353,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         // mclib enumerations
         this.enumService.registerEnumClass(this, CommonMessages.class);
         this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
+        this.enumService.registerEnumClass(this, AbstractConfigOption.Messages.class);
         this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
         this.enumService.registerEnumClass(this, McCoreConfig.class);
         this.enumService.registerEnumClass(this, McModdedWorldConfig.class);
@@ -1736,6 +1739,18 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
     {
         Bukkit.getServicesManager().load(EventSystemInterface.class).registerEvent(plugin, clazz);
+    }
+
+    @Override
+    public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException
+    {
+        return AbstractConfigOption.create(config).getItem(onChange, contextProvider);
+    }
+
+    @Override
+    public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException
+    {
+        return AbstractConfigOption.create(config).getItem(onChange, null);
     }
     
 }

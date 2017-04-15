@@ -2554,4 +2554,63 @@ public interface ConfigurationValueInterface extends EnumerationValue
         minigame.saveConfig(configs.file());
     }
     
+    /**
+     * Returns the comment
+     * 
+     * @return config comment
+     */
+    default String[] getComment()
+    {
+        try
+        {
+            final Field field = this.getClass().getDeclaredField(this.name());
+            
+            {
+                final ConfigComment config = field.getAnnotation(ConfigComment.class);
+                if (config != null)
+                {
+                    return config.value();
+                }
+            }
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // silently ignore
+        }
+        return new String[0];
+    }
+    
+    /**
+     * Returns the enum class hint for enum values
+     * @return enum class hint
+     */
+    default Class<? extends EnumerationValue> getEnumClass()
+    {
+        try
+        {
+            final Field field = this.getClass().getDeclaredField(this.name());
+            
+            {
+                final ConfigurationEnum config = field.getAnnotation(ConfigurationEnum.class);
+                if (config != null)
+                {
+                    return config.clazz();
+                }
+            }
+            
+            {
+                final ConfigurationEnumList config = field.getAnnotation(ConfigurationEnumList.class);
+                if (config != null)
+                {
+                    return config.clazz();
+                }
+            }
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // silently ignore
+        }
+        return null;
+    }
+    
 }

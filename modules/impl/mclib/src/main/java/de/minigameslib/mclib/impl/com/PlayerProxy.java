@@ -269,5 +269,17 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     {
         return this.target.getClient();
     }
+
+    @Override
+    public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
+    {
+        return this.target.nestClickGui(gui);
+    }
+
+    @Override
+    public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
+    {
+        return this.target.nestAnvilGui(gui);
+    }
     
 }
