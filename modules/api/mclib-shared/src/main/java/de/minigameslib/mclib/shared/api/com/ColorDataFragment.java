@@ -46,5 +46,20 @@ public interface ColorDataFragment extends DataFragment
      * @return the blue
      */
     byte getBlue();
+
+    /**
+     * @return the red
+     */
+    int getRedAsInt();
+
+    /**
+     * @return the green
+     */
+    int getGreenAsInt();
+
+    /**
+     * @return the blue
+     */
+    int getBlueAsInt();
     
 }

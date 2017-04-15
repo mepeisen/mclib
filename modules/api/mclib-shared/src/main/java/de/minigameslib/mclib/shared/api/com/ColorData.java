@@ -136,5 +136,23 @@ public class ColorData implements ColorDataFragment
     {
         return this.blue;
     }
+
+    @Override
+    public int getRedAsInt()
+    {
+        return this.red & 0xFF;
+    }
+
+    @Override
+    public int getGreenAsInt()
+    {
+        return this.green & 0xFF;
+    }
+
+    @Override
+    public int getBlueAsInt()
+    {
+        return this.blue & 0xFF;
+    }
     
 }
