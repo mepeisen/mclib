@@ -43,6 +43,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameData;
 
 /**
  * Nms helper class.
@@ -139,6 +140,28 @@ public class MclibClientNms
             Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
         }
     }
+    
+    private static void replaceItem(int id, Item item)
+    {
+        try
+        {
+            final Method itemAdd = Item.itemRegistry.getClass().getDeclaredMethod("addObjectRaw", int.class, ResourceLocation.class, Object.class); //$NON-NLS-1$
+            itemAdd.setAccessible(true);
+            
+            final Method setName = item.delegate.getClass().getDeclaredMethod("setResourceName", ResourceLocation.class); //$NON-NLS-1$
+            setName.setAccessible(true);
+            setName.invoke(item.delegate, item.getRegistryName());
+            
+            itemAdd.invoke(Item.itemRegistry, id, item.getRegistryName(), item);
+            
+            final ModelResourceLocation model = new ModelResourceLocation(item.getRegistryName(), "inventory");
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, model);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     /**
      * @param items
@@ -147,7 +170,30 @@ public class MclibClientNms
     {
         for (final ItemMetaData data : items)
         {
-            ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+            switch (data.getCls())
+            {
+                case Shovel:
+                case Pickaxe:
+                case Hoe:
+                case Axe:
+                case Sword:
+                default:
+                    ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
+                case Boots:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 3));
+                    break;
+                case Chestplate:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 1));
+                    break;
+                case Helmet:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 0));
+                    break;
+                case Leggins:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 2, 2));
+                    break;
+                
+            }
         }
     }
     

@@ -143,6 +143,28 @@ public class MclibClientNms
             Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
         }
     }
+    
+    private static void replaceItem(int id, Item item)
+    {
+        try
+        {
+            final Method itemAdd = GameData.getItemRegistry().getClass().getDeclaredMethod("addObjectRaw", int.class, ResourceLocation.class, Object.class); //$NON-NLS-1$
+            itemAdd.setAccessible(true);
+            
+            final Method setName = item.delegate.getClass().getDeclaredMethod("setName", String.class); //$NON-NLS-1$
+            setName.setAccessible(true);
+            setName.invoke(item.delegate, "mclib:custom-" + id);
+            
+            itemAdd.invoke(GameData.getItemRegistry(), id, new ResourceLocation("mclib", "custom-" + id), item);
+            
+            final ModelResourceLocation model = new ModelResourceLocation("mclib:custom-"+id, "inventory");
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, model);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     /**
      * @param items
@@ -151,7 +173,30 @@ public class MclibClientNms
     {
         for (final ItemMetaData data : items)
         {
-            ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+            switch (data.getCls())
+            {
+                case Shovel:
+                case Pickaxe:
+                case Hoe:
+                case Axe:
+                case Sword:
+                default:
+                    ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
+                case Boots:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 3));
+                    break;
+                case Chestplate:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 1));
+                    break;
+                case Helmet:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, 0));
+                    break;
+                case Leggins:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 2, 2));
+                    break;
+                
+            }
         }
     }
     

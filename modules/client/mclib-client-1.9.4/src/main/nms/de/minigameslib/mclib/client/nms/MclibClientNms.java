@@ -37,6 +37,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
@@ -140,6 +141,28 @@ public class MclibClientNms
             Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
         }
     }
+    
+    private static void replaceItem(int id, Item item)
+    {
+        try
+        {
+            final Method itemAdd = Item.REGISTRY.getClass().getDeclaredMethod("addObjectRaw", int.class, ResourceLocation.class, IForgeRegistryEntry.class); //$NON-NLS-1$
+            itemAdd.setAccessible(true);
+            
+            final Method setName = item.delegate.getClass().getDeclaredMethod("setName", ResourceLocation.class); //$NON-NLS-1$
+            setName.setAccessible(true);
+            setName.invoke(item.delegate, item.getRegistryName());
+            
+            itemAdd.invoke(Item.REGISTRY, id, item.getRegistryName(), item);
+            
+            final ModelResourceLocation model = new ModelResourceLocation(item.getRegistryName(), "inventory");
+            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, model);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     /**
      * @param items
@@ -148,7 +171,30 @@ public class MclibClientNms
     {
         for (final ItemMetaData data : items)
         {
-            ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+            switch (data.getCls())
+            {
+                case Shovel:
+                case Pickaxe:
+                case Hoe:
+                case Axe:
+                case Sword:
+                default:
+                    ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
+                case Boots:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, EntityEquipmentSlot.FEET));
+                    break;
+                case Chestplate:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, EntityEquipmentSlot.CHEST));
+                    break;
+                case Helmet:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 1, EntityEquipmentSlot.HEAD));
+                    break;
+                case Leggins:
+                    replaceItem(data.getId(), new MyArmor("custom-" + data.getId(), 2, EntityEquipmentSlot.LEGS));
+                    break;
+                
+            }
         }
     }
     
