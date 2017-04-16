@@ -115,14 +115,16 @@ public class PingData extends AnnotatedDataFragment
      * @param durability
      * @param attackSpeed 
      * @param attackDmg 
+     * @param cls
      */
-    public void addMeta(int id, int durability, double attackSpeed, double attackDmg)
+    public void addMeta(int id, int durability, double attackSpeed, double attackDmg, ItemClass cls)
     {
         final ItemMetaData m = new ItemMetaData();
         m.setId(id);
         m.setDurability(durability);
         m.setSpeed(attackSpeed);
         m.setDamage(attackDmg);
+        m.setCls(cls);
         this.items.add(m);
     }
     
@@ -142,6 +144,33 @@ public class PingData extends AnnotatedDataFragment
     public List<ItemMetaData> getItems()
     {
         return this.items;
+    }
+    
+    /**
+     * the item class
+     * @author mepeisen
+     *
+     */
+    public enum ItemClass
+    {
+        /** a pickaxe */
+        Pickaxe,
+        /** an axe */
+        Axe,
+        /** a shovel */
+        Shovel,
+        /** a hoe */
+        Hoe,
+        /** weapon */
+        Sword,
+        /** armor: helmet */
+        Helmet,
+        /** armor: chestplate */
+        Chestplate,
+        /** armor: leggins */
+        Leggins,
+        /** armor: boots */
+        Boots
     }
 
     /**
@@ -169,6 +198,26 @@ public class PingData extends AnnotatedDataFragment
          */
         @PersistentField
         protected double speed;
+        
+        /** item class */
+        @PersistentField
+        protected ItemClass cls;
+
+        /**
+         * @return the cls
+         */
+        public ItemClass getCls()
+        {
+            return this.cls;
+        }
+
+        /**
+         * @param cls the cls to set
+         */
+        public void setCls(ItemClass cls)
+        {
+            this.cls = cls;
+        }
 
         /**
          * @return the id

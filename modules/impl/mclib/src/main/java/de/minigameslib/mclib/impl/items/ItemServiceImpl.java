@@ -2205,27 +2205,44 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     {
                         case Armor:
                             final ItemArmor armor = item.armor();
-                            ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f);
+                            switch (armor.slot())
+                            {
+                                case Boots:
+                                    ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f, PingData.ItemClass.Boots);
+                                    break;
+                                case Chestplate:
+                                    ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f, PingData.ItemClass.Chestplate);
+                                    break;
+                                case Helmet:
+                                    ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f, PingData.ItemClass.Helmet);
+                                    break;
+                                case Leggins:
+                                    ping.addMeta(itemId, armor.durability(), 0.0f, 0.0f, PingData.ItemClass.Leggins);
+                                    break;
+                                default:
+                                    // should never happen
+                                    break;
+                            }
                             break;
                         case Axe:
                             final ItemAxe axe = item.axe();
-                            ping.addMeta(itemId, axe.durability(), axe.speed(), axe.damage());
+                            ping.addMeta(itemId, axe.durability(), axe.speed(), axe.damage(), PingData.ItemClass.Axe);
                             break;
                         case Hoe:
                             final ItemHoe hoe = item.hoe();
-                            ping.addMeta(itemId, hoe.durability(), hoe.speed(), hoe.damage());
+                            ping.addMeta(itemId, hoe.durability(), hoe.speed(), hoe.damage(), PingData.ItemClass.Hoe);
                             break;
                         case Pickaxe:
                             final ItemPickaxe pickaxe = item.pickaxe();
-                            ping.addMeta(itemId, pickaxe.durability(), pickaxe.speed(), pickaxe.damage());
+                            ping.addMeta(itemId, pickaxe.durability(), pickaxe.speed(), pickaxe.damage(), PingData.ItemClass.Pickaxe);
                             break;
                         case Shovel:
                             final ItemShovel shovel = item.shovel();
-                            ping.addMeta(itemId, shovel.durability(), shovel.speed(), shovel.damage());
+                            ping.addMeta(itemId, shovel.durability(), shovel.speed(), shovel.damage(), PingData.ItemClass.Shovel);
                             break;
                         case Sword:
                             final ItemSword sword = item.sword();
-                            ping.addMeta(itemId, sword.durability(), sword.speed(), sword.damage());
+                            ping.addMeta(itemId, sword.durability(), sword.speed(), sword.damage(), PingData.ItemClass.Sword);
                             break;
                         default:
                             break;
