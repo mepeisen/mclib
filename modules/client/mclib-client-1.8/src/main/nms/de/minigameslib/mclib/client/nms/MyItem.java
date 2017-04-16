@@ -75,7 +75,10 @@ public class MyItem extends Item
     public Multimap<String, AttributeModifier> getItemAttributeModifiers()
     {
         Multimap multimap = super.getItemAttributeModifiers();
-        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", (double)this.damage, 0));
+        if (this.damage != 0 && this.speed != 0)
+        {
+            multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", (double)this.damage, 0));
+        }
         return multimap;
     }
     

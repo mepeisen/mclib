@@ -78,7 +78,7 @@ public class MyItem extends Item
     {
         Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 
-        if (equipmentSlot == EntityEquipmentSlot.MAINHAND)
+        if (this.damage != 0 && this.speed != 0 && this.damage != 0 && this.speed != 0 && equipmentSlot == EntityEquipmentSlot.MAINHAND)
         {
             multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damage, 0));
             multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", this.speed, 0));
