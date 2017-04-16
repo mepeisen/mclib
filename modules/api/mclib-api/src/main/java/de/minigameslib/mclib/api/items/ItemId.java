@@ -72,6 +72,23 @@ public interface ItemId extends McUniqueEnumInterface
     }
     
     /**
+     * Returns the resource paths to the textures; used by custom armor
+     * @return resource paths to textures
+     */
+    default String[] getModelTextures()
+    {
+        try
+        {
+            final ItemData data = this.getClass().getDeclaredField(this.name()).getAnnotation(ItemData.class);
+            return data.modelTextures();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * Returns the crafting recipes
      * @return crafting recipes
      */

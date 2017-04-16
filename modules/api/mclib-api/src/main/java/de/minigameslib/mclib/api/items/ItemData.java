@@ -46,6 +46,12 @@ public @interface ItemData
     String[] textures();
     
     /**
+     * Returns the resource paths to the textures; used by custom armor
+     * @return resource paths to textures
+     */
+    String[] modelTextures() default {};
+    
+    /**
      * the custom item model json
      * @return custom item model json
      */

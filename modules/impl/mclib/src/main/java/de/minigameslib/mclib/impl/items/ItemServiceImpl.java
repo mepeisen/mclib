@@ -1438,6 +1438,22 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         LOGGER.log(Level.WARNING, "IOException writing texture " + item.getPluginName() + '/' + item.getEnumName() + '_' + filename, e); //$NON-NLS-1$
                     }
                 }
+                for (final String texture : item.getItemId().getModelTextures())
+                {
+                    final File path = new File(texture);
+                    final String filename = path.getName();
+                    try
+                    {
+                        final JarEntry textureEntry = new JarEntry("assets/mclib/textures/models/armor/custom-" + item.getNumId() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        textureEntry.setTime(System.currentTimeMillis());
+                        jar.putNextEntry(textureEntry);
+                        copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);
+                    }
+                    catch (IOException e)
+                    {
+                        LOGGER.log(Level.WARNING, "IOException writing texture " + item.getPluginName() + '/' + item.getEnumName() + '_' + filename, e); //$NON-NLS-1$
+                    }
+                }
                 
                 final JarEntry modelJson = new JarEntry("assets/minecraft/models/item/" + item.getPluginName() + '/' + item.getEnumName() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
                 modelJson.setTime(System.currentTimeMillis());
