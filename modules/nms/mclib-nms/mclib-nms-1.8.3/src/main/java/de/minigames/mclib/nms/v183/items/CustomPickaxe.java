@@ -125,7 +125,7 @@ public class CustomPickaxe extends ItemPickaxe
         
         if (this.attackModifiersUsed)
         {
-            localMultimap.put(GenericAttributes.e.getName(), new AttributeModifier(f, "Weapon modifier", this.attackDmg, 0)); //$NON-NLS-1$
+            localMultimap.put(GenericAttributes.e.getName(), new AttributeModifier(f, "Tool modifier", this.attackDmg, 0)); //$NON-NLS-1$
         }
         
         return localMultimap;

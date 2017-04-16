@@ -126,8 +126,8 @@ public class CustomShovel extends ItemSpade
         
         if (this.attackModifiersUsed && paramEnumItemSlot == EnumItemSlot.MAINHAND)
         {
-            localMultimap.put(GenericAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(g, "Weapon modifier", this.attackDmg, 0)); //$NON-NLS-1$
-            localMultimap.put(GenericAttributes.f.getName(), new AttributeModifier(h, "Weapon modifier", this.attackSpeed, 0)); //$NON-NLS-1$
+            localMultimap.put(GenericAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(g, "Tool modifier", this.attackDmg, 0)); //$NON-NLS-1$
+            localMultimap.put(GenericAttributes.f.getName(), new AttributeModifier(h, "Tool modifier", this.attackSpeed, 0)); //$NON-NLS-1$
         }
         
         return localMultimap;

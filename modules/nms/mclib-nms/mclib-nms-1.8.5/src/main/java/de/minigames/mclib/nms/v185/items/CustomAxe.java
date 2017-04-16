@@ -125,7 +125,7 @@ public class CustomAxe extends ItemAxe
         
         if (this.attackModifiersUsed)
         {
-            localMultimap.put(GenericAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(f, "Weapon modifier", this.attackDmg, 0)); //$NON-NLS-1$
+            localMultimap.put(GenericAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(f, "Tool modifier", this.attackDmg, 0)); //$NON-NLS-1$
         }
         
         return localMultimap;

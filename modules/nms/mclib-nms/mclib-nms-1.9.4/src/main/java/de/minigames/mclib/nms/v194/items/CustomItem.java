@@ -28,17 +28,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 
-import com.google.common.collect.Multimap;
-
 import de.minigames.mclib.nms.v194.blocks.CustomBlock;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
-import net.minecraft.server.v1_9_R2.AttributeModifier;
 import net.minecraft.server.v1_9_R2.Block;
 import net.minecraft.server.v1_9_R2.BlockPosition;
 import net.minecraft.server.v1_9_R2.EntityLiving;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
-import net.minecraft.server.v1_9_R2.EnumItemSlot;
-import net.minecraft.server.v1_9_R2.GenericAttributes;
 import net.minecraft.server.v1_9_R2.IBlockData;
 import net.minecraft.server.v1_9_R2.Item;
 import net.minecraft.server.v1_9_R2.ItemStack;
@@ -51,21 +46,6 @@ public class CustomItem extends Item
 {
     
     /**
-     * attack dmg.
-     */
-    private double               attackDmg;
-    
-    /**
-     * attack speed
-     */
-    private double               attackSpeed;
-    
-    /**
-     * flag for using the attack modifiers
-     */
-    private boolean              attackModifiersUsed = false;
-    
-    /**
      * item enchantability
      */
     private int                  itemEnchantability;
@@ -74,19 +54,6 @@ public class CustomItem extends Item
      * the item rules.
      */
     private NmsItemRuleInterface itemRule;
-    
-    /**
-     * Sets the attack modifiers
-     * 
-     * @param dmg
-     * @param speed
-     */
-    public void setAttackModifiers(double dmg, double speed)
-    {
-        this.attackDmg = dmg;
-        this.attackSpeed = speed;
-        this.attackModifiersUsed = true;
-    }
     
     /**
      * Sets the itemEnchantability
@@ -108,20 +75,6 @@ public class CustomItem extends Item
     public Item setMaxDurability(int paramInt)
     {
         return super.setMaxDurability(paramInt);
-    }
-    
-    @Override
-    public Multimap<String, AttributeModifier> a(EnumItemSlot paramEnumItemSlot)
-    {
-        Multimap<String, AttributeModifier> localMultimap = super.a(paramEnumItemSlot);
-        
-        if (this.attackModifiersUsed && paramEnumItemSlot == EnumItemSlot.MAINHAND)
-        {
-            localMultimap.put(GenericAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(h, "Weapon modifier", this.attackDmg, 0)); //$NON-NLS-1$
-            localMultimap.put(GenericAttributes.f.getName(), new AttributeModifier(i, "Weapon modifier", this.attackSpeed, 0)); //$NON-NLS-1$
-        }
-        
-        return localMultimap;
     }
     
     @Override
