@@ -76,7 +76,7 @@ import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.BlockDropRuleInterface;
 import de.minigameslib.mclib.api.items.BlockId;
-import de.minigameslib.mclib.api.items.BlockInventory;
+import de.minigameslib.mclib.api.items.BlockInventoryMeta;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.BlockVariantId;
@@ -1006,7 +1006,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 helper.setStackSize(blockId, stackSize);
             }
             
-            final BlockInventory blockInv = block.inventory();
+            final BlockInventoryMeta blockInv = block.inventory();
             
             // furnace recipe/ stack sizes / crafting
             final FurnaceRecipeInterface furnaceRecipe = block.furnaceRecipe();
@@ -1056,14 +1056,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
                 
                 // inventory
-                final BlockInventory variantInv = variant.inventory();
+                final BlockInventoryMeta variantInv = variant.inventory();
                 if (variantInv != null)
                 {
-                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(variantInv));
+                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(block, variant, variantInv));
                 }
                 else if (blockInv != null)
                 {
-                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(blockInv));
+                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(block, variant, blockInv));
                 }
             }
         }

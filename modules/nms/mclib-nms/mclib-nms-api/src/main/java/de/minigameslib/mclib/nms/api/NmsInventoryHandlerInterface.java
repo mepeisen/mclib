@@ -46,10 +46,10 @@ public interface NmsInventoryHandlerInterface
     /**
      * post place handler
      * @param location
-     * @param asCraftMirror
+     * @param stack
      * @param player
      */
-    void onPostPlace(Location location, ItemStack asCraftMirror, Player player);
+    void onPostPlace(Location location, ItemStack stack, Player player);
 
     /**
      * break handler

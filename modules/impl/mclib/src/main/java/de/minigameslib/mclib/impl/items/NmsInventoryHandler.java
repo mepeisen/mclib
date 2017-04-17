@@ -30,7 +30,15 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import de.minigameslib.mclib.api.items.BlockInventory;
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.items.BlockId;
+import de.minigameslib.mclib.api.items.BlockInventoryMeta;
+import de.minigameslib.mclib.api.items.BlockInventoryMeta.BlockInventoryInterface;
+import de.minigameslib.mclib.api.items.BlockVariantId;
+import de.minigameslib.mclib.api.items.InventoryId;
+import de.minigameslib.mclib.api.items.InventoryServiceInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 
 /**
@@ -39,53 +47,94 @@ import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
  */
 public class NmsInventoryHandler implements NmsInventoryHandlerInterface
 {
+    
+    /** the initial size */
+    private int initialSize;
+    
+    /** block id */
+    private BlockId blockId;
+    /** block variant id */
+    private BlockVariantId variantId;
+
+    /** fixed inventory size */
+    private boolean fixed;
+
+    /** shared inventory */
+    private boolean shared;
+    
+    /** helper interface */
+    private BlockInventoryInterface helper;
 
     /**
+     * @param blockId
+     * @param variantId
      * @param variantInv
      */
-    public NmsInventoryHandler(BlockInventory variantInv)
+    public NmsInventoryHandler(BlockId blockId, BlockVariantId variantId, BlockInventoryMeta variantInv)
     {
-        // TODO Auto-generated constructor stub
+        this.blockId = blockId;
+        this.variantId = variantId;
+        this.initialSize = variantInv.size();
+        this.fixed = variantInv.fixed();
+        this.shared = variantInv.shared();
+        try
+        {
+            this.helper = variantInv.blockInventory().newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new IllegalStateException("Unable to create block inventory helper", e); //$NON-NLS-1$
+        }
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface#onPlace(org.bukkit.Location)
-     */
     @Override
     public void onPlace(Location location)
     {
-        // TODO Auto-generated method stub
-        
+        // do nothing for the moment, everything is done in postPlace
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface#onPostPlace(org.bukkit.Location, org.bukkit.inventory.ItemStack, org.bukkit.entity.Player)
-     */
     @Override
-    public void onPostPlace(Location location, ItemStack asCraftMirror, Player player)
+    public void onPostPlace(Location location, ItemStack stack, Player player)
     {
-        // TODO Auto-generated method stub
+        final McPlayerInterface mcplayer = ObjectServiceInterface.instance().getPlayer(player);
+        try
+        {
+            this.helper.createInventory(this.blockId, this.variantId, location, mcplayer, this.initialSize, this.fixed, this.shared);
+            this.helper.getInventory(this.blockId, this.variantId, location, mcplayer);
+        }
+        catch (McException e)
+        {
+            mcplayer.sendMessage(e.getErrorMessage(), e.getArgs());
+        }
         
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface#onBreak(org.bukkit.Location)
-     */
     @Override
     public void onBreak(Location location)
     {
-        // TODO Auto-generated method stub
-        
+        this.helper.onBreak(this.blockId, this.variantId, location);
     }
 
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface#onInteract(org.bukkit.Location, org.bukkit.entity.HumanEntity, boolean, org.bukkit.block.BlockFace, float, float, float)
-     */
     @Override
     public boolean onInteract(Location location, HumanEntity bukkitEntity, boolean mainHand, BlockFace blockFace, float hitX, float hitY, float hitZ)
     {
-        // TODO Auto-generated method stub
-        return false;
+        if (bukkitEntity instanceof Player)
+        {
+            final McPlayerInterface mcplayer = ObjectServiceInterface.instance().getPlayer((Player) bukkitEntity);
+            try
+            {
+                InventoryId inv = this.helper.getInventory(this.blockId, this.variantId, location, mcplayer);
+                if (inv != null)
+                {
+                    InventoryServiceInterface.instance().getInventory(inv).openInventory(mcplayer);
+                }
+            }
+            catch (McException e)
+            {
+                mcplayer.sendMessage(e.getErrorMessage(), e.getArgs());
+            }
+        }
+        return true;
     }
     
 }

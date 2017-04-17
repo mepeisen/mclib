@@ -29,7 +29,6 @@ import java.util.List;
 import org.bukkit.Location;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
  * @author mepeisen
@@ -51,8 +50,11 @@ public interface InventoryServiceInterface
     /** default inventory name */
     String DEFAULT_INVENTORY = "DEFAULT"; //$NON-NLS-1$
     
-    /** location prefix for identified */
+    /** location prefix for identifiers */
     String LOC_PREFIX = "LOC$"; //$NON-NLS-1$
+    
+    /** user prefix for identifiers; should be used by plugins */
+    String USER_PREFIX = "USER$"; //$NON-NLS-1$
     
     /**
      * Returns inventory ids for given types
@@ -74,29 +76,35 @@ public interface InventoryServiceInterface
     void deleteInventories(InventoryId... ids);
     
     /**
-     * Returns global inventory of given type; global inventories are unique within servers.
-     * Identical to {@code getOrCreateInventory(type, DEFAULT_INVENTORY)}.
-     * @param type
-     * @return global inventory
-     */
-    InventoryId getDefault(InventoryTypeId type);
-    
-    /**
      * Returns global inventory of given type and string id; global inventories are unique within servers.
      * @param type
-     * @param stringIdentified
+     * @param stringIdentifier
      * @return global inventory identifies by given string id; {@code null} if it does not exist
      */
-    InventoryId getInventory(InventoryTypeId type, String stringIdentified);
+    InventoryId getInventory(InventoryTypeId type, String stringIdentifier);
     
     /**
      * Returns global inventory of given type and string id; global inventories are unique within servers.
      * Creates inventory if it does not exist.
      * @param type
-     * @param stringIdentified
+     * @param initialSize initial inventory size in slots
+     * @param fixed {@code true} if size is fixed
+     * @param shared {@code true} if all players share inventory
+     * @param stringIdentifier
      * @return global inventory identifies by given string id
      */
-    InventoryId getOrCreateInventory(InventoryTypeId type, String stringIdentified);
+    InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier);
+    
+    /**
+     * Creates global inventory of given type and string id; global inventories are unique within servers.
+     * @param type
+     * @param initialSize initial inventory size in slots
+     * @param fixed {@code true} if size is fixed
+     * @param shared {@code true} if all players share inventory
+     * @param stringIdentifier
+     * @return global inventory identifies by given string id
+     */
+    InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier);
     
     /**
      * Returns inventory of given type and location
@@ -110,19 +118,25 @@ public interface InventoryServiceInterface
      * Returns inventory of given type and location.
      * Creates inventory if it does not exist.
      * @param type
+     * @param initialSize initial inventory size in slots
+     * @param fixed {@code true} if size is fixed
+     * @param shared {@code true} if all players share inventory
      * @param location
      * @return inventory bound to given location
      */
-    InventoryId getOrCreateInventory(InventoryTypeId type, Location location);
+    InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location location);
     
     /**
      * Creates an inventory for one or multiple locations.
      * @param type
+     * @param initialSize initial inventory size in slots
+     * @param fixed {@code true} if size is fixed
+     * @param shared {@code true} if all players share inventory
      * @param locations
      * @return inventory
      * @throws McException thrown if there was a problem creating the inventory; thrown if the locations are already in use
      */
-    InventoryId createInventory(InventoryTypeId type, Location... locations) throws McException;
+    InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location... locations) throws McException;
     
     /**
      * Bind inventory to new locations
@@ -146,11 +160,5 @@ public interface InventoryServiceInterface
      * @return inventory descriptor; {@code null} if inventory is invalid
      */
     InventoryDescriptorInterface getInventory(InventoryId id);
-    
-    /**
-     * Open inventory GUI for given player
-     * @param player
-     */
-    void openInventory(McPlayerInterface player);
     
 }

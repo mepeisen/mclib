@@ -33,7 +33,6 @@ import de.minigameslib.mclib.api.items.InventoryDescriptorInterface;
 import de.minigameslib.mclib.api.items.InventoryId;
 import de.minigameslib.mclib.api.items.InventoryServiceInterface;
 import de.minigameslib.mclib.api.items.InventoryTypeId;
-import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
  * Implementation of inventory service.
@@ -43,7 +42,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
  */
 public class InventoryServiceImpl implements InventoryServiceInterface
 {
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventoryIds(de.minigameslib.mclib.api.items.InventoryTypeId[])
      */
@@ -53,7 +52,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#deleteAllInventories(de.minigameslib.mclib.api.items.InventoryTypeId[])
      */
@@ -63,7 +62,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         
     }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#deleteInventories(de.minigameslib.mclib.api.items.InventoryId[])
      */
@@ -73,37 +72,37 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         
     }
-    
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getDefault(de.minigameslib.mclib.api.items.InventoryTypeId)
-     */
-    @Override
-    public InventoryId getDefault(InventoryTypeId type)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryTypeId, java.lang.String)
      */
     @Override
-    public InventoryId getInventory(InventoryTypeId type, String stringIdentified)
+    public InventoryId getInventory(InventoryTypeId type, String stringIdentifier)
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, java.lang.String)
+     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, java.lang.String)
      */
     @Override
-    public InventoryId getOrCreateInventory(InventoryTypeId type, String stringIdentified)
+    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier)
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
+    /* (non-Javadoc)
+     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#createInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, java.lang.String)
+     */
+    @Override
+    public InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryTypeId, org.bukkit.Location)
      */
@@ -113,27 +112,27 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, org.bukkit.Location)
+     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, org.bukkit.Location)
      */
     @Override
-    public InventoryId getOrCreateInventory(InventoryTypeId type, Location location)
+    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location location)
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#createInventory(de.minigameslib.mclib.api.items.InventoryTypeId, org.bukkit.Location[])
+     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#createInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, org.bukkit.Location[])
      */
     @Override
-    public InventoryId createInventory(InventoryTypeId type, Location... locations) throws McException
+    public InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location... locations) throws McException
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#bindInventory(de.minigameslib.mclib.api.items.InventoryId, org.bukkit.Location[])
      */
@@ -143,7 +142,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         
     }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#unbindInventory(de.minigameslib.mclib.api.items.InventoryId, org.bukkit.Location[])
      */
@@ -153,7 +152,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface
         // TODO Auto-generated method stub
         
     }
-    
+
     /* (non-Javadoc)
      * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryId)
      */
@@ -162,16 +161,6 @@ public class InventoryServiceImpl implements InventoryServiceInterface
     {
         // TODO Auto-generated method stub
         return null;
-    }
-    
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#openInventory(de.minigameslib.mclib.api.objects.McPlayerInterface)
-     */
-    @Override
-    public void openInventory(McPlayerInterface player)
-    {
-        // TODO Auto-generated method stub
-        
     }
     
 }

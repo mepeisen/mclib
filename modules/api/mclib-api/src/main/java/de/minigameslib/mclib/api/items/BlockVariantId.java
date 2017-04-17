@@ -129,11 +129,11 @@ public interface BlockVariantId extends McUniqueEnumInterface
      * Returns the inventory definition
      * @return inventory definition
      */
-    default BlockInventory inventory()
+    default BlockInventoryMeta inventory()
     {
         try
         {
-            final BlockInventory data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockInventory.class);
+            final BlockInventoryMeta data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockInventoryMeta.class);
             return data;
         }
         catch (NoSuchFieldException ex)

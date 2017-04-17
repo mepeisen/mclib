@@ -150,4 +150,10 @@ public interface InventoryDescriptorInterface
      */
     void growInventory(int slotAmount) throws McException;
     
+    /**
+     * Open inventory GUI for given player
+     * @param player
+     */
+    void openInventory(McPlayerInterface player);
+    
 }
