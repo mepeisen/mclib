@@ -63,6 +63,7 @@ import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
+import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_9_R1.BlockPosition;
@@ -1293,6 +1294,13 @@ public class ItemHelper1_9 implements ItemHelperInterface
     public boolean isStructureVoid(int block)
     {
         return false;
+    }
+
+    @Override
+    public void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler)
+    {
+        final CustomBlock block = (CustomBlock) net.minecraft.server.v1_9_R1.Block.getById(blockId);
+        block.setInventoryHandler(variant, nmsInventoryHandler);
     }
     
 }

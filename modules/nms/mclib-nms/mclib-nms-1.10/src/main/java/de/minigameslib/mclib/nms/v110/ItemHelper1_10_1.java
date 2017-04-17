@@ -55,6 +55,7 @@ import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
+import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.nms.v110.blocks.CustomBlock;
 import de.minigameslib.mclib.nms.v110.items.CustomArmor;
@@ -1331,6 +1332,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.J;
+    }
+
+    @Override
+    public void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler)
+    {
+        final CustomBlock block = (CustomBlock) net.minecraft.server.v1_10_R1.Block.getById(blockId);
+        block.setInventoryHandler(variant, nmsInventoryHandler);
     }
     
 }

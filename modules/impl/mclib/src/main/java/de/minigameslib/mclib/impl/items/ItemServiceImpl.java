@@ -76,6 +76,7 @@ import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.BlockDropRuleInterface;
 import de.minigameslib.mclib.api.items.BlockId;
+import de.minigameslib.mclib.api.items.BlockInventory;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.BlockVariantId;
@@ -181,6 +182,23 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private class ToolBuilderImpl implements ToolBuilderInterface
     {
+        /**
+         * tooling id to divide multiple toolings
+         */
+        private static final String CUSTOMKEY_TOOLING_ID = "toolingId"; //$NON-NLS-1$
+        /**
+         * marker for clearing tooling on join
+         */
+        private static final String CUSTOMKEY_CLEAR_ON_JOIN = "clearOnJoin"; //$NON-NLS-1$
+        /**
+         * tooling marker for custom tooling item
+         */
+        private static final String CUSTOMKEY_TOOLING_MARKER = "customTooling"; //$NON-NLS-1$
+        /**
+         * plugin for item custom data
+         */
+        private static final String CUSTOMDATA_PLUGIN = "mclib"; //$NON-NLS-1$
+        
         /** flag for single use */
         private boolean                                                singleUse;
         /** right click handler */
@@ -289,7 +307,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     {
                         return;
                     }
-                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+                    if (helper.getCustomData(invitem, CUSTOMDATA_PLUGIN, CUSTOMKEY_TOOLING_MARKER) != null)
                     {
                         ItemServiceImpl.this.deleteTooling(inventory, this.targetSlot, invitem, helper, marker);
                     }
@@ -306,7 +324,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 for (int i = 0; i < inventory.getSize(); i++)
                 {
                     final ItemStack invitem = inventory.getItem(i);
-                    if (helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+                    if (helper.getCustomData(invitem, CUSTOMDATA_PLUGIN, CUSTOMKEY_TOOLING_MARKER) != null)
                     {
                         slot = i;
                         ItemServiceImpl.this.deleteTooling(inventory, i, invitem, helper, marker);
@@ -341,9 +359,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             stack = inventory.getItem(slot); // forces to use the correct NMS class
             
             final String uuid = UUID.randomUUID().toString();
-            helper.addCustomData(stack, "mclib", "clearOnJoin", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-            helper.addCustomData(stack, "mclib", "customTooling", "1"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-            helper.addCustomData(stack, "mclib", "toolingId", uuid); //$NON-NLS-1$//$NON-NLS-2$
+            helper.addCustomData(stack, CUSTOMDATA_PLUGIN, CUSTOMKEY_CLEAR_ON_JOIN, CUSTOMKEY_CLEAR_ON_JOIN);
+            helper.addCustomData(stack, CUSTOMDATA_PLUGIN, CUSTOMKEY_TOOLING_MARKER, CUSTOMKEY_TOOLING_MARKER);
+            helper.addCustomData(stack, CUSTOMDATA_PLUGIN, CUSTOMKEY_TOOLING_ID, uuid);
             final ToolData data = new ToolData();
             data.setOneUse(this.singleUse);
             data.setLeftClickHandler(this.leftClick);
@@ -530,7 +548,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     public void deleteTooling(Inventory inventory, int targetSlot, ItemStack invitem, ItemHelperInterface helper, ToolMarker marker)
     {
-        final String id = helper.getCustomData(invitem, "mclib", "toolingId"); //$NON-NLS-1$//$NON-NLS-2$
+        final String id = helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID);
         marker.getTools().remove(id);
         inventory.setItem(targetSlot, null);
     }
@@ -988,11 +1006,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 helper.setStackSize(blockId, stackSize);
             }
             
+            final BlockInventory blockInv = block.inventory();
+            
             // furnace recipe/ stack sizes / crafting
             final FurnaceRecipeInterface furnaceRecipe = block.furnaceRecipe();
             final CraftingRecipes blockRecipes = block.recipes();
             for (final BlockVariantId variant : block.variants())
             {
+                // furnace
                 final FurnaceRecipeInterface variantFurnace = variant.furnaceRecipe();
                 if (variantFurnace != null)
                 {
@@ -1005,6 +1026,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                             .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant)));
                 }
                 
+                // crafting
                 final CraftingRecipes variantRecipes = variant.recipes();
                 if (variantRecipes != null)
                 {
@@ -1031,6 +1053,17 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
                                 .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
                     }
+                }
+                
+                // inventory
+                final BlockInventory variantInv = variant.inventory();
+                if (variantInv != null)
+                {
+                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(variantInv));
+                }
+                else if (blockInv != null)
+                {
+                    helper.initInventory(blockId, variant.ordinal(), new NmsInventoryHandler(blockInv));
                 }
             }
         }
@@ -1597,7 +1630,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         for (int i = 0; i < inventory.getSize(); i++)
         {
             final ItemStack item = inventory.getItem(i);
-            if (helper.getCustomData(item, "mclib", "clearOnJoin") != null) //$NON-NLS-1$//$NON-NLS-2$
+            if (helper.getCustomData(item, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_CLEAR_ON_JOIN) != null)
             {
                 inventory.setItem(i, new ItemStack(Material.AIR));
             }
@@ -1664,7 +1697,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final List<ItemStack> stacks = evt.getBukkitEvent().getDrops();
         for (int i = 0; i < stacks.size(); i++)
         {
-            if (helper.getCustomData(stacks.get(i), "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+            if (helper.getCustomData(stacks.get(i), ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
             {
                 stacks.remove(i);
                 break;
@@ -1681,7 +1714,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public void onPlayerDrop(McPlayerDropItemEvent evt)
     {
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
-        if (helper.getCustomData(evt.getBukkitEvent().getItemDrop().getItemStack(), "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+        if (helper.getCustomData(evt.getBukkitEvent().getItemDrop().getItemStack(), ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
         {
             evt.getBukkitEvent().setCancelled(true);
         }
@@ -1697,7 +1730,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         final ItemStack cursor = evt.getBukkitEvent().getCursor();
-        if (cursor != null && helper.getCustomData(cursor, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$
+        if (cursor != null && helper.getCustomData(cursor, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
         {
             switch (evt.getBukkitEvent().getAction())
             {
@@ -1748,10 +1781,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             final ItemStack stack = evt.getBukkitEvent().getItem();
             final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
-            if (stack != null && helper.getCustomData(stack, "mclib", "customTooling") != null)//$NON-NLS-1$//$NON-NLS-2$
+            if (stack != null && helper.getCustomData(stack, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
             {
                 evt.getBukkitEvent().setCancelled(true);
-                final String id = helper.getCustomData(stack, "mclib", "toolingId"); //$NON-NLS-1$//$NON-NLS-2$
+                final String id = helper.getCustomData(stack, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID);
                 
                 final ToolMarker marker = evt.getPlayer().getSessionStorage().get(ToolMarker.class);
                 final ToolData data = marker == null ? null : marker.getTools().get(id);
@@ -1812,7 +1845,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         for (int i = 0; i < inventory.getSize(); i++)
                         {
                             final ItemStack invitem = inventory.getItem(i);
-                            if (id.equals(helper.getCustomData(invitem, "mclib", "toolingId")) && helper.getCustomData(invitem, "mclib", "customTooling") != null) //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
+                            if (id.equals(helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID)) && helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
                             {
                                 inventory.setItem(i, new ItemStack(Material.AIR));
                                 evt.getPlayer().getBukkitPlayer().updateInventory();

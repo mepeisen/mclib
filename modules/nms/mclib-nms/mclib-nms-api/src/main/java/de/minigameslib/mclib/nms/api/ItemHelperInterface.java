@@ -844,5 +844,12 @@ public interface ItemHelperInterface
      * @return {@code true} if given material is STRCTURE_VOID
      */
     boolean isStructureVoid(int block);
+
+    /**
+     * @param blockId
+     * @param variant
+     * @param nmsInventoryHandler
+     */
+    void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler);
     
 }

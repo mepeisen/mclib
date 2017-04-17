@@ -106,6 +106,7 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
+import de.minigameslib.mclib.api.items.InventoryServiceInterface;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -168,6 +169,7 @@ import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.gui.cfg.AbstractConfigOption;
+import de.minigameslib.mclib.impl.items.InventoryServiceImpl;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
@@ -365,6 +367,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // item service
         initItemsAndBlocksAndResources();
+
+        Bukkit.getServicesManager().register(InventoryServiceInterface.class, new InventoryServiceImpl(), this, ServicePriority.Highest);
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         

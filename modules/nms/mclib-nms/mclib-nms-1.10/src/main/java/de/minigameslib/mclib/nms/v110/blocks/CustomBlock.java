@@ -24,18 +24,29 @@
 
 package de.minigameslib.mclib.nms.v110.blocks;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
+import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 import net.minecraft.server.v1_10_R1.Block;
+import net.minecraft.server.v1_10_R1.BlockPosition;
 import net.minecraft.server.v1_10_R1.BlockStateEnum;
 import net.minecraft.server.v1_10_R1.BlockStateList;
 import net.minecraft.server.v1_10_R1.CreativeModeTab;
+import net.minecraft.server.v1_10_R1.EntityPlayer;
 import net.minecraft.server.v1_10_R1.IBlockData;
 import net.minecraft.server.v1_10_R1.IBlockState;
 import net.minecraft.server.v1_10_R1.INamable;
+import net.minecraft.server.v1_10_R1.ItemStack;
 import net.minecraft.server.v1_10_R1.Material;
 import net.minecraft.server.v1_10_R1.SoundEffectType;
+import net.minecraft.server.v1_10_R1.World;
 
 /**
  * @author mepeisen
@@ -45,6 +56,9 @@ public class CustomBlock extends Block
 {
     // the block variant
     public static final BlockStateEnum<EnumCustomVariant> VARIANT = BlockStateEnum.of("variant", EnumCustomVariant.class); //$NON-NLS-1$
+    
+    /** the nms drop rule. */
+    private NmsDropRuleInterface dropRule;
 
     public CustomBlock() {
         super(Material.STONE);
@@ -53,9 +67,93 @@ public class CustomBlock extends Block
         a(SoundEffectType.d); // stone
     }
     
-    /** the nms drop rule. */
-    private NmsDropRuleInterface dropRule;
+    private Map<Integer, NmsInventoryHandlerInterface> inventoryHandler = new HashMap<>();
     
+    public void setInventoryHandler(int variant, NmsInventoryHandlerInterface inventory)
+    {
+        this.inventoryHandler.put(variant, inventory);
+    }
+    
+    @Override
+    public void onPlace(World world, BlockPosition blockposition, IBlockData iblockdata)
+    {
+        final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(iblockdata));
+        if (handler != null)
+        {
+            handler.onPlace(new Location(world.getWorld(), blockposition.getX(), blockposition.getY(), blockposition.getZ()));
+        }
+        super.onPlace(world, blockposition, iblockdata);
+    }
+    
+    @Override
+    public void postPlace(World world, BlockPosition blockposition, IBlockData iblockdata,
+            net.minecraft.server.v1_10_R1.EntityLiving entityliving, net.minecraft.server.v1_10_R1.ItemStack itemstack)
+    {
+        final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(iblockdata));
+        if (handler != null)
+        {
+            handler.onPostPlace(new Location(world.getWorld(), blockposition.getX(), blockposition.getY(), blockposition.getZ()),
+                    CraftItemStack.asCraftMirror(itemstack),
+                    entityliving instanceof EntityPlayer ? ((EntityPlayer)entityliving).getBukkitEntity() : null);
+        }
+        super.postPlace(world, blockposition, iblockdata, entityliving, itemstack);
+    }
+    
+    @Override
+    public void remove(World paramWorld, BlockPosition paramBlockPosition, IBlockData paramIBlockData) {
+        // break block
+        super.remove(paramWorld, paramBlockPosition, paramIBlockData);
+        final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(paramIBlockData));
+        if (handler != null)
+        {
+            handler.onBreak(new Location(paramWorld.getWorld(), paramBlockPosition.getX(), paramBlockPosition.getY(), paramBlockPosition.getZ()));
+        }
+    }
+    
+    @Override
+    public boolean interact(World paramWorld, BlockPosition paramBlockPosition, IBlockData paramIBlockData,
+            net.minecraft.server.v1_10_R1.EntityHuman paramEntityHuman, net.minecraft.server.v1_10_R1.EnumHand paramEnumHand, ItemStack itemStack, net.minecraft.server.v1_10_R1.EnumDirection paramEnumDirection, float paramFloat1,
+            float paramFloat2, float paramFloat3) {
+
+        final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(paramIBlockData));
+        if (handler != null)
+        {
+            return handler.onInteract(new Location(paramWorld.getWorld(), paramBlockPosition.getX(), paramBlockPosition.getY(), paramBlockPosition.getZ()),
+                    paramEntityHuman.getBukkitEntity(),
+                    paramEnumHand == net.minecraft.server.v1_10_R1.EnumHand.MAIN_HAND,
+                    toBlockFace(paramEnumDirection),
+                    paramFloat1,
+                    paramFloat2,
+                    paramFloat3);
+        }
+        return super.interact(paramWorld, paramBlockPosition, paramIBlockData, paramEntityHuman, paramEnumHand, itemStack, paramEnumDirection, paramFloat1, paramFloat2, paramFloat3);
+    }
+    
+    /**
+     * @param paramEnumDirection
+     * @return block face
+     */
+    private BlockFace toBlockFace(net.minecraft.server.v1_10_R1.EnumDirection paramEnumDirection)
+    {
+        switch (paramEnumDirection)
+        {
+            case DOWN:
+                return BlockFace.DOWN;
+            case EAST:
+                return BlockFace.EAST;
+            case NORTH:
+                return BlockFace.NORTH;
+            case SOUTH:
+                return BlockFace.SOUTH;
+            case UP:
+                return BlockFace.UP;
+            case WEST:
+                return BlockFace.WEST;
+            default:
+                return null;
+        }
+    }
+
     public void setMeta(float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
         this.c(hardness);

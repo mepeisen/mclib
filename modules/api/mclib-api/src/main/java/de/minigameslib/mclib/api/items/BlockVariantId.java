@@ -125,4 +125,21 @@ public interface BlockVariantId extends McUniqueEnumInterface
         }
     }
     
+    /**
+     * Returns the inventory definition
+     * @return inventory definition
+     */
+    default BlockInventory inventory()
+    {
+        try
+        {
+            final BlockInventory data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockInventory.class);
+            return data;
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
 }
