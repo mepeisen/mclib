@@ -99,64 +99,64 @@ public class CuboidMarker implements MarkerInterface
             GL11.glPushMatrix();
             
             GL11.glLineWidth(6.0f);
-            GL11.glColor4f(this.color.getR(), this.color.getG(), this.color.getB(), this.color.getA());
+            GL11.glColor4f(this.color.getR() * 0.8f, this.color.getG() * 0.8f, this.color.getB() * 0.8f, this.color.getA() * 0.5f);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
             GL11.glHint( GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST );
-            for (int x = 0; x < diffx; x++)
+            for (int x = 0; x <= diffx; x++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1 + x, dy1, dz1);
-                GL11.glVertex3d(dx1 + x, dy2, dz1);
-                GL11.glVertex3d(dx1 + x, dy2, dz2);
-                GL11.glVertex3d(dx1 + x, dy1, dz2);
+                GL11.glVertex3d(dx1 + x, dy2 + 1, dz1);
+                GL11.glVertex3d(dx1 + x, dy2 + 1, dz2 + 1);
+                GL11.glVertex3d(dx1 + x, dy1, dz2 + 1);
                 GL11.glEnd();
             }
-            for (int y = 0; y < diffy; y++)
+            for (int y = 0; y <= diffy; y++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1, dy1 + y, dz1);
-                GL11.glVertex3d(dx2, dy1 + y, dz1);
-                GL11.glVertex3d(dx2, dy1 + y, dz2);
-                GL11.glVertex3d(dx1, dy1 + y, dz2);
+                GL11.glVertex3d(dx2 + 1, dy1 + y, dz1);
+                GL11.glVertex3d(dx2 + 1, dy1 + y, dz2 + 1);
+                GL11.glVertex3d(dx1, dy1 + y, dz2 + 1);
                 GL11.glEnd();
             }
-            for (int z = 0; z < diffz; z++)
+            for (int z = 0; z <= diffz; z++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1, dy1, dz1 + z);
-                GL11.glVertex3d(dx2, dy1, dz1 + z);
-                GL11.glVertex3d(dx2, dy2, dz1 + z);
-                GL11.glVertex3d(dx1, dy2, dz1 + z);
+                GL11.glVertex3d(dx2 + 1, dy1, dz1 + z);
+                GL11.glVertex3d(dx2 + 1, dy2 + 1, dz1 + z);
+                GL11.glVertex3d(dx1, dy2 + 1, dz1 + z);
                 GL11.glEnd();
             }
             
             GL11.glLineWidth(12.0f);
-            GL11.glColor4f(this.color.getR() * 0.9f, this.color.getG() * 0.9f, this.color.getB() * 0.9f, this.color.getA() * 0.5f);
-            for (int x = 0; x < diffx; x++)
+            GL11.glColor4f(this.color.getR() * 0.6f, this.color.getG() * 0.6f, this.color.getB() * 0.6f, this.color.getA() * 0.25f);
+            for (int x = 0; x <= diffx; x++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1 + x, dy1 + 0.02d, dz1 + 0.02d);
-                GL11.glVertex3d(dx1 + x, dy2 - 0.02d, dz1 + 0.02d);
-                GL11.glVertex3d(dx1 + x, dy2 - 0.02d, dz2 - 0.02d);
-                GL11.glVertex3d(dx1 + x, dy1 + 0.02d, dz2 - 0.02d);
+                GL11.glVertex3d(dx1 + x, dy2 + 0.98d, dz1 + 0.02d);
+                GL11.glVertex3d(dx1 + x, dy2 + 0.98d, dz2 + 0.98d);
+                GL11.glVertex3d(dx1 + x, dy1 + 0.02d, dz2 + 0.98d);
                 GL11.glEnd();
             }
-            for (int y = 0; y < diffy; y++)
+            for (int y = 0; y <= diffy; y++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1 + 0.02d, dy1 + y, dz1 + 0.02d);
-                GL11.glVertex3d(dx2 - 0.02d, dy1 + y, dz1 + 0.02d);
-                GL11.glVertex3d(dx2 - 0.02d, dy1 + y, dz2 - 0.02d);
-                GL11.glVertex3d(dx1 + 0.02d, dy1 + y, dz2 - 0.02d);
+                GL11.glVertex3d(dx2 + 0.98d, dy1 + y, dz1 + 0.02d);
+                GL11.glVertex3d(dx2 + 0.98d, dy1 + y, dz2 + 0.98d);
+                GL11.glVertex3d(dx1 + 0.02d, dy1 + y, dz2 + 0.98d);
                 GL11.glEnd();
             }
-            for (int z = 0; z < diffz; z++)
+            for (int z = 0; z <= diffz; z++)
             {
                 GL11.glBegin(GL11.GL_LINE_LOOP);
                 GL11.glVertex3d(dx1 + 0.02d, dy1 + 0.02d, dz1 + z);
-                GL11.glVertex3d(dx2 - 0.02d, dy1 + 0.02d, dz1 + z);
-                GL11.glVertex3d(dx2 - 0.02d, dy2 - 0.02d, dz1 + z);
-                GL11.glVertex3d(dx1 + 0.02d, dy2 - 0.02d, dz1 + z);
+                GL11.glVertex3d(dx2 + 0.98d, dy1 + 0.02d, dz1 + z);
+                GL11.glVertex3d(dx2 + 0.98d, dy2 + 0.98d, dz1 + z);
+                GL11.glVertex3d(dx1 + 0.02d, dy2 + 0.98d, dz1 + z);
                 GL11.glEnd();
             }
             
