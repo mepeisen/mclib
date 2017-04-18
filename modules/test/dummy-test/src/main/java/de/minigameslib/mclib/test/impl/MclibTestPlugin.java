@@ -86,7 +86,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            boolean flg = true;
+            boolean flg = false;
             if (flg)
             {
                 final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
@@ -106,7 +106,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
                 itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
                     .onLeftClick(this::onLeftClick)
                     .onRightClick(this::onRightClick)
-                    .singleUse()
+                    //.singleUse()
                     .build();
             }
         }
@@ -117,7 +117,7 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         evt.getBukkitEvent().setCancelled(true);
         final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-        BlockServiceInterface.instance().setBlockData(clickedBlock, MyBlocks.CopperOre, BlockData.CustomVariantId.DEFAULT);
+//        BlockServiceInterface.instance().setBlockData(clickedBlock, MyBlocks.CopperOre, BlockData.CustomVariantId.DEFAULT);
 //        final BlockPosition position = new BlockPosition(clickedBlock.getX(), clickedBlock.getY(), clickedBlock.getZ());
 //        ((CraftWorld)clickedBlock.getWorld()).getHandle().setTypeAndData(position, Blocks.AIR.getBlockData(), 0);
 //        final IBlockData blockData = net.minecraft.server.v1_10_R1.Block.getById(3000).getBlockData();
@@ -134,21 +134,33 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
 //        System.out.println(((CraftWorld)clickedBlock.getWorld()).getHandle().getType(position));
         
         System.out.println("Left clicked at " + clickedBlock);
+        
+        ItemServiceInterface.instance().prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
+            .onLeftClick(this::onLeftClick2)
+            .onRightClick(this::onRightClick2)
+            .singleUse()
+            .build();
+    }
+    
+    private void onLeftClick2(McPlayerInterface player, McPlayerInteractEvent evt)
+    {
+        evt.getBukkitEvent().setCancelled(true);
+        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
+        System.out.println("Left (2) clicked at " + clickedBlock);
     }
     
     private void onRightClick(McPlayerInterface player, McPlayerInteractEvent evt)
     {
         evt.getBukkitEvent().setCancelled(true);
         final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-//        final BlockPosition position = new BlockPosition(clickedBlock.getX(), clickedBlock.getY(), clickedBlock.getZ());
-//        final Chunk chunk = ((CraftWorld)clickedBlock.getWorld()).getHandle().getChunkAtWorldCoords(position);
-//        
-//        for (final Map.Entry<BlockPosition, TileEntity> entry: chunk.getTileEntities().entrySet())
-//        {
-//            System.out.println(entry.getKey() + "->" + entry.getValue());
-//        }
-        
         System.out.println("Right clicked at " + evt.getBukkitEvent().getClickedBlock());
+    }
+    
+    private void onRightClick2(McPlayerInterface player, McPlayerInteractEvent evt)
+    {
+        evt.getBukkitEvent().setCancelled(true);
+        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
+        System.out.println("Right (2) clicked at " + evt.getBukkitEvent().getClickedBlock());
     }
     
     @EventHandler
