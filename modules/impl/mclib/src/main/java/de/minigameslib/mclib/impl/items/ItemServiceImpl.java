@@ -222,7 +222,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         /** the target inventory. */
         private Inventory targetInventory;
         /** target slot; -1 for any free slot */
-        private int targetSlot;
+        private int targetSlot = -1;
         /** {@code true} to override existing items in {@code targetSlot} */
         private boolean targetRemoveExisting;
         /** {qcode true} to override any existing tooling; only if {@code targetSlot} if not set */
