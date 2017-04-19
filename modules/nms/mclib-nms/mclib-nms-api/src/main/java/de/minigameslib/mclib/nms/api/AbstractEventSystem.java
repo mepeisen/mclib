@@ -126,6 +126,13 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 @Override
                 public void execute(Listener listener, Event event) throws EventException
                 {
+                    if (!clazz.isInstance(event))
+                    {
+                        // some event classes inherit listeners from parent event.
+                        // for example: Registering PlayerDeathEvent actually uses handlers from EntityDeathEvent
+                        // and therefor it catches "EntityDeathEvent" object although not being interested in them.
+                        return;
+                    }
                     this.handle(event);
                 }
                 
