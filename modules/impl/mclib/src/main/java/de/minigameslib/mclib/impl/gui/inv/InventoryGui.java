@@ -22,35 +22,50 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.impl.gui.inv;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Inventory;
 
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
-import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import de.minigameslib.mclib.api.gui.ClickGuiId;
+import de.minigameslib.mclib.api.gui.ClickGuiInterface;
+import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
- * Item Stack object for storing and reloading from config.
+ * A gui to display inventories.
  * 
  * @author mepeisen
  */
-public interface ConfigItemStackData extends ItemStackDataFragment
+public class InventoryGui implements ClickGuiInterface
 {
     
-    /**
-     * Converts given item stack to a bukkit item stack.
-     * @return bukkit item stack.
-     */
-    ItemStack toBukkit();
+    /** the inventory to be displayed. */
+    private Inventory inventory;
     
     /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
+     * @param inventory
      */
-    static ConfigItemStackData fromBukkit(ItemStack stack)
+    public InventoryGui(Inventory inventory)
     {
-        return ItemServiceInterface.instance().toConfigData(stack);
+        this.inventory = inventory;
+    }
+
+    @Override
+    public ClickGuiId getUniqueId()
+    {
+        return ClickGuis.Inventory;
+    }
+    
+    @Override
+    public ClickGuiPageInterface getInitialPage()
+    {
+        return new InventoryPage(this.inventory);
+    }
+    
+    @Override
+    public int getLineCount()
+    {
+        return 6;
     }
     
 }

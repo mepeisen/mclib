@@ -22,35 +22,52 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.impl.items;
 
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
-import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
- * Item Stack object for storing and reloading from config.
+ * Config item stack wrapper
  * 
  * @author mepeisen
  */
-public interface ConfigItemStackData extends ItemStackDataFragment
+public class ConfigItemStackWrapper implements ConfigItemStackData
 {
     
     /**
-     * Converts given item stack to a bukkit item stack.
-     * @return bukkit item stack.
+     * underlying delegate.
      */
-    ItemStack toBukkit();
-    
-    /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
-     */
-    static ConfigItemStackData fromBukkit(ItemStack stack)
+    private ConfigItemStackData delegate;
+
+    @Override
+    public void read(DataSection section)
     {
-        return ItemServiceInterface.instance().toConfigData(stack);
+        this.delegate = ItemServiceInterface.instance().fromConfigData(section);
+    }
+
+    @Override
+    public void write(DataSection section)
+    {
+        if (this.delegate != null)
+        {
+            this.delegate.write(section);
+        }
+    }
+
+    @Override
+    public boolean test(DataSection section)
+    {
+        return true;
+    }
+
+    @Override
+    public ItemStack toBukkit()
+    {
+        return this.delegate == null ? null : this.delegate.toBukkit();
     }
     
 }

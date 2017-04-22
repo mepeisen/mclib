@@ -52,6 +52,12 @@ public class ClickGuiItem
     /** the click handler. */
     private GuiItemHandler                  handler;
     
+    /** {@code true} to let the icon be moved within click gui */
+    private boolean moveable;
+    
+    /** {@code true} to let the icon be moved outside click gui into user gui (and vice-versa) */
+    private boolean moveableOutside;
+    
     /**
      * Constructor to create a click item.
      * 
@@ -72,6 +78,53 @@ public class ClickGuiItem
         this.displayNameArgs = displayNameArgs;
     }
     
+    /**
+     * Constructor to create a click item that will be moved from/to user inventories
+     * @param itemStack
+     * @param moveable {@code true} to let the icon be moved within click gui
+     * @param moveableOutside {@code true} to let the icon be moved outside click gui into user gui (and vice-versa)
+     */
+    public ClickGuiItem(ItemStack itemStack, boolean moveable, boolean moveableOutside)
+    {
+        this.itemStack = itemStack;
+        this.moveable = moveable;
+        this.moveableOutside = moveableOutside;
+        this.displayName = null;
+        this.displayNameArgs = null;
+    }
+
+    /**
+     * @return the moveable
+     */
+    public boolean isMoveable()
+    {
+        return this.moveable;
+    }
+
+    /**
+     * @param moveable the moveable to set
+     */
+    public void setMoveable(boolean moveable)
+    {
+        this.moveable = moveable;
+    }
+
+    /**
+     * @return the moveableOutside
+     */
+    public boolean isMoveableOutside()
+    {
+        return this.moveableOutside;
+    }
+
+    /**
+     * @param moveableOutside the moveableOutside to set
+     */
+    public void setMoveableOutside(boolean moveableOutside)
+    {
+        this.moveableOutside = moveableOutside;
+    }
+
     /**
      * @return the itemStack
      */

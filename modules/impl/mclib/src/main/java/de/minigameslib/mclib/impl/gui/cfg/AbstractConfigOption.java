@@ -28,8 +28,6 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.enums.ChildEnum;
-import de.minigameslib.mclib.api.gui.AnvilGuiId;
-import de.minigameslib.mclib.api.gui.ClickGuiId;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -38,6 +36,8 @@ import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
+import de.minigameslib.mclib.impl.gui.AnvilGuis;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
  * Base class for configuration option editors
@@ -349,32 +349,6 @@ public abstract class AbstractConfigOption
         @LocalizedMessage(defaultMessage = "Editor not implemented", severity = MessageSeverityType.Error)
         @MessageComment(value = {"not implemented"})
         NotImplemented,
-    }
-    
-    /**
-     * Anvil guis
-     * @author mepeisen
-     *
-     */
-    public enum AnvilGuis implements AnvilGuiId
-    {
-        /** gui to query text */
-        QueryText
-    }
-    
-    /**
-     * click guiws
-     * @author mepeisen
-     *
-     */
-    public enum ClickGuis implements ClickGuiId
-    {
-        /** gui to edit a list */
-        List,
-        /** gui to edit colors */
-        Color,
-        /** gui to edit an enum */
-        Enum,
     }
     
 }

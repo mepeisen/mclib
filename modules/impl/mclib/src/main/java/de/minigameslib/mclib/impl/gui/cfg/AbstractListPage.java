@@ -46,6 +46,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageList;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
  * An abstract list page being able to insert and remove list elements
@@ -302,7 +303,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     @Override
     public ClickGuiId getUniqueId()
     {
-        return AbstractConfigOption.ClickGuis.List;
+        return ClickGuis.List;
     }
 
     @Override

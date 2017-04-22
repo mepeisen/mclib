@@ -26,6 +26,11 @@ package de.minigameslib.mclib.api.gui;
 
 import java.io.Serializable;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import de.minigameslib.mclib.api.CommonMessages;
+
 /**
  * A single gui page.
  * 
@@ -34,6 +39,9 @@ import java.io.Serializable;
  */
 public interface ClickGuiPageInterface
 {
+    
+    /** the max col count. */
+    int COL_COUNT = 9;
     
     /**
      * Returns the name of the inventory.
@@ -47,5 +55,57 @@ public interface ClickGuiPageInterface
      * @return click items; first array dimension is the line; second the column.
      */
     ClickGuiItem[][] getItems();
+
+    /**
+     * dummy fill item
+     * @param line
+     * @param col
+     * @return dummy fill icon
+     */
+    static ClickGuiItem itemFill(int line, int col)
+    {
+        byte color = 0;
+        if ((line * COL_COUNT + col) % 2 == 1) color = 1;
+        return new ClickGuiItem(new ItemStack(Material.STAINED_GLASS_PANE, 1, color), CommonMessages.IconFill, (player, session, gui) -> {/*empty*/});
+    }
+    
+    /**
+     * Creates an inventory with filler icons
+     * @param src
+     * @param line
+     * @return inventory
+     */
+    static ClickGuiItem[] withFillers(ClickGuiItem[] src, int line)
+    {
+        final ClickGuiItem[] result = new ClickGuiItem[COL_COUNT];
+        for (int col = 0; col < COL_COUNT; col++)
+        {
+            if (src != null && col < src.length && src[line] != null)
+            {
+                result[col] = src[col];
+            }
+            else
+            {
+                result[col] = itemFill(line, col);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Creates an inventory with filler icons
+     * @param src
+     * @param lineCount
+     * @return inventory
+     */
+    static ClickGuiItem[][] withFillers(ClickGuiItem[][] src, int lineCount)
+    {
+        final ClickGuiItem[][] result = new ClickGuiItem[lineCount][];
+        for (int line = 0; line < lineCount; line++)
+        {
+            result[line] = withFillers(line < src.length ? src[line] : null, line);
+        }
+        return result;
+    }
     
 }

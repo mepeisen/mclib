@@ -22,59 +22,67 @@
 
 */
 
-package de.minigameslib.mclib.test.config;
+package de.minigameslib.mclib.impl.items;
 
-import org.bukkit.inventory.ItemStack;
+import java.util.UUID;
 
-import de.minigameslib.mclib.api.config.ConfigItemStackData;
+import de.minigameslib.mclib.api.items.InventoryId;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
- * A dummy helper for item stacks.
- * 
  * @author mepeisen
  */
-public class DummyItemStackData extends AnnotatedDataFragment implements ConfigItemStackData
+public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryId
 {
     
-    /** the material. */
+    /**
+     * inventory unique id.
+     */
     @PersistentField
-    public int material;
+    protected String uuid;
 
     /**
-     * 
+     * Constructor for rading from config
      */
-    public DummyItemStackData()
+    public InventoryIdImpl()
     {
-        super();
+        // empty
     }
 
     /**
-     * Constructor
-     * @param itemStack
+     * @param uuid
      */
-    @SuppressWarnings("deprecation")
-    public DummyItemStackData(ItemStack itemStack)
+    public InventoryIdImpl(UUID uuid)
     {
-        this.material = itemStack.getType().getId();
+        this.uuid = uuid.toString();
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     * @return the uuid
      */
+    public UUID getUuid()
+    {
+        return UUID.fromString(this.uuid);
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(UUID uuid)
+    {
+        this.uuid = uuid.toString();
+    }
+
     @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.material;
+        result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {
@@ -84,17 +92,21 @@ public class DummyItemStackData extends AnnotatedDataFragment implements ConfigI
             return false;
         if (getClass() != obj.getClass())
             return false;
-        DummyItemStackData other = (DummyItemStackData) obj;
-        if (this.material != other.material)
+        InventoryIdImpl other = (InventoryIdImpl) obj;
+        if (this.uuid == null)
+        {
+            if (other.uuid != null)
+                return false;
+        }
+        else if (!this.uuid.equals(other.uuid))
             return false;
         return true;
     }
-
+    
     @Override
-    public ItemStack toBukkit()
+    public String toString()
     {
-        // empty
-        return null;
+        return "inv-" + this.uuid; //$NON-NLS-1$
     }
     
 }

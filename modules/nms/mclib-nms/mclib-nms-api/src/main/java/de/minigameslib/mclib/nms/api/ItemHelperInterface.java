@@ -33,7 +33,9 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * A helper for item stacks
@@ -851,5 +853,19 @@ public interface ItemHelperInterface
      * @param nmsInventoryHandler
      */
     void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler);
+
+    /**
+     * Converts bukkit item stack to saveable config data
+     * @param stack
+     * @return config item stack
+     */
+    ConfigItemStackData toConfigData(ItemStack stack);
+
+    /**
+     * Converts data section to saveable config data
+     * @param section
+     * @return config item stack
+     */
+    ConfigItemStackData fromConfigData(DataSection section);
     
 }

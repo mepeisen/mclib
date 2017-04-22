@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.impl;
+package de.minigameslib.mclib.impl.obj;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +50,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * @param <Handler> 
  *
  */
-class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInterface, Comp, TypeId, Handler>
+public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInterface, Comp, TypeId, Handler>
 {
     
     /** the components. */

@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.impl;
+package de.minigameslib.mclib.impl.obj;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -94,6 +94,7 @@ import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.util.function.McRunnable;
+import de.minigameslib.mclib.impl.PlayerRegistry;
 import de.minigameslib.mclib.impl.comp.AbstractComponent;
 import de.minigameslib.mclib.impl.comp.ComponentId;
 import de.minigameslib.mclib.impl.comp.ComponentImpl;
@@ -120,7 +121,7 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  * @author mepeisen
  *
  */
-class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServiceInterface
+public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, NpcServiceInterface
 {
     
     /** target data folder. */

@@ -22,35 +22,23 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.impl.gui;
 
-import org.bukkit.inventory.ItemStack;
-
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
-import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import de.minigameslib.mclib.api.gui.ClickGuiId;
 
 /**
- * Item Stack object for storing and reloading from config.
- * 
+ * click guis
  * @author mepeisen
+ *
  */
-public interface ConfigItemStackData extends ItemStackDataFragment
+public enum ClickGuis implements ClickGuiId
 {
-    
-    /**
-     * Converts given item stack to a bukkit item stack.
-     * @return bukkit item stack.
-     */
-    ItemStack toBukkit();
-    
-    /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
-     */
-    static ConfigItemStackData fromBukkit(ItemStack stack)
-    {
-        return ItemServiceInterface.instance().toConfigData(stack);
-    }
-    
+    /** gui to edit a list */
+    List,
+    /** gui to edit colors */
+    Color,
+    /** gui to edit an enum */
+    Enum,
+    /** gui to display oversized inventories */
+    Inventory
 }

@@ -57,6 +57,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -106,6 +107,7 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
+import de.minigameslib.mclib.api.items.InventoryId;
 import de.minigameslib.mclib.api.items.InventoryServiceInterface;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
@@ -169,8 +171,13 @@ import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.gui.cfg.AbstractConfigOption;
+import de.minigameslib.mclib.impl.items.ConfigItemStackWrapper;
+import de.minigameslib.mclib.impl.items.InventoryIdImpl;
+import de.minigameslib.mclib.impl.items.InventoryListener;
 import de.minigameslib.mclib.impl.items.InventoryServiceImpl;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
+import de.minigameslib.mclib.impl.items.McInventoriesConfig;
+import de.minigameslib.mclib.impl.obj.ObjectsManager;
 import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
@@ -194,6 +201,7 @@ import de.minigameslib.mclib.pshared.WinClosedData;
 import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
@@ -323,7 +331,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initFragmentImplementation(PlayerDataFragment.class, PlayerProxy.class);
         MemoryDataSection.initFragmentImplementation(McPlayerInterface.class, PlayerProxy.class);
         MemoryDataSection.initFragmentImplementation(ColorDataFragment.class, ConfigColorData.class);
-        // TODO MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ConfigItemStackData.class);
+        MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ConfigItemStackWrapper.class);
         MemoryDataSection.initFragmentImplementation(VectorDataFragment.class, ConfigVectorData.class);
         
         MemoryDataSection.initFragmentImplementation(ObjectIdInterface.class, ObjectId.class);
@@ -331,6 +339,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initFragmentImplementation(ZoneIdInterface.class, ZoneId.class);
         MemoryDataSection.initFragmentImplementation(SignIdInterface.class, SignId.class);
         MemoryDataSection.initFragmentImplementation(EntityIdInterface.class, EntityId.class);
+        
+        MemoryDataSection.initFragmentImplementation(InventoryId.class, InventoryIdImpl.class);
         
         MemoryDataSection.initUniqueEnumValueFactory(MclibPlugin::create);
         MemoryDataSection.lockFragmentImplementations();
@@ -355,10 +365,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         // mclib enumerations
         this.enumService.registerEnumClass(this, CommonMessages.class);
         this.enumService.registerEnumClass(this, MclibCommand.Messages.class);
+        this.enumService.registerEnumClass(this, InventoryServiceImpl.Messages.class);
         this.enumService.registerEnumClass(this, AbstractConfigOption.Messages.class);
         this.enumService.registerEnumClass(this, MclibCommand.CommandPermissions.class);
         this.enumService.registerEnumClass(this, McCoreConfig.class);
         this.enumService.registerEnumClass(this, McModdedWorldConfig.class);
+        this.enumService.registerEnumClass(this, McInventoriesConfig.class);
         
         // public api services
         registerPublicServices();
@@ -368,7 +380,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         // item service
         initItemsAndBlocksAndResources();
 
-        Bukkit.getServicesManager().register(InventoryServiceInterface.class, new InventoryServiceImpl(), this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(InventoryServiceInterface.class, new InventoryServiceImpl(new File(this.getDataFolder(), "inventories")), this, ServicePriority.Highest); //$NON-NLS-1$
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
         
@@ -1755,6 +1767,19 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException
     {
         return AbstractConfigOption.create(config).getItem(onChange, null);
+    }
+    
+    /**
+     * handle inventory close event.
+     * @param evt
+     */
+    @EventHandler
+    public void onClose(InventoryCloseEvent evt)
+    {
+        if (evt.getInventory() instanceof InventoryListener)
+        {
+            ((InventoryListener)evt.getInventory()).handle(evt);
+        }
     }
     
 }

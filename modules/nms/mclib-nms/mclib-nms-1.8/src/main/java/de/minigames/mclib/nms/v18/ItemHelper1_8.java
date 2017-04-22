@@ -52,6 +52,7 @@ import org.bukkit.material.MaterialData;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v18.blocks.CustomBlock;
+import de.minigames.mclib.nms.v18.items.ConfigItemStackDataImpl;
 import de.minigames.mclib.nms.v18.items.CustomArmor;
 import de.minigames.mclib.nms.v18.items.CustomAxe;
 import de.minigames.mclib.nms.v18.items.CustomHoe;
@@ -59,6 +60,7 @@ import de.minigames.mclib.nms.v18.items.CustomItem;
 import de.minigames.mclib.nms.v18.items.CustomPickaxe;
 import de.minigames.mclib.nms.v18.items.CustomShovel;
 import de.minigames.mclib.nms.v18.items.CustomSword;
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
@@ -66,6 +68,7 @@ import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import net.minecraft.server.v1_8_R1.BlockPosition;
 import net.minecraft.server.v1_8_R1.CraftingManager;
 import net.minecraft.server.v1_8_R1.IBlockData;
@@ -1300,6 +1303,20 @@ public class ItemHelper1_8 implements ItemHelperInterface
     {
         final CustomBlock block = (CustomBlock) net.minecraft.server.v1_8_R1.Block.getById(blockId);
         block.setInventoryHandler(variant, nmsInventoryHandler);
+    }
+
+    @Override
+    public ConfigItemStackData toConfigData(ItemStack stack)
+    {
+        return new ConfigItemStackDataImpl(stack);
+    }
+
+    @Override
+    public ConfigItemStackData fromConfigData(DataSection section)
+    {
+        final ConfigItemStackData result = new ConfigItemStackDataImpl();
+        result.read(section);
+        return result;
     }
     
 }

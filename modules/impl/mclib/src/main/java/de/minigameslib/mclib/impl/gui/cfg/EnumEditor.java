@@ -49,7 +49,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
-import de.minigameslib.mclib.impl.gui.cfg.AbstractConfigOption.ClickGuis;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**

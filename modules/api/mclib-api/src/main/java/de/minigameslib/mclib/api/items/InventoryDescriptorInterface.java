@@ -153,7 +153,8 @@ public interface InventoryDescriptorInterface
     /**
      * Open inventory GUI for given player
      * @param player
+     * @throws McException thrown if there was a technical problem reading or creating the inventory
      */
-    void openInventory(McPlayerInterface player);
+    void openInventory(McPlayerInterface player) throws McException;
     
 }

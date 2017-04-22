@@ -24,15 +24,42 @@
 
 package de.minigameslib.mclib.impl.items;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
+import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.enums.EnumerationListener;
 import de.minigameslib.mclib.api.items.InventoryDescriptorInterface;
 import de.minigameslib.mclib.api.items.InventoryId;
 import de.minigameslib.mclib.api.items.InventoryServiceInterface;
 import de.minigameslib.mclib.api.items.InventoryTypeId;
+import de.minigameslib.mclib.api.locale.LocalizedMessage;
+import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.locale.LocalizedMessages;
+import de.minigameslib.mclib.api.locale.MessageComment;
+import de.minigameslib.mclib.api.locale.MessageSeverityType;
+import de.minigameslib.mclib.impl.comp.AbstractComponent;
+import de.minigameslib.mclib.impl.comp.ComponentOwner;
+import de.minigameslib.mclib.impl.comp.ComponentRegistry;
+import de.minigameslib.mclib.impl.comp.WorldChunk;
+import de.minigameslib.mclib.impl.yml.YmlFile;
+import de.minigameslib.mclib.shared.api.com.LocationData;
 
 /**
  * Implementation of inventory service.
@@ -40,127 +67,313 @@ import de.minigameslib.mclib.api.items.InventoryTypeId;
  * @author mepeisen
  *
  */
-public class InventoryServiceImpl implements InventoryServiceInterface
+public class InventoryServiceImpl implements InventoryServiceInterface, ComponentOwner, EnumerationListener<InventoryTypeId>
 {
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventoryIds(de.minigameslib.mclib.api.items.InventoryTypeId[])
+    
+    /**
+     * inventory ids by type.
      */
+    private final Map<InventoryTypeId, Set<InventoryId>>         inventoryByType        = new HashMap<>();
+    
+    /**
+     * inventory ids by type and name.
+     */
+    private final Map<InventoryTypeId, Map<String, InventoryId>> inventoryByTypeAndName = new HashMap<>();
+    
+    /**
+     * inventories
+     */
+    private final Map<InventoryId, InventoryComponent>           inventories            = new HashMap<>();
+    
+    /** component registry for inventory objects */
+    private final ComponentRegistry                              objects                = new ComponentRegistry();
+
+    /** configuration folder */
+    private File configFolder;
+    
+    /** main config file */
+    private File configFile;
+    
+    /** the known inventories */
+    private List<InventoryRegistryData> inventoryIds = new ArrayList<>();
+    
+    /** logger */
+    private static final Logger LOGGER = Logger.getLogger(InventoryServiceImpl.class.getName());
+    
+    /**
+     * @param configFolder
+     */
+    public InventoryServiceImpl(File configFolder)
+    {
+        this.configFolder = configFolder;
+        if (!this.configFolder.exists()) this.configFolder.mkdirs();
+        this.configFile = new File(this.configFolder, "registry.yml"); //$NON-NLS-1$
+        if (this.configFile.exists())
+        {
+            try
+            {
+                final YmlFile yml = new YmlFile(this.configFile);
+                this.inventoryIds = yml.getFragmentList(InventoryRegistryData.class, "list"); //$NON-NLS-1$
+            }
+            catch (IOException e)
+            {
+                LOGGER.log(Level.WARNING, "Problems reading inventory list", e); //$NON-NLS-1$
+            }
+        }
+        
+        EnumServiceInterface.instance().registerEnumerationListener((Plugin) McLibInterface.instance(), InventoryTypeId.class, this);
+    }
+    
     @Override
     public List<InventoryId> getInventoryIds(InventoryTypeId... types)
     {
-        // TODO Auto-generated method stub
-        return null;
+        final List<InventoryId> result = new ArrayList<>();
+        if (types != null)
+        {
+            for (final InventoryTypeId type : types)
+            {
+                final Set<InventoryId> set = this.inventoryByType.get(type);
+                if (set != null)
+                {
+                    result.addAll(set);
+                }
+            }
+        }
+        return result;
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#deleteAllInventories(de.minigameslib.mclib.api.items.InventoryTypeId[])
-     */
+    
     @Override
-    public void deleteAllInventories(InventoryTypeId... types)
+    public void deleteAllInventories(InventoryTypeId... types) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        this.deleteInventories(this.getInventoryIds(types).toArray(new InventoryId[0]));
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#deleteInventories(de.minigameslib.mclib.api.items.InventoryId[])
-     */
+    
     @Override
-    public void deleteInventories(InventoryId... ids)
+    public void deleteInventories(InventoryId... ids) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        if (ids != null)
+        {
+            for (final InventoryId id : ids)
+            {
+                final InventoryComponent impl = this.inventories.remove(id);
+                if (impl != null)
+                {
+                    impl.delete();
+                    this.inventoryByType.get(impl.getTypeId()).remove(id);
+                    this.inventoryByTypeAndName.get(impl.getTypeId()).remove(impl.getStringIdentified());
+                }
+            }
+        }
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryTypeId, java.lang.String)
-     */
+    
     @Override
     public InventoryId getInventory(InventoryTypeId type, String stringIdentifier)
     {
-        // TODO Auto-generated method stub
+        final Map<String, InventoryId> map = this.inventoryByTypeAndName.get(type);
+        if (map != null)
+        {
+            return map.get(stringIdentifier);
+        }
         return null;
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, java.lang.String)
-     */
-    @Override
-    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#createInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, java.lang.String)
-     */
-    @Override
-    public InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryTypeId, org.bukkit.Location)
-     */
+    
     @Override
     public InventoryId getInventory(InventoryTypeId type, Location location)
     {
-        // TODO Auto-generated method stub
-        return null;
+        final Optional<InventoryComponent> comp = this.objects.fetch(new WorldChunk(location)).stream().map(c -> (InventoryComponent) c).filter(i -> i.getLocations().contains(location))
+                .filter(i -> i.getTypeId() == type).findFirst();
+        return comp.isPresent() ? comp.get().getId() : null;
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getOrCreateInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, org.bukkit.Location)
-     */
+    
     @Override
-    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location location)
+    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        final Map<String, InventoryId> map = this.inventoryByTypeAndName.computeIfAbsent(type, k -> new HashMap<>());
+        if (!map.containsKey(stringIdentifier))
+        {
+            final InventoryIdImpl id = new InventoryIdImpl(UUID.randomUUID());
+            final InventoryData data = new InventoryData();
+            data.setFixed(fixed);
+            data.setId(id);
+            data.setIdentifier(stringIdentifier);
+            data.setInitialSize(initialSize);
+            data.setShared(shared);
+            data.setTypeId(type);
+            final InventoryComponent comp = new InventoryComponent(this.objects, new File(this.configFolder, "inv-" + id.getUuid() + ".yml"), this, data); //$NON-NLS-1$ //$NON-NLS-2$
+            this.inventories.put(comp.getId(), comp);
+            this.inventoryIds.add(new InventoryRegistryData(type.getPluginName(), id.getUuid().toString(), type.name()));
+            this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(id);
+            this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(stringIdentifier, id);
+            final YmlFile yml = new YmlFile();
+            yml.setFragmentList("list", this.inventoryIds); //$NON-NLS-1$
+            try
+            {
+                yml.saveFile(this.configFile);
+            }
+            catch (IOException e)
+            {
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
+            }
+            map.put(stringIdentifier, comp.getId());
+            return comp.getId();
+        }
+        return map.get(stringIdentifier);
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#createInventory(de.minigameslib.mclib.api.items.InventoryTypeId, int, boolean, boolean, org.bukkit.Location[])
-     */
+    
     @Override
-    public InventoryId createInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location... locations) throws McException
+    public InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location location) throws McException
     {
-        // TODO Auto-generated method stub
-        return null;
+        InventoryId result = this.getInventory(type, location);
+        if (result == null)
+        {
+            final InventoryIdImpl id = new InventoryIdImpl(UUID.randomUUID());
+            final InventoryData data = new InventoryData();
+            data.setFixed(fixed);
+            data.setId(id);
+            data.setInitialSize(initialSize);
+            data.setShared(shared);
+            data.setTypeId(type);
+            data.getLocations().add(new LocationData(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName()));
+            final InventoryComponent comp = new InventoryComponent(this.objects, new File(this.configFolder, "inv-" + id.getUuid() + ".yml"), this, data); //$NON-NLS-1$ //$NON-NLS-2$
+            this.inventories.put(comp.getId(), comp);
+            this.inventoryIds.add(new InventoryRegistryData(type.getPluginName(), id.getUuid().toString(), type.name()));
+            this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(id);
+            final YmlFile yml = new YmlFile();
+            yml.setFragmentList("list", this.inventoryIds); //$NON-NLS-1$
+            try
+            {
+                yml.saveFile(this.configFile);
+            }
+            catch (IOException e)
+            {
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
+            }
+            result = comp.getId();
+        }
+        return result;
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#bindInventory(de.minigameslib.mclib.api.items.InventoryId, org.bukkit.Location[])
-     */
+    
     @Override
     public void bindInventory(InventoryId id, Location... locations) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        if (locations != null)
+        {
+            final InventoryComponent impl = this.inventories.get(id);
+            if (impl != null)
+            {
+                for (final Location location : locations)
+                {
+                    impl.getData().getLocations().add(new LocationData(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName()));
+                }
+                impl.saveData();
+                impl.changeLocs();
+            }
+        }
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#unbindInventory(de.minigameslib.mclib.api.items.InventoryId, org.bukkit.Location[])
-     */
+    
     @Override
     public void unbindInventory(InventoryId id, Location... locations) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        if (locations != null)
+        {
+            final InventoryComponent impl = this.inventories.get(id);
+            if (impl != null)
+            {
+                for (final Location location : locations)
+                {
+                    impl.getData().getLocations().remove(new LocationData(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName()));
+                }
+                impl.saveData();
+                impl.changeLocs();
+            }
+        }
     }
-
-    /* (non-Javadoc)
-     * @see de.minigameslib.mclib.api.items.InventoryServiceInterface#getInventory(de.minigameslib.mclib.api.items.InventoryId)
-     */
+    
     @Override
     public InventoryDescriptorInterface getInventory(InventoryId id)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.inventories.get(id);
+    }
+    
+    /**
+     * the inventory messages
+     */
+    @LocalizedMessages(value = "inventory", defaultLocale = "en")
+    public enum Messages implements LocalizedMessageInterface
+    {
+        
+        /**
+         * Not enough free slots
+         */
+        @LocalizedMessage(defaultMessage = "Unable to shrink repository. Not enough free slots.", severity = MessageSeverityType.Error)
+        @MessageComment(value = { "Not enough free slots" })
+        NotEnoughFreeSlots,
+        
+        /**
+         * Cannot change fixed inventory
+         */
+        @LocalizedMessage(defaultMessage = "Cannot change size of fixed inventory", severity = MessageSeverityType.Error)
+        @MessageComment(value = { "Cannot change fixed inventory" })
+        CannotChangeFixedInventory,
+        
+    }
+
+    @Override
+    public void onEnumRegistered(Plugin plugin, Class<? extends InventoryTypeId> clazz, InventoryTypeId[] values)
+    {
+        for (final InventoryTypeId type : values)
+        {
+            this.inventoryIds.stream().
+                filter(r -> r.getPluginName().equals(type.getPluginName()) && r.getEnumName().equals(type.name())).
+                forEach(r -> {
+                    try
+                    {
+                        final InventoryComponent comp = new InventoryComponent(this.objects, new File(this.configFolder, "inv-" + r.getUuid() + ".yml"), this); //$NON-NLS-1$ //$NON-NLS-2$
+                        this.inventories.put(comp.getId(), comp);
+                        this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());
+                        if (comp.getData().getIdentifier() != null)
+                        {
+                            this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(comp.getData().getIdentifier(), comp.getId());
+                        }
+                    }
+                    catch (McException e)
+                    {
+                        LOGGER.log(Level.WARNING, "Problems reading inventory", e); //$NON-NLS-1$
+                    }
+                });
+        }
+    }
+
+    @Override
+    public void onEnumRemoved(Plugin plugin, Class<? extends InventoryTypeId> clazz, InventoryTypeId[] values)
+    {
+        for (final InventoryTypeId type : values)
+        {
+            this.inventoryByTypeAndName.remove(type);
+            final Set<InventoryId> invs = this.inventoryByType.remove(type);
+            if (invs != null)
+            {
+                invs.forEach(this.inventories::remove);
+            }
+        }
+    }
+
+    @Override
+    public void onDelete(AbstractComponent component) throws McException
+    {
+        final InventoryComponent inv = (InventoryComponent) component;
+        final InventoryTypeId type = inv.getTypeId();
+        this.inventoryIds.remove(new InventoryRegistryData(type.getPluginName(), ((InventoryIdImpl)inv.getId()).getUuid().toString(), type.name()));
+        final YmlFile yml = new YmlFile();
+        yml.setFragmentList("list", this.inventoryIds); //$NON-NLS-1$
+        try
+        {
+            yml.saveFile(this.configFile);
+        }
+        catch (IOException e)
+        {
+            throw new McException(CommonMessages.InternalError, e, e.getMessage());
+        }
     }
     
 }

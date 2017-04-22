@@ -485,4 +485,11 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment({"Resource pack download in progress."})
     ResourcePackAccepted,
     
+    /**
+     * A dummy filler
+     */
+    @LocalizedMessage(defaultMessage = "")
+    @MessageComment({"dummy filler icon"})
+    IconFill,
+    
 }

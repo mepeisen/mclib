@@ -22,35 +22,17 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.impl.gui;
 
-import org.bukkit.inventory.ItemStack;
-
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
-import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import de.minigameslib.mclib.api.gui.AnvilGuiId;
 
 /**
- * Item Stack object for storing and reloading from config.
- * 
+ * Anvil guis
  * @author mepeisen
+ *
  */
-public interface ConfigItemStackData extends ItemStackDataFragment
+public enum AnvilGuis implements AnvilGuiId
 {
-    
-    /**
-     * Converts given item stack to a bukkit item stack.
-     * @return bukkit item stack.
-     */
-    ItemStack toBukkit();
-    
-    /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
-     */
-    static ConfigItemStackData fromBukkit(ItemStack stack)
-    {
-        return ItemServiceInterface.instance().toConfigData(stack);
-    }
-    
+    /** gui to query text */
+    QueryText
 }

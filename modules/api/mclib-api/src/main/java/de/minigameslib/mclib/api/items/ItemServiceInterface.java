@@ -29,10 +29,12 @@ import java.io.Serializable;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * A service to register custom items.
@@ -231,5 +233,19 @@ public interface ItemServiceInterface
      * @return left over items; null if item was fully added
      */
     ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack);
+    
+    /**
+     * Converts given bukkit item stack to saveable item stack
+     * @param stack
+     * @return saveable item stack
+     */
+    ConfigItemStackData toConfigData(ItemStack stack);
+    
+    /**
+     * Converts given data section to saveable item stack
+     * @param section
+     * @return saveable item stack
+     */
+    ConfigItemStackData fromConfigData(DataSection section);
     
 }

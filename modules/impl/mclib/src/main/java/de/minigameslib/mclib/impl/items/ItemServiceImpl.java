@@ -66,6 +66,7 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.enums.EnumerationListener;
 import de.minigameslib.mclib.api.event.McEventHandler;
@@ -112,6 +113,7 @@ import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.pshared.PingData;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
@@ -2770,6 +2772,18 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public boolean isStructureVoid(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isStructureVoid(blockToNumId(block));
+    }
+
+    @Override
+    public ConfigItemStackData toConfigData(ItemStack stack)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).toConfigData(stack);
+    }
+
+    @Override
+    public ConfigItemStackData fromConfigData(DataSection section)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).fromConfigData(section);
     }
     
 }

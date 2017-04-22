@@ -52,6 +52,7 @@ import org.bukkit.material.MaterialData;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v194.blocks.CustomBlock;
+import de.minigames.mclib.nms.v194.items.ConfigItemStackDataImpl;
 import de.minigames.mclib.nms.v194.items.CustomArmor;
 import de.minigames.mclib.nms.v194.items.CustomAxe;
 import de.minigames.mclib.nms.v194.items.CustomHoe;
@@ -59,6 +60,7 @@ import de.minigames.mclib.nms.v194.items.CustomItem;
 import de.minigames.mclib.nms.v194.items.CustomPickaxe;
 import de.minigames.mclib.nms.v194.items.CustomShovel;
 import de.minigames.mclib.nms.v194.items.CustomSword;
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
@@ -66,6 +68,7 @@ import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
 import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import net.minecraft.server.v1_9_R2.BlockPosition;
 import net.minecraft.server.v1_9_R2.CraftingManager;
 import net.minecraft.server.v1_9_R2.EnumItemSlot;
@@ -321,7 +324,7 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
                 materials[i] = createBukkitMaterial(materials, names, i, "custom_"+i, ctor, 64, (short) 0); //$NON-NLS-1$
                 
                 final CustomBlock myBlock = new CustomBlock();
-                net.minecraft.server.v1_9_R2.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock);
+                net.minecraft.server.v1_9_R2.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
                 Iterator<IBlockData> iterator2 = myBlock.t().a().iterator();
                 while (iterator2.hasNext())
                 {
@@ -1332,6 +1335,20 @@ public class ItemHelper1_9_4 implements ItemHelperInterface
     {
         final CustomBlock block = (CustomBlock) net.minecraft.server.v1_9_R2.Block.getById(blockId);
         block.setInventoryHandler(variant, nmsInventoryHandler);
+    }
+
+    @Override
+    public ConfigItemStackData toConfigData(ItemStack stack)
+    {
+        return new ConfigItemStackDataImpl(stack);
+    }
+
+    @Override
+    public ConfigItemStackData fromConfigData(DataSection section)
+    {
+        final ConfigItemStackData result = new ConfigItemStackDataImpl();
+        result.read(section);
+        return result;
     }
     
 }

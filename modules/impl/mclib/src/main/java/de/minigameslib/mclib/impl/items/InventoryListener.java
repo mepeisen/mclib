@@ -22,35 +22,21 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.impl.items;
 
-import org.bukkit.inventory.ItemStack;
-
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
-import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
- * Item Stack object for storing and reloading from config.
- * 
  * @author mepeisen
+ *
  */
-public interface ConfigItemStackData extends ItemStackDataFragment
+public interface InventoryListener
 {
     
     /**
-     * Converts given item stack to a bukkit item stack.
-     * @return bukkit item stack.
+     * Handle close event
+     * @param evt close event
      */
-    ItemStack toBukkit();
-    
-    /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
-     */
-    static ConfigItemStackData fromBukkit(ItemStack stack)
-    {
-        return ItemServiceInterface.instance().toConfigData(stack);
-    }
+    void handle(InventoryCloseEvent evt);
     
 }

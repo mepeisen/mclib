@@ -36,6 +36,7 @@ import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
+import de.minigameslib.mclib.impl.gui.AnvilGuis;
 
 /**
  * Query a text.
@@ -85,7 +86,7 @@ public class QueryText implements AnvilGuiInterface
     @Override
     public AnvilGuiId getUniqueId()
     {
-        return AbstractConfigOption.AnvilGuis.QueryText;
+        return AnvilGuis.QueryText;
     }
 
     @Override
