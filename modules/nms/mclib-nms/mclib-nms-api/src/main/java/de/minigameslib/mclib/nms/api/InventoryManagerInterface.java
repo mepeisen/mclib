@@ -67,7 +67,6 @@ public interface InventoryManagerInterface extends Listener
          * 
          * @param item
          *            clicked item.
-         * @return true for cancelling the event
          */
         void onClick(ItemStack item);
     }
