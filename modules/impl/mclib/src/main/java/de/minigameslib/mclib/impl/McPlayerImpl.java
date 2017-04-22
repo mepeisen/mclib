@@ -563,6 +563,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
             ((GuiSessionImpl)oldSession).pause();
         }
         final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
+        newSession.setPrevSession(oldSession);
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }
