@@ -39,9 +39,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
@@ -329,7 +332,6 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     {
         this.isPaused = true;
         this.close();
-        this.isPaused = false;
     }
     
     /**
@@ -337,6 +339,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      */
     protected void resume()
     {
+        this.isPaused = false;
         if (this.type == GuiType.AnvilGui)
         {
             final ItemStack item = this.agui.getItem();
@@ -411,7 +414,14 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             final GuiSessionImpl impl = (GuiSessionImpl) this.prevSession;
             this.prevSession = null;
-            impl.resume();
+            new BukkitRunnable() {
+                
+                @Override
+                public void run()
+                {
+                    impl.resume();
+                }
+            }.runTaskLater((Plugin) McLibInterface.instance(), 1);
         }
     }
 
@@ -500,7 +510,14 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 {
                     final GuiSessionImpl impl = (GuiSessionImpl) this.prevSession;
                     this.prevSession = null;
-                    impl.resume();
+                    new BukkitRunnable() {
+                        
+                        @Override
+                        public void run()
+                        {
+                            impl.resume();
+                        }
+                    }.runTaskLater((Plugin) McLibInterface.instance(), 1);
                 }
             }
             catch (McException ex)
