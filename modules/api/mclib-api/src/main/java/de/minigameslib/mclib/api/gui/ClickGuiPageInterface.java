@@ -80,7 +80,7 @@ public interface ClickGuiPageInterface
         final ClickGuiItem[] result = new ClickGuiItem[COL_COUNT];
         for (int col = 0; col < COL_COUNT; col++)
         {
-            if (src != null && col < src.length && src[line] != null)
+            if (src != null && col < src.length && src[col] != null)
             {
                 result[col] = src[col];
             }
