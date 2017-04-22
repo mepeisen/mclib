@@ -529,11 +529,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     {
         final McStorage storage = this.getSessionStorage();
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
-        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
         if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
-            newSession.setPrevSession(oldSession);
+            ((GuiSessionImpl)oldSession).pause();
         }
+        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
+        newSession.setPrevSession(oldSession);
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }
@@ -557,11 +558,11 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     {
         final McStorage storage = this.getSessionStorage();
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
-        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
         if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
-            newSession.setPrevSession(oldSession);
+            ((GuiSessionImpl)oldSession).pause();
         }
+        final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }

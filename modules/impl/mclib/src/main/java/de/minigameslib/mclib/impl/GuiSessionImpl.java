@@ -367,7 +367,6 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     public void setPrevSession(GuiSessionInterface oldSession)
     {
         this.prevSession = oldSession;
-        ((GuiSessionImpl) oldSession).pause();
     }
     
     @Override
