@@ -410,6 +410,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         if (this.prevSession != null)
         {
             ((GuiSessionImpl)this.prevSession).resume();
+            this.prevSession = null;
         }
     }
 
@@ -492,6 +493,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     this.guiHelper = null;
                     this.aguiHelper = null;
                     this.player = null;
+                }
+                
+                if (this.prevSession != null)
+                {
+                    ((GuiSessionImpl)this.prevSession).resume();
+                    this.prevSession = null;
                 }
             }
             catch (McException ex)
