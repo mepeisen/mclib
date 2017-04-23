@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -99,6 +100,7 @@ import de.minigameslib.mclib.api.items.ItemRepairInterface;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ItemShovel;
 import de.minigameslib.mclib.api.items.ItemSword;
+import de.minigameslib.mclib.api.items.NameProvider;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -1251,7 +1253,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(ItemId item)
     {
-        return createItem(item, this.itemIdMap.get(item).getNameProvider().getName());
+        return createItem(item, null);
     }
     
     @Override
@@ -1263,7 +1265,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(McPlayerInterface player, ItemId item)
     {
-        return createItem(player, item, this.itemIdMap.get(item).getNameProvider().getName());
+        return createItem(player, item, null);
     }
     
     @Override
@@ -1523,9 +1525,48 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             // model files
             this.itemsPerMaterial.forEach((material, map) -> this.writeItemModel(jar, material, map));
             
+            // block states
             this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
             
+            // items
             this.itemNumIdMap.forEach((numId, item) -> this.writeItems(jar, numId, item));
+            
+            // item/block names
+            for (final Locale loc : McLibInterface.instance().getMainLocales())
+            {
+                final String file = "assets/mclib/lang/" + loc + ".lang"; //$NON-NLS-1$ //$NON-NLS-2$
+                final JarEntry langFile = new JarEntry(file);
+                langFile.setTime(System.currentTimeMillis());
+                jar.putNextEntry(langFile);
+                final StringBuilder buffer = new StringBuilder();
+                this.blockNumIdMap.forEach((numId, block) -> {
+                    final NameProvider provider = block.getNameProvider();
+                    if (provider != null)
+                    {
+                        final LocalizedMessageInterface name = provider.getName();
+                        if (name != null)
+                        {
+                            buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
+                            buffer.append(name.toUserMessage(loc));
+                            buffer.append("\n"); //$NON-NLS-1$
+                        }
+                    }
+                });
+                this.itemNumIdMap.forEach((numId, item) -> {
+                    final NameProvider provider = item.getNameProvider();
+                    if (provider != null)
+                    {
+                        final LocalizedMessageInterface name = provider.getName();
+                        if (name != null)
+                        {
+                            buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
+                            buffer.append(name.toUserMessage(loc));
+                            buffer.append("\n"); //$NON-NLS-1$
+                        }
+                    }
+                });
+                writeFile(jar, buffer.toString());
+            }
         }
     }
     
@@ -2047,7 +2088,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(BlockId id, BlockVariantId variant)
     {
-        return this.createItem(id, variant, this.blockIdMap.get(id).getNameProvider().getName());
+        return this.createItem(id, variant, null);
     }
     
     @Override
@@ -2066,7 +2107,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant)
     {
-        return this.createItem(player, id, variant, this.blockIdMap.get(id).getNameProvider().getName());
+        return this.createItem(player, id, variant, null);
     }
     
     @Override
