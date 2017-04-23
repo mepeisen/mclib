@@ -180,7 +180,14 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
                 else
                 {
-                    value = fdesc.primitiveType.get(name, section);
+                    if (fdesc.isSet)
+                    {
+                        value = new HashSet<>((List<?>)fdesc.primitiveType.get(name, section));
+                    }
+                    else
+                    {
+                        value = fdesc.primitiveType.get(name, section);
+                    }
                 }
                 try
                 {
@@ -247,7 +254,22 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
                 else
                 {
-                    fdesc.primitiveType.set(name, section, value);
+                    if (fdesc.isList)
+                    {
+                        section.setPrimitiveList(name, (List<?>) value);
+                    }
+                    else if (fdesc.isMap)
+                    {
+                        section.setPrimitiveMap(name, (Map<String, ?>) value);
+                    }
+                    else if (fdesc.isSet)
+                    {
+                        section.setPrimitiveList(name, new ArrayList<>((Set<?>) value));
+                    }
+                    else
+                    {
+                        fdesc.primitiveType.set(name, section, value);
+                    }
                 }
             }
             catch (Exception e)
