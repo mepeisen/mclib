@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -59,6 +60,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
     static final Set<Class<?>> PRIM_TYPES = new HashSet<>();
     
     {
+        FIELD_TYPES.put(UUID.class, PrimitiveFieldType.Uuid);
         FIELD_TYPES.put(String.class, PrimitiveFieldType.Str);
         FIELD_TYPES.put(Boolean.class, PrimitiveFieldType.Boolean);
         FIELD_TYPES.put(boolean.class, PrimitiveFieldType.Boolean);
@@ -698,6 +700,12 @@ public abstract class AnnotatedDataFragment implements DataFragment
         Str(
                 (name, section) -> section.getString(name),
                 (name, section, value) -> section.set(name, value),
+                (name, section) -> section.isString(name)),
+        
+        /** uuid type. */
+        Uuid(
+                (name, section) -> UUID.fromString(section.getString(name)),
+                (name, section, value) -> section.set(name, value.toString()),
                 (name, section) -> section.isString(name)),
         
         /** int type. */
