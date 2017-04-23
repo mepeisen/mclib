@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
@@ -73,32 +74,32 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     /**
      * inventory ids by type.
      */
-    private final Map<InventoryTypeId, Set<InventoryId>>         inventoryByType        = new HashMap<>();
+    final Map<InventoryTypeId, Set<InventoryId>>         inventoryByType        = new HashMap<>();
     
     /**
      * inventory ids by type and name.
      */
-    private final Map<InventoryTypeId, Map<String, InventoryId>> inventoryByTypeAndName = new HashMap<>();
+    final Map<InventoryTypeId, Map<String, InventoryId>> inventoryByTypeAndName = new HashMap<>();
     
     /**
      * inventories
      */
-    private final Map<InventoryId, InventoryComponent>           inventories            = new HashMap<>();
+    final Map<InventoryId, InventoryComponent>           inventories            = new HashMap<>();
     
     /** component registry for inventory objects */
-    private final ComponentRegistry                              objects                = new ComponentRegistry();
+    final ComponentRegistry                              objects                = new ComponentRegistry();
 
     /** configuration folder */
-    private File configFolder;
+    File configFolder;
     
     /** main config file */
-    private File configFile;
+    File configFile;
     
     /** the known inventories */
-    private List<InventoryRegistryData> inventoryIds = new ArrayList<>();
+    List<InventoryRegistryData> inventoryIds = new ArrayList<>();
     
     /** logger */
-    private static final Logger LOGGER = Logger.getLogger(InventoryServiceImpl.class.getName());
+    static final Logger LOGGER = Logger.getLogger(InventoryServiceImpl.class.getName());
     
     /**
      * @param configFolder
@@ -321,27 +322,34 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     @Override
     public void onEnumRegistered(Plugin plugin, Class<? extends InventoryTypeId> clazz, InventoryTypeId[] values)
     {
-        for (final InventoryTypeId type : values)
-        {
-            this.inventoryIds.stream().
-                filter(r -> r.getPluginName().equals(type.getPluginName()) && r.getEnumName().equals(type.name())).
-                forEach(r -> {
-                    try
-                    {
-                        final InventoryComponent comp = new InventoryComponent(this.objects, new File(this.configFolder, "inv-" + r.getUuid() + ".yml"), this); //$NON-NLS-1$ //$NON-NLS-2$
-                        this.inventories.put(comp.getId(), comp);
-                        this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());
-                        if (comp.getData().getIdentifier() != null)
-                        {
-                            this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(comp.getData().getIdentifier(), comp.getId());
-                        }
-                    }
-                    catch (McException e)
-                    {
-                        LOGGER.log(Level.WARNING, "Problems reading inventory", e); //$NON-NLS-1$
-                    }
-                });
-        }
+        new BukkitRunnable() {
+            
+            @Override
+            public void run()
+            {
+                for (final InventoryTypeId type : values)
+                {
+                    InventoryServiceImpl.this.inventoryIds.stream().
+                        filter(r -> r.getPluginName().equals(type.getPluginName()) && r.getEnumName().equals(type.name())).
+                        forEach(r -> {
+                            try
+                            {
+                                final InventoryComponent comp = new InventoryComponent(InventoryServiceImpl.this.objects, new File(InventoryServiceImpl.this.configFolder, "inv-" + r.getUuid() + ".yml"), InventoryServiceImpl.this); //$NON-NLS-1$ //$NON-NLS-2$
+                                InventoryServiceImpl.this.inventories.put(comp.getId(), comp);
+                                InventoryServiceImpl.this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());
+                                if (comp.getData().getIdentifier() != null)
+                                {
+                                    InventoryServiceImpl.this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(comp.getData().getIdentifier(), comp.getId());
+                                }
+                            }
+                            catch (McException e)
+                            {
+                                LOGGER.log(Level.WARNING, "Problems reading inventory", e); //$NON-NLS-1$
+                            }
+                        });
+                }
+            }
+        }.runTaskLater(plugin, 1);
     }
 
     @Override
