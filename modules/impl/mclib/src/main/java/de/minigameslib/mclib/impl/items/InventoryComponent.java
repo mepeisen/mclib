@@ -99,8 +99,8 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     public InventoryComponent(ComponentRegistry registry, File config, ComponentOwner owner, InventoryData data) throws McException
     {
         super(registry, config, owner);
-        this.changeLocs();
         this.data = data;
+        this.changeLocs();
         this.saveData();
     }
 
