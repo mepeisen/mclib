@@ -254,17 +254,13 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
                 else
                 {
-                    if (fdesc.isList)
-                    {
-                        section.setPrimitiveList(name, (List<?>) value);
-                    }
-                    else if (fdesc.isMap)
+                    if (fdesc.isMap)
                     {
                         section.setPrimitiveMap(name, (Map<String, ?>) value);
                     }
                     else if (fdesc.isSet)
                     {
-                        section.setPrimitiveList(name, new ArrayList<>((Set<?>) value));
+                        fdesc.primitiveType.set(name, section, new ArrayList<>((Set<?>) value));
                     }
                     else
                     {
