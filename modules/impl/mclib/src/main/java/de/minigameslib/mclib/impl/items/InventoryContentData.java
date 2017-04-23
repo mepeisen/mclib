@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.impl.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -66,7 +67,7 @@ public class InventoryContentData extends AnnotatedDataFragment
      * Item stacks
      */
     @PersistentField
-    protected List<ConfigItemStackData> slots;
+    protected List<ConfigItemStackData> slots = new ArrayList<>();
 
     /**
      * Constructor for reading object
