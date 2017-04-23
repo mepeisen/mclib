@@ -36,6 +36,9 @@ import org.bukkit.inventory.ItemStack;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.PagableClickGuiPage;
+import de.minigameslib.mclib.api.items.CommonItems;
+import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.impl.gui.cfg.AbstractListPage.Messages;
 
 /**
  * Inventory page
@@ -93,11 +96,39 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     {
         return new ClickGuiItem(elm == null ? new ItemStack(Material.AIR) : elm, true, true);
     }
+    
+    /**
+     * prev page icon
+     * @return prev page icon
+     */
+    public ClickGuiItem itemPrevPage()
+    {
+        return this.page() > 1 ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Previous), Messages.IconPreviousPage, this::onPrevPage) : null;
+    }
+    
+    /**
+     * next page icon
+     * @return next page icon
+     */
+    public ClickGuiItem itemNextPage()
+    {
+        return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
+    }
 
     @Override
     protected ClickGuiItem[] firstLine()
     {
-        return null;
+        return new ClickGuiItem[]{
+                null,
+                itemPrevPage(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                itemNextPage(),
+                null
+        };
     }
     
 }
