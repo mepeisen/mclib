@@ -1540,15 +1540,19 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 jar.putNextEntry(langFile);
                 final StringBuilder buffer = new StringBuilder();
                 this.blockNumIdMap.forEach((numId, block) -> {
-                    final NameProvider provider = block.getNameProvider();
-                    if (provider != null)
+                    for (final BlockVariantId variant : block.getBlockId().variants())
                     {
-                        final LocalizedMessageInterface name = provider.getName();
-                        if (name != null)
+                        NameProvider provider = variant.nameProvider();
+                        if (provider == null) provider = block.getNameProvider();
+                        if (provider != null)
                         {
-                            buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
-                            buffer.append(name.toUserMessage(loc));
-                            buffer.append("\n"); //$NON-NLS-1$
+                            final LocalizedMessageInterface name = provider.getName();
+                            if (name != null)
+                            {
+                                buffer.append("tile.custom-" + numId + ".variant_" + variant.ordinal() + ".name="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                buffer.append(name.toUserMessage(loc));
+                                buffer.append("\n"); //$NON-NLS-1$
+                            }
                         }
                     }
                 });
