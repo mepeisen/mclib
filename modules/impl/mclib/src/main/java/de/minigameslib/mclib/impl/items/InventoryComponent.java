@@ -288,7 +288,7 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     private InventoryImpl getOrCreate(final UUID uuid) throws McException
     {
         InventoryImpl result = this.playerInventories.get(uuid);
-        if (result != null)
+        if (result == null)
         {
             final File file = new File(this.configFile.getParentFile(), this.getId() + "-player-" + uuid + " .yml"); //$NON-NLS-1$ //$NON-NLS-2$
             if (!file.exists())
