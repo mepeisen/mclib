@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import org.bukkit.Color;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigInterface;
@@ -357,6 +358,20 @@ public class ConfigImpl implements ConfigInterface
         {
             LOGGER.log(Level.WARNING, "Problems saving config to file " + fobj, e); //$NON-NLS-1$
         }
+    }
+
+    @Override
+    public void verifyConfig(String file) throws McException
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void flushConfig(String file)
+    {
+        // next invocation will re-read file from disk
+        this.configurations.remove(file);
     }
     
 }

@@ -34,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Color;
 
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
@@ -2555,6 +2556,29 @@ public interface ConfigurationValueInterface extends EnumerationValue
     }
     
     /**
+     * Verifies the configuration this option belongs to
+     * @throws McException thrown if configuration contains invalid values
+     */
+    default void verifyConfig() throws McException
+    {
+        final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
+        final ConfigServiceInterface lib = ConfigServiceInterface.instance();
+        final ConfigInterface minigame = lib.getConfigFromCfg(this);
+        minigame.verifyConfig(configs.file());
+    }
+    
+    /**
+     * Rollback changes/ re-read config from file
+     */
+    default void flushConfig()
+    {
+        final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
+        final ConfigServiceInterface lib = ConfigServiceInterface.instance();
+        final ConfigInterface minigame = lib.getConfigFromCfg(this);
+        minigame.flushConfig(configs.file());
+    }
+    
+    /**
      * Returns the comment
      * 
      * @return config comment
@@ -2611,6 +2635,73 @@ public interface ConfigurationValueInterface extends EnumerationValue
             // silently ignore
         }
         return null;
+    }
+    
+    /**
+     * Default validation of this single configuration value;
+     * to validate the whole config file invoke {@link #verifyConfig()}
+     * @throws McException
+     */
+    default void validate() throws McException
+    {
+        try
+        {
+            final Field field = this.getClass().getDeclaredField(this.name());
+            final ValidateFMax fmax = field.getAnnotation(ValidateFMax.class);
+            if (fmax != null)
+            {
+                ValidateFMax.ValidatorInstance.validate(fmax, this);
+            }
+            final ValidateFMin fmin = field.getAnnotation(ValidateFMin.class);
+            if (fmin != null)
+            {
+                ValidateFMin.ValidatorInstance.validate(fmin, this);
+            }
+            final ValidateIsset isset = field.getAnnotation(ValidateIsset.class);
+            if (isset != null)
+            {
+                ValidateIsset.ValidatorInstance.validate(isset, this);
+            }
+            final ValidateListMax listmax = field.getAnnotation(ValidateListMax.class);
+            if (listmax != null)
+            {
+                ValidateListMax.ValidatorInstance.validate(listmax, this);
+            }
+            final ValidateListMin listmin = field.getAnnotation(ValidateListMin.class);
+            if (listmin != null)
+            {
+                ValidateListMin.ValidatorInstance.validate(listmin, this);
+            }
+            final ValidateLMax lmax = field.getAnnotation(ValidateLMax.class);
+            if (lmax != null)
+            {
+                ValidateLMax.ValidatorInstance.validate(lmax, this);
+            }
+            final ValidateLMin lmin = field.getAnnotation(ValidateLMin.class);
+            if (lmin != null)
+            {
+                ValidateLMin.ValidatorInstance.validate(lmin, this);
+            }
+            final ValidateStrMax strmax = field.getAnnotation(ValidateStrMax.class);
+            if (strmax != null)
+            {
+                ValidateStrMax.ValidatorInstance.validate(strmax, this);
+            }
+            final ValidateStrMin strmin = field.getAnnotation(ValidateStrMin.class);
+            if (strmin != null)
+            {
+                ValidateStrMin.ValidatorInstance.validate(strmin, this);
+            }
+            final Validator validator = field.getAnnotation(Validator.class);
+            if (validator != null)
+            {
+                validator.value().newInstance().validate(this);
+            }
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // silently ignore
+        }
     }
     
 }

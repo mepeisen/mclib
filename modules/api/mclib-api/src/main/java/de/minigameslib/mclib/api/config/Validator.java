@@ -24,50 +24,27 @@
 
 package de.minigameslib.mclib.api.config;
 
-import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.shared.api.com.DataSection;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Common configuration interface.
+ * Validator for configuration files or config enums
  * 
  * @author mepeisen
  */
-public interface ConfigInterface
+@Retention(RUNTIME)
+@Target({FIELD, ElementType.TYPE})
+public @interface Validator
 {
     
     /**
-     * Returns the bukkit configuration for given file.
-     * 
-     * @param file
-     *            configuration file name.
-     * @return the configuration file.
+     * Validator class
+     * @return validator class
      */
-    DataSection getConfig(String file);
-    
-    /**
-     * Saves the configuration for given file.
-     * 
-     * @param file
-     *            configuration file name.
-     */
-    void saveConfig(String file);
-    
-    /**
-     * Verify configuration values
-     * 
-     * @param file
-     *            configuration file name.
-     * @throws McException
-     *             thrown if verification failed
-     */
-    void verifyConfig(String file) throws McException;
-    
-    /**
-     * Flush/rollback configuration/ re-reads from file
-     * 
-     * @param file
-     *            configuration file name.
-     */
-    void flushConfig(String file);
+    Class<? extends ValidatorInterface> value();
     
 }

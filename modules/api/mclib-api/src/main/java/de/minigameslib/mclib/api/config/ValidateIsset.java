@@ -24,50 +24,44 @@
 
 package de.minigameslib.mclib.api.config;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
- * Common configuration interface.
+ * Validator to check if a config value is set
  * 
  * @author mepeisen
  */
-public interface ConfigInterface
+@Retention(RUNTIME)
+@Target({FIELD, ElementType.TYPE})
+public @interface ValidateIsset
 {
     
     /**
-     * Returns the bukkit configuration for given file.
-     * 
-     * @param file
-     *            configuration file name.
-     * @return the configuration file.
+     * Validation of this annotation
      */
-    DataSection getConfig(String file);
-    
-    /**
-     * Saves the configuration for given file.
-     * 
-     * @param file
-     *            configuration file name.
-     */
-    void saveConfig(String file);
-    
-    /**
-     * Verify configuration values
-     * 
-     * @param file
-     *            configuration file name.
-     * @throws McException
-     *             thrown if verification failed
-     */
-    void verifyConfig(String file) throws McException;
-    
-    /**
-     * Flush/rollback configuration/ re-reads from file
-     * 
-     * @param file
-     *            configuration file name.
-     */
-    void flushConfig(String file);
+    public class ValidatorInstance
+    {
+        /**
+         * Validation
+         * @param isset
+         * @param cvi
+         * @throws McException thrown on validation errors.
+         */
+        public static void validate(ValidateIsset isset, ConfigurationValueInterface cvi) throws McException
+        {
+            if (!cvi.isset())
+            {
+                throw new McException(CommonMessages.ValidateNotSet, cvi.path());
+            }
+        }
+    }
     
 }

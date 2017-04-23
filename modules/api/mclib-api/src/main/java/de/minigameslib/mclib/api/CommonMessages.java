@@ -491,5 +491,68 @@ public enum CommonMessages implements LocalizedMessageInterface
     @LocalizedMessage(defaultMessage = "")
     @MessageComment({"dummy filler icon"})
     IconFill,
+
+    /**
+     * float value is too high
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: Given value %2$f is too high. Maximum allowed is %3$f.")
+    @MessageComment(value = {"float value too high"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("max value")})
+    ValidateFValueTooHigh,
+
+    /**
+     * float value is too low
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: Given value %2$f is too low. Minimum allowed is %3$f.")
+    @MessageComment(value = {"float value too low"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("min value")})
+    ValidateFValueTooLow,
+
+    /**
+     * long value is too high
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: Given value %2$d is too high. Maximum allowed is %3$d.")
+    @MessageComment(value = {"long value too high"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("max value")})
+    ValidateLValueTooHigh,
+
+    /**
+     * long value is too low
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: Given value %2$d is too low. Minimum allowed is %3$d.")
+    @MessageComment(value = {"long value too low"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("min value")})
+    ValidateLValueTooLow,
+
+    /**
+     * value is not set
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: Value must be set.")
+    @MessageComment(value = {"value is not set"}, args = {@MessageComment.Argument("config path")})
+    ValidateNotSet,
+
+    /**
+     * List too small
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: List must contain at least %3$d entries. Only %2$d entries given.")
+    @MessageComment(value = {"List too small"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given entry count"), @MessageComment.Argument("min entry count")})
+    ValidateListTooSmall,
+
+    /**
+     * List too big
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: List must contain at most %3$d entries. %2$d entries given.")
+    @MessageComment(value = {"List too big"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given entry count"), @MessageComment.Argument("max entry count")})
+    ValidateListTooBig,
+
+    /**
+     * String too small
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: String must contain at least %3$d characters. Only %2$d characters given.")
+    @MessageComment(value = {"List too small"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given character count"), @MessageComment.Argument("min character count")})
+    ValidateStringTooSmall,
+
+    /**
+     * String too big
+     */
+    @LocalizedMessage(defaultMessage = "%1$s: String must contain at most %3$d characters. %2$d characters given.")
+    @MessageComment(value = {"List too big"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given character count"), @MessageComment.Argument("max character count")})
+    ValidateStringTooBig,
     
 }

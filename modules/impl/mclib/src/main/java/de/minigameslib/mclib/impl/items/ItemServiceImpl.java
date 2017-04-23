@@ -196,7 +196,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         if (this.languagesMap.containsKey(serverLocale.toString()))
         {
-            return this.languagesMap.get(serverLocale.toString()).stream().map(s -> new Locale(serverLocale.toString() + '_' + s)).collect(Collectors.toSet());
+            return this.languagesMap.get(serverLocale.toString()).stream().map(s -> new Locale(serverLocale.toString() + '_' + s.toUpperCase())).collect(Collectors.toSet());
         }
         return Collections.singleton(serverLocale);
     }
