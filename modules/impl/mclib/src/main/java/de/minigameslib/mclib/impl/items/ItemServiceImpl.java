@@ -32,12 +32,16 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.jar.JarEntry;
@@ -155,6 +159,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      */
     private Map<String, List<Runnable>>                 lazyPluginInit   = new HashMap<>();
     
+    /** list of countries for languages */
+    private Map<String, Set<String>>                    languagesMap     = new TreeMap<>();
+    
     /**
      * Initialized the items from registered enumerations
      */
@@ -165,6 +172,33 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         initNmsItems();
         initItems();
         initBlocks();
+        
+        final Locale[] locales = Locale.getAvailableLocales();
+        for (final Locale obj : locales)
+        {
+            if ((obj.getDisplayCountry() != null) && (!"".equals(obj.getDisplayCountry()))) //$NON-NLS-1$
+            {
+                this.languagesMap.computeIfAbsent(obj.getLanguage(), k -> new HashSet<>()).add(obj.getCountry());
+            }
+        }
+    }
+    
+    /**
+     * Returns the client locales to be used for resource set names
+     * @param serverLocale
+     * @return client locales
+     */
+    private Set<Locale> getClientLocales(Locale serverLocale)
+    {
+        if (serverLocale.getCountry() != null && serverLocale.getCountry().length() > 0)
+        {
+            return Collections.singleton(serverLocale);
+        }
+        if (this.languagesMap.containsKey(serverLocale.toString()))
+        {
+            return this.languagesMap.get(serverLocale.toString()).stream().map(s -> new Locale(serverLocale.toString() + '_' + s)).collect(Collectors.toSet());
+        }
+        return Collections.singleton(serverLocale);
     }
     
     /**
@@ -189,19 +223,19 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         /**
          * tooling id to divide multiple toolings
          */
-        private static final String CUSTOMKEY_TOOLING_ID = "toolingId"; //$NON-NLS-1$
+        private static final String                                    CUSTOMKEY_TOOLING_ID     = "toolingId";     //$NON-NLS-1$
         /**
          * marker for clearing tooling on join
          */
-        private static final String CUSTOMKEY_CLEAR_ON_JOIN = "clearOnJoin"; //$NON-NLS-1$
+        private static final String                                    CUSTOMKEY_CLEAR_ON_JOIN  = "clearOnJoin";   //$NON-NLS-1$
         /**
          * tooling marker for custom tooling item
          */
-        private static final String CUSTOMKEY_TOOLING_MARKER = "customTooling"; //$NON-NLS-1$
+        private static final String                                    CUSTOMKEY_TOOLING_MARKER = "customTooling"; //$NON-NLS-1$
         /**
          * plugin for item custom data
          */
-        private static final String CUSTOMDATA_PLUGIN = "mclib"; //$NON-NLS-1$
+        private static final String                                    CUSTOMDATA_PLUGIN        = "mclib";         //$NON-NLS-1$
         
         /** flag for single use */
         private boolean                                                singleUse;
@@ -213,24 +247,24 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         private LocalizedMessageInterface                              description;
         /** description arguments */
         private Serializable[]                                         descriptionArgs;
-
+        
         /**
          * the player
          */
-        private final McPlayerInterface player;
+        private final McPlayerInterface                                player;
         /**
          * the item factory
          */
-        private final Supplier<ItemStack> itemFactory;
+        private final Supplier<ItemStack>                              itemFactory;
         
         /** the target inventory. */
-        private Inventory targetInventory;
+        private Inventory                                              targetInventory;
         /** target slot; -1 for any free slot */
-        private int targetSlot = -1;
+        private int                                                    targetSlot               = -1;
         /** {@code true} to override existing items in {@code targetSlot} */
-        private boolean targetRemoveExisting;
+        private boolean                                                targetRemoveExisting;
         /** {qcode true} to override any existing tooling; only if {@code targetSlot} if not set */
-        private boolean overridePlayerTools = true;
+        private boolean                                                overridePlayerTools      = true;
         
         /**
          * @param player
@@ -241,7 +275,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.player = player;
             this.itemFactory = itemFactory;
         }
-
+        
         @Override
         public ToolBuilderInterface singleUse()
         {
@@ -340,12 +374,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             {
                 slot = inventory.firstEmpty();
             }
-
+            
             this.setTooling(inventory, slot, helper, marker);
         }
         
         /**
          * Sets tooling item to given slot
+         * 
          * @param inventory
          * @param slot
          * @param helper
@@ -375,7 +410,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.player.getBukkitPlayer().updateInventory();
         }
     }
-
+    
     /**
      * @author mepeisen
      *
@@ -547,8 +582,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
      * @param inventory
      * @param targetSlot
      * @param invitem
-     * @param helper 
-     * @param marker 
+     * @param helper
+     * @param marker
      */
     public void deleteTooling(Inventory inventory, int targetSlot, ItemStack invitem, ItemHelperInterface helper, ToolMarker marker)
     {
@@ -556,7 +591,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         marker.getTools().remove(id);
         inventory.setItem(targetSlot, null);
     }
-
+    
     /**
      * @param stream
      */
@@ -755,125 +790,137 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param sword
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initSword(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemSword sword) throws InstantiationException, IllegalAccessException
+    private void initSword(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemSword sword) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initSword(custom.getNumId(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+            helper.initSword(custom.getNumId(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(),
+                    new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
         }
         else
         {
-            helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+            helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.durability(), sword.damageVsEntity(), sword.damage(),
+                    sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
         }
     }
-
+    
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param shovel
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initShovel(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemShovel shovel) throws InstantiationException, IllegalAccessException
+    private void initShovel(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemShovel shovel) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initShovel(custom.getNumId(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+            helper.initShovel(custom.getNumId(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(),
+                    new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
         }
         else
         {
-            helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+            helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(),
+                    shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
         }
     }
-
+    
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param pickaxe
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initPickaxe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemPickaxe pickaxe) throws InstantiationException, IllegalAccessException
+    private void initPickaxe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemPickaxe pickaxe) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initPickaxe(custom.getNumId(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+            helper.initPickaxe(custom.getNumId(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(),
+                    new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
         }
         else
         {
-            helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+            helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(),
+                    pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
         }
     }
-
+    
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param hoe
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initHoe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemHoe hoe) throws InstantiationException, IllegalAccessException
+    private void initHoe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemHoe hoe) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initHoe(custom.getNumId(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(), new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+            helper.initHoe(custom.getNumId(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
+                    new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
         }
         else
         {
-            helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(), new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+            helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
+                    new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
         }
     }
-
+    
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param axe
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initAxe(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemAxe axe) throws InstantiationException, IllegalAccessException
+    private void initAxe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemAxe axe) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initAxe(custom.getNumId(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(), new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+            helper.initAxe(custom.getNumId(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
+                    new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
         }
         else
         {
-            helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(), new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+            helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
+                    new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
         }
     }
-
+    
     /**
-     * @param helper 
+     * @param helper
      * @param custom
      * @param item
      * @param armor
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    private void initArmor(ItemHelperInterface helper, CustomItem custom , ItemId item, ItemArmor armor) throws InstantiationException, IllegalAccessException
+    private void initArmor(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemArmor armor) throws InstantiationException, IllegalAccessException
     {
         if (custom.getNumId() > 0)
         {
-            helper.initArmor(custom.getNumId(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
+            helper.initArmor(custom.getNumId(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(),
+                    new NmsItemRule(null, armor.repairRule().newInstance(), null));
         }
         else
         {
-            helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
+            helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(),
+                    armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
         }
     }
-
+    
     /**
      * @param items
      * @return shapeless items
@@ -1072,7 +1119,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             }
         }
     }
-
+    
     /**
      * @param block
      * @return num id
@@ -1534,42 +1581,46 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             // item/block names
             for (final Locale loc : McLibInterface.instance().getMainLocales())
             {
-                final String file = "assets/mclib/lang/" + loc + ".lang"; //$NON-NLS-1$ //$NON-NLS-2$
-                final JarEntry langFile = new JarEntry(file);
-                langFile.setTime(System.currentTimeMillis());
-                jar.putNextEntry(langFile);
-                final StringBuilder buffer = new StringBuilder();
-                this.blockNumIdMap.forEach((numId, block) -> {
-                    for (final BlockVariantId variant : block.getBlockId().variants())
-                    {
-                        NameProvider provider = variant.nameProvider();
-                        if (provider == null) provider = block.getNameProvider();
+                for (final Locale cloc : this.getClientLocales(loc))
+                {
+                    final String file = "assets/mclib/lang/" + cloc + ".lang"; //$NON-NLS-1$ //$NON-NLS-2$
+                    final JarEntry langFile = new JarEntry(file);
+                    langFile.setTime(System.currentTimeMillis());
+                    jar.putNextEntry(langFile);
+                    final StringBuilder buffer = new StringBuilder();
+                    this.blockNumIdMap.forEach((numId, block) -> {
+                        for (final BlockVariantId variant : block.getBlockId().variants())
+                        {
+                            NameProvider provider = variant.nameProvider();
+                            if (provider == null || provider.getName() == null)
+                                provider = block.getNameProvider();
+                            if (provider != null)
+                            {
+                                final LocalizedMessageInterface name = provider.getName();
+                                if (name != null)
+                                {
+                                    buffer.append("tile.custom-" + numId + ".variant_" + variant.ordinal() + ".name="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    buffer.append(name.toUserMessage(loc));
+                                    buffer.append("\n"); //$NON-NLS-1$
+                                }
+                            }
+                        }
+                    });
+                    this.itemNumIdMap.forEach((numId, item) -> {
+                        final NameProvider provider = item.getNameProvider();
                         if (provider != null)
                         {
                             final LocalizedMessageInterface name = provider.getName();
                             if (name != null)
                             {
-                                buffer.append("tile.custom-" + numId + ".variant_" + variant.ordinal() + ".name="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
                                 buffer.append(name.toUserMessage(loc));
                                 buffer.append("\n"); //$NON-NLS-1$
                             }
                         }
-                    }
-                });
-                this.itemNumIdMap.forEach((numId, item) -> {
-                    final NameProvider provider = item.getNameProvider();
-                    if (provider != null)
-                    {
-                        final LocalizedMessageInterface name = provider.getName();
-                        if (name != null)
-                        {
-                            buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
-                            buffer.append(name.toUserMessage(loc));
-                            buffer.append("\n"); //$NON-NLS-1$
-                        }
-                    }
-                });
-                writeFile(jar, buffer.toString());
+                    });
+                    writeFile(jar, buffer.toString());
+                }
             }
         }
     }
@@ -1631,7 +1682,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             LOGGER.log(Level.WARNING, "IOException writing item " + item.getPluginName() + '/' + item.getEnumName(), e); //$NON-NLS-1$
         }
     }
-
+    
     /**
      * @param jar
      * @param content
@@ -1689,7 +1740,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         if (item.isModded())
             throw new IllegalStateException("modded items not yet supported"); // TODO support modded items (check for client mod) //$NON-NLS-1$
-        return new ToolBuilderImpl(player, ()->createItem(player, item, title, titleArgs)){
+        return new ToolBuilderImpl(player, () -> createItem(player, item, title, titleArgs)) {
             @Override
             public void build()
             {
@@ -1726,7 +1777,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ToolBuilderInterface prepareTool(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
     {
-        return new ToolBuilderImpl(player, ()->{
+        return new ToolBuilderImpl(player, () -> {
             this.setDisplayName(stack, player, title, titleArgs);
             return stack;
         });
@@ -1892,7 +1943,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         for (int i = 0; i < inventory.getSize(); i++)
                         {
                             final ItemStack invitem = inventory.getItem(i);
-                            if (id.equals(helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID)) && helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
+                            if (id.equals(helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID))
+                                    && helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
                             {
                                 inventory.setItem(i, new ItemStack(Material.AIR));
                                 evt.getPlayer().getBukkitPlayer().updateInventory();
@@ -1993,6 +2045,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Tool data helper
+     * 
      * @author mepeisen
      */
     public static final class ToolMarker extends AnnotatedDataFragment
@@ -2003,7 +2056,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
          */
         @PersistentField
         protected Map<String, ToolData> tools = new HashMap<>();
-
+        
         /**
          * @return the tools
          */
@@ -2410,421 +2463,421 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             return this.numId;
         }
     }
-
+    
     @Override
     public boolean isPlant(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPlant(material);
     }
-
+    
     @Override
     public boolean isPlant(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPlant(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isGourd(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGourd(material);
     }
-
+    
     @Override
     public boolean isGourd(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGourd(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCoral(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCoral(material);
     }
-
+    
     @Override
     public boolean isCoral(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCoral(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isGrass(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGrass(material);
     }
-
+    
     @Override
     public boolean isGrass(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGrass(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isWood(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWood(material);
     }
-
+    
     @Override
     public boolean isWood(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWood(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isRock(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRock(material);
     }
-
+    
     @Override
     public boolean isRock(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRock(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isOre(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isOre(material);
     }
-
+    
     @Override
     public boolean isOre(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isOre(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isHeavy(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isHeavy(material);
     }
-
+    
     @Override
     public boolean isHeavy(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isHeavy(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isWater(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWater(material);
     }
-
+    
     @Override
     public boolean isWater(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWater(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isLava(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLava(material);
     }
-
+    
     @Override
     public boolean isLava(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLava(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isLeaves(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLeaves(material);
     }
-
+    
     @Override
     public boolean isLeaves(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isLeaves(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isVine(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isVine(material);
     }
-
+    
     @Override
     public boolean isVine(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isVine(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isSponge(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSponge(material);
     }
-
+    
     @Override
     public boolean isSponge(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSponge(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCloth(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCloth(material);
     }
-
+    
     @Override
     public boolean isCloth(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCloth(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isFire(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isFire(material);
     }
-
+    
     @Override
     public boolean isFire(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isFire(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isSand(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSand(material);
     }
-
+    
     @Override
     public boolean isSand(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSand(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCircuits(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCircuits(material);
     }
-
+    
     @Override
     public boolean isCircuits(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCircuits(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCarpet(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCarpet(material);
     }
-
+    
     @Override
     public boolean isCarpet(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCarpet(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isGlass(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGlass(material);
     }
-
+    
     @Override
     public boolean isGlass(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isGlass(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isRedstoneLight(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRedstoneLight(material);
     }
-
+    
     @Override
     public boolean isRedstoneLight(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isRedstoneLight(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isTnt(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isTnt(material);
     }
-
+    
     @Override
     public boolean isTnt(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isTnt(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isIce(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isIce(material);
     }
-
+    
     @Override
     public boolean isIce(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isIce(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isPackedIce(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPackedIce(material);
     }
-
+    
     @Override
     public boolean isPackedIce(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPackedIce(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isSnow(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSnow(material);
     }
-
+    
     @Override
     public boolean isSnow(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isSnow(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCraftedSnow(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCraftedSnow(material);
     }
-
+    
     @Override
     public boolean isCraftedSnow(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCraftedSnow(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCactus(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCactus(material);
     }
-
+    
     @Override
     public boolean isCactus(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCactus(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isClay(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isClay(material);
     }
-
+    
     @Override
     public boolean isClay(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isClay(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isDragonEgg(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isDragonEgg(material);
     }
-
+    
     @Override
     public boolean isDragonEgg(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isDragonEgg(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isPortal(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPortal(material);
     }
-
+    
     @Override
     public boolean isPortal(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPortal(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isCake(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCake(material);
     }
-
+    
     @Override
     public boolean isCake(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isCake(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isWeb(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWeb(material);
     }
-
+    
     @Override
     public boolean isWeb(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isWeb(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isPiston(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPiston(material);
     }
-
+    
     @Override
     public boolean isPiston(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isPiston(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isBarrier(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isBarrier(material);
     }
-
+    
     @Override
     public boolean isBarrier(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isBarrier(blockToNumId(block));
     }
-
+    
     @Override
     public boolean isStructureVoid(Material material)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isStructureVoid(material);
     }
-
+    
     @Override
     public boolean isStructureVoid(BlockId block)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).isStructureVoid(blockToNumId(block));
     }
-
+    
     @Override
     public ConfigItemStackData toConfigData(ItemStack stack)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).toConfigData(stack);
     }
-
+    
     @Override
     public ConfigItemStackData fromConfigData(DataSection section)
     {
