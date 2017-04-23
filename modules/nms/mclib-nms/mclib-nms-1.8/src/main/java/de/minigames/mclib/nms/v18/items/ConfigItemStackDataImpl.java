@@ -96,13 +96,13 @@ public class ConfigItemStackDataImpl extends AnnotatedDataFragment implements Co
     public ConfigItemStackDataImpl(ItemStack stack)
     {
         final net.minecraft.server.v1_8_R1.ItemStack nms = CraftItemStack.asNMSCopy(stack);
-        final MinecraftKey mckey = (MinecraftKey) Item.REGISTRY.c(nms.getItem());
+        final MinecraftKey mckey = nms == null ? null : (MinecraftKey) Item.REGISTRY.c(nms.getItem());
         this.mcid = mckey == null ? "minecraft:air" : mckey.toString(); //$NON-NLS-1$
         
-        this.amount = nms.count;
-        this.damage = nms.getData();
+        this.amount = nms == null ? 1 : nms.count;
+        this.damage = nms == null ? 0 : nms.getData();
         
-        final NBTTagCompound tag = nms.getTag();
+        final NBTTagCompound tag = nms == null ? null : nms.getTag();
         if (tag != null)
         {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
