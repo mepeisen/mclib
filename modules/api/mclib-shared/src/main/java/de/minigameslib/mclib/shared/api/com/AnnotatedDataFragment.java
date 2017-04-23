@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Data fragment build by annotated fields.
@@ -474,7 +475,14 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     }
                     else if (PRIM_TYPES.contains(listType))
                     {
-                        this.primitiveType = PrimitiveFieldType.PrimitiveList;
+                        if (listType == UUID.class)
+                        {
+                            this.primitiveType = PrimitiveFieldType.UuidList;
+                        }
+                        else
+                        {
+                            this.primitiveType = PrimitiveFieldType.PrimitiveList;
+                        }
                     } 
                     // TODO support map list etc.
 //                    else if (Map.class.isAssignableFrom(elementType))
@@ -529,7 +537,14 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     }
                     else if (PRIM_TYPES.contains(listType))
                     {
-                        this.primitiveType = PrimitiveFieldType.PrimitiveList;
+                        if (listType == UUID.class)
+                        {
+                            this.primitiveType = PrimitiveFieldType.UuidList;
+                        }
+                        else
+                        {
+                            this.primitiveType = PrimitiveFieldType.PrimitiveList;
+                        }
                     } 
                     // TODO support map list etc.
 //                    else if (Map.class.isAssignableFrom(elementType))
@@ -796,6 +811,13 @@ public abstract class AnnotatedDataFragment implements DataFragment
         PrimitiveList(
                 (name, section) -> section.getPrimitiveList(name),
                 (name, section, value) -> section.setPrimitiveList(name, (List<?>)value),
+                (name, section) -> section.isList(name)),
+        
+        /** uuid list type. */
+        @SuppressWarnings("unchecked")
+        UuidList(
+                (name, section) -> section.getPrimitiveList(name).stream().map(s -> UUID.fromString((String)s)).collect(Collectors.toList()),
+                (name, section, value) -> section.setPrimitiveList(name, ((List<UUID>)value).stream().map(UUID::toString).collect(Collectors.toList())),
                 (name, section) -> section.isList(name)),
         
         /** vector type. */
