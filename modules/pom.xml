@@ -162,6 +162,11 @@
   				    	<artifactId>checkstyle</artifactId>
   				    	<version>7.6</version>
   				    </dependency>
+  				    <dependency>
+  				        <groupId>org.slf4j</groupId>
+  				        <artifactId>jcl-over-slf4j</artifactId>
+  				        <version>1.7.5</version>
+  				    </dependency>
   				</dependencies>
   			</plugin>
   		</plugins></build>
