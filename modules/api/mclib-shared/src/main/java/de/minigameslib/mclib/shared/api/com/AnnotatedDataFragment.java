@@ -55,10 +55,10 @@ public abstract class AnnotatedDataFragment implements DataFragment
     private static final Map<Class<?>, DataDescriptor> DESCRIPTORS = new ConcurrentHashMap<>();
     
     /** simple field types. */
-    static final Map<Class<?>, PrimitiveFieldType> FIELD_TYPES = new HashMap<>();
+    static final Map<Class<?>, PrimitiveFieldType>     FIELD_TYPES = new HashMap<>();
     
     /** the primitive types directly supported by DataSection. */
-    static final Set<Class<?>> PRIM_TYPES = new HashSet<>();
+    static final Set<Class<?>>                         PRIM_TYPES  = new HashSet<>();
     
     {
         FIELD_TYPES.put(UUID.class, PrimitiveFieldType.Uuid);
@@ -91,7 +91,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
         FIELD_TYPES.put(ColorDataFragment.class, PrimitiveFieldType.Color);
         FIELD_TYPES.put(DataSection.class, PrimitiveFieldType.DataSection);
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -183,7 +183,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 {
                     if (fdesc.isSet)
                     {
-                        value = new HashSet<>((List<?>)fdesc.primitiveType.get(name, section));
+                        value = new HashSet<>((List<?>) fdesc.primitiveType.get(name, section));
                     }
                     else
                     {
@@ -201,7 +201,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
             }
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     @Override
     public void write(DataSection section)
@@ -214,7 +214,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
             try
             {
                 final Object value = fdesc.field.get(this);
-
+                
                 if (fdesc.isFragment)
                 {
                     if (fdesc.isList)
@@ -333,25 +333,30 @@ public abstract class AnnotatedDataFragment implements DataFragment
         }
         return true;
     }
-
+    
     /** a data class descriptor. */
     private static final class DataDescriptor
     {
         
         /** the fields. */
         Map<String, FieldDescriptor> fields = new HashMap<>();
-
+        
         /**
          * Constructor.
+         * 
          * @param clazz
+         *            class to be represented
          */
         public DataDescriptor(Class<?> clazz)
         {
             addFieldDesc(clazz);
         }
-
+        
         /**
+         * Adds field descriptors for given classes.
+         * 
          * @param clazz
+         *            class to be analyzed
          */
         private void addFieldDesc(Class<?> clazz)
         {
@@ -378,51 +383,53 @@ public abstract class AnnotatedDataFragment implements DataFragment
     {
         
         /** the field to be used. */
-        final Field field;
+        final Field                             field;
         
         /** primitive type. */
-        PrimitiveFieldType primitiveType = null;
-
+        PrimitiveFieldType                      primitiveType = null;
+        
         /** the target field type. */
-        Class<?> clazz;
+        Class<?>                                clazz;
         
         /** true for list. */
-        boolean isList;
+        boolean                                 isList;
         
-        /** true for map */
-        boolean isMap;
+        /** true for map. */
+        boolean                                 isMap;
         
-        /** true for set */
-        boolean isSet;
-
+        /** true for set. */
+        boolean                                 isSet;
+        
         /** the list or map element types. */
-        Class<? extends DataFragment> elementType;
-
+        Class<? extends DataFragment>           elementType;
+        
         /** the list or map element types. */
         Class<? extends UniqueEnumerationValue> uniqueEnumType;
-
+        
         /** the list or map element types. */
         @SuppressWarnings("rawtypes")
-        Class<? extends Enum> javaEnumType;
-
+        Class<? extends Enum>                   javaEnumType;
+        
         /** the list or map element types. */
-        Class<? extends EnumerationValue> normalEnumType;
-
+        Class<? extends EnumerationValue>       normalEnumType;
+        
         /** true if this is a data fragment. */
-        boolean isFragment;
+        boolean                                 isFragment;
         
-        /** true for java enums */
-        boolean isJavaEnum;
+        /** true for java enums. */
+        boolean                                 isJavaEnum;
         
-        /** true for unique enums */
-        boolean isUniqueEnum;
+        /** true for unique enums. */
+        boolean                                 isUniqueEnum;
         
-        /** true for normal enums */
-        boolean isEnum;
+        /** true for normal enums. */
+        boolean                                 isEnum;
         
         /**
          * Constructor.
+         * 
          * @param field
+         *            field to be represented
          */
         public FieldDescriptor(Field field)
         {
@@ -483,12 +490,9 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         {
                             this.primitiveType = PrimitiveFieldType.PrimitiveList;
                         }
-                    } 
+                    }
                     // TODO support map list etc.
-//                    else if (Map.class.isAssignableFrom(elementType))
-//                    {
-//                        
-//                    }
+                    // else if (Map.class.isAssignableFrom(elementType)) { }
                     else
                     {
                         throw new IllegalStateException("Unsupported list type detected. " + listType); //$NON-NLS-1$
@@ -545,12 +549,9 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         {
                             this.primitiveType = PrimitiveFieldType.PrimitiveList;
                         }
-                    } 
+                    }
                     // TODO support map list etc.
-//                    else if (Map.class.isAssignableFrom(elementType))
-//                    {
-//                        
-//                    }
+                    // else if (Map.class.isAssignableFrom(elementType)) { }
                     else
                     {
                         throw new IllegalStateException("Unsupported list type detected. " + listType); //$NON-NLS-1$
@@ -591,10 +592,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         this.javaEnumType = valueType.asSubclass(Enum.class);
                     }
                     // TODO support list map etc.
-//                  else if (List.class.isAssignableFrom(valueType))
-//                  {
-//                      
-//                  }
+                    // else if (List.class.isAssignableFrom(valueType)) { }
                     else
                     {
                         throw new IllegalStateException("Unsupported list value type detected. " + valueType); //$NON-NLS-1$
@@ -626,10 +624,14 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
             }
         }
-
+        
         /**
+         * Returns class from java paremetrized types.
+         * 
          * @param ptype
+         *            parametrized type
          * @param index
+         *            type index
          * @return clazz
          */
         private Class<?> getClassFromTypes(final ParameterizedType ptype, int index)
@@ -654,25 +656,35 @@ public abstract class AnnotatedDataFragment implements DataFragment
     private interface FieldTypeBinding
     {
         /**
-         * Gets object
+         * Gets object.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @return object value.
          */
         Object get(String name, DataSection section);
         
         /**
-         * Sets object
+         * Sets object.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @param value
+         *            new value
          */
         void set(String name, DataSection section, Object value);
         
         /**
-         * Tests pobject type
+         * Tests object type.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @return true if object is ok
          */
         boolean test(String name, DataSection section);
@@ -686,8 +698,11 @@ public abstract class AnnotatedDataFragment implements DataFragment
     {
         /**
          * Getter.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @return Object value.
          */
         Object get(String name, DataSection section);
@@ -701,9 +716,13 @@ public abstract class AnnotatedDataFragment implements DataFragment
     {
         /**
          * Setter.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @param value
+         *            new value
          */
         void set(String name, DataSection section, Object value);
     }
@@ -716,8 +735,11 @@ public abstract class AnnotatedDataFragment implements DataFragment
     {
         /**
          * Tester.
+         * 
          * @param name
+         *            field name
          * @param section
+         *            data section
          * @return true for valid values
          */
         boolean test(String name, DataSection section);
@@ -730,161 +752,87 @@ public abstract class AnnotatedDataFragment implements DataFragment
     {
         
         /** string type. */
-        Str(
-                (name, section) -> section.getString(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isString(name)),
+        Str((name, section) -> section.getString(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isString(name)),
         
         /** uuid type. */
-        Uuid(
-                (name, section) -> UUID.fromString(section.getString(name)),
-                (name, section, value) -> section.set(name, value.toString()),
-                (name, section) -> section.isString(name)),
+        Uuid((name, section) -> UUID.fromString(section.getString(name)), (name, section, value) -> section.set(name, value.toString()), (name, section) -> section.isString(name)),
         
         /** int type. */
-        Integer(
-                (name, section) -> section.getInt(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isInt(name)),
+        Integer((name, section) -> section.getInt(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isInt(name)),
         
         /** byte type. */
-        Byte(
-                (name, section) -> section.getByte(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isByte(name)),
+        Byte((name, section) -> section.getByte(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isByte(name)),
         
         /** short type. */
-        Short(
-                (name, section) -> section.getShort(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isShort(name)),
+        Short((name, section) -> section.getShort(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isShort(name)),
         
         /** character type. */
-        Character(
-                (name, section) -> section.getCharacter(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isCharacter(name)),
+        Character((name, section) -> section.getCharacter(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isCharacter(name)),
         
         /** date/time type. */
-        DateTime(
-                (name, section) -> section.getDateTime(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isDateTime(name)),
+        DateTime((name, section) -> section.getDateTime(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDateTime(name)),
         
         /** date type. */
-        Date(
-                (name, section) -> section.getDate(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isDate(name)),
+        Date((name, section) -> section.getDate(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDate(name)),
         
         /** time type. */
-        Time(
-                (name, section) -> section.getTime(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isTime(name)),
+        Time((name, section) -> section.getTime(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isTime(name)),
         
         /** boolean type. */
-        Boolean(
-                (name, section) -> section.getBoolean(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isBoolean(name)),
+        Boolean((name, section) -> section.getBoolean(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isBoolean(name)),
         
         /** float type. */
-        Float(
-                (name, section) -> section.getFloat(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isFloat(name)),
+        Float((name, section) -> section.getFloat(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isFloat(name)),
         
         /** double type. */
-        Double(
-                (name, section) -> section.getDouble(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isDouble(name)),
+        Double((name, section) -> section.getDouble(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDouble(name)),
         
         /** long type. */
-        Long(
-                (name, section) -> section.getLong(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isLong(name)),
+        Long((name, section) -> section.getLong(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isLong(name)),
         
         /** primitive list type. */
-        PrimitiveList(
-                (name, section) -> section.getPrimitiveList(name),
-                (name, section, value) -> section.setPrimitiveList(name, (List<?>)value),
-                (name, section) -> section.isList(name)),
+        PrimitiveList((name, section) -> section.getPrimitiveList(name), (name, section, value) -> section.setPrimitiveList(name, (List<?>) value), (name, section) -> section.isList(name)),
         
         /** uuid list type. */
         @SuppressWarnings("unchecked")
-        UuidList(
-                (name, section) -> section.getPrimitiveList(name).stream().map(s -> UUID.fromString((String)s)).collect(Collectors.toList()),
-                (name, section, value) -> section.setPrimitiveList(name, ((List<UUID>)value).stream().map(UUID::toString).collect(Collectors.toList())),
-                (name, section) -> section.isList(name)),
+        UuidList((name, section) -> section.getPrimitiveList(name).stream().map(s -> UUID.fromString((String) s)).collect(Collectors.toList()),
+            (name, section, value) -> section.setPrimitiveList(name, ((List<UUID>) value).stream().map(UUID::toString).collect(Collectors.toList())), (name, section) -> section.isList(name)),
         
         /** vector type. */
-        Vector(
-                (name, section) -> section.getVector(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isVector(name)),
+        Vector((name, section) -> section.getVector(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isVector(name)),
         
         /** player type. */
-        Player(
-                (name, section) -> section.getPlayer(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isPlayer(name)),
+        Player((name, section) -> section.getPlayer(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isPlayer(name)),
         
         /** item stack type. */
-        ItemStack(
-                (name, section) -> section.getItemStack(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isItemStack(name)),
+        ItemStack((name, section) -> section.getItemStack(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isItemStack(name)),
         
         /** color data type. */
-        Color(
-                (name, section) -> section.getColor(name),
-                (name, section, value) -> section.set(name, value),
-                (name, section) -> section.isColor(name)),
+        Color((name, section) -> section.getColor(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isColor(name)),
         
         /** vector list type. */
         @SuppressWarnings("unchecked")
-        VectorList(
-                (name, section) -> section.getVectorList(name),
-                (name, section, value) -> section.setFragmentList(name, (List<VectorDataFragment>)value),
-                (name, section) -> section.isList(name)),
+        VectorList((name, section) -> section.getVectorList(name), (name, section, value) -> section.setFragmentList(name, (List<VectorDataFragment>) value), (name, section) -> section.isList(name)),
         
         /** color list type. */
         @SuppressWarnings("unchecked")
-        ColorList(
-                (name, section) -> section.getColorList(name),
-                (name, section, value) -> section.setFragmentList(name, (List<ColorDataFragment>)value),
-                (name, section) -> section.isList(name)),
+        ColorList((name, section) -> section.getColorList(name), (name, section, value) -> section.setFragmentList(name, (List<ColorDataFragment>) value), (name, section) -> section.isList(name)),
         
         /** player list type. */
         @SuppressWarnings("unchecked")
-        PlayerList(
-                (name, section) -> section.getPlayerList(name),
-                (name, section, value) -> section.setFragmentList(name, (List<PlayerDataFragment>)value),
-                (name, section) -> section.isList(name)),
+        PlayerList((name, section) -> section.getPlayerList(name), (name, section, value) -> section.setFragmentList(name, (List<PlayerDataFragment>) value), (name, section) -> section.isList(name)),
         
         /** item stack list type. */
         @SuppressWarnings("unchecked")
-        ItemStackList(
-                (name, section) -> section.getItemList(name),
-                (name, section, value) -> section.setFragmentList(name, (List<ItemStackDataFragment>)value),
-                (name, section) -> section.isList(name)),
+        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.setFragmentList(name, (List<ItemStackDataFragment>) value),
+            (name, section) -> section.isList(name)),
         
         /** primitive map type. */
         @SuppressWarnings("unchecked")
-        Map(
-                (name, section) -> section.getPrimitiveMap(name),
-                (name, section, value) -> section.setPrimitiveMap(name, (Map<String, ?>)value),
-                (name, section) -> section.isSection(name)),
+        Map((name, section) -> section.getPrimitiveMap(name), (name, section, value) -> section.setPrimitiveMap(name, (Map<String, ?>) value), (name, section) -> section.isSection(name)),
         
         /** data section type. */
-        DataSection(
-                (name, section) -> section.getSection(name),
-                (name, section, value) -> section.setSection(name, (DataSection) value),
-                (name, section) -> section.isSection(name)),
-        ;
+        DataSection((name, section) -> section.getSection(name), (name, section, value) -> section.setSection(name, (DataSection) value), (name, section) -> section.isSection(name)),;
         
         /** getter to receive values. */
         private final Getter getter;
@@ -894,11 +842,12 @@ public abstract class AnnotatedDataFragment implements DataFragment
         
         /** tester to checking values. */
         private final Tester tester;
-
+        
         /**
-         * @param getter
-         * @param setter
-         * @param tester
+         * Constructor.
+         * @param getter the getter to be used
+         * @param setter the setter to be used
+         * @param tester the tester to be used
          */
         private PrimitiveFieldType(Getter getter, Setter setter, Tester tester)
         {
@@ -906,19 +855,19 @@ public abstract class AnnotatedDataFragment implements DataFragment
             this.setter = setter;
             this.tester = tester;
         }
-
+        
         @Override
         public Object get(String name, DataSection section)
         {
             return this.getter.get(name, section);
         }
-
+        
         @Override
         public void set(String name, DataSection section, Object value)
         {
             this.setter.set(name, section, value);
         }
-
+        
         @Override
         public boolean test(String name, DataSection section)
         {

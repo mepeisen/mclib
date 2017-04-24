@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>mclib-build-parent</artifactId>
+  <packaging>pom</packaging>
+  
+  <name>parent for build</name>
+  
+  <parent>
+  	<groupId>de.minigameslib.mclib</groupId>
+  	<artifactId>mclib-parent</artifactId>
+  	<version>0.0.6-SNAPSHOT</version>
+  </parent>
+  
+  <modules>
+  	<module>mclib-checkstyle</module>
+  	<module>mclib-pmd</module>
+  </modules>
+</project>

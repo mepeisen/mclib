@@ -43,9 +43,10 @@ public class ColorData implements ColorDataFragment
     private byte blue;
 
     /**
-     * @param red
-     * @param green
-     * @param blue
+     * Constructor for new color data.
+     * @param red red color component
+     * @param green green color component
+     * @param blue blue color component
      */
     public ColorData(byte red, byte green, byte blue)
     {
@@ -55,7 +56,7 @@ public class ColorData implements ColorDataFragment
     }
 
     /**
-     * 
+     * Constructor for reading from file.
      */
     public ColorData()
     {
@@ -77,18 +78,30 @@ public class ColorData implements ColorDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         ColorData other = (ColorData) obj;
         if (this.blue != other.blue)
+        {
             return false;
+        }
         if (this.green != other.green)
+        {
             return false;
+        }
         if (this.red != other.red)
+        {
             return false;
+        }
         return true;
     }
 

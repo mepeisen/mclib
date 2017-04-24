@@ -33,31 +33,37 @@ public interface ColorDataFragment extends DataFragment
 {
 
     /**
+     * Return the red color component.
      * @return the red
      */
     byte getRed();
 
     /**
+     * Return the green color component.
      * @return the green
      */
     byte getGreen();
 
     /**
+     * Return the blue color component.
      * @return the blue
      */
     byte getBlue();
 
     /**
+     * Return the red color component as integer.
      * @return the red
      */
     int getRedAsInt();
 
     /**
+     * Return the green color component as integer.
      * @return the green
      */
     int getGreenAsInt();
 
     /**
+     * Return the blue color component as integer.
      * @return the blue
      */
     int getBlueAsInt();

@@ -32,20 +32,22 @@ package de.minigameslib.mclib.shared.api.com;
 public class BlockLocationData implements BlockLocationDataFragment
 {
 
+    //CHECKSTYLE:OFF
     /**
-     * the x coordinate
+     * the x coordinate.
      */
     private int x;
 
     /**
-     * the y coordinate
+     * the y coordinate.
      */
     private int y;
 
     /**
-     * the z coordinate
+     * the z coordinate.
      */
     private int z;
+    //CHECKSTYLE:ON
     
     /**
      * Name of the world.
@@ -53,7 +55,7 @@ public class BlockLocationData implements BlockLocationDataFragment
     private String world;
 
     /**
-     * 
+     * Constructor for reading from file.
      */
     public BlockLocationData()
     {
@@ -61,10 +63,11 @@ public class BlockLocationData implements BlockLocationDataFragment
     }
 
     /**
-     * @param x
-     * @param y
-     * @param z
-     * @param world
+     * Constructor for new object.
+     * @param x x coordinate.
+     * @param y y coordinate.
+     * @param z z coordinate.
+     * @param world world name
      */
     public BlockLocationData(int x, int y, int z, String world)
     {
@@ -141,25 +144,41 @@ public class BlockLocationData implements BlockLocationDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         BlockLocationData other = (BlockLocationData) obj;
         if (this.world == null)
         {
             if (other.world != null)
+            {
                 return false;
+            }
         }
         else if (!this.world.equals(other.world))
+        {
             return false;
+        }
         if (this.x != other.x)
+        {
             return false;
+        }
         if (this.y != other.y)
+        {
             return false;
+        }
         if (this.z != other.z)
+        {
             return false;
+        }
         return true;
     }
     

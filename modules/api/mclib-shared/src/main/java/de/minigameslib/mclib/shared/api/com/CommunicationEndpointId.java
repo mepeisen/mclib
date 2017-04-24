@@ -54,7 +54,7 @@ public interface CommunicationEndpointId extends Serializable
      * 
      * @param data
      * 
-     * @throws IllegalStateException
+     * @throws IllegalStateException thrown on communication errors.
      */
     default void send(DataSection... data)
     {
@@ -82,8 +82,8 @@ public interface CommunicationEndpointId extends Serializable
         /**
          * Sends given data to the other side of the communication endpoint.
          * 
-         * @param id
-         * @param data
+         * @param id endpoint id to send a message to
+         * @param data message data to be sent
          */
         void send(CommunicationEndpointId id, DataSection... data);
         
@@ -111,7 +111,7 @@ public interface CommunicationEndpointId extends Serializable
         /**
          * Initializes the cache.
          * 
-         * @param service
+         * @param service the communication services implementation
          */
         public static void init(CommunicationServiceInterface service)
         {

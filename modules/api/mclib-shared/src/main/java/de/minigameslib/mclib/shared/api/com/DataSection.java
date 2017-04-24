@@ -46,7 +46,7 @@ public interface DataSection
     /**
      * Returns the keys of data values.
      * 
-     * @param deep
+     * @param deep {@code true} to return the deep keys
      * @return keys of data
      */
     Set<String> getKeys(boolean deep);
@@ -54,7 +54,7 @@ public interface DataSection
     /**
      * Returns all data values.
      * 
-     * @param deep
+     * @param deep {@code true} to return the deep values
      * @return data values.
      */
     Map<String, Object> getValues(boolean deep);
@@ -62,7 +62,7 @@ public interface DataSection
     /**
      * Checks if the section contains given key.
      * 
-     * @param key
+     * @param key name of the object to be checked
      * @return {@code true} if key is contained.
      */
     boolean contains(String key);
@@ -98,7 +98,7 @@ public interface DataSection
     /**
      * Returns the object with given key.
      * 
-     * @param key
+     * @param key name of the object
      * @return value or {@code null} if no value was found.
      */
     Object get(String key);
@@ -106,241 +106,241 @@ public interface DataSection
     /**
      * Returns the object with given key.
      * 
-     * @param key
-     * @param defaultValue
+     * @param key name of the object
+     * @param defaultValue the default value to return if object was not found
      * @return value or {@code defaultValue} if no value was found.
      */
     Object get(String key, Object defaultValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the object to be set
+     * @param newValue the new value
      */
     void set(String key, Object newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the list to be set
+     * @param newValue new value
      */
     void setPrimitiveList(String key, List<?> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the list to be set
+     * @param newValue new value
      */
     <T> void setPrimitiveMapList(String key, List<Map<String, T>> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the list to be set
+     * @param newValue new value
      */
     <T extends DataFragment> void setFragmentList(String key, List<T> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the data section to be set
+     * @param newValue new value
      */
     void setSection(String key, DataSection newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the list to be set
+     * @param newValue new value
      */
     <T extends DataFragment> void setFragmentMapList(String key, List<Map<String, T>> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the map to be set
+     * @param newValue new value
      */
     void setPrimitiveMap(String key, Map<String, ?> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the map to be set
+     * @param newValue new value
      */
     <T> void setPrimitiveListMap(String key, Map<String, List<T>> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the map to be set
+     * @param newValue new value
      */
     <T extends DataFragment> void setFragmentMap(String key, Map<String, T> newValue);
     
     /**
-     * Sets object for given key
+     * Sets object for given key.
      * 
-     * @param key
-     * @param newValue
+     * @param key name of the map to be set
+     * @param newValue new value
      */
     <T extends DataFragment> void setFragmentListMap(String key, Map<String, List<T>> newValue);
     
     /**
      * returns a section by key; creates it on demand.
-     * @param key
+     * @param key name of the section to be created
      * @return data section.
      */
     DataSection createSection(String key);
     
     /**
      * returns a section by key with given values; creates it on demand.
-     * @param key
-     * @param values
+     * @param key name of the section to be created
+     * @param values default values to set into the new section
      * @return data section.
      */
     DataSection createSection(String key, Map<String, ?> values);
     
     /**
-     * Returns string value by key
-     * @param key
+     * Returns string value by key.
+     * @param key name of the string
      * @return value
      */
     String getString(String key);
     
     /**
-     * Returns string value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns string value with default by key.
+     * @param key name of the string
+     * @param defaultValue default value to return if string was not found
      * @return value
      */
     String getString(String key, String defaultValue);
     
     /**
      * Checks if given key has a string value.
-     * @param key
+     * @param key name of the string to be checked
      * @return true if key has a string value
      */
     boolean isString(String key);
     
     /**
-     * Returns int value by key
-     * @param key
+     * Returns int value by key.
+     * @param key name of the int
      * @return value
      */
     int getInt(String key);
     
     /**
-     * Returns int value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns int value with default by key.
+     * @param key name of the int
+     * @param defaultValue default value to return if int was not found
      * @return value
      */
     int getInt(String key, int defaultValue);
     
     /**
      * Checks if given key has an int value.
-     * @param key
+     * @param key name of the int to be checked
      * @return true if key has an int value
      */
     boolean isInt(String key);
     
     /**
-     * Returns byte value by key
-     * @param key
+     * Returns byte value by key.
+     * @param key name of the byte
      * @return value
      */
     byte getByte(String key);
     
     /**
-     * Returns byte value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns byte value with default by key.
+     * @param key name of the byte
+     * @param defaultValue default value to return if byte was not found
      * @return value
      */
     byte getByte(String key, byte defaultValue);
     
     /**
      * Checks if given key has a byte value.
-     * @param key
+     * @param key name of the byte to be checked
      * @return true if key has a byte value
      */
     boolean isByte(String key);
     
     /**
-     * Returns short value by key
-     * @param key
+     * Returns short value by key.
+     * @param key name of the short
      * @return value
      */
     short getShort(String key);
     
     /**
-     * Returns short value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns short value with default by key.
+     * @param key name of the short
+     * @param defaultValue default value to return if short was not found
      * @return value
      */
     short getShort(String key, short defaultValue);
     
     /**
      * Checks if given key has a short value.
-     * @param key
+     * @param key name of the short to be checked
      * @return true if key has a short value
      */
     boolean isShort(String key);
     
     /**
-     * Returns char value by key
-     * @param key
+     * Returns char value by key.
+     * @param key name of the char
      * @return value
      */
     char getCharacter(String key);
     
     /**
-     * Returns char value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns char value with default by key.
+     * @param key name of the char
+     * @param defaultValue default value to return if char was not found
      * @return value
      */
     char getCharacter(String key, char defaultValue);
     
     /**
      * Checks if given key has a character value.
-     * @param key
+     * @param key name of the char to be checked
      * @return true if key has a character value
      */
     boolean isCharacter(String key);
     
     /**
-     * Returns date time value by key
-     * @param key
+     * Returns date time value by key.
+     * @param key name of the object
      * @return value
      */
     LocalDateTime getDateTime(String key);
     
     /**
-     * Returns date time value with default by key
-     * @param key
-     * @param defaultValue
+     * Returns date time value with default by key.
+     * @param key name of the object
+     * @param defaultValue default value to return if object was not found
      * @return value
      */
     LocalDateTime getDateTime(String key, LocalDateTime defaultValue);
     
     /**
      * Checks if given key has a date time value.
-     * @param key
+     * @param key name of the object to be checked.
      * @return true if key has a date time value
      */
     boolean isDateTime(String key);
     
     /**
-     * Returns date value by key
+     * Returns date value by key.
      * @param key
      * @return value
      */
