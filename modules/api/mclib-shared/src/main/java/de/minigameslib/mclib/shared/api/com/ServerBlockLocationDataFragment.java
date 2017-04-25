@@ -33,19 +33,19 @@ public interface ServerBlockLocationDataFragment extends DataFragment
 {
 
     /**
-     * Returns the x coordinate
+     * Returns the x coordinate.
      * @return the x
      */
     int getX();
 
     /**
-     * Returns the y coordinate
+     * Returns the y coordinate.
      * @return the y
      */
     int getY();
 
     /**
-     * Returns the z coordinate
+     * Returns the z coordinate.
      * @return the z
      */
     int getZ();

@@ -95,4 +95,16 @@ public class ColorDataTest
         assertEquals("BAR", map.get(new ColorData((byte)1, (byte)2, (byte)4))); //$NON-NLS-1$
     }
     
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testIntConversion()
+    {
+        final ColorData data1 = new ColorData((byte)-1, (byte)-2, (byte)-3);
+        assertEquals(255, data1.getRedAsInt());
+        assertEquals(254, data1.getGreenAsInt());
+        assertEquals(253, data1.getBlueAsInt());
+    }
+    
 }

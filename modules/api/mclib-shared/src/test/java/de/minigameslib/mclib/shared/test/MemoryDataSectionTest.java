@@ -30,6 +30,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,10 +52,12 @@ import de.minigameslib.mclib.shared.api.com.BlockLocationDataFragment;
 import de.minigameslib.mclib.shared.api.com.ColorData;
 import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.LocationData;
 import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection.UniqueEnumValueFactory;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 import de.minigameslib.mclib.shared.api.com.ServerBlockLocationData;
@@ -62,6 +66,7 @@ import de.minigameslib.mclib.shared.api.com.ServerData;
 import de.minigameslib.mclib.shared.api.com.ServerDataFragment;
 import de.minigameslib.mclib.shared.api.com.ServerLocationData;
 import de.minigameslib.mclib.shared.api.com.ServerLocationDataFragment;
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 import de.minigameslib.mclib.shared.api.com.VectorData;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
@@ -2468,7 +2473,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * tests clear all method
+     * tests clear all method.
      */
     @Test
     public void testClearAll()
@@ -2479,6 +2484,477 @@ public class MemoryDataSectionTest
         data.clearAll();
         assertEquals(null, data.get("foo")); //$NON-NLS-1$
         assertEquals(null, data.get("foo.bar")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepEnumOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR", "SomeEnum1"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(Enum1.SomeEnum1, section.getEnum(Enum1.class, "FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetEnum()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", Enum1.SomeEnum3); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO")); //$NON-NLS-1$
+        assertEquals(Enum2.SomeEnum3, section.getEnum(Enum2.class, "FOO")); //$NON-NLS-1$
+        
+        section.set("FOO", Enum2.SomeEnum4); //$NON-NLS-1$
+        assertNull(section.getEnum(Enum1.class, "FOO")); //$NON-NLS-1$
+        assertEquals(Enum2.SomeEnum4, section.getEnum(Enum2.class, "FOO")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetEnumList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0", "SomeEnum1"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1", "SomeEnum2"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<Enum1> result = section.getEnumList(Enum1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(Enum1.SomeEnum1));
+        assertTrue(result.contains(Enum1.SomeEnum2));
+        assertNull(section.getEnumList(Enum1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumList(Enum1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetEnumMap()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0", "SomeEnum1"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1", "SomeEnum2"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, Enum1> result = section.getEnumMap(Enum1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(Enum1.SomeEnum1, result.get("item0")); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum2, result.get("item1")); //$NON-NLS-1$
+        assertNull(section.getEnumMap(Enum1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumMap(Enum1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetEnumMapList()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.foo", "SomeEnum1"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.bar", "SomeEnum2"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<Map<String, Enum1>> result = section.getEnumMapList(Enum1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(0).size());
+        assertEquals(Enum1.SomeEnum1, result.get(0).get("foo")); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum2, result.get(0).get("bar")); //$NON-NLS-1$
+        assertNull(section.getEnumMapList(Enum1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumMapList(Enum1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetEnumListMap()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.foo.item0", "SomeEnum1"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.bar.item0", "SomeEnum2"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, List<Enum1>> result = section.getEnumListMap(Enum1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(1, result.get("foo").size()); //$NON-NLS-1$
+        assertEquals(1, result.get("bar").size()); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum1, result.get("foo").get(0)); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum2, result.get("bar").get(0)); //$NON-NLS-1$
+        assertNull(section.getEnumListMap(Enum1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumListMap(Enum1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * tests for invalid enums
+     */
+    @Test(expected = ClassCastException.class)
+    public void testInvalidEnumsInvalidList()
+    {
+        // invalid class fails without throwing exceptions
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR", "Val56"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getEnumList(Enum1.class, "FOO"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepEnum()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", Enum1.SomeEnum1); //$NON-NLS-1$
+        section.set("FOO1.FOO2", Enum1.SomeEnum2); //$NON-NLS-1$
+        section.set("FOO3", Enum1.SomeEnum3); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum1, section.getEnum(Enum1.class, "FOO")); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum2, section.getEnum(Enum1.class, "FOO1.FOO2")); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO3")); //$NON-NLS-1$
+        
+        assertEquals(Enum1.SomeEnum1, section.getEnum(Enum1.class, "FOO", Enum1.SomeEnum3)); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum2, section.getEnum(Enum1.class, "FOO1.FOO2", Enum1.SomeEnum3)); //$NON-NLS-1$
+        
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO1", Enum1.SomeEnum3)); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO.FOO2",Enum1.SomeEnum3)); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO1.FOO3", Enum1.SomeEnum3)); //$NON-NLS-1$
+        assertEquals(Enum1.SomeEnum3, section.getEnum(Enum1.class, "FOO3", Enum1.SomeEnum3)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepUniqueEnumOnString()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val1", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val1); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.BAR.name", "Val1"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(UniqueEnum1a.Val1, section.getEnumValue(UniqueEnumInterface1.class, "FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetUniqueEnum()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        // simulate forbidden duplicate init
+        MemoryDataSection.lockFragmentImplementations();
+        final UniqueEnumValueFactory factory2 = mock(UniqueEnumValueFactory.class);
+        when(factory2.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val1); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory2.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val6); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory2);
+        
+        // values must be returned from first initialization (Val 3 and Val 4)
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", UniqueEnum1a.Val3); //$NON-NLS-1$ 
+        assertEquals(UniqueEnum1a.Val3, section.getEnumValue(UniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+        
+        section.set("FOO", UniqueEnum1b.Val4); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, section.getEnumValue(UniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetUniqueEnumList()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.name", "Val4"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<UniqueEnumInterface1> result = section.getEnumValueList(UniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(UniqueEnum1a.Val3));
+        assertTrue(result.contains(UniqueEnum1b.Val4));
+        assertNull(section.getEnumValueList(UniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueList(UniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetUniqueEnumMap()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.name", "Val4"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, UniqueEnumInterface1> result = section.getEnumValueMap(UniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(UniqueEnum1a.Val3, result.get("item0")); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, result.get("item1")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMap(UniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMap(UniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetUniqueEnumMapList()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.foo.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.foo.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.bar.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.bar.name", "Val4"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<Map<String, UniqueEnumInterface1>> result = section.getEnumValueMapList(UniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(0).size());
+        assertEquals(UniqueEnum1a.Val3, result.get(0).get("foo")); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, result.get(0).get("bar")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMapList(UniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMapList(UniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetUniqueEnumListMap()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.foo.item0.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.foo.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.bar.item0.plugin", "DUMMY"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.bar.item0.name", "Val4"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, List<UniqueEnumInterface1>> result = section.getEnumValueListMap(UniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(1, result.get("foo").size()); //$NON-NLS-1$
+        assertEquals(1, result.get("bar").size()); //$NON-NLS-1$
+        assertEquals(UniqueEnum1a.Val3, result.get("foo").get(0)); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, result.get("bar").get(0)); //$NON-NLS-1$
+        assertNull(section.getEnumValueListMap(UniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueListMap(UniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepUniqueEnum()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val2", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val2); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val5", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val5); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val6", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val6); //$NON-NLS-1$ //$NON-NLS-2$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", UniqueEnum1a.Val2); //$NON-NLS-1$
+        section.set("FOO1.FOO2", UniqueEnum1b.Val5); //$NON-NLS-1$
+        section.set("FOO3", UniqueEnum1b.Val6); //$NON-NLS-1$
+        assertEquals(UniqueEnum1a.Val2, section.getEnumValue(UniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val5, section.getEnumValue(UniqueEnumInterface1.class, "FOO1.FOO2")); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val6, section.getEnumValue(UniqueEnumInterface1.class, "FOO3")); //$NON-NLS-1$
+        
+        assertEquals(UniqueEnum1a.Val2, section.getEnumValue(UniqueEnumInterface1.class, "FOO", UniqueEnum1a.Val1)); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val5, section.getEnumValue(UniqueEnumInterface1.class, "FOO1.FOO2", UniqueEnum1a.Val1)); //$NON-NLS-1$
+        
+        assertEquals(UniqueEnum1b.Val4, section.getEnumValue(UniqueEnumInterface1.class, "FOO1", UniqueEnum1b.Val4)); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, section.getEnumValue(UniqueEnumInterface1.class, "FOO.FOO2", UniqueEnum1b.Val4)); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val4, section.getEnumValue(UniqueEnumInterface1.class, "FOO1.FOO3", UniqueEnum1b.Val4)); //$NON-NLS-1$
+        assertEquals(UniqueEnum1b.Val6, section.getEnumValue(UniqueEnumInterface1.class, "FOO3", UniqueEnum1b.Val6)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepNonUniqueEnumOnString()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.BAR.name", "Val1"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(NonUniqueEnum1a.Val1, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetNonUniqueEnum()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", NonUniqueEnum1a.Val3); //$NON-NLS-1$ 
+        assertEquals(NonUniqueEnum1a.Val3, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+        
+        section.set("FOO", NonUniqueEnum1b.Val3); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetNonUniqueEnumList()
+    {   
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.clazz", NonUniqueEnum1b.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item1.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<NonUniqueEnumInterface1> result = section.getEnumValueList(NonUniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertTrue(result.contains(NonUniqueEnum1a.Val3));
+        assertTrue(result.contains(NonUniqueEnum1b.Val3));
+        assertNull(section.getEnumValueList(NonUniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueList(NonUniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetNonUniqueEnumMap()
+    {   
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item1.clazz", NonUniqueEnum1b.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item1.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, NonUniqueEnumInterface1> result = section.getEnumValueMap(NonUniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(NonUniqueEnum1a.Val3, result.get("item0")); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, result.get("item1")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMap(NonUniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMap(NonUniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetNonUniqueEnumMapList()
+    {   
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.item0.foo.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item0.foo.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.item0.bar.clazz", NonUniqueEnum1b.class.getName()); //$NON-NLS-1$
+        section.set("FOO.item0.bar.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<Map<String, NonUniqueEnumInterface1>> result = section.getEnumValueMapList(NonUniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(1, result.size());
+        assertEquals(2, result.get(0).size());
+        assertEquals(NonUniqueEnum1a.Val3, result.get(0).get("foo")); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, result.get(0).get("bar")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMapList(NonUniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueMapList(NonUniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetNonUniqueEnumListMap()
+    {   
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.foo.item0.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.foo.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("FOO.bar.item0.clazz", NonUniqueEnum1b.class.getName()); //$NON-NLS-1$
+        section.set("FOO.bar.item0.name", "Val3"); //$NON-NLS-1$ //$NON-NLS-2$
+        final Map<String, List<NonUniqueEnumInterface1>> result = section.getEnumValueListMap(NonUniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
+        assertEquals(2, result.size());
+        assertEquals(1, result.get("foo").size()); //$NON-NLS-1$
+        assertEquals(1, result.get("bar").size()); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1a.Val3, result.get("foo").get(0)); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, result.get("bar").get(0)); //$NON-NLS-1$
+        assertNull(section.getEnumValueListMap(NonUniqueEnumInterface1.class, "BAR")); //$NON-NLS-1$
+        assertNull(section.getEnumValueListMap(NonUniqueEnumInterface1.class, "FOO.A")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testGetDeepNonUniqueEnum()
+    {
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO", NonUniqueEnum1a.Val2); //$NON-NLS-1$
+        section.set("FOO1.FOO2", NonUniqueEnum1b.Val1); //$NON-NLS-1$
+        section.set("FOO3", NonUniqueEnum1b.Val3); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1a.Val2, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO")); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val1, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO1.FOO2")); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO3")); //$NON-NLS-1$
+        
+        assertEquals(NonUniqueEnum1a.Val2, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO", NonUniqueEnum1a.Val1)); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val1, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO1.FOO2", NonUniqueEnum1a.Val1)); //$NON-NLS-1$
+        
+        assertEquals(NonUniqueEnum1b.Val2, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO1", NonUniqueEnum1b.Val2)); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val2, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO.FOO2", NonUniqueEnum1b.Val2)); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val2, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO1.FOO3", NonUniqueEnum1b.Val2)); //$NON-NLS-1$
+        assertEquals(NonUniqueEnum1b.Val3, section.getEnumValue(NonUniqueEnumInterface1.class, "FOO3", NonUniqueEnum1b.Val3)); //$NON-NLS-1$
+    }
+    
+    /**
+     * tests for invalid enums
+     */
+    @Test
+    public void testInvalidNonUniqueEnumsInvalid()
+    {
+        // invalid class fails without throwing exceptions
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR.clazz", 'B' + NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.BAR.name", "Val1"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getEnumValue(NonUniqueEnumInterface1.class, "FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * tests for invalid enums
+     */
+    @Test
+    public void testInvalidNonUniqueEnumsClassCast()
+    {
+        // classcast fails without throwing exceptions
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR.clazz", NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.BAR.name", "Val1"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertNull(section.getEnumValue(NonUniqueEnumInterface2.class, "FOO.BAR")); //$NON-NLS-1$
+    }
+    
+    /**
+     * tests for invalid enums
+     */
+    @Test(expected = ClassCastException.class)
+    public void testInvalidNonUniqueEnumsInvalidList()
+    {
+        // invalid class fails without throwing exceptions
+        final MemoryDataSection section = new MemoryDataSection();
+        section.set("FOO.BAR.clazz", 'B' + NonUniqueEnum1a.class.getName()); //$NON-NLS-1$
+        section.set("FOO.BAR.name", "Val1"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.getEnumValueList(NonUniqueEnumInterface1.class, "FOO"); //$NON-NLS-1$
     }
 
     /**
@@ -2526,6 +3002,120 @@ public class MemoryDataSectionTest
     private static abstract class InvalidFragment implements DataFragment
     {
         // empty
+    }
+    
+    /**
+     * Test enum
+     */
+    private interface UniqueEnumInterface1 extends UniqueEnumerationValue
+    {
+        // marker only
+    }
+    
+    /**
+     * Test enum
+     */
+    private interface NonUniqueEnumInterface1 extends EnumerationValue
+    {
+        // marker only
+    }
+    
+    /**
+     * Test enum
+     */
+    private interface NonUniqueEnumInterface2 extends EnumerationValue
+    {
+        // marker only
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum UniqueEnum1a implements UniqueEnumInterface1
+    {
+        /** value 1 */
+        Val1,
+        /** value 2 */
+        Val2,
+        /** value 3 */
+        Val3;
+
+        @Override
+        public String getPluginName()
+        {
+            return "DUMMY"; //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum UniqueEnum1b implements UniqueEnumInterface1
+    {
+        /** value 1 */
+        Val4,
+        /** value 2 */
+        Val5,
+        /** value 3 */
+        Val6;
+
+        @Override
+        public String getPluginName()
+        {
+            return "DUMMY"; //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum NonUniqueEnum1a implements NonUniqueEnumInterface1
+    {
+        /** value 1 */
+        Val1,
+        /** value 2 */
+        Val2,
+        /** value 3 */
+        Val3;
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum NonUniqueEnum1b implements NonUniqueEnumInterface1
+    {
+        /** value 1 */
+        Val1,
+        /** value 2 */
+        Val2,
+        /** value 3 */
+        Val3;
+    }
+    
+    /**
+     * test enum.
+     */
+    private enum Enum1
+    {
+        /** enum value 1 */
+        SomeEnum1,
+        /** enum value 2 */
+        SomeEnum2,
+        /** enum value 3 */
+        SomeEnum3
+    }
+    
+    /**
+     * test enum.
+     */
+    private enum Enum2
+    {
+        /** enum value 1 */
+        SomeEnum3,
+        /** enum value 2 */
+        SomeEnum4,
+        /** enum value 3 */
+        SomeEnum5
     }
     
 }

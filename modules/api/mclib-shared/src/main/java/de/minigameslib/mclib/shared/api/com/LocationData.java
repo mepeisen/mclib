@@ -32,28 +32,30 @@ package de.minigameslib.mclib.shared.api.com;
 public class LocationData implements LocationDataFragment
 {
     
+    //CHECKSTYLE:OFF
     /**
-     * the x coordinate
+     * the x coordinate.
      */
     private double x;
     
     /**
-     * the y coordinate
+     * the y coordinate.
      */
     private double y;
     
     /**
-     * the z coordinate
+     * the z coordinate.
      */
     private double z;
+    //CHECKSTYLE:ON
     
     /**
-     * The yaw
+     * The yaw.
      */
     private float yaw;
     
     /**
-     * The pitch
+     * The pitch.
      */
     private float pitch;
     
@@ -63,7 +65,7 @@ public class LocationData implements LocationDataFragment
     private String world;
 
     /**
-     * Constructor
+     * Constructor to load from file.
      */
     public LocationData()
     {
@@ -71,12 +73,13 @@ public class LocationData implements LocationDataFragment
     }
 
     /**
-     * @param x
-     * @param y
-     * @param z
-     * @param yaw
-     * @param pitch
-     * @param world
+     * Constructor with new data.
+     * @param x the x coordinate
+     * @param y the y coordinate.
+     * @param z the z coordinate.
+     * @param yaw the yaw.
+     * @param pitch the pitch.
+     * @param world the world name.
      */
     public LocationData(double x, double y, double z, float yaw, float pitch, String world)
     {
@@ -146,29 +149,49 @@ public class LocationData implements LocationDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         LocationData other = (LocationData) obj;
         if (Float.floatToIntBits(this.pitch) != Float.floatToIntBits(other.pitch))
+        {
             return false;
+        }
         if (this.world == null)
         {
             if (other.world != null)
+            {
                 return false;
+            }
         }
         else if (!this.world.equals(other.world))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y))
+        {
             return false;
+        }
         if (Float.floatToIntBits(this.yaw) != Float.floatToIntBits(other.yaw))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z))
+        {
             return false;
+        }
         return true;
     }
 

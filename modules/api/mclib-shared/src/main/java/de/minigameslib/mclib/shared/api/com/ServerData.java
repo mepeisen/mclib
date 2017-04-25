@@ -38,7 +38,7 @@ public class ServerData implements ServerDataFragment
     private String name;
 
     /**
-     * Constructor
+     * Constructor to read from file.
      */
     public ServerData()
     {
@@ -46,7 +46,8 @@ public class ServerData implements ServerDataFragment
     }
 
     /**
-     * @param name
+     * Constructor with new data.
+     * @param name server name
      */
     public ServerData(String name)
     {
@@ -90,19 +91,29 @@ public class ServerData implements ServerDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         ServerData other = (ServerData) obj;
         if (this.name == null)
         {
             if (other.name != null)
+            {
                 return false;
+            }
         }
         else if (!this.name.equals(other.name))
+        {
             return false;
+        }
         return true;
     }
     

@@ -35,17 +35,20 @@ import java.util.HashSet;
 public class VectorData implements VectorDataFragment
 {
     
+    //CHECKSTYLE:OFF
     /** x coordinate. */
     private double x;
     /** y coordinate. */
     private double y;
     /** z coordinate. */
     private double z;
+    //CHECKSTYLE:ON
 
     /**
-     * @param x
-     * @param y
-     * @param z
+     * Constructor to create vector from new data.
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
      */
     public VectorData(double x, double y, double z)
     {
@@ -55,6 +58,7 @@ public class VectorData implements VectorDataFragment
     }
     
     /**
+     * Constructor to read from file.
      */
     public VectorData()
     {
@@ -80,18 +84,30 @@ public class VectorData implements VectorDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         VectorData other = (VectorData) obj;
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y))
+        {
             return false;
+        }
         if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z))
+        {
             return false;
+        }
         return true;
     }
 

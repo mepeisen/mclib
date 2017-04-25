@@ -37,20 +37,22 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
      */
     private String name;
 
+    //CHECKSTYLE:OFF
     /**
-     * the x coordinate
+     * the x coordinate.
      */
     private int x;
 
     /**
-     * the y coordinate
+     * the y coordinate.
      */
     private int y;
 
     /**
-     * the z coordinate
+     * the z coordinate.
      */
     private int z;
+    //CHECKSTYLE:ON
     
     /**
      * Name of the world.
@@ -58,7 +60,7 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
     private String world;
 
     /**
-     * 
+     * Constructor to read from file.
      */
     public ServerBlockLocationData()
     {
@@ -66,11 +68,12 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
     }
 
     /**
-     * @param x
-     * @param y
-     * @param z
-     * @param world
-     * @param serverName
+     * Constructor with new data.
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @param world the world name
+     * @param serverName the servers name
      */
     public ServerBlockLocationData(int x, int y, int z, String world, String serverName)
     {
@@ -158,32 +161,52 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         ServerBlockLocationData other = (ServerBlockLocationData) obj;
         if (this.world == null)
         {
             if (other.world != null)
+            {
                 return false;
+            }
         }
         else if (!this.world.equals(other.world))
+        {
             return false;
+        }
         if (this.x != other.x)
+        {
             return false;
+        }
         if (this.y != other.y)
+        {
             return false;
+        }
         if (this.z != other.z)
+        {
             return false;
+        }
         if (this.name == null)
         {
             if (other.name != null)
+            {
                 return false;
+            }
         }
         else if (!this.name.equals(other.name))
+        {
             return false;
+        }
         return true;
     }
     

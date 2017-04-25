@@ -42,8 +42,9 @@ public class PlayerData implements PlayerDataFragment
     private String playerName;
 
     /**
-     * @param playerUuid
-     * @param playerName
+     * Constructor to create with new data.
+     * @param playerUuid the players uuid
+     * @param playerName the players display name
      */
     public PlayerData(UUID playerUuid, String playerName)
     {
@@ -52,6 +53,7 @@ public class PlayerData implements PlayerDataFragment
     }
     
     /**
+     * Constructor to read from file.
      */
     public PlayerData()
     {
@@ -72,26 +74,40 @@ public class PlayerData implements PlayerDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         PlayerData other = (PlayerData) obj;
         if (this.playerName == null)
         {
             if (other.playerName != null)
+            {
                 return false;
+            }
         }
         else if (!this.playerName.equals(other.playerName))
+        {
             return false;
+        }
         if (this.playerUuid == null)
         {
             if (other.playerUuid != null)
+            {
                 return false;
+            }
         }
         else if (!this.playerUuid.equals(other.playerUuid))
+        {
             return false;
+        }
         return true;
     }
 
@@ -115,20 +131,24 @@ public class PlayerData implements PlayerDataFragment
         boolean result = true;
         result &= section.isString("uuid"); //$NON-NLS-1$
         result &= section.isString("name"); //$NON-NLS-1$
-        result &= isUUID(section.getString("uuid")); //$NON-NLS-1$
+        result &= isUuid(section.getString("uuid")); //$NON-NLS-1$
         result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("uuid", "name"))); //$NON-NLS-1$ //$NON-NLS-2$
         return result;
     }
 
     /**
-     * @param str
-     * @return true if this is a uuid
+     * Checks for string being a UUID.
+     * @param str string to be tested
+     * @return {@code true} if this is a uuid
      */
-    private boolean isUUID(String str)
+    private boolean isUuid(String str)
     {
         try
         {
-            if (str == null) return false;
+            if (str == null)
+            {
+                return false;
+            }
             UUID.fromString(str);
             return true;
         }

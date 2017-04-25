@@ -34,12 +34,14 @@ import java.util.UUID;
 public interface PlayerDataFragment extends DataFragment
 {
     
+    //CHECKSTYLE:OFF
     /**
      * Returns the unique id of the player for identification.
      * 
      * @return the playerUuid
      */
     UUID getPlayerUUID();
+    //CHECKSTYLE:ON
     
     /**
      * Returns the display name of the player.

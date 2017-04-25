@@ -56,7 +56,9 @@ public class MemoryDataSection implements DataSection
     /** map contents. */
     private final Map<String, Object>            contents             = new LinkedHashMap<>();
     
-    /** current fragment implementations for interfaces like {@link PlayerDataFragment} */
+    /** 
+     * Current fragment implementations for interfaces like {@link PlayerDataFragment}.
+     */
     private static final Map<Class<?>, Class<?>> fragmentImpls        = new ConcurrentHashMap<>();
     
     /** security flag to prevent fragmentImpls map from being overridden. */
@@ -68,7 +70,8 @@ public class MemoryDataSection implements DataSection
     /** the unique enum value factory. */
     private static UniqueEnumValueFactory uniqueEnumValueFactory;
     
-    static {
+    static
+    {
         // default impls
         fragmentImpls.put(PlayerDataFragment.class, PlayerData.class);
         fragmentImpls.put(VectorDataFragment.class, VectorData.class);
@@ -105,8 +108,12 @@ public class MemoryDataSection implements DataSection
     /**
      * Initializes an interface with given implementation class.
      * 
-     * @param interfaz
-     * @param impl
+     * <p>
+     * Warning: This method is not meant to be used by plugins.
+     * </p>
+     * 
+     * @param interfaz Interface used in API
+     * @param impl implementation class to be used by data sections
      */
     public static <T extends DataFragment, Q extends T> void initFragmentImplementation(Class<T> interfaz, Class<Q> impl)
     {
@@ -121,8 +128,13 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * Inits the unique enum value factory
-     * @param factory
+     * Inits the unique enum value factory.
+     * 
+     * <p>
+     * Warning: This method is not meant to be used by plugins.
+     * </p>
+     * 
+     * @param factory the enum value factory to be used for resolving unique enumerations
      */
     public static void initUniqueEnumValueFactory(UniqueEnumValueFactory factory)
     {
@@ -134,6 +146,10 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Locks the {@link #initFragmentImplementation(Class, Class)} method to not override already existing implementations.
+     * 
+     * <p>
+     * Warning: This method is not meant to be used by plugins.
+     * </p>
      */
     public static void lockFragmentImplementations()
     {
@@ -143,6 +159,10 @@ public class MemoryDataSection implements DataSection
     /**
      * Checks if the fragment override lock was set before.
      * 
+     * <p>
+     * Warning: This method is not meant to be used by plugins.
+     * </p>
+     * 
      * @return {@code true} if method {@link #lockFragmentImplementations()} was called before.
      */
     public static boolean isFragmentImplementationLocked()
@@ -151,7 +171,7 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * Constructor
+     * Constructor to create a new and empty data section stored into memory.
      */
     public MemoryDataSection()
     {
@@ -175,11 +195,44 @@ public class MemoryDataSection implements DataSection
         this.parent = parent;
     }
     
+    @Override
+    public DataSection createSection(String key)
+    {
+        int indexof = key.indexOf('.');
+        if (indexof == -1)
+        {
+            Object obj = this.contents.get(key);
+            if (!(obj instanceof MemoryDataSection))
+            {
+                // override old primitive value or create the sub section if it was not yet created.
+                obj = this.createSection(this.path == null ? key : this.path + '.' + key, key, this);
+                this.contents.put(key, obj);
+            }
+            return (DataSection) obj;
+        }
+        final String subkey = key.substring(0, indexof);
+        Object obj = this.contents.get(subkey);
+        if (!(obj instanceof MemoryDataSection))
+        {
+            obj = this.createSection(this.path == null ? subkey : this.path + '.' + subkey, subkey, this);
+            this.contents.put(subkey, obj);
+        }
+        return ((MemoryDataSection) obj).createSection(key.substring(indexof + 1));
+    }
+    
+    @Override
+    public DataSection createSection(String key, Map<String, ?> values)
+    {
+        final DataSection section = this.createSection(key);
+        values.forEach(section::set);
+        return section;
+    }
+    
     /**
      * Creates a new sub section.
-     * @param path2
-     * @param name2
-     * @param parent2
+     * @param path2 path of the new sub section
+     * @param name2 name of the new sub section
+     * @param parent2 parent section
      * @return sub section.
      */
     protected MemoryDataSection createSection(String path2, String name2, MemoryDataSection parent2)
@@ -288,7 +341,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (obj == null)
+            {
                 return defaultValue;
+            }
             return obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -340,7 +395,8 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * @param key
+     * Clears contents for given key.
+     * @param key the key that will be cleared; may contain '.' for nested keys
      */
     private void clear(String key)
     {
@@ -358,8 +414,9 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * @param key
-     * @param value
+     * Sets a value for given key.
+     * @param key the key to be set
+     * @param value the new value
      */
     private void doSet(String key, Object value)
     {
@@ -414,9 +471,9 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Returns an indexed key filled with nulls for better sorting.
-     * @param i
-     * @param size
-     * @param prefix
+     * @param i index number
+     * @param size total size of list
+     * @param prefix prefix to be used
      * @return index string key
      */
     private String getIndexedKey(int i, int size, String prefix)
@@ -473,39 +530,6 @@ public class MemoryDataSection implements DataSection
     {
         final DataSection child = this.createSection(key);
         newValue.forEach(child::setFragmentList);
-    }
-    
-    @Override
-    public DataSection createSection(String key)
-    {
-        int indexof = key.indexOf('.');
-        if (indexof == -1)
-        {
-            Object obj = this.contents.get(key);
-            if (!(obj instanceof MemoryDataSection))
-            {
-                // override old primitive value or create the sub section if it was not yet created.
-                obj = this.createSection(this.path == null ? key : this.path + '.' + key, key, this);
-                this.contents.put(key, obj);
-            }
-            return (DataSection) obj;
-        }
-        final String subkey = key.substring(0, indexof);
-        Object obj = this.contents.get(subkey);
-        if (!(obj instanceof MemoryDataSection))
-        {
-            obj = this.createSection(this.path == null ? subkey : this.path + '.' + subkey, subkey, this);
-            this.contents.put(subkey, obj);
-        }
-        return ((MemoryDataSection) obj).createSection(key.substring(indexof + 1));
-    }
-    
-    @Override
-    public DataSection createSection(String key, Map<String, ?> values)
-    {
-        final DataSection section = this.createSection(key);
-        values.forEach(section::set);
-        return section;
     }
     
     @Override
@@ -575,7 +599,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0;
+            }
             return ((Number) obj).intValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -595,7 +621,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -621,7 +649,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0;
+            }
             return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -641,7 +671,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).byteValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -667,7 +699,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0;
+            }
             return ((Number) obj).shortValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -687,7 +721,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).shortValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -713,7 +749,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Character))
+            {
                 return 0;
+            }
             return (Character) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -733,7 +771,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Character))
+            {
                 return defaultValue;
+            }
             return (Character) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -759,7 +799,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalDateTime))
+            {
                 return null;
+            }
             return (LocalDateTime) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -779,7 +821,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalDateTime))
+            {
                 return defaultValue;
+            }
             return (LocalDateTime) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -805,7 +849,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalDate))
+            {
                 return null;
+            }
             return (LocalDate) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -825,7 +871,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalDate))
+            {
                 return defaultValue;
+            }
             return (LocalDate) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -851,7 +899,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalTime))
+            {
                 return null;
+            }
             return (LocalTime) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -871,7 +921,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof LocalTime))
+            {
                 return defaultValue;
+            }
             return (LocalTime) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -897,7 +949,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Boolean))
+            {
                 return false;
+            }
             return (Boolean) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -917,7 +971,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Boolean))
+            {
                 return defaultValue;
+            }
             return (Boolean) obj;
         }
         final String subkey = key.substring(0, indexof);
@@ -943,7 +999,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0.0d;
+            }
             return ((Number) obj).doubleValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -963,7 +1021,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).doubleValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -989,7 +1049,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0.0f;
+            }
             return ((Number) obj).floatValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -1009,7 +1071,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).floatValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -1035,7 +1099,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return 0;
+            }
             return ((Number) obj).longValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -1055,7 +1121,9 @@ public class MemoryDataSection implements DataSection
         {
             final Object obj = this.contents.get(key);
             if (!(obj instanceof Number))
+            {
                 return defaultValue;
+            }
             return ((Number) obj).longValue();
         }
         final String subkey = key.substring(0, indexof);
@@ -1104,10 +1172,10 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * Safe cast (checks for invalid elements)
+     * Safe cast (checks for invalid elements).
      * 
-     * @param clazz
-     * @param list
+     * @param clazz target class.
+     * @param list list of elements to be casted
      * @return casted list
      */
     @SuppressWarnings("unchecked")
@@ -1545,9 +1613,9 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * Safe create instances of given class
+     * Safe create instances of given class.
      * 
-     * @param clazz
+     * @param clazz target class of new instance
      * @return new instance
      */
     private <T extends DataFragment> T safeCreate(Class<T> clazz)
@@ -1583,7 +1651,6 @@ public class MemoryDataSection implements DataSection
         this.contents.clear();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key)
     {
@@ -1605,9 +1672,13 @@ public class MemoryDataSection implements DataSection
             return null;
         }
         final String className = child.getString("clazz"); //$NON-NLS-1$
+        if (className == null)
+        {
+            return null;
+        }
         try
         {
-            return (T) child.getEnum(Enum.class.asSubclass(Class.forName(className)), "name"); //$NON-NLS-1$
+            return clazz.cast(child.getEnum(Class.forName(className).asSubclass(Enum.class), "name")); //$NON-NLS-1$
         }
         catch (@SuppressWarnings("unused") ClassNotFoundException | ClassCastException e)
         {
@@ -1621,6 +1692,24 @@ public class MemoryDataSection implements DataSection
     {
         final T result = this.getEnumValue(clazz, key);
         return result == null ? defaultValue : result;
+    }
+
+    @Override
+    public <T extends Enum<?>> T getEnum(Class<T> clazz, String key)
+    {
+        final String n = this.getString(key);
+        if (n == null)
+        {
+            return null;
+        }
+        for (final T constant : clazz.getEnumConstants())
+        {
+            if (constant.name().equals(n))
+            {
+                return constant;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -1700,24 +1789,6 @@ public class MemoryDataSection implements DataSection
     }
 
     @Override
-    public <T extends Enum<?>> T getEnum(Class<T> clazz, String key)
-    {
-        final String n = this.getString(key);
-        if (n == null)
-        {
-            return null;
-        }
-        for (final T constant : clazz.getEnumConstants())
-        {
-            if (constant.name().equals(n))
-            {
-                return constant;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public <T extends Enum<?>> List<T> getEnumList(Class<T> clazz, String key)
     {
         final DataSection child = this.getSection(key);
@@ -1787,7 +1858,7 @@ public class MemoryDataSection implements DataSection
     }
     
     /**
-     * Helper to create unique enums
+     * Helper to create unique enums.
      */
     @FunctionalInterface
     public interface UniqueEnumValueFactory
