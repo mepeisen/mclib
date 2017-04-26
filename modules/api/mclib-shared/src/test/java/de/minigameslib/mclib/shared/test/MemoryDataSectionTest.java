@@ -2627,6 +2627,7 @@ public class MemoryDataSectionTest
     {
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val1", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val1); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();
@@ -2644,6 +2645,7 @@ public class MemoryDataSectionTest
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         // simulate forbidden duplicate init
@@ -2671,6 +2673,7 @@ public class MemoryDataSectionTest
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();
@@ -2695,6 +2698,7 @@ public class MemoryDataSectionTest
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();
@@ -2719,6 +2723,7 @@ public class MemoryDataSectionTest
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();
@@ -2744,6 +2749,7 @@ public class MemoryDataSectionTest
         final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
         when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val4", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val4); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();
@@ -2771,6 +2777,7 @@ public class MemoryDataSectionTest
         when(factory.create("DUMMY", "Val2", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val2); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val5", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val5); //$NON-NLS-1$ //$NON-NLS-2$
         when(factory.create("DUMMY", "Val6", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1b.Val6); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
         MemoryDataSection.initUniqueEnumValueFactory(factory);
         
         final MemoryDataSection section = new MemoryDataSection();

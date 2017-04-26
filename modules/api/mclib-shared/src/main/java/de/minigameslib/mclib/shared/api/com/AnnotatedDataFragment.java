@@ -257,7 +257,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 {
                     if (fdesc.isMap)
                     {
-                        section.setPrimitiveMap(name, (Map<String, ?>) value);
+                        fdesc.primitiveType.set(name, section, value);
                     }
                     else if (fdesc.isSet)
                     {
@@ -569,7 +569,14 @@ public abstract class AnnotatedDataFragment implements DataFragment
                     }
                     if (PRIM_TYPES.contains(valueType))
                     {
-                        this.primitiveType = PrimitiveFieldType.Map;
+                        if (valueType == UUID.class)
+                        {
+                            this.primitiveType = PrimitiveFieldType.UuidMap;
+                        }
+                        else
+                        {
+                            this.primitiveType = PrimitiveFieldType.Map;
+                        }
                     }
                     else if (DataFragment.class.isAssignableFrom(valueType))
                     {
@@ -610,7 +617,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                 }
                 else if (EnumerationValue.class.isAssignableFrom(this.clazz))
                 {
-                    this.isFragment = true;
+                    this.isEnum = true;
                     this.normalEnumType = this.clazz.asSubclass(EnumerationValue.class);
                 }
                 else if (Enum.class.isAssignableFrom(this.clazz))
@@ -746,86 +753,941 @@ public abstract class AnnotatedDataFragment implements DataFragment
     }
     
     /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getStr(String name, DataSection section)
+    {
+        return section.getString(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testStr(String name, DataSection section)
+    {
+        return section.isString(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getInt(String name, DataSection section)
+    {
+        return section.getInt(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testInt(String name, DataSection section)
+    {
+        return section.isInt(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getByte(String name, DataSection section)
+    {
+        return section.getByte(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testByte(String name, DataSection section)
+    {
+        return section.isByte(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getShort(String name, DataSection section)
+    {
+        return section.getShort(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testShort(String name, DataSection section)
+    {
+        return section.isShort(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getLong(String name, DataSection section)
+    {
+        return section.getLong(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testLong(String name, DataSection section)
+    {
+        return section.isLong(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getFloat(String name, DataSection section)
+    {
+        return section.getFloat(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testFloat(String name, DataSection section)
+    {
+        return section.isFloat(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getDouble(String name, DataSection section)
+    {
+        return section.getDouble(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testDouble(String name, DataSection section)
+    {
+        return section.isDouble(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getBool(String name, DataSection section)
+    {
+        return section.getBoolean(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testBool(String name, DataSection section)
+    {
+        return section.isBoolean(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getChar(String name, DataSection section)
+    {
+        return section.getCharacter(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testChar(String name, DataSection section)
+    {
+        return section.isCharacter(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getDateTime(String name, DataSection section)
+    {
+        return section.getDateTime(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testDateTime(String name, DataSection section)
+    {
+        return section.isDateTime(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getDate(String name, DataSection section)
+    {
+        return section.getDate(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testDate(String name, DataSection section)
+    {
+        return section.isDate(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getTime(String name, DataSection section)
+    {
+        return section.getTime(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testTime(String name, DataSection section)
+    {
+        return section.isTime(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getVector(String name, DataSection section)
+    {
+        return section.getVector(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testVector(String name, DataSection section)
+    {
+        return section.isVector(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getItemStack(String name, DataSection section)
+    {
+        return section.getItemStack(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testItemStack(String name, DataSection section)
+    {
+        return section.isItemStack(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getColor(String name, DataSection section)
+    {
+        return section.getColor(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testColor(String name, DataSection section)
+    {
+        return section.isColor(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getPlayer(String name, DataSection section)
+    {
+        return section.getPlayer(name);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testPlayer(String name, DataSection section)
+    {
+        return section.isPlayer(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    static void setPrim(String name, DataSection section, Object value)
+    {
+        section.set(name, value);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getPrimList(String name, DataSection section)
+    {
+        return section.getPrimitiveList(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    static void setPrimList(String name, DataSection section, Object value)
+    {
+        section.setPrimitiveList(name, (List<?>) value);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testPrimList(String name, DataSection section)
+    {
+        return section.isList(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getColorList(String name, DataSection section)
+    {
+        return section.getColorList(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setColorList(String name, DataSection section, Object value)
+    {
+        section.setFragmentList(name, (List<ColorDataFragment>) value);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testColorList(String name, DataSection section)
+    {
+        // TODO check deep for color components
+        return section.isList(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getPlayerList(String name, DataSection section)
+    {
+        return section.getPlayerList(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setPlayerList(String name, DataSection section, Object value)
+    {
+        section.setFragmentList(name, (List<PlayerDataFragment>) value);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testPlayerList(String name, DataSection section)
+    {
+        // TODO check deep for player components
+        return section.isList(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getItemStackList(String name, DataSection section)
+    {
+        return section.getItemList(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setItemStackList(String name, DataSection section, Object value)
+    {
+        section.setFragmentList(name, (List<ItemStackDataFragment>) value);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testItemStackList(String name, DataSection section)
+    {
+        // TODO check deep for item stack components
+        return section.isList(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getVectorList(String name, DataSection section)
+    {
+        return section.getVectorList(name);
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setVectorList(String name, DataSection section, Object value)
+    {
+        section.setFragmentList(name, (List<VectorDataFragment>) value);
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testVectorList(String name, DataSection section)
+    {
+        // TODO check deep for vector components
+        return section.isList(name);
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getUuid(String name, DataSection section)
+    {
+        return UUID.fromString(section.getString(name));
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testUuid(String name, DataSection section)
+    {
+        if (!section.isString(name))
+        {
+            return false;
+        }
+        try
+        {
+            UUID.fromString(section.getString(name));
+        }
+        catch (@SuppressWarnings("unused") RuntimeException ex)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    static void setUuid(String name, DataSection section, Object value)
+    {
+        section.set(name, value.toString());
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getUuidList(String name, DataSection section)
+    {
+        return section.getStringList(name).stream().map(UUID::fromString).collect(Collectors.toList());
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setUuidList(String name, DataSection section, Object value)
+    {
+        section.setPrimitiveList(name, ((List<UUID>) value).stream().map(UUID::toString).collect(Collectors.toList()));
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testUuidList(String name, DataSection section)
+    {
+        if (!section.isList(name))
+        {
+            return false;
+        }
+        for (final String str : section.getStringList(name))
+        {
+            try
+            {
+                UUID.fromString(str);
+            }
+            catch (@SuppressWarnings("unused") RuntimeException ex)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * get helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return resulting object
+     */
+    static Object getUuidMap(String name, DataSection section)
+    {
+        return section.getPrimitiveMap(name).entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> UUID.fromString(e.getValue().toString())));
+    }
+    
+    /**
+     * setter helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @param value
+     *            new value
+     */
+    @SuppressWarnings("unchecked")
+    static void setUuidMap(String name, DataSection section, Object value)
+    {
+        section.setPrimitiveMap(name, ((Map<String, UUID>) value).entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
+    }
+    
+    /**
+     * test helper.
+     * 
+     * @param name
+     *            object key
+     * @param section
+     *            data section
+     * @return test result
+     */
+    static boolean testUuidMap(String name, DataSection section)
+    {
+        if (!section.isList(name))
+        {
+            return false;
+        }
+        for (final Object str : section.getPrimitiveMap(name).values())
+        {
+            try
+            {
+                UUID.fromString(str.toString());
+            }
+            catch (@SuppressWarnings("unused") RuntimeException ex)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
      * The field types.
      */
     private enum PrimitiveFieldType implements FieldTypeBinding
     {
         
         /** string type. */
-        Str((name, section) -> section.getString(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isString(name)),
+        Str(AnnotatedDataFragment::getStr, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testStr),
         
         /** uuid type. */
-        Uuid((name, section) -> UUID.fromString(section.getString(name)), (name, section, value) -> section.set(name, value.toString()), (name, section) -> section.isString(name)),
+        Uuid(AnnotatedDataFragment::getUuid, AnnotatedDataFragment::setUuid, AnnotatedDataFragment::testUuid),
         
         /** int type. */
-        Integer((name, section) -> section.getInt(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isInt(name)),
+        Integer(AnnotatedDataFragment::getInt, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testInt),
         
         /** byte type. */
-        Byte((name, section) -> section.getByte(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isByte(name)),
+        Byte(AnnotatedDataFragment::getByte, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testByte),
         
         /** short type. */
-        Short((name, section) -> section.getShort(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isShort(name)),
+        Short(AnnotatedDataFragment::getShort, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testShort),
         
         /** character type. */
-        Character((name, section) -> section.getCharacter(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isCharacter(name)),
+        Character(AnnotatedDataFragment::getChar, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testChar),
         
         /** date/time type. */
-        DateTime((name, section) -> section.getDateTime(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDateTime(name)),
+        DateTime(AnnotatedDataFragment::getDateTime, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testDateTime),
         
         /** date type. */
-        Date((name, section) -> section.getDate(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDate(name)),
+        Date(AnnotatedDataFragment::getDate, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testDate),
         
         /** time type. */
-        Time((name, section) -> section.getTime(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isTime(name)),
+        Time(AnnotatedDataFragment::getTime, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testTime),
         
         /** boolean type. */
-        Boolean((name, section) -> section.getBoolean(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isBoolean(name)),
+        Boolean(AnnotatedDataFragment::getBool, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testBool),
         
         /** float type. */
-        Float((name, section) -> section.getFloat(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isFloat(name)),
+        Float(AnnotatedDataFragment::getFloat, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testFloat),
         
         /** double type. */
-        Double((name, section) -> section.getDouble(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isDouble(name)),
+        Double(AnnotatedDataFragment::getDouble, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testDouble),
         
         /** long type. */
-        Long((name, section) -> section.getLong(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isLong(name)),
+        Long(AnnotatedDataFragment::getLong, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testLong),
         
         /** primitive list type. */
-        PrimitiveList((name, section) -> section.getPrimitiveList(name), (name, section, value) -> section.setPrimitiveList(name, (List<?>) value), (name, section) -> section.isList(name)),
+        PrimitiveList(AnnotatedDataFragment::getPrimList, AnnotatedDataFragment::setPrimList, AnnotatedDataFragment::testPrimList),
         
         /** uuid list type. */
-        @SuppressWarnings("unchecked")
-        UuidList((name, section) -> section.getPrimitiveList(name).stream().map(s -> UUID.fromString((String) s)).collect(Collectors.toList()),
-            (name, section, value) -> section.setPrimitiveList(name, ((List<UUID>) value).stream().map(UUID::toString).collect(Collectors.toList())), (name, section) -> section.isList(name)),
+        UuidList(AnnotatedDataFragment::getUuidList, AnnotatedDataFragment::setUuidList, AnnotatedDataFragment::testUuidList),
+        
+        /** uuid map type. */
+        UuidMap(AnnotatedDataFragment::getUuidMap, AnnotatedDataFragment::setUuidMap, AnnotatedDataFragment::testUuidMap),
         
         /** vector type. */
-        Vector((name, section) -> section.getVector(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isVector(name)),
+        Vector(AnnotatedDataFragment::getVector, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testVector),
         
         /** player type. */
-        Player((name, section) -> section.getPlayer(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isPlayer(name)),
+        Player(AnnotatedDataFragment::getPlayer, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testPlayer),
         
         /** item stack type. */
-        ItemStack((name, section) -> section.getItemStack(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isItemStack(name)),
+        ItemStack(AnnotatedDataFragment::getItemStack, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testItemStack),
         
         /** color data type. */
-        Color((name, section) -> section.getColor(name), (name, section, value) -> section.set(name, value), (name, section) -> section.isColor(name)),
+        Color(AnnotatedDataFragment::getColor, AnnotatedDataFragment::setPrim, AnnotatedDataFragment::testColor),
         
         /** vector list type. */
-        @SuppressWarnings("unchecked")
-        VectorList((name, section) -> section.getVectorList(name), (name, section, value) -> section.setFragmentList(name, (List<VectorDataFragment>) value), (name, section) -> section.isList(name)),
+        VectorList(AnnotatedDataFragment::getVectorList, AnnotatedDataFragment::setVectorList, AnnotatedDataFragment::testVectorList),
         
         /** color list type. */
-        @SuppressWarnings("unchecked")
-        ColorList((name, section) -> section.getColorList(name), (name, section, value) -> section.setFragmentList(name, (List<ColorDataFragment>) value), (name, section) -> section.isList(name)),
+        ColorList(AnnotatedDataFragment::getColorList, AnnotatedDataFragment::setColorList, AnnotatedDataFragment::testColorList),
         
         /** player list type. */
-        @SuppressWarnings("unchecked")
-        PlayerList((name, section) -> section.getPlayerList(name), (name, section, value) -> section.setFragmentList(name, (List<PlayerDataFragment>) value), (name, section) -> section.isList(name)),
+        PlayerList(AnnotatedDataFragment::getPlayerList, AnnotatedDataFragment::setPlayerList, AnnotatedDataFragment::testPlayerList),
         
         /** item stack list type. */
-        @SuppressWarnings("unchecked")
-        ItemStackList((name, section) -> section.getItemList(name), (name, section, value) -> section.setFragmentList(name, (List<ItemStackDataFragment>) value),
-            (name, section) -> section.isList(name)),
+        ItemStackList(AnnotatedDataFragment::getItemStackList, AnnotatedDataFragment::setItemStackList, AnnotatedDataFragment::testItemStackList),
         
         /** primitive map type. */
         @SuppressWarnings("unchecked")
@@ -845,9 +1707,13 @@ public abstract class AnnotatedDataFragment implements DataFragment
         
         /**
          * Constructor.
-         * @param getter the getter to be used
-         * @param setter the setter to be used
-         * @param tester the tester to be used
+         * 
+         * @param getter
+         *            the getter to be used
+         * @param setter
+         *            the setter to be used
+         * @param tester
+         *            the tester to be used
          */
         private PrimitiveFieldType(Getter getter, Setter setter, Tester tester)
         {

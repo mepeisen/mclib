@@ -27,28 +27,35 @@ package de.minigameslib.mclib.shared.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.ColorDataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection.UniqueEnumValueFactory;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
+import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
@@ -73,6 +80,12 @@ public class AnnotatedDataFragmentTest
         d2.str1 = "FOO1"; //$NON-NLS-1$
         d2.int3 = Integer.valueOf(12);
         d1.lst4.add(d2);
+        final Data3 d3 = new Data3();
+        d3.int2 = 3456;
+        d3.int3 = 7890;
+        d3.str1 = "FOO2"; //$NON-NLS-1$
+        d3.str5 = "FOO3"; //$NON-NLS-1$
+        d1.set5.add(d3);
         final MemoryDataSection section = new MemoryDataSection();
         d1.write(section.createSection("d1")); //$NON-NLS-1$
         
@@ -81,9 +94,14 @@ public class AnnotatedDataFragmentTest
         assertEquals(d1.int3, res.int3);
         assertEquals(d1.str1, res.str1);
         assertEquals(1, res.lst4.size());
+        assertEquals(1, res.set5.size());
         assertEquals(d1.lst4.get(0).int2, res.lst4.get(0).int2);
         assertEquals(d1.lst4.get(0).int3, res.lst4.get(0).int3);
         assertEquals(d1.lst4.get(0).str1, res.lst4.get(0).str1);
+        assertEquals(d1.set5.iterator().next().int2, res.set5.iterator().next().int2);
+        assertEquals(d1.set5.iterator().next().int3, res.set5.iterator().next().int3);
+        assertEquals(d1.set5.iterator().next().str1, res.set5.iterator().next().str1);
+        assertEquals(d1.set5.iterator().next().str5, res.set5.iterator().next().str5);
     }
     
     /**
@@ -246,6 +264,17 @@ public class AnnotatedDataFragmentTest
      * Test nested types for invalid data
      */
     @Test
+    public void testNestedPrimSetTypeTest1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("numbers.foo1", 1);  //$NON-NLS-1$
+        assertTrue(new DataPrimSet().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
     public void testNestedFragmentListTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
@@ -287,12 +316,65 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentSetTypeTest1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1.int2", 1);  //$NON-NLS-1$
+        assertTrue(new DataFragmentSet().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentSetTypeTest2()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        assertFalse(new DataFragmentSet().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentSetTypeTest3()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs.foo1", 1);  //$NON-NLS-1$
+        assertFalse(new DataFragmentSet().test(data));
+    }
+    
+    /**
+     * Test nested types for invalid data
+     */
+    @Test
+    public void testNestedFragmentSetTypeTest4()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("refs", 1);  //$NON-NLS-1$
+        assertFalse(new DataFragmentSet().test(data));
+    }
+    
+    /**
      * Test nested vectors
      */
     @Test(expected = IllegalStateException.class)
     public void testNestedObject()
     {
         new DataObjectList().test(null);
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testNestedObjectSet()
+    {
+        new DataObjectSet().test(null);
     }
     
     /**
@@ -325,6 +407,23 @@ public class AnnotatedDataFragmentTest
      * Test nested vectors
      */
     @Test
+    public void testNestedVectorSet()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<VectorDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(VectorDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getVectorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataVectorSet list = new DataVectorSet();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.iterator().next());
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test
     public void testNestedVector2()
     {
         final DataSection data = mock(DataSection.class);
@@ -351,6 +450,22 @@ public class AnnotatedDataFragmentTest
         list.write(data);
         
         verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested vectors
+     */
+    @Test
+    public void testNestedVector3Set()
+    {
+        final DataSection data = mock(DataSection.class);
+        final VectorDataFragment result = mock(VectorDataFragment.class);
+        
+        final DataVectorSet list = new DataVectorSet();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", new ArrayList<>(list.refs)); //$NON-NLS-1$
     }
     
     /**
@@ -390,6 +505,23 @@ public class AnnotatedDataFragmentTest
      * Test nested item stacks
      */
     @Test
+    public void testNestedItemStackSet()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<ItemStackDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(ItemStackDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getItemList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataItemStackSet list = new DataItemStackSet();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.iterator().next());
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
     public void testNestedItemStack2()
     {
         final DataSection data = mock(DataSection.class);
@@ -416,6 +548,22 @@ public class AnnotatedDataFragmentTest
         list.write(data);
         
         verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested item stacks
+     */
+    @Test
+    public void testNestedItemStack3Set()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ItemStackDataFragment result = mock(ItemStackDataFragment.class);
+        
+        final DataItemStackSet list = new DataItemStackSet();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", new ArrayList<>(list.refs)); //$NON-NLS-1$
     }
     
     /**
@@ -455,6 +603,23 @@ public class AnnotatedDataFragmentTest
      * Test nested colors
      */
     @Test
+    public void testNestedColorSet()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<ColorDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(ColorDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getColorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataColorSet list = new DataColorSet();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.iterator().next());
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
     public void testNestedColor2()
     {
         final DataSection data = mock(DataSection.class);
@@ -481,6 +646,22 @@ public class AnnotatedDataFragmentTest
         list.write(data);
         
         verify(data, times(1)).setFragmentList("refs", list.refs); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested colors
+     */
+    @Test
+    public void testNestedColorSet3()
+    {
+        final DataSection data = mock(DataSection.class);
+        final ColorDataFragment result = mock(ColorDataFragment.class);
+        
+        final DataColorSet list = new DataColorSet();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", new ArrayList<>(list.refs)); //$NON-NLS-1$
     }
     
     /**
@@ -514,6 +695,23 @@ public class AnnotatedDataFragmentTest
         final DataPlayerList list = new DataPlayerList();
         list.read(data);
         assertEquals(resultList.get(0), list.refs.get(0));
+    }
+    
+    /**
+     * Test nested player
+     */
+    @Test
+    public void testNestedPlayerSet()
+    {
+        final DataSection data = mock(DataSection.class);
+        final List<PlayerDataFragment> resultList = new ArrayList<>();
+        resultList.add(mock(PlayerDataFragment.class));
+        when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
+        when(data.getPlayerList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        
+        final DataPlayerSet list = new DataPlayerSet();
+        list.read(data);
+        assertEquals(resultList.get(0), list.refs.iterator().next());
     }
     
     /**
@@ -552,6 +750,22 @@ public class AnnotatedDataFragmentTest
      * Test nested players
      */
     @Test
+    public void testNestedPlayer3Set()
+    {
+        final DataSection data = mock(DataSection.class);
+        final PlayerDataFragment result = mock(PlayerDataFragment.class);
+        
+        final DataPlayerSet list = new DataPlayerSet();
+        list.refs.add(result);
+        list.write(data);
+        
+        verify(data, times(1)).setFragmentList("refs", new ArrayList<>(list.refs)); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test nested players
+     */
+    @Test
     public void testNestedPlayer4()
     {
         final DataSection data = mock(DataSection.class);
@@ -562,6 +776,127 @@ public class AnnotatedDataFragmentTest
         ref.write(data);
         
         verify(data, times(1)).set("ref", result); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test primitive map
+     */
+    @Test
+    public void testPrimMap()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        final DataPrimMap maps = new DataPrimMap();
+        maps.map.put("FOO", 1); //$NON-NLS-1$
+        maps.map.put("BAR", 2); //$NON-NLS-1$
+        maps.map.put("BAZ", 3); //$NON-NLS-1$
+        data.set("foo", maps); //$NON-NLS-1$
+        
+        assertEquals(maps.map, data.getFragment(DataPrimMap.class, "foo").map); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test uuid support
+     */
+    @Test
+    public void testUuid()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        final DataUuid src = new DataUuid();
+        src.uuid = UUID.randomUUID();
+        src.set.add(UUID.randomUUID());
+        src.set.add(UUID.randomUUID());
+        src.list.add(UUID.randomUUID());
+        src.list.add(UUID.randomUUID());
+        src.list.add(src.list.get(0));
+        src.map.put("FOO", UUID.randomUUID()); //$NON-NLS-1$
+        src.map.put("BAR", UUID.randomUUID()); //$NON-NLS-1$
+        src.map.put("BAZ", UUID.randomUUID()); //$NON-NLS-1$
+        data.set("foo", src); //$NON-NLS-1$
+        
+        assertEquals(src, data.getFragment(DataUuid.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enums
+     */
+    @Test
+    public void testInvalidEnums()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("foo.enum1.bar", "FOO"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.isFragment(DataEnums.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enums
+     */
+    @Test
+    public void testInvalidEnums2()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        data.set("foo.enum1List", "FOO"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.isFragment(DataEnums.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enums
+     */
+    @Test
+    public void testEnums()
+    {
+        final UniqueEnumValueFactory factory = mock(UniqueEnumValueFactory.class);
+        when(factory.create("DUMMY", "Val1", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val1); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val2", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val2); //$NON-NLS-1$ //$NON-NLS-2$
+        when(factory.create("DUMMY", "Val3", UniqueEnumInterface1.class)).thenReturn(UniqueEnum1a.Val3); //$NON-NLS-1$ //$NON-NLS-2$
+        Whitebox.setInternalState(MemoryDataSection.class, "fragmentOverrideLock", false); //$NON-NLS-1$
+        MemoryDataSection.initUniqueEnumValueFactory(factory);
+        
+        final MemoryDataSection data = new MemoryDataSection();
+        final DataEnums enums = new DataEnums();
+        
+        enums.enum1 = Enum1.SomeEnum1;
+        enums.nonUnique = NonUniqueEnum1a.Val2;
+        enums.unique = UniqueEnum1a.Val3;
+        
+        enums.enum1List.add(Enum1.SomeEnum2);
+        enums.enum1List.add(Enum1.SomeEnum3);
+        enums.enum1List.add(Enum1.SomeEnum3);
+        enums.enum1List.add(Enum1.SomeEnum1);
+        
+        enums.enum1Set.add(Enum1.SomeEnum1);
+        enums.enum1Set.add(Enum1.SomeEnum2);
+        
+        enums.enum1Map.put("foo1", Enum1.SomeEnum1); //$NON-NLS-1$
+        enums.enum1Map.put("foo2", Enum1.SomeEnum2); //$NON-NLS-1$
+        enums.enum1Map.put("foo3", Enum1.SomeEnum3); //$NON-NLS-1$
+        
+        enums.nonUniqueList.add(NonUniqueEnum1a.Val2);
+        enums.nonUniqueList.add(NonUniqueEnum1a.Val3);
+        enums.nonUniqueList.add(NonUniqueEnum1a.Val3);
+        enums.nonUniqueList.add(NonUniqueEnum1a.Val1);
+        
+        enums.nonUniqueSet.add(NonUniqueEnum1a.Val1);
+        enums.nonUniqueSet.add(NonUniqueEnum1a.Val2);
+        
+        enums.nonUniqueMap.put("foo1", NonUniqueEnum1a.Val1); //$NON-NLS-1$
+        enums.nonUniqueMap.put("foo2", NonUniqueEnum1a.Val2); //$NON-NLS-1$
+        enums.nonUniqueMap.put("foo3", NonUniqueEnum1a.Val3); //$NON-NLS-1$
+        
+        enums.uniqueList.add(UniqueEnum1a.Val2);
+        enums.uniqueList.add(UniqueEnum1a.Val3);
+        enums.uniqueList.add(UniqueEnum1a.Val3);
+        enums.uniqueList.add(UniqueEnum1a.Val1);
+        
+        enums.uniqueSet.add(UniqueEnum1a.Val1);
+        enums.uniqueSet.add(UniqueEnum1a.Val2);
+        
+        enums.uniqueMap.put("foo1", UniqueEnum1a.Val1); //$NON-NLS-1$
+        enums.uniqueMap.put("foo2", UniqueEnum1a.Val2); //$NON-NLS-1$
+        enums.uniqueMap.put("foo3", UniqueEnum1a.Val3); //$NON-NLS-1$
+        
+        data.set("foo", enums); //$NON-NLS-1$
+        
+        assertEquals(enums, data.getFragment(DataEnums.class, "foo")); //$NON-NLS-1$
     }
     
     /**
@@ -593,6 +928,12 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public List<Data2> lst4 = new ArrayList<>();
+        
+        /**
+         * field.
+         */
+        @PersistentField
+        public Set<Data3> set5 = new HashSet<>();
 
         @Override
         public int hashCode()
@@ -603,6 +944,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.int3 == null) ? 0 : this.int3.hashCode());
             result = prime * result + ((this.lst4 == null) ? 0 : this.lst4.hashCode());
             result = prime * result + ((this.str1 == null) ? 0 : this.str1.hashCode());
+            result = prime * result + ((this.set5 == null) ? 0 : this.set5.hashCode());
             return result;
         }
 
@@ -631,6 +973,13 @@ public class AnnotatedDataFragmentTest
                     return false;
             }
             else if (!this.lst4.equals(other.lst4))
+                return false;
+            if (this.set5 == null)
+            {
+                if (other.set5 != null)
+                    return false;
+            }
+            else if (!this.set5.equals(other.set5))
                 return false;
             if (this.str1 == null)
             {
@@ -1425,6 +1774,20 @@ public class AnnotatedDataFragmentTest
     /**
      * Test helper class
      */
+    public static class DataPrimSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<Integer> numbers = new HashSet<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
     public static class DataFragmentList extends AnnotatedDataFragment
     {
         
@@ -1433,6 +1796,20 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public List<Data1> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataFragmentSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<Data1> refs = new HashSet<>();
         
     }
     
@@ -1453,6 +1830,20 @@ public class AnnotatedDataFragmentTest
     /**
      * Test helper class
      */
+    public static class DataVectorSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<VectorDataFragment> refs = new HashSet<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
     public static class DataItemStackList extends AnnotatedDataFragment
     {
         
@@ -1461,6 +1852,20 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public List<ItemStackDataFragment> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataItemStackSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<ItemStackDataFragment> refs = new HashSet<>();
         
     }
     
@@ -1481,6 +1886,20 @@ public class AnnotatedDataFragmentTest
     /**
      * Test helper class
      */
+    public static class DataColorSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<ColorDataFragment> refs = new HashSet<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
     public static class DataPlayerList extends AnnotatedDataFragment
     {
         
@@ -1495,6 +1914,20 @@ public class AnnotatedDataFragmentTest
     /**
      * Test helper class
      */
+    public static class DataPlayerSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<PlayerDataFragment> refs = new HashSet<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
     public static class DataObjectList extends AnnotatedDataFragment
     {
         
@@ -1503,6 +1936,20 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public List<Object> refs = new ArrayList<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataObjectSet extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<Object> refs = new HashSet<>();
         
     }
     
@@ -1574,6 +2021,358 @@ public class AnnotatedDataFragmentTest
         @PersistentField
         public Object ref;
         
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataUuid extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public UUID uuid;
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public List<UUID> list = new ArrayList<>();
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Set<UUID> set = new HashSet<>();
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Map<String, UUID> map = new HashMap<>();
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((this.list == null) ? 0 : this.list.hashCode());
+            result = prime * result + ((this.map == null) ? 0 : this.map.hashCode());
+            result = prime * result + ((this.set == null) ? 0 : this.set.hashCode());
+            result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            DataUuid other = (DataUuid) obj;
+            if (this.list == null)
+            {
+                if (other.list != null)
+                    return false;
+            }
+            else if (!this.list.equals(other.list))
+                return false;
+            if (this.map == null)
+            {
+                if (other.map != null)
+                    return false;
+            }
+            else if (!this.map.equals(other.map))
+                return false;
+            if (this.set == null)
+            {
+                if (other.set != null)
+                    return false;
+            }
+            else if (!this.set.equals(other.set))
+                return false;
+            if (this.uuid == null)
+            {
+                if (other.uuid != null)
+                    return false;
+            }
+            else if (!this.uuid.equals(other.uuid))
+                return false;
+            return true;
+        }
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataPrimMap extends AnnotatedDataFragment
+    {
+        
+        /**
+         * number
+         */
+        @PersistentField
+        public Map<String, Integer> map = new HashMap<>();
+        
+    }
+    
+    /**
+     * Test helper class
+     */
+    public static class DataEnums extends AnnotatedDataFragment
+    {
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public UniqueEnumInterface1 unique;
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public NonUniqueEnumInterface1 nonUnique;
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Enum1 enum1;
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public List<UniqueEnumInterface1> uniqueList = new ArrayList<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public List<NonUniqueEnumInterface1> nonUniqueList = new ArrayList<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public List<Enum1> enum1List = new ArrayList<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Set<UniqueEnumInterface1> uniqueSet = new HashSet<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Set<NonUniqueEnumInterface1> nonUniqueSet = new HashSet<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Set<Enum1> enum1Set = new HashSet<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Map<String, UniqueEnumInterface1> uniqueMap = new HashMap<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Map<String, NonUniqueEnumInterface1> nonUniqueMap = new HashMap<>();
+        
+        /**
+         * enum
+         */
+        @PersistentField
+        public Map<String, Enum1> enum1Map = new HashMap<>();
+
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((this.enum1 == null) ? 0 : this.enum1.hashCode());
+            result = prime * result + ((this.enum1List == null) ? 0 : this.enum1List.hashCode());
+            result = prime * result + ((this.enum1Map == null) ? 0 : this.enum1Map.hashCode());
+            result = prime * result + ((this.enum1Set == null) ? 0 : this.enum1Set.hashCode());
+            result = prime * result + ((this.nonUnique == null) ? 0 : this.nonUnique.hashCode());
+            result = prime * result + ((this.nonUniqueList == null) ? 0 : this.nonUniqueList.hashCode());
+            result = prime * result + ((this.nonUniqueMap == null) ? 0 : this.nonUniqueMap.hashCode());
+            result = prime * result + ((this.nonUniqueSet == null) ? 0 : this.nonUniqueSet.hashCode());
+            result = prime * result + ((this.unique == null) ? 0 : this.unique.hashCode());
+            result = prime * result + ((this.uniqueList == null) ? 0 : this.uniqueList.hashCode());
+            result = prime * result + ((this.uniqueMap == null) ? 0 : this.uniqueMap.hashCode());
+            result = prime * result + ((this.uniqueSet == null) ? 0 : this.uniqueSet.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            DataEnums other = (DataEnums) obj;
+            if (this.enum1 != other.enum1)
+                return false;
+            if (this.enum1List == null)
+            {
+                if (other.enum1List != null)
+                    return false;
+            }
+            else if (!this.enum1List.equals(other.enum1List))
+                return false;
+            if (this.enum1Map == null)
+            {
+                if (other.enum1Map != null)
+                    return false;
+            }
+            else if (!this.enum1Map.equals(other.enum1Map))
+                return false;
+            if (this.enum1Set == null)
+            {
+                if (other.enum1Set != null)
+                    return false;
+            }
+            else if (!this.enum1Set.equals(other.enum1Set))
+                return false;
+            if (this.nonUnique == null)
+            {
+                if (other.nonUnique != null)
+                    return false;
+            }
+            else if (!this.nonUnique.equals(other.nonUnique))
+                return false;
+            if (this.nonUniqueList == null)
+            {
+                if (other.nonUniqueList != null)
+                    return false;
+            }
+            else if (!this.nonUniqueList.equals(other.nonUniqueList))
+                return false;
+            if (this.nonUniqueMap == null)
+            {
+                if (other.nonUniqueMap != null)
+                    return false;
+            }
+            else if (!this.nonUniqueMap.equals(other.nonUniqueMap))
+                return false;
+            if (this.nonUniqueSet == null)
+            {
+                if (other.nonUniqueSet != null)
+                    return false;
+            }
+            else if (!this.nonUniqueSet.equals(other.nonUniqueSet))
+                return false;
+            if (this.unique == null)
+            {
+                if (other.unique != null)
+                    return false;
+            }
+            else if (!this.unique.equals(other.unique))
+                return false;
+            if (this.uniqueList == null)
+            {
+                if (other.uniqueList != null)
+                    return false;
+            }
+            else if (!this.uniqueList.equals(other.uniqueList))
+                return false;
+            if (this.uniqueMap == null)
+            {
+                if (other.uniqueMap != null)
+                    return false;
+            }
+            else if (!this.uniqueMap.equals(other.uniqueMap))
+                return false;
+            if (this.uniqueSet == null)
+            {
+                if (other.uniqueSet != null)
+                    return false;
+            }
+            else if (!this.uniqueSet.equals(other.uniqueSet))
+                return false;
+            return true;
+        }
+        
+    }
+    
+    /**
+     * Test enum
+     */
+    private interface UniqueEnumInterface1 extends UniqueEnumerationValue
+    {
+        // marker only
+    }
+    
+    /**
+     * Test enum
+     */
+    private interface NonUniqueEnumInterface1 extends EnumerationValue
+    {
+        // marker only
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum UniqueEnum1a implements UniqueEnumInterface1
+    {
+        /** value 1 */
+        Val1,
+        /** value 2 */
+        Val2,
+        /** value 3 */
+        Val3;
+
+        @Override
+        public String getPluginName()
+        {
+            return "DUMMY"; //$NON-NLS-1$
+        }
+    }
+    
+    /**
+     * Test enum
+     */
+    private enum NonUniqueEnum1a implements NonUniqueEnumInterface1
+    {
+        /** value 1 */
+        Val1,
+        /** value 2 */
+        Val2,
+        /** value 3 */
+        Val3;
+    }
+    
+    /**
+     * test enum.
+     */
+    private enum Enum1
+    {
+        /** enum value 1 */
+        SomeEnum1,
+        /** enum value 2 */
+        SomeEnum2,
+        /** enum value 3 */
+        SomeEnum3
     }
     
 }
