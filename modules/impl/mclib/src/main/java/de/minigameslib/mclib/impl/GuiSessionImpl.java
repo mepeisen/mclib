@@ -234,17 +234,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     final ItemStack stack = itemline[column].getItemStack().clone();
                     if (itemline[column].getDisplayName() != null)
                     {
-                        final String displayName = InventoryManagerInterface.toColorsString(
+                        final String displayName =
                                 this.player.getBukkitPlayer().isOp() ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
-                                        : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs()),
-                                line + ":" + column //$NON-NLS-1$
-                        );
-                        items.setDisplayName(stack, displayName);
-                    }
-                    else
-                    {
-                        final String displayName = InventoryManagerInterface.toColorsString(items.getDisplayName(stack), line + ":" + column //$NON-NLS-1$
-                        );
+                                        : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
+                        ;
                         items.setDisplayName(stack, displayName);
                     }
                     result.add(stack);
@@ -531,38 +524,32 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public void onClick(ItemStack stack)
+    public boolean onClick(ItemStack stack, int rawSlot, int slot)
     {
         if (this.type == GuiType.ClickGui)
         {
             if (stack != null)
             {
-                final String item = InventoryManagerInterface.stripColoredString(ItemServiceInterface.instance().getDisplayName(stack));
-                final String[] splitted = item.split(":"); //$NON-NLS-1$
-                if (splitted.length == 2)
+                if (slot == rawSlot) // top inventory has slot == rawSlot numbers
                 {
+                    final int col = slot % 9;
+                    final int line = (slot - col) / 9;
                     try
                     {
-                        final int line = Integer.parseInt(splitted[0]);
-                        final int col = Integer.parseInt(splitted[1]);
                         final ClickGuiItem guiItem = this.currentItems[line][col];
-                        guiItem.handle(this.player, this, this.gui);
+                        if (guiItem != null)
+                        {
+                            return guiItem.handle(this.player, this, this.gui);
+                        }
                     }
                     catch (McException ex)
                     {
                         this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
                     }
-                    catch (IndexOutOfBoundsException | NumberFormatException ex)
-                    {
-                        LOGGER.log(Level.WARNING, "Unable to parse item name " + item, ex); //$NON-NLS-1$
-                    }
-                }
-                else
-                {
-                    LOGGER.log(Level.WARNING, "Unable to parse item name " + item); //$NON-NLS-1$
                 }
             }
         }
+        return true;
     }
     
     @Override

@@ -52,11 +52,8 @@ public class ClickGuiItem
     /** the click handler. */
     private GuiItemHandler                  handler;
     
-    /** {@code true} to let the icon be moved within click gui */
+    /** {@code true} to let the icon be moved or replaced */
     private boolean moveable;
-    
-    /** {@code true} to let the icon be moved outside click gui into user gui (and vice-versa) */
-    private boolean moveableOutside;
     
     /**
      * Constructor to create a click item.
@@ -81,14 +78,12 @@ public class ClickGuiItem
     /**
      * Constructor to create a click item that will be moved from/to user inventories
      * @param itemStack
-     * @param moveable {@code true} to let the icon be moved within click gui
-     * @param moveableOutside {@code true} to let the icon be moved outside click gui into user gui (and vice-versa)
+     * @param moveable {@code true} to let the icon be moved or replaced
      */
-    public ClickGuiItem(ItemStack itemStack, boolean moveable, boolean moveableOutside)
+    public ClickGuiItem(ItemStack itemStack, boolean moveable)
     {
         this.itemStack = itemStack;
         this.moveable = moveable;
-        this.moveableOutside = moveableOutside;
         this.displayName = null;
         this.displayNameArgs = null;
     }
@@ -107,22 +102,6 @@ public class ClickGuiItem
     public void setMoveable(boolean moveable)
     {
         this.moveable = moveable;
-    }
-
-    /**
-     * @return the moveableOutside
-     */
-    public boolean isMoveableOutside()
-    {
-        return this.moveableOutside;
-    }
-
-    /**
-     * @param moveableOutside the moveableOutside to set
-     */
-    public void setMoveableOutside(boolean moveableOutside)
-    {
-        this.moveableOutside = moveableOutside;
     }
 
     /**
@@ -158,12 +137,23 @@ public class ClickGuiItem
      *            gui session.
      * @param guiInterface
      *            gui interface.
+     * @return {@code true} to cancel underlying click event
      * @throws McException
      *             thrown if there are errors.
      */
-    public void handle(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
+    public boolean handle(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
-        this.handler.handle(player, session, guiInterface);
+        if (this.handler != null)
+        {
+            this.handler.handle(player, session, guiInterface);
+        }
+
+        if (this.isMoveable())
+        {
+            return false;
+        }
+        
+        return true;
     }
     
     /**

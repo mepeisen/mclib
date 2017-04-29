@@ -67,8 +67,13 @@ public interface InventoryManagerInterface extends Listener
          * 
          * @param item
          *            clicked item.
+         * @param rawSlot
+         *            the raw slot number
+         * @param slot
+         *            the slot number in given inventory
+         * @return {@code true} to cancel event 
          */
-        void onClick(ItemStack item);
+        boolean onClick(ItemStack item, int rawSlot, int slot);
     }
     
     /**

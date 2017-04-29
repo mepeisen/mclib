@@ -94,7 +94,7 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     @Override
     protected ClickGuiItem map(int line, int col, int index, ItemStack elm)
     {
-        return new ClickGuiItem(elm == null ? new ItemStack(Material.AIR) : elm, true, true);
+        return new ClickGuiItem(elm == null ? new ItemStack(Material.AIR) : elm, true);
     }
     
     /**
