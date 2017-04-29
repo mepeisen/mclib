@@ -549,7 +549,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 }
             }
         }
-        return true;
+        return false;
     }
     
     @Override
