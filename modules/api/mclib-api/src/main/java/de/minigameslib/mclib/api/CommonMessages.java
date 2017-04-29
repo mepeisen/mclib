@@ -488,7 +488,7 @@ public enum CommonMessages implements LocalizedMessageInterface
     /**
      * A dummy filler
      */
-    @LocalizedMessage(defaultMessage = "")
+    @LocalizedMessage(defaultMessage = LocalizedMessage.BLACK)
     @MessageComment({"dummy filler icon"})
     IconFill,
 
