@@ -176,10 +176,25 @@ public class MclibClientNms
             switch (data.getCls())
             {
                 case Shovel:
+                    replaceItem(data.getId(), new MyShovel("custom-" + data.getId()));
+                    ((MyShovel)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
                 case Pickaxe:
+                    replaceItem(data.getId(), new MyPickaxe("custom-" + data.getId()));
+                    ((MyPickaxe)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
                 case Hoe:
+                    replaceItem(data.getId(), new MyHoe("custom-" + data.getId()));
+                    ((MyHoe)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
                 case Axe:
+                    replaceItem(data.getId(), new MyAxe("custom-" + data.getId()));
+                    ((MyAxe)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
                 case Sword:
+                    replaceItem(data.getId(), new MySword("custom-" + data.getId()));
+                    ((MySword)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
+                    break;
                 default:
                     ((MyItem)Item.getItemById(data.getId()).setMaxDamage(data.getDurability())).setDmgData(data.getDamage(), data.getSpeed());
                     break;
