@@ -1098,7 +1098,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 map = new HashMap<>();
                 this.peerEndpoints.put(id.getClass().getName(), map);
             }
-            if (map.containsKey(id))
+            if (map.containsKey(id.name()))
             {
                 throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
             }
@@ -1120,7 +1120,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 map = new HashMap<>();
                 this.bungeeEndpoints.put(id.getClass().getName(), map);
             }
-            if (map.containsKey(id))
+            if (map.containsKey(id.name()))
             {
                 throw new IllegalStateException("Duplicate registration of communication endpoint."); //$NON-NLS-1$
             }
