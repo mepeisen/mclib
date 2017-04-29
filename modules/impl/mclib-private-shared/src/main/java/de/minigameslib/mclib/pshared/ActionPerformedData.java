@@ -57,6 +57,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
     protected String winId;
 
     /**
+     * Returns the widget id.
      * @return the widgetId
      */
     public String getWinId()
@@ -65,6 +66,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the widget id.
      * @param winId the winId to set
      */
     public void setWinId(String winId)
@@ -73,6 +75,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the action id.
      * @return the actionId
      */
     public String getActionId()
@@ -81,6 +84,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the action id.
      * @param actionId the actionId to set
      */
     public void setActionId(String actionId)
@@ -89,6 +93,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the form data list.
      * @return the data
      */
     public List<FormData> getData()

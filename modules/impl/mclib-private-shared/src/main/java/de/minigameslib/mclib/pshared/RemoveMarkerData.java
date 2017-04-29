@@ -42,6 +42,7 @@ public class RemoveMarkerData extends AnnotatedDataFragment
     protected String markerId;
 
     /**
+     * Returns the marker id.
      * @return the markerId
      */
     public String getMarkerId()
@@ -50,6 +51,7 @@ public class RemoveMarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the marker id.
      * @param markerId the markerId to set
      */
     public void setMarkerId(String markerId)

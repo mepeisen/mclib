@@ -48,6 +48,7 @@ public class FormData extends AnnotatedDataFragment
     protected String value;
 
     /**
+     * Returns the key.
      * @return the key
      */
     public String getKey()
@@ -56,6 +57,7 @@ public class FormData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the key.
      * @param key the key to set
      */
     public void setKey(String key)
@@ -64,6 +66,7 @@ public class FormData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the value.
      * @return the value
      */
     public String getValue()
@@ -72,6 +75,7 @@ public class FormData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the value.
      * @param value the value to set
      */
     public void setValue(String value)

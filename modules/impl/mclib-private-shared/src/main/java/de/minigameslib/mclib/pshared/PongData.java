@@ -45,12 +45,13 @@ public class PongData extends AnnotatedDataFragment
     protected Map<String, Integer> ext = new HashMap<>();
     
     /**
-     * Api version of client
+     * Api version of client.
      */
     @PersistentField
     protected int api;
 
     /**
+     * Returns the available client extensions including version numbers.
      * @return the clientExtensions
      */
     public Map<String, Integer> getClientExtensions()
@@ -59,6 +60,7 @@ public class PongData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the api version number supported by client mod.
      * @return the api
      */
     public int getApi()
@@ -67,6 +69,7 @@ public class PongData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the api version number supported by client.
      * @param api the api to set
      */
     public void setApi(int api)

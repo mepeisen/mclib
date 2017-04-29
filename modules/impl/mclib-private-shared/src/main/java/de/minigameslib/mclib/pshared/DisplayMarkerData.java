@@ -48,6 +48,7 @@ public class DisplayMarkerData extends AnnotatedDataFragment
     protected MarkerData marker;
 
     /**
+     * Returns the marker id.
      * @return the markerId
      */
     public String getMarkerId()
@@ -56,6 +57,7 @@ public class DisplayMarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the marker id.
      * @param markerId the markerId to set
      */
     public void setMarkerId(String markerId)
@@ -64,6 +66,7 @@ public class DisplayMarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the marker data.
      * @return the marker
      */
     public MarkerData getMarker()
@@ -72,6 +75,7 @@ public class DisplayMarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the marker data.
      * @param marker the marker to set
      */
     public void setMarker(MarkerData marker)

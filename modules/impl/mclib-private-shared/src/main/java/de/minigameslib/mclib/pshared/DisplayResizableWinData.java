@@ -63,7 +63,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     protected List<WidgetData> widgets = new ArrayList<>();
     
     /**
-     * Additional buttons
+     * Additional buttons.
      */
     @PersistentField
     protected List<ButtonData> buttons = new ArrayList<>();
@@ -75,6 +75,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     protected String id;
 
     /**
+     * Returns the window id.
      * @return the id
      */
     public String getId()
@@ -83,6 +84,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param id the id to set
      */
     public void setId(String id)
@@ -91,6 +93,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the number of columns.
      * @return the numColumns
      */
     public int getNumColumns()
@@ -99,6 +102,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the number of columns.
      * @param numColumns the numColumns to set
      */
     public void setNumColumns(int numColumns)
@@ -107,6 +111,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the widgets list.
      * @return the widgets
      */
     public List<WidgetData> getWidgets()
@@ -115,6 +120,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the title.
      * @return the title
      */
     public String getTitle()
@@ -123,6 +129,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the title.
      * @param title the title to set
      */
     public void setTitle(String title)
@@ -131,6 +138,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the closable flag.
      * @return the closable
      */
     public boolean isClosable()
@@ -139,6 +147,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the closable flag.
      * @param closable the closable to set
      */
     public void setClosable(boolean closable)
@@ -147,6 +156,7 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the list of buttons.
      * @return the buttons
      */
     public List<ButtonData> getButtons()

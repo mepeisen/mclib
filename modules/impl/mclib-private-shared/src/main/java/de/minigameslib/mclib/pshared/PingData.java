@@ -51,18 +51,19 @@ public class PingData extends AnnotatedDataFragment
     protected List<ItemMetaData> items = new ArrayList<>();
     
     /**
-     * Api version of server
+     * Api version of server.
      */
     @PersistentField
     protected int api;
     
     /**
-     * Ping is sent on player login
+     * Ping is sent on player login.
      */
     @PersistentField
     protected boolean login;
 
     /**
+     * Returns the api version of the server.
      * @return the api
      */
     public int getApi()
@@ -71,6 +72,7 @@ public class PingData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the api version of the server.
      * @param api the api to set
      */
     public void setApi(int api)
@@ -79,6 +81,7 @@ public class PingData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the player login flag.
      * @return the login
      */
     public boolean isLogin()
@@ -87,6 +90,7 @@ public class PingData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the player login flag.
      * @param login the login to set
      */
     public void setLogin(boolean login)
@@ -95,10 +99,10 @@ public class PingData extends AnnotatedDataFragment
     }
 
     /**
-     * Adds new meta data
-     * @param id
-     * @param hardness
-     * @param resistance
+     * Adds new block meta data.
+     * @param id block id
+     * @param hardness block hardness
+     * @param resistance block resistance
      */
     public void addMeta(int id, float hardness, float resistance)
     {
@@ -110,12 +114,12 @@ public class PingData extends AnnotatedDataFragment
     }
     
     /**
-     * Adds new meta data
-     * @param id
-     * @param durability
-     * @param attackSpeed 
-     * @param attackDmg 
-     * @param cls
+     * Adds new item meta data.
+     * @param id item id
+     * @param durability item durability
+     * @param attackSpeed attack speed
+     * @param attackDmg attack damage
+     * @param cls item class
      */
     public void addMeta(int id, int durability, double attackSpeed, double attackDmg, ItemClass cls)
     {
@@ -129,7 +133,7 @@ public class PingData extends AnnotatedDataFragment
     }
     
     /**
-     * Returns the list of meta data
+     * Returns the list of meta data.
      * @return the meta
      */
     public List<BlockMetaData> getBlocks()
@@ -138,7 +142,7 @@ public class PingData extends AnnotatedDataFragment
     }
     
     /**
-     * Returns the list of meta data
+     * Returns the list of meta data.
      * @return the meta
      */
     public List<ItemMetaData> getItems()
@@ -147,29 +151,29 @@ public class PingData extends AnnotatedDataFragment
     }
     
     /**
-     * the item class
+     * the item class.
      * @author mepeisen
      *
      */
     public enum ItemClass
     {
-        /** a pickaxe */
+        /** a pickaxe. */
         Pickaxe,
-        /** an axe */
+        /** an axe. */
         Axe,
-        /** a shovel */
+        /** a shovel. */
         Shovel,
-        /** a hoe */
+        /** a hoe. */
         Hoe,
-        /** weapon */
+        /** weapon. */
         Sword,
-        /** armor: helmet */
+        /** armor: helmet. */
         Helmet,
-        /** armor: chestplate */
+        /** armor: chestplate. */
         Chestplate,
-        /** armor: leggins */
+        /** armor: leggins. */
         Leggins,
-        /** armor: boots */
+        /** armor: boots. */
         Boots
     }
 
@@ -183,27 +187,28 @@ public class PingData extends AnnotatedDataFragment
         @PersistentField
         protected int id;
         
-        /** durability */
+        /** durability. */
         @PersistentField
         protected int dur;
         
         /**
-         * The attack damage
+         * The attack damage.
          */
         @PersistentField
         protected double dmg;
         
         /**
-         * The attack speed
+         * The attack speed.
          */
         @PersistentField
         protected double speed;
         
-        /** item class */
+        /** item class. */
         @PersistentField
         protected ItemClass cls;
 
         /**
+         * Returns the item class.
          * @return the cls
          */
         public ItemClass getCls()
@@ -212,6 +217,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the item class.
          * @param cls the cls to set
          */
         public void setCls(ItemClass cls)
@@ -220,6 +226,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the item id.
          * @return the id
          */
         public int getId()
@@ -228,6 +235,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the item id.
          * @param id the id to set
          */
         public void setId(int id)
@@ -236,6 +244,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * returns the durability.
          * @return the durability
          */
         public int getDurability()
@@ -244,6 +253,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the durability.
          * @param durability the durability to set
          */
         public void setDurability(int durability)
@@ -252,6 +262,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the damage.
          * @return the damage
          */
         public double getDamage()
@@ -260,6 +271,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the damage.
          * @param damage the damage to set
          */
         public void setDamage(double damage)
@@ -268,6 +280,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the speed.
          * @return the speed
          */
         public double getSpeed()
@@ -276,6 +289,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the speed.
          * @param speed the speed to set
          */
         public void setSpeed(double speed)
@@ -294,15 +308,18 @@ public class PingData extends AnnotatedDataFragment
         @PersistentField
         protected int id;
         
-        /** hardness */
+        //CHECKSTYLE:OFF
+        /** hardness. */
         @PersistentField
         protected float h;
         
-        /** resistance */
+        /** resistance. */
         @PersistentField
         protected float r;
+        //CHECKSTYLE:ON
 
         /**
+         * Returns the block id.
          * @return the id
          */
         public int getId()
@@ -311,6 +328,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the block id.
          * @param id the id to set
          */
         public void setId(int id)
@@ -319,6 +337,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the hadrness.
          * @return the h
          */
         public float getHardness()
@@ -327,6 +346,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the hardness.
          * @param h the h to set
          */
         public void setHardness(float h)
@@ -335,6 +355,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the resistance.
          * @return the r
          */
         public float getResistance()
@@ -343,6 +364,7 @@ public class PingData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the resistance.
          * @param r the r to set
          */
         public void setResistance(float r)

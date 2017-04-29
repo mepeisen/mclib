@@ -48,7 +48,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     protected String message;
     
     /**
-     * OK-Button
+     * OK-Button.
      */
     @PersistentField
     protected ButtonData okButton;
@@ -60,6 +60,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     protected String id;
 
     /**
+     * Returns the window id.
      * @return the id
      */
     public String getId()
@@ -68,6 +69,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param id the id to set
      */
     public void setId(String id)
@@ -76,6 +78,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the title.
      * @return the title
      */
     public String getTitle()
@@ -84,6 +87,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the title.
      * @param title the title to set
      */
     public void setTitle(String title)
@@ -92,6 +96,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the message text.
      * @return the message
      */
     public String getMessage()
@@ -100,6 +105,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the message text.
      * @param message the message to set
      */
     public void setMessage(String message)
@@ -108,6 +114,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the ok button.
      * @return the okButton
      */
     public ButtonData getOkButton()
@@ -116,6 +123,7 @@ public class DisplayErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the ok button.
      * @param okButton the okButton to set
      */
     public void setOkButton(ButtonData okButton)

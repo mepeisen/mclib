@@ -38,7 +38,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
 {
     
     /**
-     * form input id
+     * form input id.
      */
     @PersistentField
     protected String inputId;
@@ -56,6 +56,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
     protected String winId;
 
     /**
+     * Returns the window id.
      * @return the widgetId
      */
     public String getWinId()
@@ -64,6 +65,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param winId the winId to set
      */
     public void setWinId(String winId)
@@ -72,6 +74,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the input id.
      * @return the inputId
      */
     public String getInputId()
@@ -80,6 +83,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the input id.
      * @param inputId the inputId to set
      */
     public void setInputId(String inputId)
@@ -88,6 +92,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the form data.
      * @return the data
      */
     public DataSection getData()

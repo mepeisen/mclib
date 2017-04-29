@@ -60,6 +60,7 @@ public class MarkerData extends AnnotatedDataFragment
     protected String typeId;
     
     /**
+     * Returns the block marker data.
      * @return the block
      */
     public BlockMarkerData getBlock()
@@ -68,6 +69,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the block marker data.
      * @param block the block to set
      */
     public void setBlock(BlockMarkerData block)
@@ -76,6 +78,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the cuboid marker data.
      * @return the cuboid
      */
     public CuboidMarkerData getCuboid()
@@ -84,6 +87,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the cuboid marker data.
      * @param cuboid the cuboid to set
      */
     public void setCuboid(CuboidMarkerData cuboid)
@@ -92,6 +96,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the marker plugin.
      * @return the plugin
      */
     public String getPlugin()
@@ -100,6 +105,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the marker plugin.
      * @param plugin the plugin to set
      */
     public void setPlugin(String plugin)
@@ -108,6 +114,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the marker type id.
      * @return the typeId
      */
     public String getTypeId()
@@ -116,6 +123,7 @@ public class MarkerData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the marker type id.
      * @param typeId the typeId to set
      */
     public void setTypeId(String typeId)
@@ -129,28 +137,32 @@ public class MarkerData extends AnnotatedDataFragment
     public static class MarkerColorData extends AnnotatedDataFragment
     {
         
+        //CHECKSTYLE:OFF
         /**
-         * red color
+         * red color.
          */
         @PersistentField
         protected int r;
         /**
-         * green color
+         * green color.
          */
         @PersistentField
         protected int g;
         /**
-         * blue color
+         * blue color.
          */
         @PersistentField
         protected int b;
+        //CHECKSTYLE:ON
+        
         /**
-         * alpha color
+         * alpha color.
          */
         @PersistentField
         protected int alpha;
 
         /**
+         * Returns the red.
          * @return the r
          */
         public int getR()
@@ -159,6 +171,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the red.
          * @param r the r to set
          */
         public void setR(int r)
@@ -167,6 +180,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the green.
          * @return the g
          */
         public int getG()
@@ -175,6 +189,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the green.
          * @param g the g to set
          */
         public void setG(int g)
@@ -183,6 +198,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the blue.
          * @return the b
          */
         public int getB()
@@ -191,6 +207,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the blue.
          * @param b the b to set
          */
         public void setB(int b)
@@ -199,6 +216,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the alpha.
          * @return the alpha
          */
         public int getAlpha()
@@ -207,6 +225,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the alpha.
          * @param alpha the alpha to set
          */
         public void setAlpha(int alpha)
@@ -258,12 +277,13 @@ public class MarkerData extends AnnotatedDataFragment
         protected int z2;
         
         /**
-         * marker color
+         * marker color.
          */
         @PersistentField
         protected MarkerColorData color;
 
         /**
+         * Returns the x1 coordinate.
          * @return the x1
          */
         public int getX1()
@@ -272,6 +292,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the x1 coordinate.
          * @param x1 the x1 to set
          */
         public void setX1(int x1)
@@ -280,6 +301,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the y1 coordinate.
          * @return the y1
          */
         public int getY1()
@@ -288,6 +310,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the y1 coordinate.
          * @param y1 the y1 to set
          */
         public void setY1(int y1)
@@ -296,6 +319,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the z1 coordinate.
          * @return the z1
          */
         public int getZ1()
@@ -304,6 +328,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the z1 coordinate.
          * @param z1 the z1 to set
          */
         public void setZ1(int z1)
@@ -312,6 +337,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the x2 coordinate.
          * @return the x2
          */
         public int getX2()
@@ -320,6 +346,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the x2 coordinate.
          * @param x2 the x2 to set
          */
         public void setX2(int x2)
@@ -328,6 +355,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the y2 coordinate.
          * @return the y2
          */
         public int getY2()
@@ -336,6 +364,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the y2 coordinate.
          * @param y2 the y2 to set
          */
         public void setY2(int y2)
@@ -344,6 +373,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the z2 coordinate.
          * @return the z2
          */
         public int getZ2()
@@ -352,6 +382,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the z2 coordinate.
          * @param z2 the z2 to set
          */
         public void setZ2(int z2)
@@ -360,6 +391,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the color data.
          * @return the color
          */
         public MarkerColorData getColor()
@@ -368,6 +400,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the color data.
          * @param color the color to set
          */
         public void setColor(MarkerColorData color)
@@ -383,6 +416,7 @@ public class MarkerData extends AnnotatedDataFragment
     public static class BlockMarkerData extends AnnotatedDataFragment
     {
         
+        //CHECKSTYLE:OFF
         /**
          * x coordinate.
          */
@@ -400,15 +434,17 @@ public class MarkerData extends AnnotatedDataFragment
          */
         @PersistentField
         protected int z;
+        //CHECKSTYLE:ON
         
         /**
-         * marker color
+         * marker color.
          */
         @PersistentField
         protected MarkerColorData color;
         
 
         /**
+         * Returns the x coordinate.
          * @return the x
          */
         public int getX()
@@ -417,6 +453,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the x coordinate.
          * @param x the x to set
          */
         public void setX(int x)
@@ -425,6 +462,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the y coordinate.
          * @return the y
          */
         public int getY()
@@ -433,6 +471,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the y coordinate.
          * @param y the y to set
          */
         public void setY(int y)
@@ -441,6 +480,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the z coordinate.
          * @return the z
          */
         public int getZ()
@@ -449,6 +489,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the y coordinate.
          * @param z the z to set
          */
         public void setZ(int z)
@@ -457,6 +498,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the color data.
          * @return the color
          */
         public MarkerColorData getColor()
@@ -465,6 +507,7 @@ public class MarkerData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the color data.
          * @param color the color to set
          */
         public void setColor(MarkerColorData color)

@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
@@ -397,8 +398,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(VectorDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getVectorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataVectorList list = new DataVectorList();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.get(0));
     }
@@ -414,8 +417,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(VectorDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getVectorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataVectorSet list = new DataVectorSet();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.iterator().next());
     }
@@ -430,8 +435,10 @@ public class AnnotatedDataFragmentTest
         final VectorDataFragment result = mock(VectorDataFragment.class);
         when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
         when(data.getVector("ref")).thenReturn(result); //$NON-NLS-1$
+        when(data.isVector("ref")).thenReturn(true); //$NON-NLS-1$
         
         final DataVector obj = new DataVector();
+        assertTrue(obj.test(data));
         obj.read(data);
         assertEquals(result, obj.ref);
     }
@@ -495,8 +502,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(ItemStackDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getItemList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataItemStackList list = new DataItemStackList();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.get(0));
     }
@@ -512,8 +521,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(ItemStackDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getItemList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataItemStackSet list = new DataItemStackSet();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.iterator().next());
     }
@@ -528,8 +539,10 @@ public class AnnotatedDataFragmentTest
         final ItemStackDataFragment result = mock(ItemStackDataFragment.class);
         when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
         when(data.getItemStack("ref")).thenReturn(result); //$NON-NLS-1$
+        when(data.isItemStack("ref")).thenReturn(true); //$NON-NLS-1$
         
         final DataItemStack obj = new DataItemStack();
+        assertTrue(obj.test(data));
         obj.read(data);
         assertEquals(result, obj.ref);
     }
@@ -593,8 +606,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(ColorDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getColorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataColorList list = new DataColorList();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.get(0));
     }
@@ -610,8 +625,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(ColorDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getColorList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataColorSet list = new DataColorSet();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.iterator().next());
     }
@@ -626,8 +643,10 @@ public class AnnotatedDataFragmentTest
         final ColorDataFragment result = mock(ColorDataFragment.class);
         when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
         when(data.getColor("ref")).thenReturn(result); //$NON-NLS-1$
+        when(data.isColor("ref")).thenReturn(true); //$NON-NLS-1$
         
         final DataColor obj = new DataColor();
+        assertTrue(obj.test(data));
         obj.read(data);
         assertEquals(result, obj.ref);
     }
@@ -691,8 +710,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(PlayerDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getPlayerList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataPlayerList list = new DataPlayerList();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.get(0));
     }
@@ -708,8 +729,10 @@ public class AnnotatedDataFragmentTest
         resultList.add(mock(PlayerDataFragment.class));
         when(data.contains("refs")).thenReturn(true); //$NON-NLS-1$
         when(data.getPlayerList("refs")).thenReturn(resultList); //$NON-NLS-1$
+        when(data.isList("refs")).thenReturn(true); //$NON-NLS-1$
         
         final DataPlayerSet list = new DataPlayerSet();
+        assertTrue(list.test(data));
         list.read(data);
         assertEquals(resultList.get(0), list.refs.iterator().next());
     }
@@ -724,8 +747,10 @@ public class AnnotatedDataFragmentTest
         final PlayerDataFragment result = mock(PlayerDataFragment.class);
         when(data.contains("ref")).thenReturn(true); //$NON-NLS-1$
         when(data.getPlayer("ref")).thenReturn(result); //$NON-NLS-1$
+        when(data.isPlayer("ref")).thenReturn(true); //$NON-NLS-1$
         
         final DataPlayer obj = new DataPlayer();
+        assertTrue(obj.test(data));
         obj.read(data);
         assertEquals(result, obj.ref);
     }
@@ -790,7 +815,8 @@ public class AnnotatedDataFragmentTest
         maps.map.put("BAR", 2); //$NON-NLS-1$
         maps.map.put("BAZ", 3); //$NON-NLS-1$
         data.set("foo", maps); //$NON-NLS-1$
-        
+
+        assertTrue(data.isFragment(DataPrimMap.class, "foo")); //$NON-NLS-1$
         assertEquals(maps.map, data.getFragment(DataPrimMap.class, "foo").map); //$NON-NLS-1$
     }
     
@@ -812,7 +838,8 @@ public class AnnotatedDataFragmentTest
         src.map.put("BAR", UUID.randomUUID()); //$NON-NLS-1$
         src.map.put("BAZ", UUID.randomUUID()); //$NON-NLS-1$
         data.set("foo", src); //$NON-NLS-1$
-        
+
+        assertTrue(data.isFragment(DataUuid.class, "foo")); //$NON-NLS-1$
         assertEquals(src, data.getFragment(DataUuid.class, "foo")); //$NON-NLS-1$
     }
     
@@ -836,6 +863,30 @@ public class AnnotatedDataFragmentTest
         final MemoryDataSection data = new MemoryDataSection();
         data.set("foo.enum1List", "FOO"); //$NON-NLS-1$ //$NON-NLS-2$
         assertFalse(data.isFragment(DataEnums.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enums
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testInvalid1()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        final DataInvalid1 value = new DataInvalid1();
+        value.invalid.put(new AtomicBoolean(true), "FOO"); //$NON-NLS-1$
+        data.set("foo.enum1List", value); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enums
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testInvalid2()
+    {
+        final MemoryDataSection data = new MemoryDataSection();
+        final DataInvalid2 value = new DataInvalid2();
+        value.invalid.put("FOO", new AtomicBoolean(true)); //$NON-NLS-1$
+        data.set("foo.enum1List", value); //$NON-NLS-1$
     }
     
     /**
@@ -895,8 +946,29 @@ public class AnnotatedDataFragmentTest
         enums.uniqueMap.put("foo3", UniqueEnum1a.Val3); //$NON-NLS-1$
         
         data.set("foo", enums); //$NON-NLS-1$
-        
+
+        assertTrue(data.isFragment(DataEnums.class, "foo")); //$NON-NLS-1$
         assertEquals(enums, data.getFragment(DataEnums.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * data class.
+     */
+    public static class DataInvalid1 extends AnnotatedDataFragment
+    {
+        /** invalid */
+        @PersistentField
+        public Map<AtomicBoolean, String> invalid = new HashMap<>();
+    }
+    
+    /**
+     * data class.
+     */
+    public static class DataInvalid2 extends AnnotatedDataFragment
+    {
+        /** invalid */
+        @PersistentField
+        public Map<String, AtomicBoolean> invalid = new HashMap<>();
     }
     
     /**

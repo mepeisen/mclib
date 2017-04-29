@@ -48,6 +48,7 @@ public class SendErrorData extends AnnotatedDataFragment
     protected String id;
 
     /**
+     * Returns the window id.
      * @return the id
      */
     public String getId()
@@ -56,6 +57,7 @@ public class SendErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param id the id to set
      */
     public void setId(String id)
@@ -64,6 +66,7 @@ public class SendErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the error message text.
      * @return the message
      */
     public String getMessage()
@@ -72,6 +75,7 @@ public class SendErrorData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the error message text.
      * @param message the message to set
      */
     public void setMessage(String message)

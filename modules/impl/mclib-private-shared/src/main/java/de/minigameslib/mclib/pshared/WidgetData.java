@@ -47,36 +47,37 @@ public class WidgetData extends AnnotatedDataFragment
     protected Label label;
     
     /**
-     * Submit button
+     * Submit button.
      */
     @PersistentField
     protected SubmitButton submit;
     
     /**
-     * Cancel button
+     * Cancel button.
      */
     @PersistentField
     protected CancelButton cancel;
     
     /**
-     * The text input
+     * The text input.
      */
     @PersistentField
     protected TextInput textInput;
     
     /**
-     * The list input
+     * The list input.
      */
     @PersistentField
     protected ListInput listInput;
     
     /**
-     * The combobox input
+     * The combobox input.
      */
     @PersistentField
     protected ComboInput comboInput;
     
     /**
+     * Returns the label widget.
      * @return the label
      */
     public Label getLabel()
@@ -85,6 +86,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the label widget.
      * @param label the label to set
      */
     public void setLabel(Label label)
@@ -93,6 +95,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the submit button widget.
      * @return the submit
      */
     public SubmitButton getSubmit()
@@ -101,6 +104,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the submit button widget.
      * @param submit the submit to set
      */
     public void setSubmit(SubmitButton submit)
@@ -109,6 +113,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the cancel button widget.
      * @return the cancel
      */
     public CancelButton getCancel()
@@ -117,6 +122,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the cnacel button widget.
      * @param cancel the cancel to set
      */
     public void setCancel(CancelButton cancel)
@@ -125,6 +131,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the text input widget.
      * @return the textInput
      */
     public TextInput getTextInput()
@@ -133,6 +140,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the text input widget.
      * @param textInput the textInput to set
      */
     public void setTextInput(TextInput textInput)
@@ -141,6 +149,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the list input widget.
      * @return the listInput
      */
     public ListInput getListInput()
@@ -149,6 +158,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the list input widget.
      * @param listInput the listInput to set
      */
     public void setListInput(ListInput listInput)
@@ -157,6 +167,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the combo input widget.
      * @return the comboInput
      */
     public ComboInput getComboInput()
@@ -165,6 +176,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the combo input widget.
      * @param comboInput the comboInput to set
      */
     public void setComboInput(ComboInput comboInput)
@@ -221,7 +233,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected String label;
         
         /**
-         * initial value
+         * initial value.
          */
         @PersistentField
         protected String value;
@@ -233,6 +245,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected List<ComboValue> values = new ArrayList<>();
 
         /**
+         * Returns the flag to allow nulls/ empty values.
          * @return the allowsNull
          */
         public boolean isAllowsNull()
@@ -241,6 +254,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the flag to allow nulls/ empty values.
          * @param allowsNull the allowsNull to set
          */
         public void setAllowsNull(boolean allowsNull)
@@ -249,6 +263,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the flag to allow new values.
          * @return the allowsNewValues
          */
         public boolean isAllowsNewValues()
@@ -257,6 +272,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the flag to allow new values.
          * @param allowsNewValues the allowsNewValues to set
          */
         public void setAllowsNewValues(boolean allowsNewValues)
@@ -265,6 +281,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the data key for labels.
          * @return the labelKey
          */
         public String getLabelKey()
@@ -273,6 +290,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data key for labels.
          * @param labelKey the labelKey to set
          */
         public void setLabelKey(String labelKey)
@@ -281,6 +299,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the data key for ids.
          * @return the idKey
          */
         public String getIdKey()
@@ -289,6 +308,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data key for ids.
          * @param idKey the idKey to set
          */
         public void setIdKey(String idKey)
@@ -297,6 +317,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data key for identifying new values.
          * @return the nformKey
          */
         public String getNformKey()
@@ -305,6 +326,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Gets the data key for identifying new values.
          * @param nformKey the nformKey to set
          */
         public void setNformKey(String nformKey)
@@ -313,6 +335,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the data key for values.
          * @return the formKey
          */
         public String getFormKey()
@@ -321,6 +344,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data keys for values.
          * @param formKey the formKey to set
          */
         public void setFormKey(String formKey)
@@ -329,6 +353,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the label text.
          * @return the label
          */
         public String getLabel()
@@ -337,6 +362,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the label text.
          * @param label the label to set
          */
         public void setLabel(String label)
@@ -345,6 +371,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the value.
          * @return the value
          */
         public String getValue()
@@ -353,6 +380,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the value.
          * @param value the value to set
          */
         public void setValue(String value)
@@ -361,6 +389,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the list of possible values.
          * @return the values
          */
         public List<ComboValue> getValues()
@@ -371,7 +400,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
-     * Combobox value
+     * Combobox value.
      */
     public static class ComboValue extends AnnotatedDataFragment
     {
@@ -380,6 +409,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected DataSection data = new MemoryDataSection();
 
         /**
+         * Combo box data.
          * @return the data
          */
         public DataSection getData()
@@ -388,6 +418,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Combo box data.
          * @param data the data to set
          */
         public void setData(DataSection data)
@@ -421,6 +452,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected List<ListButton> buttons = new ArrayList<>();
 
         /**
+         * Returns the data id.
          * @return the dataId
          */
         public String getDataId()
@@ -429,6 +461,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data id.
          * @param dataId the dataId to set
          */
         public void setDataId(String dataId)
@@ -437,6 +470,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the column definitions.
          * @return the columns
          */
         public List<ListColumn> getColumns()
@@ -445,6 +479,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the list buttons.
          * @return the buttons
          */
         public List<ListButton> getButtons()
@@ -455,7 +490,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
-     * A list column
+     * A list column.
      */
     public static class ListColumn extends AnnotatedDataFragment
     {
@@ -485,6 +520,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected String label;
 
         /**
+         * Returns the data key.
          * @return the dataKey
          */
         public String getDataKey()
@@ -493,6 +529,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data key.
          * @param dataKey the dataKey to set
          */
         public void setDataKey(String dataKey)
@@ -501,6 +538,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the form key.
          * @return the formKey
          */
         public String getFormKey()
@@ -509,6 +547,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the form key.
          * @param formKey the formKey to set
          */
         public void setFormKey(String formKey)
@@ -517,6 +556,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the visible flag.
          * @return the visible
          */
         public boolean isVisible()
@@ -525,6 +565,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the visible flag.
          * @param visible the visible to set
          */
         public void setVisible(boolean visible)
@@ -533,6 +574,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the label key.
          * @return the label
          */
         public String getLabel()
@@ -541,6 +583,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the label key.
          * @param label the label to set
          */
         public void setLabel(String label)
@@ -551,16 +594,19 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
-     * A list button
+     * A list button.
      */
     public static class ListButton extends ButtonData
     {
         
-        /** {@code true} if the button needs a selected list entry. */
+        /**
+         * {@code true} if the button needs a selected list entry.
+         */
         @PersistentField
         protected boolean needsInput;
 
         /**
+         * Returns the needs input flag.
          * @return the needsInput
          */
         public boolean isNeedsInput()
@@ -569,6 +615,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the needs input flag.
          * @param needsInput the needsInput to set
          */
         public void setNeedsInput(boolean needsInput)
@@ -592,6 +639,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected int limit;
 
         /**
+         * Returns the start index.
          * @return the start
          */
         public int getStart()
@@ -600,6 +648,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the start index.
          * @param start the start to set
          */
         public void setStart(int start)
@@ -608,6 +657,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the row limit.
          * @return the limit
          */
         public int getLimit()
@@ -616,6 +666,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the row limit.
          * @param limit the limit to set
          */
         public void setLimit(int limit)
@@ -638,6 +689,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected List<ListResponseRow> rows = new ArrayList<>();
 
         /**
+         * Returns the count.
          * @return the count
          */
         public int getCount()
@@ -646,6 +698,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the count.
          * @param count the count to set
          */
         public void setCount(int count)
@@ -654,6 +707,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the data rows.
          * @return the rows
          */
         public List<ListResponseRow> getRows()
@@ -672,6 +726,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected DataSection data = new MemoryDataSection();
 
         /**
+         * Returns the row data.
          * @return the data
          */
         public DataSection getData()
@@ -694,7 +749,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected String label;
         
         /**
-         * initial value
+         * initial value.
          */
         @PersistentField
         protected String value;
@@ -706,12 +761,13 @@ public class WidgetData extends AnnotatedDataFragment
         protected boolean allowsEmpty;
         
         /**
-         * the form key
+         * the form key.
          */
         @PersistentField
         protected String formKey;
 
         /**
+         * Returns the label.
          * @return the label
          */
         public String getLabel()
@@ -720,6 +776,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the label.
          * @param label the label to set
          */
         public void setLabel(String label)
@@ -728,6 +785,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the value.
          * @return the value
          */
         public String getValue()
@@ -736,6 +794,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the value.
          * @param value the value to set
          */
         public void setValue(String value)
@@ -744,6 +803,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * returns the flag to allow empty values.
          * @return the allowsEmpty
          */
         public boolean isAllowsEmpty()
@@ -752,6 +812,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the flag to allow empty values.
          * @param allowsEmpty the allowsEmpty to set
          */
         public void setAllowsEmpty(boolean allowsEmpty)
@@ -760,6 +821,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the data key for values.
          * @return the formKey
          */
         public String getFormKey()
@@ -768,6 +830,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the data key for values.
          * @param formKey the formKey to set
          */
         public void setFormKey(String formKey)
@@ -798,6 +861,7 @@ public class WidgetData extends AnnotatedDataFragment
         protected String text;
 
         /**
+         * Returns the column span.
          * @return the span
          */
         public int getSpan()
@@ -806,6 +870,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the column span.
          * @param span the span to set
          */
         public void setSpan(int span)
@@ -814,6 +879,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Returns the text.
          * @return the text
          */
         public String getText()
@@ -822,6 +888,7 @@ public class WidgetData extends AnnotatedDataFragment
         }
 
         /**
+         * Sets the text.
          * @param text the text to set
          */
         public void setText(String text)

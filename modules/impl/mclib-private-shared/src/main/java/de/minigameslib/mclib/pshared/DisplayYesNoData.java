@@ -48,13 +48,13 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     protected String message;
     
     /**
-     * Yes-Button
+     * Yes-Button.
      */
     @PersistentField
     protected ButtonData yesButton;
     
     /**
-     * No-Button
+     * No-Button.
      */
     @PersistentField
     protected ButtonData noButton;
@@ -66,6 +66,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     protected String id;
 
     /**
+     * Returns the window id.
      * @return the id
      */
     public String getId()
@@ -74,6 +75,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param id the id to set
      */
     public void setId(String id)
@@ -82,6 +84,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the title.
      * @return the title
      */
     public String getTitle()
@@ -90,6 +93,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the title.
      * @param title the title to set
      */
     public void setTitle(String title)
@@ -98,6 +102,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the message text.
      * @return the message
      */
     public String getMessage()
@@ -106,6 +111,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the message text.
      * @param message the message to set
      */
     public void setMessage(String message)
@@ -114,6 +120,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * returns the yes button.
      * @return the yesButton
      */
     public ButtonData getYesButton()
@@ -122,6 +129,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the yes button.
      * @param yesButton the yesButton to set
      */
     public void setYesButton(ButtonData yesButton)
@@ -130,6 +138,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the no button.
      * @return the noButton
      */
     public ButtonData getNoButton()
@@ -138,6 +147,7 @@ public class DisplayYesNoData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the no button.
      * @param noButton the noButton to set
      */
     public void setNoButton(ButtonData noButton)

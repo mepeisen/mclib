@@ -60,6 +60,7 @@ public class ButtonData extends AnnotatedDataFragment
     protected boolean isCloseAction;
 
     /**
+     * Returns the label.
      * @return the label
      */
     public String getLabel()
@@ -68,6 +69,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the label.
      * @param label the label to set
      */
     public void setLabel(String label)
@@ -76,6 +78,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the has action listener flag.
      * @return the hasActionListener
      */
     public boolean isHasActionListener()
@@ -84,6 +87,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the has action listener flag.
      * @param hasActionListener the hasActionListener to set
      */
     public void setHasActionListener(boolean hasActionListener)
@@ -92,6 +96,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Retrurns the action id.
      * @return the actionId
      */
     public String getActionId()
@@ -100,6 +105,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the action id.
      * @param actionId the actionId to set
      */
     public void setActionId(String actionId)
@@ -108,6 +114,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Returns the close action flag.
      * @return the isCloseAction
      */
     public boolean isCloseAction()
@@ -116,6 +123,7 @@ public class ButtonData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the close action flag.
      * @param isCloseAction the isCloseAction to set
      */
     public void setCloseAction(boolean isCloseAction)

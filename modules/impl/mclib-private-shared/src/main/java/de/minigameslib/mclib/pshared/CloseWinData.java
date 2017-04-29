@@ -42,6 +42,7 @@ public class CloseWinData extends AnnotatedDataFragment
     protected String winId;
 
     /**
+     * Returns the window id.
      * @return the widgetId
      */
     public String getWinId()
@@ -50,6 +51,7 @@ public class CloseWinData extends AnnotatedDataFragment
     }
 
     /**
+     * Sets the window id.
      * @param winId the winId to set
      */
     public void setWinId(String winId)

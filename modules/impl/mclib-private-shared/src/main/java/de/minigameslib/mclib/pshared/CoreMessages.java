@@ -33,13 +33,13 @@ public enum CoreMessages
 {
     
     /**
-     * Ping from server to client
+     * Ping from server to client.
      * @see PingData
      */
     Ping,
     
     /**
-     * Pong from client to server
+     * Pong from client to server.
      * @see PongData
      */
     Pong,
@@ -111,19 +111,19 @@ public enum CoreMessages
     QueryFormAnswer,
     
     /**
-     * Displays a marker
+     * Displays a marker.
      * @see DisplayMarkerData
      */
     DisplayMarker,
     
     /**
-     * Removes a marker
+     * Removes a marker.
      * @see RemoveMarkerData
      */
     RemoveMarker,
     
     /**
-     * Removes all displayed markers
+     * Removes all displayed markers.
      * @see ResetMarkersData
      */
     ResetMarkers,

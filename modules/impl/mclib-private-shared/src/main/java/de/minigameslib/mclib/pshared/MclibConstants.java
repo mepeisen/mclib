@@ -25,7 +25,7 @@
 package de.minigameslib.mclib.pshared;
 
 /**
- * Some constants shared between client and server
+ * Some constants shared between client and server.
  * 
  * @author mepeisen
  */
