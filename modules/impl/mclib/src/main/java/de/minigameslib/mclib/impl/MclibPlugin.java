@@ -94,6 +94,7 @@ import de.minigameslib.mclib.api.com.CommunicationPeerHandler;
 import de.minigameslib.mclib.api.com.ServerCommunicationServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigInterface;
+import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
 import de.minigameslib.mclib.api.config.ConfigVectorData;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
@@ -332,6 +333,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initFragmentImplementation(McPlayerInterface.class, PlayerProxy.class);
         MemoryDataSection.initFragmentImplementation(ColorDataFragment.class, ConfigColorData.class);
         MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, ConfigItemStackWrapper.class);
+        MemoryDataSection.initFragmentImplementation(ConfigItemStackData.class, ConfigItemStackWrapper.class);
         MemoryDataSection.initFragmentImplementation(VectorDataFragment.class, ConfigVectorData.class);
         
         MemoryDataSection.initFragmentImplementation(ObjectIdInterface.class, ObjectId.class);
