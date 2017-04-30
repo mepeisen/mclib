@@ -326,7 +326,7 @@ public class PingData extends AnnotatedDataFragment
          * opaqueness of block variants.
          */
         @PersistentField
-        protected Map<Integer, Boolean> op = new HashMap<>();
+        protected Map<String, String> op = new HashMap<>();
 
         /**
          * Returns the block id.
@@ -386,7 +386,7 @@ public class PingData extends AnnotatedDataFragment
          * Returns the opaqueness of block variants.
          * @return the opaqueness of block variants
          */
-        public Map<Integer, Boolean> getOpaqueness()
+        public Map<String, String> getOpaqueness()
         {
             return this.op;
         }

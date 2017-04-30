@@ -2345,7 +2345,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final BlockMetaData metadata = ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
             for (final BlockVariantId variantId : block.variants())
             {
-                metadata.getOpaqueness().put(variantId.ordinal(), variantId.isOpaque());
+                metadata.getOpaqueness().put(String.valueOf(variantId.ordinal()), variantId.isOpaque() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         for (final ItemId item : this.itemIdMap.keySet())
