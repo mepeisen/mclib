@@ -558,7 +558,7 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
          */
         public InventoryImpl(InventoryContentData data, File config, Runnable onClose)
         {
-            super(data.getSlotSize(), data.getMaxStackSize());
+            super(data.getSlotSize(), data.getMaxStackSize(), data.getSlots().stream().map(ConfigItemStackData::toBukkit).toArray(ItemStack[]::new));
             this.invcontent = data;
             this.invconfig = config;
             this.onClose = onClose;

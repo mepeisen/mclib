@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import org.bukkit.inventory.ItemStack;
+
 import de.minigameslib.mclib.nms.api.CraftInventoryWrapper;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener;
 
@@ -51,7 +53,7 @@ public class InventoryForListener extends CraftInventoryWrapper
      */
     public InventoryForListener(InventoryListener listener, int size, String title)
     {
-        super(size, 64);
+        super(size, 64, new ItemStack[size]);
         this.listener = listener;
         this.title = title;
     }

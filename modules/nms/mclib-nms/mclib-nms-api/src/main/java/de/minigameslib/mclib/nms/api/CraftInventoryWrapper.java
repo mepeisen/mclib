@@ -54,22 +54,23 @@ public abstract class CraftInventoryWrapper implements Inventory
      * Constructor to create inventory.
      * @param size size of the inventory.
      * @param maxStackSize the max stack size.
+     * @param slots the initial slots
      */
-    public CraftInventoryWrapper(int size, int maxStackSize)
+    public CraftInventoryWrapper(int size, int maxStackSize, ItemStack[] slots)
     {
-        this.createMirror(size, maxStackSize);
+        this.createMirror(size, maxStackSize, slots);
     }
 
     /**
      * Creates bukkit mirror.
      * @param size size of the inventory.
      * @param maxStackSize the max stack size.
+     * @param slots the initial slots
      */
-    private void createMirror(int size, int maxStackSize)
+    private void createMirror(int size, int maxStackSize, ItemStack[] slots)
     {
         this.craftInventory = Bukkit.createInventory(null, size);
         this.craftInventory.setMaxStackSize(maxStackSize);
-        final ItemStack[] slots = this.getPersistentSlots();
         for (int i = 0; i < size; i++)
         {
             final ItemStack stack = slots[i];
@@ -82,7 +83,7 @@ public abstract class CraftInventoryWrapper implements Inventory
      */
     protected void createMirror()
     {
-        this.createMirror(this.getPersistentSlots().length, this.getPersistentMaxStackSize());
+        this.createMirror(this.getPersistentSlots().length, this.getPersistentMaxStackSize(), this.getPersistentSlots());
     }
 
     /**
