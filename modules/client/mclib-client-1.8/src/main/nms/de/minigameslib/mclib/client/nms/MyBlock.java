@@ -69,7 +69,7 @@ public class MyBlock extends Block
     @Override
     public boolean isOpaqueCube()
     {
-        final Boolean result = this.opaque.get(0);
+        final Boolean result = this.opaque == null ? null : this.opaque.get(0);
         if (result == null)
         {
             return super.isOpaqueCube();
@@ -77,9 +77,9 @@ public class MyBlock extends Block
         return result;
     }
 
-    public void setOpaqueCube(int meta, boolean isOpaque)
+    public void setOpaqueCube(String meta, String isOpaque)
     {
-        this.opaque.put(meta, isOpaque);
+        this.opaque.put(Integer.parseInt(meta), "1".equals(isOpaque) ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**

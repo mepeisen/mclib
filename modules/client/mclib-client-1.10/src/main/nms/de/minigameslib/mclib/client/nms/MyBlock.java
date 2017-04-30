@@ -71,7 +71,7 @@ public class MyBlock extends Block
     @Override
     public boolean isOpaqueCube(IBlockState state)
     {
-        final Boolean result = this.opaque.get(this.getMetaFromState(state));
+        final Boolean result = this.opaque == null ? null : this.opaque.get(this.getMetaFromState(state));
         if (result == null)
         {
             return super.isOpaqueCube(state);
@@ -79,9 +79,9 @@ public class MyBlock extends Block
         return result;
     }
 
-    public void setOpaqueCube(int meta, boolean isOpaque)
+    public void setOpaqueCube(String meta, String isOpaque)
     {
-        this.opaque.put(meta, isOpaque);
+        this.opaque.put(Integer.parseInt(meta), "1".equals(isOpaque) ? Boolean.TRUE : Boolean.FALSE);
     }
 
     /**
