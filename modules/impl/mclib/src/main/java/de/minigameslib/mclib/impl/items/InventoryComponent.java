@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -44,9 +43,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.CommonMessages;
@@ -63,6 +60,7 @@ import de.minigameslib.mclib.impl.comp.ComponentRegistry;
 import de.minigameslib.mclib.impl.comp.WorldChunk;
 import de.minigameslib.mclib.impl.gui.inv.InventoryGui;
 import de.minigameslib.mclib.impl.yml.YmlFile;
+import de.minigameslib.mclib.nms.api.CraftInventoryWrapper;
 import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
 
 /**
@@ -532,95 +530,10 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
-     * Implementation of local inventories
+     * Implementation of local inventories.
      */
-    private class InventoryImpl implements Inventory, InventoryListener
+    private class InventoryImpl extends CraftInventoryWrapper implements InventoryListener
     {
-        
-        /**
-         * @author mepeisen
-         *
-         */
-        private final class IteratorWrapper implements ListIterator<ItemStack>
-        {
-            /**
-             * 
-             */
-            private final ListIterator<ItemStack> delegate;
-            
-            /**
-             * @param delegate
-             */
-            IteratorWrapper(ListIterator<ItemStack> delegate)
-            {
-                this.delegate = delegate;
-            }
-            
-            @Override
-            public boolean hasNext()
-            {
-                return this.delegate.hasNext();
-            }
-            
-            @Override
-            public ItemStack next()
-            {
-                return this.delegate.next();
-            }
-            
-            @Override
-            public boolean hasPrevious()
-            {
-                return this.delegate.hasPrevious();
-            }
-            
-            @Override
-            public ItemStack previous()
-            {
-                return this.delegate.previous();
-            }
-            
-            @Override
-            public int nextIndex()
-            {
-                return this.delegate.nextIndex();
-            }
-            
-            @Override
-            public int previousIndex()
-            {
-                return this.delegate.previousIndex();
-            }
-            
-            @Override
-            public void remove()
-            {
-                this.delegate.remove();
-                InventoryImpl.this.fillInventorySlotsFromMirror();
-                InventoryImpl.this.saveData();
-            }
-            
-            @Override
-            public void set(ItemStack e)
-            {
-                this.delegate.set(e);
-                InventoryImpl.this.fillInventorySlotsFromMirror();
-                InventoryImpl.this.saveData();
-            }
-            
-            @Override
-            public void add(ItemStack e)
-            {
-                this.delegate.add(e);
-                InventoryImpl.this.fillInventorySlotsFromMirror();
-                InventoryImpl.this.saveData();
-            }
-        }
-
-        /**
-         * craft inventory mirror
-         */
-        private Inventory craftInventory;
         
         /**
          * Inventory content data.
@@ -638,13 +551,14 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
         private Runnable onClose;
         
         /**
-         * Inventory implementation (inventory content)
-         * @param data
-         * @param config
-         * @param onClose 
+         * Inventory implementation (inventory content).
+         * @param data The persistent data
+         * @param config the config file
+         * @param onClose the runnable on closing this inventory
          */
         public InventoryImpl(InventoryContentData data, File config, Runnable onClose)
         {
+            super(data.getSlotSize(), data.getMaxStackSize());
             this.invcontent = data;
             this.invconfig = config;
             this.onClose = onClose;
@@ -652,25 +566,17 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
             {
                 this.saveData();
             }
-            createMirror();
         }
-
-        /**
-         * 
-         */
-        private void createMirror()
+        
+        @Override
+        protected ItemStack[] getPersistentSlots()
         {
-            final int size = this.invcontent.getSlotSize();
-            this.craftInventory = Bukkit.createInventory(null, size);
-            for (int i = 0; i < size; i++)
-            {
-                final ItemStack stack = this.invcontent.getSlots().get(i).toBukkit();
-                this.craftInventory.setItem(i, stack.getType() == Material.AIR ? null : stack);
-            }
+            return this.invcontent.getSlots().stream().map(ConfigItemStackData::toBukkit).toArray(ItemStack[]::new);
         }
 
         /**
-         * @param slotAmount
+         * Inventory growing.
+         * @param slotAmount slot amount.
          */
         public void grow(int slotAmount)
         {
@@ -686,8 +592,9 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
         }
 
         /**
-         * @param slots
-         * @throws McException 
+         * Sets the new inventory size.
+         * @param slots slot count.
+         * @throws McException thrown if there are too many items.
          */
         public void setSize(int slots) throws McException
         {
@@ -702,8 +609,9 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
         }
 
         /**
-         * @param slotAmount
-         * @throws McException 
+         * Inventory shrink.
+         * @param slotAmount slot count.
+         * @throws McException thrown if there are too many items.
          */
         public void shrink(int slotAmount) throws McException
         {
@@ -731,45 +639,30 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
                 throw new McException(InventoryServiceImpl.Messages.NotEnoughFreeSlots);
             }
             
+            // TODO shrink it
         }
-
+        
         @Override
-        public int getSize()
+        protected void saveMaxStackSize(int size2)
         {
-            return this.craftInventory.getSize();
-        }
-
-        @Override
-        public int getMaxStackSize()
-        {
-            return this.craftInventory.getSize();
-        }
-
-        @Override
-        public void setMaxStackSize(int size)
-        {
-            this.invcontent.setMaxStackSize(size);
+            this.invcontent.setMaxStackSize(size2);
             this.saveData();
-            this.craftInventory.setMaxStackSize(size);
         }
-
+        
         @Override
-        public String getName()
+        protected int getPersistentMaxStackSize()
         {
-            return this.craftInventory.getName();
+            return this.invcontent.getMaxStackSize();
         }
-
+        
         @Override
-        public ItemStack getItem(int index)
-        {
-            return this.craftInventory.getItem(index);
-        }
-
-        @Override
-        public void setItem(int index, ItemStack item)
+        protected void saveItem(int index, ItemStack item)
         {
             final List<ConfigItemStackData> list = this.invcontent.getSlots();
-            if (index >= list.size()) return;
+            if (index >= list.size())
+            {
+                return;
+            }
             
             if (item == null || item.getType() == Material.AIR)
             {
@@ -780,188 +673,18 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
                 list.set(index, ConfigItemStackData.fromBukkit(item));
             }
             this.saveData();
-            
-            this.craftInventory.setItem(index, item);
         }
-
+        
         @Override
-        public HashMap<Integer, ItemStack> addItem(ItemStack... items) throws IllegalArgumentException
+        protected void saveItems(ItemStack[] old, ItemStack[] contents)
         {
-            final HashMap<Integer, ItemStack> result = this.craftInventory.addItem(items);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-            return result;
-        }
-
-        @Override
-        public HashMap<Integer, ItemStack> removeItem(ItemStack... items) throws IllegalArgumentException
-        {
-            final HashMap<Integer, ItemStack> result = this.craftInventory.removeItem(items);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-            return result;
-        }
-
-        @Override
-        public ItemStack[] getContents()
-        {
-            return this.craftInventory.getContents();
-        }
-
-        @Override
-        public void setContents(ItemStack[] items) throws IllegalArgumentException
-        {
-            this.craftInventory.setContents(items);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @Override
-        public ItemStack[] getStorageContents()
-        {
-            return this.craftInventory.getStorageContents();
-        }
-
-        @Override
-        public void setStorageContents(ItemStack[] items) throws IllegalArgumentException
-        {
-            this.craftInventory.setStorageContents(items);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean contains(int materialId)
-        {
-            return this.craftInventory.contains(materialId);
-        }
-
-        @Override
-        public boolean contains(Material material) throws IllegalArgumentException
-        {
-            return this.craftInventory.contains(material);
-        }
-
-        @Override
-        public boolean contains(ItemStack item)
-        {
-            return this.craftInventory.contains(item);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public boolean contains(int materialId, int amount)
-        {
-            return this.craftInventory.contains(materialId, amount);
-        }
-
-        @Override
-        public boolean contains(Material material, int amount) throws IllegalArgumentException
-        {
-            return this.craftInventory.contains(material, amount);
-        }
-
-        @Override
-        public boolean contains(ItemStack item, int amount)
-        {
-            return this.craftInventory.contains(item, amount);
-        }
-
-        @Override
-        public boolean containsAtLeast(ItemStack item, int amount)
-        {
-            return this.craftInventory.containsAtLeast(item, amount);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public HashMap<Integer, ? extends ItemStack> all(int materialId)
-        {
-            return this.craftInventory.all(materialId);
-        }
-
-        @Override
-        public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException
-        {
-            return this.craftInventory.all(material);
-        }
-
-        @Override
-        public HashMap<Integer, ? extends ItemStack> all(ItemStack item)
-        {
-            return this.craftInventory.all(item);
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public int first(int materialId)
-        {
-            return this.craftInventory.first(materialId);
-        }
-
-        @Override
-        public int first(Material material) throws IllegalArgumentException
-        {
-            return this.craftInventory.first(material);
-        }
-
-        @Override
-        public int first(ItemStack item)
-        {
-            return this.craftInventory.first(item);
-        }
-
-        @Override
-        public int firstEmpty()
-        {
-            return this.craftInventory.firstEmpty();
-        }
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public void remove(int materialId)
-        {
-            this.craftInventory.remove(materialId);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @Override
-        public void remove(Material material) throws IllegalArgumentException
-        {
-            this.craftInventory.remove(material);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @Override
-        public void remove(ItemStack item)
-        {
-            this.craftInventory.remove(item);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @Override
-        public void clear(int index)
-        {
-            this.craftInventory.clear(index);
-            this.fillInventorySlotsFromMirror();
-            this.saveData();
-        }
-
-        @Override
-        public void clear()
-        {
-            this.craftInventory.clear();
             this.fillInventorySlotsFromMirror();
             this.saveData();
         }
 
         /**
-         * Saves data to inventory
-         * @throws IllegalStateException 
+         * Saves data to inventory.
+         * @throws IllegalStateException wrapped io exceptions
          */
         void saveData() throws IllegalStateException
         {
@@ -979,60 +702,16 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
         }
 
         /**
-         * Fills inventory slots from mirror
+         * Fills inventory slots from mirror.
          */
         void fillInventorySlotsFromMirror()
         {
             final List<ConfigItemStackData> list = this.invcontent.getSlots();
             for (int i = this.getSize() - 1; i >= 0; i--)
             {
-                final ItemStack stack = this.craftInventory.getItem(i);
+                final ItemStack stack = this.getItem(i);
                 list.set(i, stack == null || stack.getType() == Material.AIR ? InventoryContentData.AIR : ConfigItemStackData.fromBukkit(stack));
             }
-        }
-
-        @Override
-        public List<HumanEntity> getViewers()
-        {
-            return this.craftInventory.getViewers();
-        }
-
-        @Override
-        public String getTitle()
-        {
-            return this.craftInventory.getTitle();
-        }
-
-        @Override
-        public InventoryType getType()
-        {
-            return this.craftInventory.getType();
-        }
-
-        @Override
-        public InventoryHolder getHolder()
-        {
-            return this.craftInventory.getHolder();
-        }
-
-        @Override
-        public ListIterator<ItemStack> iterator()
-        {
-            final ListIterator<ItemStack> delegate = this.craftInventory.iterator();
-            return new IteratorWrapper(delegate);
-        }
-
-        @Override
-        public ListIterator<ItemStack> iterator(int index)
-        {
-            final ListIterator<ItemStack> delegate = this.craftInventory.iterator(index);
-            return new IteratorWrapper(delegate);
-        }
-
-        @Override
-        public Location getLocation()
-        {
-            return this.craftInventory.getLocation();
         }
 
         @Override

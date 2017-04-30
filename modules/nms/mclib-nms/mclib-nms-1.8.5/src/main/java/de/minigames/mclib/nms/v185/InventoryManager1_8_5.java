@@ -43,6 +43,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.nms.api.InventoryForListener;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
@@ -65,8 +66,8 @@ public class InventoryManager1_8_5 implements InventoryManagerInterface
     @Override
     public InventoryHelper openInventory(Player player, String name, ItemStack[] items, InventoryListener listener)
     {
-        final Inventory1_8_5 inventory = new Inventory1_8_5(listener, null, items.length, name);
-        setContents(inventory, items);
+        final InventoryForListener inventory = new InventoryForListener(listener, items.length, name);
+        inventory.setContents(items);
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         if (entity.activeContainer != entity.defaultContainer)
         {

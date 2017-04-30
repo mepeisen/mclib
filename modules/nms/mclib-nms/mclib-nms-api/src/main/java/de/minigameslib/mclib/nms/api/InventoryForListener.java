@@ -22,12 +22,9 @@
 
 */
 
-package de.minigameslib.mclib.nms.v111;
+package de.minigameslib.mclib.nms.api;
 
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryCustom;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-
+import de.minigameslib.mclib.nms.api.CraftInventoryWrapper;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener;
 
 /**
@@ -35,37 +32,69 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface.InventoryListener
  * 
  * @author mepeisen
  */
-public class Inventory1_11 extends CraftInventoryCustom
+public class InventoryForListener extends CraftInventoryWrapper
 {
-    private InventoryListener listener;
+    /** the listener. */
+    InventoryListener listener;
     
-    private boolean callListener = false;
+    /** true forcalling listener. */
+    boolean callListener = false;
+
+    /** the inventory title. */
+    private String title;
 
     /**
-     * @param listener
-     * @param owner 
-     * @param size 
-     * @param title 
+     * Coonstructor.
+     * @param listener the listener
+     * @param size initial size.
+     * @param title the title.
      */
-    public Inventory1_11(InventoryListener listener, InventoryHolder owner, int size, String title)
+    public InventoryForListener(InventoryListener listener, int size, String title)
     {
-        super(owner, size, title);
+        super(size, 64);
         this.listener = listener;
+        this.title = title;
+    }
+    
+    /**
+     * Activate inventory listener.
+     */
+    public void initListener()
+    {
+        this.callListener = true;
+    }
+
+    @Override
+    protected int getPersistentMaxStackSize()
+    {
+        return 64;
+    }
+
+    @Override
+    protected org.bukkit.inventory.ItemStack[] getPersistentSlots()
+    {
+        return new org.bukkit.inventory.ItemStack[this.getSize()];
+    }
+
+    @Override
+    protected void saveMaxStackSize(int size2)
+    {
+        // not used
     }
     
     @Override
-    public void setItem(int index, ItemStack item)
+    public String getTitle()
+    {
+        return this.title;
+    }
+
+    @Override
+    protected void saveItem(int index, org.bukkit.inventory.ItemStack item)
     {
         if (this.callListener)
         {
             this.listener.setItem(index, item);
         }
-        super.setItem(index, item);
-    }
-    
-    public void initListener()
-    {
-        this.callListener = true;
     }
     
 }
