@@ -57,8 +57,9 @@ public interface InventoryManagerInterface extends Listener
      */
     public interface InventoryListener
     {
+        
         /**
-         * Invoked upon close of the inventory,
+         * Invoked upon close of the inventory.
          */
         void onClose();
         
@@ -74,6 +75,13 @@ public interface InventoryManagerInterface extends Listener
          * @return {@code true} to cancel event 
          */
         boolean onClick(ItemStack item, int rawSlot, int slot);
+
+        /**
+         * Sets an item to given slot.
+         * @param index slot index
+         * @param item new item for this slot.
+         */
+        void setItem(int index, ItemStack item);
     }
     
     /**

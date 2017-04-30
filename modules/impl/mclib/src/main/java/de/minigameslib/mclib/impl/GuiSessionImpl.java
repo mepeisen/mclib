@@ -534,22 +534,50 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                 {
                     final int col = slot % 9;
                     final int line = (slot - col) / 9;
-                    try
+                    if (this.currentItems.length > line && this.currentItems[line].length > col)
                     {
-                        final ClickGuiItem guiItem = this.currentItems[line][col];
-                        if (guiItem != null)
+                        try
                         {
-                            return guiItem.handle(this.player, this, this.gui);
+                            final ClickGuiItem guiItem = this.currentItems[line][col];
+                            if (guiItem != null)
+                            {
+                                return guiItem.handle(this.player, this, this.gui);
+                            }
                         }
-                    }
-                    catch (McException ex)
-                    {
-                        this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                        catch (McException ex)
+                        {
+                            this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                        }
                     }
                 }
             }
         }
         return false;
+    }
+    
+    @Override
+    public void setItem(int index, ItemStack item)
+    {
+        if (this.type == GuiType.ClickGui)
+        {
+            final int col = index % 9;
+            final int line = (index - col) / 9;
+            if (this.currentItems.length > line && this.currentItems[line].length > col)
+            {
+                try
+                {
+                    final ClickGuiItem guiItem = this.currentItems[line][col];
+                    if (guiItem != null)
+                    {
+                        guiItem.replace(this.player, this, this.gui, item);
+                    }
+                }
+                catch (McException ex)
+                {
+                    this.player.sendMessage(ex.getErrorMessage(), ex.getArgs());
+                }
+            }
+        }
     }
     
     @Override

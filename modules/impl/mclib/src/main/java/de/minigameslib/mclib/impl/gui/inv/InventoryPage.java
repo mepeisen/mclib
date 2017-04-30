@@ -94,11 +94,11 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     @Override
     protected ClickGuiItem map(int line, int col, int index, ItemStack elm)
     {
-        return new ClickGuiItem(elm == null ? new ItemStack(Material.AIR) : elm, true);
+        return new ClickGuiItem(elm == null ? new ItemStack(Material.AIR) : elm, true, (p, s, g, item) -> this.inventory.setItem(index, item));
     }
     
     /**
-     * prev page icon
+     * prev page icon.
      * @return prev page icon
      */
     public ClickGuiItem itemPrevPage()
@@ -107,7 +107,7 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     }
     
     /**
-     * next page icon
+     * next page icon.
      * @return next page icon
      */
     public ClickGuiItem itemNextPage()

@@ -40,7 +40,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 public class ClickGuiItem
 {
     
-    /** the item stack used to display the gui item */
+    /** the item stack used to display the gui item. */
     private final ItemStack                 itemStack;
     
     /** the items name/ title. */
@@ -52,8 +52,15 @@ public class ClickGuiItem
     /** the click handler. */
     private GuiItemHandler                  handler;
     
-    /** {@code true} to let the icon be moved or replaced */
-    private boolean moveable;
+    /**
+     * {@code true} to let the icon be moved or replaced.
+     */
+    private boolean                         moveable;
+    
+    /**
+     * Handler to watch for new items.
+     */
+    private GuiReplaceHandler               replaceHandler;
     
     /**
      * Constructor to create a click item.
@@ -76,35 +83,45 @@ public class ClickGuiItem
     }
     
     /**
-     * Constructor to create a click item that will be moved from/to user inventories
+     * Constructor to create a click item that will be moved from/to user inventories.
+     * 
      * @param itemStack
-     * @param moveable {@code true} to let the icon be moved or replaced
+     *            the item stack to display the gui item
+     * @param moveable
+     *            {@code true} to let the icon be moved or replaced
+     * @param replaceHandler
+     *            the replace handler to watch for new items
      */
-    public ClickGuiItem(ItemStack itemStack, boolean moveable)
+    public ClickGuiItem(ItemStack itemStack, boolean moveable, GuiReplaceHandler replaceHandler)
     {
         this.itemStack = itemStack;
         this.moveable = moveable;
         this.displayName = null;
         this.displayNameArgs = null;
+        this.replaceHandler = replaceHandler;
     }
-
+    
     /**
+     * Returns the movable flag.
      * @return the moveable
      */
     public boolean isMoveable()
     {
         return this.moveable;
     }
-
+    
     /**
-     * @param moveable the moveable to set
+     * Sets the movable flag.
+     * @param moveable
+     *            the moveable to set
      */
     public void setMoveable(boolean moveable)
     {
         this.moveable = moveable;
     }
-
+    
     /**
+     * Returns the item stack.
      * @return the itemStack
      */
     public ItemStack getItemStack()
@@ -113,6 +130,7 @@ public class ClickGuiItem
     }
     
     /**
+     * Returns the display name.
      * @return the displayName
      */
     public LocalizedMessageInterface getDisplayName()
@@ -121,6 +139,7 @@ public class ClickGuiItem
     }
     
     /**
+     * Sets the display name.
      * @return the displayName
      */
     public Serializable[] getDisplayNameArgs()
@@ -147,7 +166,7 @@ public class ClickGuiItem
         {
             this.handler.handle(player, session, guiInterface);
         }
-
+        
         if (this.isMoveable())
         {
             return false;
@@ -157,7 +176,29 @@ public class ClickGuiItem
     }
     
     /**
-     * Gui item handler.
+     * Handle gui event.
+     * 
+     * @param player
+     *            player that clicked the item
+     * @param session
+     *            gui session.
+     * @param guiInterface
+     *            gui interface.
+     * @param stack
+     *            new item
+     * @throws McException
+     *             thrown if there are errors.
+     */
+    public void replace(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, ItemStack stack) throws McException
+    {
+        if (this.replaceHandler != null)
+        {
+            this.replaceHandler.handle(player, session, guiInterface, stack);
+        }
+    }
+    
+    /**
+     * Gui item handler for clicking gui items.
      * 
      * @author mepeisen
      */
@@ -177,6 +218,29 @@ public class ClickGuiItem
          *             thrown if there are errors.
          */
         void handle(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException;
+    }
+    
+    /**
+     * Gui item handler for replacing movable gui items with some other content.
+     */
+    @FunctionalInterface
+    public interface GuiReplaceHandler
+    {
+        /**
+         * Handle gui event.
+         * 
+         * @param player
+         *            player that clicked the item
+         * @param session
+         *            gui session.
+         * @param guiInterface
+         *            gui interface.
+         * @param newItem
+         *            the new item stack replacing this item
+         * @throws McException
+         *             thrown if there are errors.
+         */
+        void handle(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, ItemStack newItem) throws McException;
     }
     
 }

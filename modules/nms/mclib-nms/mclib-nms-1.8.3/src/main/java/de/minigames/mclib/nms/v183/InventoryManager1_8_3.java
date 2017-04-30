@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R2.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftInventory;
@@ -66,8 +65,8 @@ public class InventoryManager1_8_3 implements InventoryManagerInterface
     @Override
     public InventoryHelper openInventory(Player player, String name, ItemStack[] items, InventoryListener listener)
     {
-        final Inventory inventory = Bukkit.createInventory(null, items.length, name);
-        setContents((CraftInventoryCustom)inventory, items);
+        final Inventory1_8_3 inventory = new Inventory1_8_3(listener, null, items.length, name);
+        setContents(inventory, items);
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         if (entity.activeContainer != entity.defaultContainer)
         {
@@ -77,6 +76,7 @@ public class InventoryManager1_8_3 implements InventoryManagerInterface
         player.openInventory(inventory);
         final Helper helper = new Helper(entity, inventory, listener);
         this.playerInventories.put(player.getUniqueId(), helper);
+        inventory.initListener();
         return helper;
     }
     
