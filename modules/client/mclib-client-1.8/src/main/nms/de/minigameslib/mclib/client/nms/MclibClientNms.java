@@ -140,7 +140,9 @@ public class MclibClientNms
     {
         for (final BlockMetaData data : meta)
         {
-            Block.getBlockById(data.getId()).setHardness(data.getHardness()).setResistance(data.getResistance());
+            final MyBlock block = (MyBlock) Block.getBlockById(data.getId());
+            block.setHardness(data.getHardness()).setResistance(data.getResistance());
+            data.getOpaqueness().forEach(block::setOpaqueCube);
         }
     }
     
