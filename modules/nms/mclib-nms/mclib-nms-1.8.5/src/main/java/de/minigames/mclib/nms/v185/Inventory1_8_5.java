@@ -56,7 +56,7 @@ public class Inventory1_8_5 extends CraftInventoryCustom
     @Override
     public void setItem(int index, ItemStack item)
     {
-        if (this.callListener == false)
+        if (this.callListener)
         {
             this.listener.setItem(index, item);
         }
