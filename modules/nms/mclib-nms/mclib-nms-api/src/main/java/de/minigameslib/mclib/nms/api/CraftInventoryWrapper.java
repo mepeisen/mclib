@@ -74,7 +74,7 @@ public abstract class CraftInventoryWrapper implements Inventory
         for (int i = 0; i < size; i++)
         {
             final ItemStack stack = slots[i];
-            this.craftInventory.setItem(i, stack.getType() == Material.AIR ? null : stack);
+            this.craftInventory.setItem(i, stack == null || stack.getType() == Material.AIR ? null : stack);
         }
     }
 
