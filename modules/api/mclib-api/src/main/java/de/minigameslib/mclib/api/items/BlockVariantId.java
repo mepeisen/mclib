@@ -52,6 +52,23 @@ public interface BlockVariantId extends McUniqueEnumInterface
     }
     
     /**
+     * Returns the opaque flag
+     * @return opaque flag
+     */
+    default boolean isOpaque()
+    {
+        try
+        {
+            final BlockVariantData data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockVariantData.class);
+            return data.opaque();
+        }
+        catch (NoSuchFieldException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * Returns the crafting recipes
      * @return crafting recipes
      */

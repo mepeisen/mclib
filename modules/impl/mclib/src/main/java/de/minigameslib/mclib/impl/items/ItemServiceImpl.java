@@ -85,6 +85,7 @@ import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockInventoryMeta;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
+import de.minigameslib.mclib.api.items.BlockVariantData;
 import de.minigameslib.mclib.api.items.BlockVariantId;
 import de.minigameslib.mclib.api.items.CraftingItemInterface;
 import de.minigameslib.mclib.api.items.CraftingRecipes;
@@ -118,6 +119,7 @@ import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.NmsItemRuleInterface;
 import de.minigameslib.mclib.pshared.MclibConstants;
 import de.minigameslib.mclib.pshared.PingData;
+import de.minigameslib.mclib.pshared.PingData.BlockMetaData;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
@@ -2340,7 +2342,11 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             final int blockId = blockToNumId(block);
             final BlockMeta meta = block.meta();
-            ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
+            final BlockMetaData metadata = ping.addMeta(blockId, meta == null ? 0 : meta.hardness(), meta == null ? 0 : meta.resistance());
+            for (final BlockVariantId variantId : block.variants())
+            {
+                metadata.getOpaqueness().put(variantId.ordinal(), variantId.isOpaque());
+            }
         }
         for (final ItemId item : this.itemIdMap.keySet())
         {

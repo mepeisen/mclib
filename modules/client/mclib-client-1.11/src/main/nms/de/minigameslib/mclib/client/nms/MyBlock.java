@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.client.nms;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -60,6 +63,24 @@ public class MyBlock extends Block
         setRegistryName(name);
         this.name = name;
         // TODO this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+    }
+    
+    private final Map<Integer, Boolean> opaque = new HashMap<>();
+    
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        final Boolean result = this.opaque.get(this.getMetaFromState(state));
+        if (result == null)
+        {
+            return super.isOpaqueCube(state);
+        }
+        return result;
+    }
+
+    public void setOpaqueCube(int meta, boolean isOpaque)
+    {
+        this.opaque.put(meta, isOpaque);
     }
 
     /**

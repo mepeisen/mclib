@@ -25,7 +25,9 @@
 package de.minigameslib.mclib.pshared;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
@@ -103,14 +105,16 @@ public class PingData extends AnnotatedDataFragment
      * @param id block id
      * @param hardness block hardness
      * @param resistance block resistance
+     * @return block meta data
      */
-    public void addMeta(int id, float hardness, float resistance)
+    public BlockMetaData addMeta(int id, float hardness, float resistance)
     {
         final BlockMetaData m = new BlockMetaData();
         m.setId(id);
         m.setHardness(hardness);
         m.setResistance(resistance);
         this.blocks.add(m);
+        return m;
     }
     
     /**
@@ -317,6 +321,12 @@ public class PingData extends AnnotatedDataFragment
         @PersistentField
         protected float r;
         //CHECKSTYLE:ON
+        
+        /**
+         * opaqueness of block variants.
+         */
+        @PersistentField
+        protected Map<Integer, Boolean> op = new HashMap<>();
 
         /**
          * Returns the block id.
@@ -370,6 +380,15 @@ public class PingData extends AnnotatedDataFragment
         public void setResistance(float r)
         {
             this.r = r;
+        }
+
+        /**
+         * Returns the opaqueness of block variants.
+         * @return the opaqueness of block variants
+         */
+        public Map<Integer, Boolean> getOpaqueness()
+        {
+            return this.op;
         }
         
     }

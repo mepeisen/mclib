@@ -31,8 +31,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for block variants.
+ * 
  * @author mepeisen
- *
  */
 @Retention(RUNTIME)
 @Target(FIELD)
@@ -56,5 +57,11 @@ public @interface BlockVariantData
      * @return provider for getting the name.
      */
     Class<? extends NameProvider> name() default NullNameProvider.class;
+    
+    /**
+     * The block opqueness
+     * @return block opaqueness
+     */
+    boolean opaque() default true;
     
 }
