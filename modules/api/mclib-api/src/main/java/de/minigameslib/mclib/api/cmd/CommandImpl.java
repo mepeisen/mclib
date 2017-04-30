@@ -193,20 +193,21 @@ public class CommandImpl implements CommandInterface
     }
     
     /**
-     * Handles onCommand invocations on plugin instances
+     * Handles onCommand invocations on plugin instances.
      * 
-     * @param sender
-     * @param command
-     * @param label
-     * @param args
-     * @param handler
+     * @param sender command sender
+     * @param command command that was sent
+     * @param label command label
+     * @param args command arguments
+     * @param handler handler to proceed the command
      */
     public static void onCommand(CommandSender sender, Command command, String label, String[] args, CommandHandlerInterface handler)
     {
         final CommandImpl cmd = new CommandImpl(sender, command, label, args, '/' + command.getName());
         try
         {
-            McLibInterface.instance().runInNewContext(() -> {
+            McLibInterface.instance().runInNewContext(() ->
+            {
                 McLibInterface.instance().setContext(McPlayerInterface.class, cmd.getPlayer());
                 McLibInterface.instance().setContext(CommandInterface.class, cmd);
                 handler.handle(cmd);
@@ -219,13 +220,13 @@ public class CommandImpl implements CommandInterface
     }
     
     /**
-     * Handles onTabComplete invocations on plugin instances
+     * Handles onTabComplete invocations on plugin instances.
      * 
-     * @param sender
-     * @param command
-     * @param alias
-     * @param args
-     * @param handler
+     * @param sender command sender
+     * @param command command that was sent
+     * @param alias the command alias
+     * @param args the command arguments
+     * @param handler the command handler to calculate the tab complete
      * @return tab complete list
      */
     public static List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args, CommandHandlerInterface handler)
@@ -241,7 +242,8 @@ public class CommandImpl implements CommandInterface
         final String last = lastArg;
         try
         {
-            return McLibInterface.instance().calculateInNewContext(() -> {
+            return McLibInterface.instance().calculateInNewContext(() ->
+            {
                 McLibInterface.instance().setContext(McPlayerInterface.class, cmd.getPlayer());
                 McLibInterface.instance().setContext(CommandInterface.class, cmd);
                 return handler.onTabComplete(cmd, last);

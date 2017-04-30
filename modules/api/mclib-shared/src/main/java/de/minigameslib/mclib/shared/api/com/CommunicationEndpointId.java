@@ -52,7 +52,7 @@ public interface CommunicationEndpointId extends Serializable
      * Clients will send the data to the server and servers will send it to clients. A proper handler will receive the data and handle it.
      * </p>
      * 
-     * @param data
+     * @param data the data to be sent
      * 
      * @throws IllegalStateException thrown on communication errors.
      */

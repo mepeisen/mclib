@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Item representing a shovel
+ * Item representing a shovel.
  * 
  * @author mepeisen
  *
@@ -42,55 +42,55 @@ public @interface ItemArmor
 {
     
     /**
-     * The armor slot
+     * The armor slot.
      * @return armor slot
      */
     ArmorSlot slot();
     
     /**
-     * Returns the amount of damage reduce
+     * Returns the amount of damage reduce.
      * @return amount of damage reduce
      */
     int dmgReduceAmount();
     
     /**
-     * the durability of this item
+     * the durability of this item.
      * @return item durability
      */
     int durability();
     
     /**
-     * the armor toughness
+     * the armor toughness.
      * @return armor toughness
      */
     float toughness();
     
     /**
-     * Return the enchantability factor of the item, most of the time is based on material
+     * Return the enchantability factor of the item, most of the time is based on material.
      * @return Return the enchantability factor of the item, most of the time is based on material
      */
     int getItemEnchantability();
     
     /**
-     * Returns the repair rule
+     * Returns the repair rule.
      * @return repair rule
      */
     Class<? extends ItemRepairInterface> repairRule();
 
     /**
-     * The armor slot
+     * The armor slot.
      * @author mepeisen
      *
      */
     public enum ArmorSlot
     {
-        /** helmet */
+        /** helmet. */
         Helmet,
-        /** chestplate */
+        /** chestplate. */
         Chestplate,
-        /** leggins */
+        /** leggins. */
         Leggins,
-        /** boots */
+        /** boots. */
         Boots
     }
 

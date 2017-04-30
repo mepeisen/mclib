@@ -80,7 +80,7 @@ public class McException extends Exception
     }
     
     /**
-     * The error message
+     * The error message.
      * 
      * @return the message
      */
@@ -90,7 +90,7 @@ public class McException extends Exception
     }
     
     /**
-     * the arguments to build a human readable string
+     * the arguments to build a human readable string.
      * 
      * @return the args
      */
@@ -102,8 +102,8 @@ public class McException extends Exception
     /**
      * Converts given code and args to a loggable text.
      * 
-     * @param msg2
-     * @param args2
+     * @param msg2 localized message
+     * @param args2 arguments to build message
      * @return exception string for logging.
      */
     private static String toString(LocalizedMessageInterface msg2, Serializable[] args2)

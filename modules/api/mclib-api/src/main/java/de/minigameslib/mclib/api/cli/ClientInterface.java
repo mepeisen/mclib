@@ -28,7 +28,7 @@ import de.minigameslib.mclib.api.ApiVersion;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
- * Representation of smart gui client for players
+ * Representation of smart gui client for players.
  * 
  * @author mepeisen
  */

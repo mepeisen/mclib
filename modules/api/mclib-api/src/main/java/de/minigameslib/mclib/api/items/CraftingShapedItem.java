@@ -29,7 +29,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 
 /**
- * Annotation to set crafting recipes
+ * Annotation to set crafting recipes.
  * 
  * @author mepeisen
  */
@@ -38,7 +38,7 @@ public @interface CraftingShapedItem
 {
     
     /**
-     * The character within the shape
+     * The character within the shape.
      * 
      * @return character within the shape
      */

@@ -55,14 +55,14 @@ public interface ItemServiceInterface
     }
     
     /**
-     * Creates a new item stack for given item id and servers default localization
+     * Creates a new item stack for given item id and servers default localization.
      * @param item item id
      * @return item stack
      */
     ItemStack createItem(ItemId item);
     
     /**
-     * Creates a new item stack for given item id
+     * Creates a new item stack for given item id.
      * @param player the player used for localization
      * @param item item id
      * @return item stack
@@ -70,7 +70,7 @@ public interface ItemServiceInterface
     ItemStack createItem(McPlayerInterface player, ItemId item);
     
     /**
-     * Creates a new item stack for given item id
+     * Creates a new item stack for given item id.
      * @param item item id
      * @param name the custom name (already localized)
      * @return item stack
@@ -78,16 +78,16 @@ public interface ItemServiceInterface
     ItemStack createItem(ItemId item, String name);
     
     /**
-     * Creates a new item stack for given item id
+     * Creates a new item stack for given item id.
      * @param item item id
      * @param name the custom name
-     * @param nameArgs
+     * @param nameArgs arguments to build the localized name
      * @return item stack
      */
     ItemStack createItem(ItemId item, LocalizedMessageInterface name, Serializable... nameArgs);
     
     /**
-     * Creates a new item stack for given item id
+     * Creates a new item stack for given item id.
      * @param player the player used for localization
      * @param item item id
      * @param name the custom name
@@ -97,28 +97,28 @@ public interface ItemServiceInterface
     ItemStack createItem(McPlayerInterface player, ItemId item, LocalizedMessageInterface name, Serializable... nameArgs);
     
     /**
-     * Returns the display name
-     * @param stack
+     * Returns the display name.
+     * @param stack item stack
      * @return display name
      */
     String getDisplayName(ItemStack stack);
     
     /**
-     * Returns the description
-     * @param stack
+     * Returns the description.
+     * @param stack item stack
      * @return description
      */
     String[] getDescription(ItemStack stack);
     
     /**
-     * Sets display name of given item stack
+     * Sets display name of given item stack.
      * @param stack stack
      * @param name display name (already localized)
      */
     void setDisplayName(ItemStack stack, String name);
     
     /**
-     * Sets display name of given item stack
+     * Sets display name of given item stack.
      * @param stack stack
      * @param player the player used for localization
      * @param name display name
@@ -127,14 +127,14 @@ public interface ItemServiceInterface
     void setDisplayName(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface name, Serializable... nameArgs);
     
     /**
-     * Sets display name of given item stack
+     * Sets display name of given item stack.
      * @param stack stack
      * @param description description(already localized)
      */
     void setDescription(ItemStack stack, String[] description);
     
     /**
-     * Sets display name of given item stack
+     * Sets display name of given item stack.
      * @param stack stack
      * @param player the player used for localization
      * @param description description
@@ -163,52 +163,52 @@ public interface ItemServiceInterface
     ToolBuilderInterface prepareTool(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs);
     
     /**
-     * the item builder
+     * the item builder.
      */
     public interface ToolBuilderInterface
     {
         
         /**
-         * Builds the item and adds it to player inventory
+         * Builds the item and adds it to player inventory.
          */
         void build();
         
         /**
-         * Left click handler
-         * @param handler
+         * Left click handler.
+         * @param handler handler function invoked on left clicking the item
          * @return this object for chaining
          */
         ToolBuilderInterface onLeftClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler);
         
         /**
-         * Right click handler
-         * @param handler
+         * Right click handler.
+         * @param handler handler function invoked on right clicking the item
          * @return this object for chaining
          */
         ToolBuilderInterface onRightClick(McBiConsumer<McPlayerInterface, McPlayerInteractEvent> handler);
                 
         /**
-         * sets description
-         * @param description
-         * @param args
+         * sets description.
+         * @param description tooling description
+         * @param args arguments to build the localized description
          * @return this object for chaining
          */
         ToolBuilderInterface description(LocalizedMessageInterface description, Serializable... args);
         
         /**
-         * marks this tool for single use; destroys it on successful use
+         * marks this tool for single use; destroys it on successful use.
          * @return this object for chaining
          */
         ToolBuilderInterface singleUse();
         
         /**
-         * marks this tool for multi use (default)
+         * marks this tool for multi use (default).
          * @return this object for chaining
          */
         ToolBuilderInterface multiUse();
         
         /**
-         * Sets tool in given inventory at given slot
+         * Sets tool in given inventory at given slot.
          * @param inventory target inventory
          * @param slot target slot
          * @param removeExisting {@code true} to remove existing items on given slot
@@ -220,30 +220,30 @@ public interface ItemServiceInterface
     }
     
     /**
-     * Returns item id from item stack
-     * @param stack
+     * Returns item id from item stack.
+     * @param stack item stack
      * @return item id or {@code null} if stack does not represent custom items
      */
     ItemId getItemId(ItemStack stack);
     
     /**
      * Adds given item stack to player inventory. Safe method for custom items and blocks.
-     * @param player
-     * @param stack
+     * @param player target player
+     * @param stack item stack
      * @return left over items; null if item was fully added
      */
     ItemStack addToPlayerInventory(McPlayerInterface player, ItemStack stack);
     
     /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
-     * @return saveable item stack
+     * Converts given bukkit item stack to saveable item stack.
+     * @param stack item stack
+     * @return saveable savable item stack
      */
     ConfigItemStackData toConfigData(ItemStack stack);
     
     /**
-     * Converts given data section to saveable item stack
-     * @param section
+     * Converts given data section to saveable item stack.
+     * @param section data section to read from.
      * @return saveable item stack
      */
     ConfigItemStackData fromConfigData(DataSection section);

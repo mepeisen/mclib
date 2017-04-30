@@ -27,7 +27,6 @@ package de.minigameslib.mclib.api.items;
 import java.io.File;
 import java.io.IOException;
 
-import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.MinecraftVersionsType;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -51,23 +50,23 @@ public interface ResourceServiceInterface
     }
     
     /**
-     * Changes the resource pack download url.
-     * @param url
+     * Changes the resource pack download url for current server resource version.
+     * @param url the download url
      */
     void setDownloadUrl(String url);
+    
+    /**
+     * Changes the resource pack download url.
+     * @param url download url
+     * @param version server resource version
+     */
+    void setDownloadUrl(String url, ResourceVersion version);
     
     /**
      * Returns the download url.
      * @return download url.
      */
     String getDownloadUrl();
-    
-    /**
-     * Changes the resource pack download url.
-     * @param version
-     * @param url
-     */
-    void setDownloadUrl(String url, ResourceVersion version);
     
     /**
      * Returns the download url.
@@ -77,39 +76,39 @@ public interface ResourceServiceInterface
     String getDownloadUrl(ResourceVersion version);
     
     /**
-     * Returns true for automatic resource download on login
+     * Returns true for automatic resource download on login.
      * @return automatic resource download flag
      */
     boolean isAutoResourceDownload();
     
     /**
-     * Sets the automatic resource download flag
+     * Sets the automatic resource download flag.
      * @param newValue automatic resource download flag
      */
     void setAutoResourceDownload(boolean newValue);
     
     /**
-     * Returns the number of ticks to wait for automatic resource download
+     * Returns the number of ticks to wait for automatic resource download.
      * @return automatic resource download.
      */
     int getAutoResourceTicks();
     
     /**
-     * Sets the number of ticks to wait for automatic resource download
+     * Sets the number of ticks to wait for automatic resource download.
      * @param ticks number of ticks waiting before download
      */
     void setAutoResourceTicks(int ticks);
     
     /**
      * Checks if the player has accepted and installed the resource pack.
-     * @param player 
+     * @param player target player
      * @return {@code true} if player has installed the resource pack.
      */
     boolean hasResourcePack(McPlayerInterface player);
     
     /**
-     * Returns the resource pack status
-     * @param player
+     * Returns the resource pack status.
+     * @param player target player
      * @return resource pack status or {@code null} if unknown
      */
     ResourcePackStatus getState(McPlayerInterface player);
@@ -117,7 +116,8 @@ public interface ResourceServiceInterface
     /**
      * Status of the resource pack.
      */
-    public enum ResourcePackStatus {
+    public enum ResourcePackStatus
+    {
 
         /**
          * The resource pack has been successfully downloaded and applied to the
@@ -139,15 +139,15 @@ public interface ResourceServiceInterface
     }
     
     /**
-     * Forces downloading the resource pack (sends download request)
-     * @param player
+     * Forces downloading the resource pack (sends download request).
+     * @param player target player
      * @param success invoked on successful download
      */
     void forceDownload(McPlayerInterface player, McRunnable success);
     
     /**
-     * Forces downloading the resource pack (sends download request)
-     * @param player
+     * Forces downloading the resource pack (sends download request).
+     * @param player target player
      * @param url a custom url
      * @param success invoked on successful download
      * @param failure invoked on failed downloads
@@ -157,30 +157,29 @@ public interface ResourceServiceInterface
     
     /**
      * Creates a resource pack file for all installed items; creates it for current server version.
-     * @param target
-     * @throws IOException
+     * @param target target file
+     * @throws IOException thrown if there was a problem writing the file
      */
     void createResourcePack(File target) throws IOException;
     
     /**
      * Creates a resource pack file for all installed items; creates it for current server version.
-     * @param target
+     * @param target target file
      * @param version the version to be used
-     * @throws IOException
+     * @throws IOException thrown if there was a problem writing the file
      */
     void createResourcePack(File target, ResourceVersion version) throws IOException;
     
     /**
-     * Returns the resource version for given minecraft version type
-     * @param minecraftVersion
+     * Returns the resource version for given minecraft version type.
+     * @param minecraftVersion minecraft version type.
      * @return resource version
      */
     ResourceVersion getResourceVersion(MinecraftVersionsType minecraftVersion);
     
     /**
-     * The resource version enum
+     * The resource version enum.
      * @author mepeisen
-     *
      */
     public enum ResourceVersion
     {

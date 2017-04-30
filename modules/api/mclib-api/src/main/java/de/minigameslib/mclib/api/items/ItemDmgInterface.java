@@ -29,17 +29,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A rule for damage/ attacking
+ * A rule for damage/ attacking.
+ * 
  * @author mepeisen
  */
 public interface ItemDmgInterface
 {
     
     /**
-     * Returns the amount of damage for damaging an entity
-     * @param stack
-     * @param target
-     * @param player
+     * Returns the amount of damage for damaging an entity.
+     * @param stack item stack
+     * @param target target entity
+     * @param player attacking player
      * @return damage for entity attack
      */
     int getDamageByEntity(ItemStack stack, Entity target, Player player);

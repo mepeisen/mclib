@@ -61,7 +61,8 @@ public interface McIntConsumer
     default McIntConsumer andThen(McIntConsumer after)
     {
         Objects.requireNonNull(after);
-        return (int value) -> {
+        return (int value) ->
+        {
             accept(value);
             after.accept(value);
         };

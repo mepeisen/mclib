@@ -33,6 +33,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * A default dig rule implementation for axe.
+ * 
  * @author mepeisen
  *
  */
@@ -40,22 +42,22 @@ public class DefaultAxeDigRule implements ItemDigInterface
 {
     
     /**
-     * effecieny on proper tooling material
+     * effecieny on proper tooling material.
      */
     protected float efficiencyOnProperMaterial = 4.0f;
     
     /**
-     * efficient materials
+     * efficient materials.
      */
     protected Set<Material> efficientMaterials = new HashSet<>();
     
     /**
-     * efficient blocks
+     * efficient blocks.
      */
-    protected Set<Material> efficientBlocks = new HashSet<>();
+    protected Set<BlockId> efficientBlocks = new HashSet<>();
     
     /**
-     * Constructor
+     * Constructor.
      */
     public DefaultAxeDigRule()
     {

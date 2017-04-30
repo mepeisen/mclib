@@ -125,11 +125,11 @@ public interface McContext
      * 
      * @param runnable
      *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
      * @return result from runnable
      * @throws McException
      *             rethrown from runnable.
-     * @param <T>
-     *            Type of return value
      */
     <T> T calculateInNewContext(McSupplier<T> runnable) throws McException;
     
@@ -144,11 +144,11 @@ public interface McContext
      * @param component the component to set
      * @param runnable
      *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
      * @return result from runnable
      * @throws McException
      *             rethrown from runnable.
-     * @param <T>
-     *            Type of return value
      */
     <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException;
     
@@ -157,11 +157,11 @@ public interface McContext
      * 
      * @param runnable
      *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
      * @return result from runnable
      * @throws McException
      *             rethrown from runnable.
-     * @param <T>
-     *            Type of return value
      */
     <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException;
     
@@ -288,10 +288,10 @@ public interface McContext
      *            context class.
      * @param handler
      *            the context handler.
-     * @throws McException
-     *             thrown if the class to register is already registered.
      * @param <T>
      *            context class to register
+     * @throws McException
+     *             thrown if the class to register is already registered.
      */
     <T> void registerContextHandler(Plugin plugin, Class<T> clazz, ContextHandlerInterface<T> handler) throws McException;
     
@@ -339,7 +339,7 @@ public interface McContext
     // delayed execution
     
     /**
-     * A runnable used by context enabled tasks
+     * A runnable used by context enabled tasks.
      */
     @FunctionalInterface
     interface ContextRunnable
@@ -348,7 +348,7 @@ public interface McContext
          * Invoked to run the task
          * @param task bukkit task interface
          * @throws McException thrown if there were problems during task execution. If task was executed with current user this exception
-         * will be printed as error message to the current user. Be careful to throw this on recurring tasks.
+         *     will be printed as error message to the current user. Be careful to throw this on recurring tasks.
          */
         void run(BukkitTask task) throws McException;
     }
@@ -358,7 +358,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param task the task to be run
@@ -376,7 +376,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param task the task to be run
@@ -391,7 +391,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param delay the ticks to wait before running the task
@@ -411,7 +411,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param delay the ticks to wait before running the task
@@ -427,7 +427,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param delay the ticks to wait before running the task
@@ -450,7 +450,7 @@ public interface McContext
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin the reference to the plugin scheduling task
      * @param delay the ticks to wait before running the task for the first

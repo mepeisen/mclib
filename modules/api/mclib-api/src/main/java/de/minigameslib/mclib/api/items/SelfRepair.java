@@ -27,7 +27,7 @@ package de.minigameslib.mclib.api.items;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Rule allowing repairing the item itself
+ * Rule allowing repairing the item itself.
  * @author mepeisen
  */
 public class SelfRepair implements ItemRepairInterface

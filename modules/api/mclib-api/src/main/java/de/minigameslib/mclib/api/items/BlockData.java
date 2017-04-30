@@ -31,8 +31,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for blocks.
+ * 
  * @author mepeisen
- *
  */
 @Retention(RUNTIME)
 @Target(FIELD)
@@ -52,12 +53,12 @@ public @interface BlockData
     Class<? extends NameProvider> name() default NullNameProvider.class;
     
     /**
-     * A single default variant
+     * A single default variant.
      * @author mepeisen
      */
     public enum CustomVariantId implements BlockVariantId
     {
-        /** custom block variant */
+        /** custom block variant. */
         @BlockVariantData(textures = {}, modelJson = "{\"parent\": \"block/cube_all\",\"textures\": {\"all\": \"mclib:blocks/custom\"}}")
         DEFAULT;
     }

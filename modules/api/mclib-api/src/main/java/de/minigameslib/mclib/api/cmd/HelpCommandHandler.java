@@ -80,7 +80,6 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
             }
         }
         super.handle(command);
-        return;
     }
 
     @Override
@@ -115,7 +114,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         this.compositeCommand = command;
     }
     
-   @Override
+    @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return CommonMessages.HelpShortDescription;
@@ -135,7 +134,10 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
             return (int) this.getVisibleCommands(command).count();
         }
         final LocalizedMessageInterface description = this.subCommand.getDescription(command);
-        if (description.isSingleLine()) return 1;
+        if (description.isSingleLine())
+        {
+            return 1;
+        }
         return description.toListArg(command.getCommandPath()).apply(command.getLocale(), command.isOp()).length;
     }
 

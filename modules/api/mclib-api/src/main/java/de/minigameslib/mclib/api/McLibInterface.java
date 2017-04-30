@@ -33,6 +33,7 @@ import java.util.Locale;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
@@ -149,15 +150,15 @@ public interface McLibInterface extends McContext
     Collection<Locale> getMainLocales();
     
     /**
-     * Removes a main locale
-     * @param locale
+     * Removes a main locale.
+     * @param locale existing locale to be removed.
      * @throws McException thrown if config cannot be saved or if this is the last main locale.
      */
     void removeMainLocale(Locale locale) throws McException;
     
     /**
-     * Adds a main locale
-     * @param locale
+     * Adds a main locale.
+     * @param locale new locale to be added.
      * @throws McException thrown if config cannot be saved
      */
     void addMainLocale(Locale locale) throws McException;
@@ -182,20 +183,20 @@ public interface McLibInterface extends McContext
     /**
      * Sends given data to all clients.
      *
-     * @param endpoint
-     * @param data
+     * @param endpoint communication endpoint to be used.
+     * @param data data to be sent
      * 
-     * @throws IllegalStateException
+     * @throws IllegalStateException thrown on communication errors.
      */
     void broadcastClients(CommunicationEndpointId endpoint, DataSection... data);
     
     /**
      * Sends given data to all other servers within bungee network.
      *
-     * @param endpoint
-     * @param data
+     * @param endpoint communication endpoint to be used
+     * @param data data to be sent
      * 
-     * @throws IllegalStateException
+     * @throws IllegalStateException thrown on communication errors.
      */
     void broadcastServers(CommunicationEndpointId endpoint, DataSection... data);
     
@@ -210,41 +211,44 @@ public interface McLibInterface extends McContext
     
     /**
      * Registers a new event class for internal event bus
-     * @param plugin
-     * @param clazz
+     * @param <EVT> event class
+     * @param plugin plugin registrering the event class
+     * @param clazz event class
      */
-    <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz);
+    <EVT extends Event & MinecraftEvent<EVT, EVT>> void registerEvent(Plugin plugin, Class<EVT> clazz);
     
     /**
      * Register event handler for given mclib event; simliar to registering single bukkit event handlers.
      * The McLib event will automatically set the execution context (current player/ zone etc.).
      * If you use a event class not supported by the spigot version it will log a warning and silently ignore
      * the registration.
-     * @param plugin
-     * @param clazz
-     * @param handler
+     * @param <EVT> event class
+     * @param plugin plugin registrering the event handler
+     * @param clazz Event class
+     * @param handler consumer to be invoked upon event calling
      */
-    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Registers an event handler object. Methods tagged with McEventHandler are considered as event handlers.
-     * @param plugin
-     * @param listener
+     * @param plugin plugin registrering the event handlers
+     * @param listener listener class having methods tagged with {@link McEventHandler}
      */
     void registerHandlers(Plugin plugin, McListener listener);
     
     /**
      * Remove a registered event handler.
-     * @param plugin
-     * @param clazz
-     * @param handler
+     * @param <EVT> event class
+     * @param plugin plugin unregistrering the event handler
+     * @param clazz Event class
+     * @param handler consumer that was registered with {@link #registerHandler(Plugin, Class, McConsumer)}
      */
-    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Remove a registered event handler.
-     * @param plugin
-     * @param listener
+     * @param plugin plugin unregistrering the event handler
+     * @param listener listener that was registered with {@link #registerHandlers(Plugin, McListener)}
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
     
@@ -252,25 +256,25 @@ public interface McLibInterface extends McContext
     
     /**
      * Reads a yml file into a data section.
-     * @param file
+     * @param file target file in file system
      * @return yml data file; implements {@link CommentableDataSection}.
-     * @throws IOException
+     * @throws IOException thrown on io errors reading the file
      */
     DataSection readYmlFile(File file) throws IOException;
     
     /**
      * Reads a yml file into a data section.
-     * @param file
+     * @param file io stream to read from
      * @return yml data file; implements {@link CommentableDataSection}.
-     * @throws IOException
+     * @throws IOException thrown on io errors reading the stream
      */
     DataSection readYmlFile(InputStream file) throws IOException;
     
     /**
      * Saves given data section into given file.
-     * @param section
-     * @param file
-     * @throws IOException
+     * @param section data section to save
+     * @param file target file to be saved.
+     * @throws IOException thrown on io errors saving the file
      */
     void saveYmlFile(DataSection section, File file) throws IOException;
     

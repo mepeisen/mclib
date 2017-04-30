@@ -61,7 +61,8 @@ public interface McLongConsumer
     default McLongConsumer andThen(McLongConsumer after)
     {
         Objects.requireNonNull(after);
-        return (long value) -> {
+        return (long value) ->
+        {
             accept(value);
             after.accept(value);
         };

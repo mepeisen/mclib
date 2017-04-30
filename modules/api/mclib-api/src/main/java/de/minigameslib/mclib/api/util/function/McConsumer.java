@@ -62,7 +62,8 @@ public interface McConsumer<T>
     default McConsumer<T> andThen(McConsumer<? super T> after)
     {
         Objects.requireNonNull(after);
-        return (T obj) -> {
+        return (T obj) ->
+        {
             accept(obj);
             after.accept(obj);
         };

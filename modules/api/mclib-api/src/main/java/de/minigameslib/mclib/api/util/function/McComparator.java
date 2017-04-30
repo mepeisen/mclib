@@ -150,7 +150,8 @@ public interface McComparator<T>
     default McComparator<T> thenComparing(McComparator<? super T> other)
     {
         Objects.requireNonNull(other);
-        return (McComparator<T>) (c1, c2) -> {
+        return (McComparator<T>) (c1, c2) ->
+        {
             int res = compare(c1, c2);
             return (res != 0) ? res : other.compare(c1, c2);
         };

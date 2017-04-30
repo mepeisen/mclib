@@ -67,7 +67,8 @@ public interface McBiConsumer<T, U>
     {
         Objects.requireNonNull(after);
         
-        return (arg1, arg2) -> {
+        return (arg1, arg2) ->
+        {
             accept(arg1, arg2);
             after.accept(arg1, arg2);
         };

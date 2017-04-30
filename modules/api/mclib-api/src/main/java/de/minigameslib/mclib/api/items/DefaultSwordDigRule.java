@@ -30,6 +30,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * A default dig rule implementation for swords.
+ * 
  * @author mepeisen
  *
  */

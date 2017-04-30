@@ -27,16 +27,17 @@ package de.minigameslib.mclib.api.items;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A rule for reparing
+ * A rule for reparing.
+ * 
  * @author mepeisen
  */
 public interface ItemRepairInterface
 {
     
     /**
-     * Checks if item is repairable
-     * @param toRepair
-     * @param repair
+     * Checks if item is repairable.
+     * @param toRepair item to be repaired.
+     * @param repair second item.
      * @return {@code true} if repairable
      */
     boolean getIsRepairable(ItemStack toRepair, ItemStack repair);

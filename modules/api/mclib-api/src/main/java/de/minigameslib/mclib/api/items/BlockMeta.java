@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Some block meta data
+ * Some block meta data.
  * 
  * @author mepeisen
  *
@@ -42,13 +42,13 @@ public @interface BlockMeta
 {
     
     /**
-     * the hardness of this block
+     * the hardness of this block.
      * @return block hardness
      */
     float hardness();
     
     /**
-     * the resistance of this block
+     * the resistance of this block.
      * @return block resistance
      */
     float resistance();

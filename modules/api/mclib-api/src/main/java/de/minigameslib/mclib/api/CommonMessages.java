@@ -142,7 +142,9 @@ public enum CommonMessages implements LocalizedMessageInterface
      * <li>Integer: Total number of pages.</li>
      * </ol>
      */
-    @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "=====" + LocalizedMessage.BLUE + "%1$s" + LocalizedMessage.GRAY + "====" + LocalizedMessage.BLUE + "Page " + LocalizedMessage.DARK_BLUE + "%2$d " + LocalizedMessage.BLUE + " from " + LocalizedMessage.DARK_BLUE + "%3$d" + LocalizedMessage.GRAY + "=====")
+    @LocalizedMessage(
+            defaultMessage = LocalizedMessage.GRAY + "=====" + LocalizedMessage.BLUE + "%1$s" + LocalizedMessage.GRAY + "===="
+            + LocalizedMessage.BLUE + "Page " + LocalizedMessage.DARK_BLUE + "%2$d " + LocalizedMessage.BLUE + " from " + LocalizedMessage.DARK_BLUE + "%3$d" + LocalizedMessage.GRAY + "=====")
     @MessageComment(
             value = {"Paged command: header of output for paged command."},
             args = {
@@ -323,7 +325,10 @@ public enum CommonMessages implements LocalizedMessageInterface
      * <li>String: The enumeration class name</li>
      * </ol>
      */
-    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s)", severity = MessageSeverityType.Error)
+    @LocalizedMessage(
+            defaultMessage = "Problems registering object for object type %2$s",
+            defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s)",
+            severity = MessageSeverityType.Error)
     @MessageComment(
             value = {"Error that a plugin object type is broken"},
             args = {
@@ -343,7 +348,10 @@ public enum CommonMessages implements LocalizedMessageInterface
      * <li>String: The enumeration class name</li>
      * </ol>
      */
-    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not an enum)", severity = MessageSeverityType.Error)
+    @LocalizedMessage(
+            defaultMessage = "Problems registering object for object type %2$s",
+            defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not an enum)",
+            severity = MessageSeverityType.Error)
     @MessageComment(
             value = {"Error that a plugin object type is broken"},
             args = {
@@ -363,7 +371,10 @@ public enum CommonMessages implements LocalizedMessageInterface
      * <li>String: The enumeration class name</li>
      * </ol>
      */
-    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not registered)", severity = MessageSeverityType.Error)
+    @LocalizedMessage(
+            defaultMessage = "Problems registering object for object type %2$s",
+            defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s is not registered)",
+            severity = MessageSeverityType.Error)
     @MessageComment(
             value = {"Error that a plugin object type is broken"},
             args = {
@@ -384,7 +395,10 @@ public enum CommonMessages implements LocalizedMessageInterface
      * <li>String: The exception message</li>
      * </ol>
      */
-    @LocalizedMessage(defaultMessage = "Problems registering object for object type %2$s", defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s, exception message: %4$s)", severity = MessageSeverityType.Error)
+    @LocalizedMessage(
+            defaultMessage = "Problems registering object for object type %2$s",
+            defaultAdminMessage = "Problems registering object for object type %1$s:%2$s (enum class name %3$s, exception message: %4$s)",
+            severity = MessageSeverityType.Error)
     @MessageComment(
             value = {"Error that a plugin object type is broken"},
             args = {
@@ -465,91 +479,91 @@ public enum CommonMessages implements LocalizedMessageInterface
     EntityNotFoundError,
     
     /**
-     * Resource pack is declined
+     * Resource pack is declined.
      */
     @LocalizedMessage(defaultMessage = "Unable to use item tool. You declined the resource pack.")
     @MessageComment({"Resource pack is declined."})
     ResourcePackDeclined,
     
     /**
-     * Resource pack failed
+     * Resource pack failed.
      */
     @LocalizedMessage(defaultMessage = "Unable to use item tool. Resource pack download failed.")
     @MessageComment({"Resource pack failed."})
     ResourcePackFailed,
     
     /**
-     * Resource pack accepted
+     * Resource pack accepted.
      */
     @LocalizedMessage(defaultMessage = "Wait for resource pack download to finish.")
     @MessageComment({"Resource pack download in progress."})
     ResourcePackAccepted,
     
     /**
-     * A dummy filler
+     * A dummy filler.
      */
     @LocalizedMessage(defaultMessage = LocalizedMessage.BLACK)
     @MessageComment({"dummy filler icon"})
     IconFill,
 
     /**
-     * float value is too high
+     * float value is too high.
      */
     @LocalizedMessage(defaultMessage = "%1$s: Given value %2$f is too high. Maximum allowed is %3$f.")
     @MessageComment(value = {"float value too high"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("max value")})
     ValidateFValueTooHigh,
 
     /**
-     * float value is too low
+     * float value is too low.
      */
     @LocalizedMessage(defaultMessage = "%1$s: Given value %2$f is too low. Minimum allowed is %3$f.")
     @MessageComment(value = {"float value too low"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("min value")})
     ValidateFValueTooLow,
 
     /**
-     * long value is too high
+     * long value is too high.
      */
     @LocalizedMessage(defaultMessage = "%1$s: Given value %2$d is too high. Maximum allowed is %3$d.")
     @MessageComment(value = {"long value too high"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("max value")})
     ValidateLValueTooHigh,
 
     /**
-     * long value is too low
+     * long value is too low.
      */
     @LocalizedMessage(defaultMessage = "%1$s: Given value %2$d is too low. Minimum allowed is %3$d.")
     @MessageComment(value = {"long value too low"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given value"), @MessageComment.Argument("min value")})
     ValidateLValueTooLow,
 
     /**
-     * value is not set
+     * value is not set.
      */
     @LocalizedMessage(defaultMessage = "%1$s: Value must be set.")
     @MessageComment(value = {"value is not set"}, args = {@MessageComment.Argument("config path")})
     ValidateNotSet,
 
     /**
-     * List too small
+     * List too small.
      */
     @LocalizedMessage(defaultMessage = "%1$s: List must contain at least %3$d entries. Only %2$d entries given.")
     @MessageComment(value = {"List too small"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given entry count"), @MessageComment.Argument("min entry count")})
     ValidateListTooSmall,
 
     /**
-     * List too big
+     * List too big.
      */
     @LocalizedMessage(defaultMessage = "%1$s: List must contain at most %3$d entries. %2$d entries given.")
     @MessageComment(value = {"List too big"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given entry count"), @MessageComment.Argument("max entry count")})
     ValidateListTooBig,
 
     /**
-     * String too small
+     * String too small.
      */
     @LocalizedMessage(defaultMessage = "%1$s: String must contain at least %3$d characters. Only %2$d characters given.")
     @MessageComment(value = {"List too small"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given character count"), @MessageComment.Argument("min character count")})
     ValidateStringTooSmall,
 
     /**
-     * String too big
+     * String too big.
      */
     @LocalizedMessage(defaultMessage = "%1$s: String must contain at most %3$d characters. %2$d characters given.")
     @MessageComment(value = {"List too big"}, args = {@MessageComment.Argument("config path"), @MessageComment.Argument("given character count"), @MessageComment.Argument("max character count")})

@@ -27,7 +27,7 @@ package de.minigameslib.mclib.api.items;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
- * A provider returning NULL names
+ * A provider returning NULL names.
  */
 public class NullNameProvider implements NameProvider
 {

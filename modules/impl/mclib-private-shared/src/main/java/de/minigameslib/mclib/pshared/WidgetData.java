@@ -909,7 +909,7 @@ public class WidgetData extends AnnotatedDataFragment
     }
     
     /**
-     * A cancel button
+     * A cancel button.
      */
     public static class CancelButton extends ButtonData
     {

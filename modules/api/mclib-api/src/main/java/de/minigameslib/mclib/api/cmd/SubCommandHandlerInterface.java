@@ -28,7 +28,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 
 /**
- * Extends the command handler interface to be placed as a sub command in {@link AbstractCompositeCommandHandler}
+ * Extends the command handler interface to be placed as a sub command in {@link AbstractCompositeCommandHandler}.
  * 
  * @author mepeisen
  */
@@ -54,8 +54,8 @@ public interface SubCommandHandlerInterface extends CommandHandlerInterface
     LocalizedMessageInterface getDescription(CommandInterface command);
     
     /**
-     * Checks for visibility of this sub command
-     * @param command
+     * Checks for visibility of this sub command.
+     * @param command command interface
      * @return {@code true} if this command is visible
      */
     default boolean visible(CommandInterface command)

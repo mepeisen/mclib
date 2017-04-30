@@ -44,8 +44,8 @@ public interface ConfigItemStackData extends ItemStackDataFragment
     ItemStack toBukkit();
     
     /**
-     * Converts given bukkit item stack to saveable item stack
-     * @param stack
+     * Converts given bukkit item stack to saveable item stack.
+     * @param stack item stack.
      * @return saveable item stack
      */
     static ConfigItemStackData fromBukkit(ItemStack stack)

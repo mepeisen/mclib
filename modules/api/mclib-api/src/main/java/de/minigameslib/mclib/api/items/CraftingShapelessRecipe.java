@@ -31,7 +31,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to set crafting recipes
+ * Annotation to set crafting recipes.
  * 
  * @author mepeisen
  */
@@ -41,7 +41,7 @@ public @interface CraftingShapelessRecipe
 {
     
     /**
-     * amount of items
+     * amount of items.
      * @return amount of items
      */
     int amount() default 1;

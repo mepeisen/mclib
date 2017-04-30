@@ -61,7 +61,8 @@ public interface McDoubleConsumer
     default McDoubleConsumer andThen(McDoubleConsumer after)
     {
         Objects.requireNonNull(after);
-        return (double value) -> {
+        return (double value) ->
+        {
             accept(value);
             after.accept(value);
         };

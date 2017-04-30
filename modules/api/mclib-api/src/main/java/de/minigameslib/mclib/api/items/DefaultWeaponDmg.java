@@ -29,7 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Rule return the default entity hit damage
+ * Rule return the default entity hit damage.
+ * 
  * @author mepeisen
  */
 public class DefaultWeaponDmg implements ItemDmgInterface

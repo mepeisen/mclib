@@ -24,13 +24,9 @@
 
 package de.minigameslib.mclib.api;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -43,7 +39,7 @@ import java.lang.annotation.Target;
  * @see McLibInterface#getApiVersion()
  */
 @Retention(SOURCE)
-@Target({ TYPE, FIELD, METHOD, CONSTRUCTOR, ANNOTATION_TYPE })
+@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
 public @interface ApiVersion
 {
     

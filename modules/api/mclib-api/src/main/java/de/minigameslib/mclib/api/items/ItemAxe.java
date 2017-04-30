@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Item representing an axe
+ * Item representing an axe.
  * 
  * @author mepeisen
  *
@@ -42,43 +42,43 @@ public @interface ItemAxe
 {
     
     /**
-     * the durability of this item
+     * the durability of this item.
      * @return item durability
      */
     int durability();
     
     /**
-     * the attack damage modifier
+     * the attack damage modifier.
      * @return attack damage modifier
      */
     double damage();
     
     /**
-     * the attack speed modifier
+     * the attack speed modifier.
      * @return attack speed modifier
      */
     double speed();
     
     /**
-     * Return the enchantability factor of the item, most of the time is based on material
+     * Return the enchantability factor of the item, most of the time is based on material.
      * @return Return the enchantability factor of the item, most of the time is based on material
      */
     int getItemEnchantability();
     
     /**
-     * Returns the repair rule
+     * Returns the repair rule.
      * @return repair rule
      */
     Class<? extends ItemRepairInterface> repairRule();
     
     /**
-     * Returns the damage rule
+     * Returns the damage rule.
      * @return damage rule
      */
     Class<? extends ItemDmgInterface> dmgRule();
     
     /**
-     * Returns the dig rule
+     * Returns the dig rule.
      * @return dig rule
      */
     Class<? extends ItemDigInterface> digRule();

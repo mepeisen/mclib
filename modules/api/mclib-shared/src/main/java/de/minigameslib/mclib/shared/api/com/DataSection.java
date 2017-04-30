@@ -133,6 +133,7 @@ public interface DataSection
      * 
      * @param key name of the list to be set
      * @param newValue new value
+     * @param <T> primitive class
      */
     <T> void setPrimitiveMapList(String key, List<Map<String, T>> newValue);
     
@@ -141,6 +142,7 @@ public interface DataSection
      * 
      * @param key name of the list to be set
      * @param newValue new value
+     * @param <T> data fragment class
      */
     <T extends DataFragment> void setFragmentList(String key, List<T> newValue);
     
@@ -157,6 +159,7 @@ public interface DataSection
      * 
      * @param key name of the list to be set
      * @param newValue new value
+     * @param <T> data fragment class
      */
     <T extends DataFragment> void setFragmentMapList(String key, List<Map<String, T>> newValue);
     
@@ -173,6 +176,7 @@ public interface DataSection
      * 
      * @param key name of the map to be set
      * @param newValue new value
+     * @param <T> primitive type class
      */
     <T> void setPrimitiveListMap(String key, Map<String, List<T>> newValue);
     
@@ -181,6 +185,7 @@ public interface DataSection
      * 
      * @param key name of the map to be set
      * @param newValue new value
+     * @param <T> data fragment class
      */
     <T extends DataFragment> void setFragmentMap(String key, Map<String, T> newValue);
     
@@ -189,6 +194,7 @@ public interface DataSection
      * 
      * @param key name of the map to be set
      * @param newValue new value
+     * @param <T> data fragment class
      */
     <T extends DataFragment> void setFragmentListMap(String key, Map<String, List<T>> newValue);
     
@@ -644,6 +650,7 @@ public interface DataSection
      * Returns map value by key.
      * @param clazz target class
      * @param key name of the map
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> Map<String, T> getFragmentMap(Class<T> clazz, String key);
@@ -652,6 +659,7 @@ public interface DataSection
      * Returns map list value by key.
      * @param clazz target class
      * @param key name of the list
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> List<Map<String, T>> getFragmentMapList(Class<T> clazz, String key);
@@ -660,6 +668,7 @@ public interface DataSection
      * Returns list map value by key.
      * @param clazz target class
      * @param key name of the map
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> Map<String, List<T>> getFragmentListMap(Class<T> clazz, String key);
@@ -668,6 +677,7 @@ public interface DataSection
      * Returns list of fragments.
      * @param clazz target class
      * @param key name of the list
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> List<T> getFragmentList(Class<T> clazz, String key);
@@ -874,6 +884,7 @@ public interface DataSection
      * returns fragment by key.
      * @param clazz fragment class
      * @param key name of the fragment object
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> T getFragment(Class<T> clazz, String key);
@@ -883,6 +894,7 @@ public interface DataSection
      * @param clazz fragment class
      * @param key name of the fragment object
      * @param defaultValue default value to return if fragment object was not found
+     * @param <T> data fragment class
      * @return value
      */
     <T extends DataFragment> T getFragment(Class<T> clazz, String key, T defaultValue);
@@ -891,6 +903,7 @@ public interface DataSection
      * Checks if the given path can be read by given fragment class.
      * @param clazz fragment class
      * @param key name of the fragment object to be tested
+     * @param <T> data fragment class
      * @return true if the given key is a valid fragment of given type.
      */
     <T extends DataFragment> boolean isFragment(Class<T> clazz, String key);
@@ -913,6 +926,7 @@ public interface DataSection
      * Returns an enumeration value.
      * @param clazz enumeration class
      * @param key name of the enumeration
+     * @param <T> enum class
      * @return enumeration value or {@code null} if value was not found or is invalid.
      */
     <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key);
@@ -922,6 +936,7 @@ public interface DataSection
      * @param clazz enumeration class
      * @param key name of the enumeration
      * @param defaultValue default value to return if enumeration was not found
+     * @param <T> enum class
      * @return enumeration value or {@code defaultValue} if value was not found or is invalid.
      */
     <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key, T defaultValue);
@@ -930,6 +945,7 @@ public interface DataSection
      * Returns a list of enumeration values.
      * @param clazz enumeration class
      * @param key name of the list
+     * @param <T> enum class
      * @return list of enumeration values.
      */
     <T extends EnumerationValue> List<T> getEnumValueList(Class<T> clazz, String key);
@@ -938,6 +954,7 @@ public interface DataSection
      * Returns map value by key.
      * @param clazz enumeration class
      * @param key name of the map
+     * @param <T> enum class
      * @return value 
      */
     <T extends EnumerationValue> Map<String, T> getEnumValueMap(Class<T> clazz, String key);
@@ -946,6 +963,7 @@ public interface DataSection
      * Returns map list value by key.
      * @param clazz enumeration class
      * @param key name of the list
+     * @param <T> enum class
      * @return value
      */
     <T extends EnumerationValue> List<Map<String, T>> getEnumValueMapList(Class<T> clazz, String key);
@@ -954,6 +972,7 @@ public interface DataSection
      * Returns list map value by key.
      * @param clazz enumeration class
      * @param key name of the map
+     * @param <T> enum class
      * @return value
      */
     <T extends EnumerationValue> Map<String, List<T>> getEnumValueListMap(Class<T> clazz, String key);
@@ -962,6 +981,7 @@ public interface DataSection
      * Returns an enumeration value.
      * @param clazz enumeration class
      * @param key name of the enum
+     * @param <T> enum class
      * @return enumeration value or {@code null} if value was not found or is invalid.
      */
     <T extends Enum<?>> T getEnum(Class<T> clazz, String key);
@@ -971,6 +991,7 @@ public interface DataSection
      * @param clazz enumeration class
      * @param key name of the enum
      * @param defaultValue default value to return if enumeration was not found
+     * @param <T> enum class
      * @return enumeration value or {@code defaultValue} if value was not found or is invalid.
      */
     <T extends Enum<?>> T getEnum(Class<T> clazz, String key, T defaultValue);
@@ -979,6 +1000,7 @@ public interface DataSection
      * Returns a list of enumeration values.
      * @param clazz enumeration class
      * @param key name of the list
+     * @param <T> enum class
      * @return list of enumeration values.
      */
     <T extends Enum<?>> List<T> getEnumList(Class<T> clazz, String key);
@@ -987,6 +1009,7 @@ public interface DataSection
      * Returns map value by key.
      * @param clazz enumeration class
      * @param key name of the map
+     * @param <T> enum class
      * @return value
      */
     <T extends Enum<?>> Map<String, T> getEnumMap(Class<T> clazz, String key);
@@ -995,6 +1018,7 @@ public interface DataSection
      * Returns map list value by key.
      * @param clazz enumeration class
      * @param key name of the list
+     * @param <T> enum class
      * @return value
      */
     <T extends Enum<?>> List<Map<String, T>> getEnumMapList(Class<T> clazz, String key);
@@ -1003,6 +1027,7 @@ public interface DataSection
      * Returns list map value by key.
      * @param clazz enumeration class
      * @param key name of the map
+     * @param <T> enum class
      * @return value
      */
     <T extends Enum<?>> Map<String, List<T>> getEnumListMap(Class<T> clazz, String key);

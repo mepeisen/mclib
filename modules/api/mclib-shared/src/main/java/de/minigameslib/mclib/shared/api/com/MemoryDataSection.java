@@ -112,6 +112,9 @@ public class MemoryDataSection implements DataSection
      * Warning: This method is not meant to be used by plugins.
      * </p>
      * 
+     * @param <T> data fragment class (interface)
+     * @param <Q> data fragment class (implementation)
+     * 
      * @param interfaz Interface used in API
      * @param impl implementation class to be used by data sections
      */
@@ -1176,6 +1179,7 @@ public class MemoryDataSection implements DataSection
      * 
      * @param clazz target class.
      * @param list list of elements to be casted
+     * @param <T> element class
      * @return casted list
      */
     @SuppressWarnings("unchecked")
@@ -1616,6 +1620,7 @@ public class MemoryDataSection implements DataSection
      * Safe create instances of given class.
      * 
      * @param clazz target class of new instance
+     * @param <T> data fragment class
      * @return new instance
      */
     private <T extends DataFragment> T safeCreate(Class<T> clazz)
@@ -1864,10 +1869,11 @@ public class MemoryDataSection implements DataSection
     public interface UniqueEnumValueFactory
     {
         /**
-         * Creates enum value for given plugin/name and class type
-         * @param plugin
-         * @param name
-         * @param clazz
+         * Creates enum value for given plugin/name and class type.
+         * @param plugin plugin name
+         * @param name enum value name
+         * @param clazz target class
+         * @param <T> enum class
          * @return enum value or {@code null} if the given enum value was not registered
          */
         <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz);

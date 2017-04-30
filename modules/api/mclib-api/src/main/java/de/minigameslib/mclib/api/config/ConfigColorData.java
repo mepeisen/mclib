@@ -37,18 +37,18 @@ public class ConfigColorData extends ColorData
 {
     
     /**
-     * Constructor
+     * Constructor for reading from file.
      */
     public ConfigColorData()
     {
-        super();
+        // empty
     }
 
     /**
-     * Constructor
-     * @param red
-     * @param green
-     * @param blue
+     * Constructor for new data.
+     * @param red red color component
+     * @param green green color component
+     * @param blue blue color component
      */
     public ConfigColorData(byte red, byte green, byte blue)
     {
@@ -56,10 +56,10 @@ public class ConfigColorData extends ColorData
     }
 
     /**
-     * Constructor
-     * @param red
-     * @param green
-     * @param blue
+     * Constructor for new data.
+     * @param red red color component
+     * @param green green color component
+     * @param blue blue color component
      */
     public ConfigColorData(int red, int green, int blue)
     {
@@ -77,7 +77,7 @@ public class ConfigColorData extends ColorData
     
     /**
      * Converts bukkit color to config color.
-     * @param bukkitColor
+     * @param bukkitColor the bukkit color
      * @return config color
      */
     public static ConfigColorData fromBukkitColor(Color bukkitColor)

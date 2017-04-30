@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Some block/item meta data
+ * Some block/item meta data for furnace.
  * 
  * @author mepeisen
  *

@@ -83,15 +83,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
+     * @return java util variant.
      */
     public static <T, U> BiConsumer<T, U> wrap(McBiConsumer<T, U> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 orig.accept(arg1, arg2);
@@ -108,17 +109,18 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
      * @param <R>
      *            class param
+     * @return java util variant.
      */
     public static <T, U, R> BiFunction<T, U, R> wrap(McBiFunction<T, U, R> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 return orig.apply(arg1, arg2);
@@ -135,13 +137,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> McBinaryOperator<T> wrap(McBinaryOperator<T> orig)
     {
-        return (T arg1, T arg2) -> {
+        return (T arg1, T arg2) ->
+        {
             try
             {
                 return orig.apply(arg1, arg2);
@@ -158,15 +161,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
+     * @return java util variant.
      */
     public static <T, U> BiPredicate<T, U> wrap(McBiPredicate<T, U> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 return orig.test(arg1, arg2);
@@ -187,7 +191,8 @@ public class McFunctionUtils
      */
     public static BooleanSupplier wrap(McBooleanSupplier orig)
     {
-        return () -> {
+        return () ->
+        {
             try
             {
                 return orig.getAsBoolean();
@@ -204,13 +209,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> Comparator<T> wrap(McComparator<T> orig)
     {
-        return (T arg1, T arg2) -> {
+        return (T arg1, T arg2) ->
+        {
             try
             {
                 return orig.compare(arg1, arg2);
@@ -227,13 +233,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> Consumer<T> wrap(McConsumer<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 orig.accept(arg);
@@ -254,7 +261,8 @@ public class McFunctionUtils
      */
     public static DoubleConsumer wrap(McDoubleConsumer orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 orig.accept(arg);
@@ -275,7 +283,8 @@ public class McFunctionUtils
      */
     public static IntConsumer wrap(McIntConsumer orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 orig.accept(arg);
@@ -296,7 +305,8 @@ public class McFunctionUtils
      */
     public static LongConsumer wrap(McLongConsumer orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 orig.accept(arg);
@@ -313,13 +323,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> DoubleFunction<T> wrap(McDoubleFunction<T> orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 return orig.apply(arg);
@@ -340,7 +351,8 @@ public class McFunctionUtils
      */
     public static DoubleSupplier wrap(McDoubleSupplier orig)
     {
-        return () -> {
+        return () ->
+        {
             try
             {
                 return orig.getAsDouble();
@@ -361,7 +373,8 @@ public class McFunctionUtils
      */
     public static DoublePredicate wrap(McDoublePredicate orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 return orig.test(arg);
@@ -382,7 +395,8 @@ public class McFunctionUtils
      */
     public static DoubleToIntFunction wrap(McDoubleToIntFunction orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 return orig.applyAsInt(arg);
@@ -403,7 +417,8 @@ public class McFunctionUtils
      */
     public static DoubleToLongFunction wrap(McDoubleToLongFunction orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 return orig.applyAsLong(arg);
@@ -424,7 +439,8 @@ public class McFunctionUtils
      */
     public static DoubleUnaryOperator wrap(McDoubleUnaryOperator orig)
     {
-        return (double arg) -> {
+        return (double arg) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg);
@@ -445,7 +461,8 @@ public class McFunctionUtils
      */
     public static DoubleBinaryOperator wrap(McDoubleBinaryOperator orig)
     {
-        return (double arg1, double arg2) -> {
+        return (double arg1, double arg2) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg1, arg2);
@@ -462,15 +479,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <R>
      *            class param
+     * @return java util variant.
      */
     public static <T, R> Function<T, R> wrap(McFunction<T, R> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.apply(arg);
@@ -487,13 +505,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> IntFunction<T> wrap(McIntFunction<T> orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 return orig.apply(arg);
@@ -514,7 +533,8 @@ public class McFunctionUtils
      */
     public static IntSupplier wrap(McIntSupplier orig)
     {
-        return () -> {
+        return () ->
+        {
             try
             {
                 return orig.getAsInt();
@@ -535,7 +555,8 @@ public class McFunctionUtils
      */
     public static IntPredicate wrap(McIntPredicate orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 return orig.test(arg);
@@ -556,7 +577,8 @@ public class McFunctionUtils
      */
     public static IntToDoubleFunction wrap(McIntToDoubleFunction orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg);
@@ -577,7 +599,8 @@ public class McFunctionUtils
      */
     public static IntToLongFunction wrap(McIntToLongFunction orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 return orig.applyAsLong(arg);
@@ -598,7 +621,8 @@ public class McFunctionUtils
      */
     public static IntUnaryOperator wrap(McIntUnaryOperator orig)
     {
-        return (int arg) -> {
+        return (int arg) ->
+        {
             try
             {
                 return orig.applyAsInt(arg);
@@ -619,7 +643,8 @@ public class McFunctionUtils
      */
     public static IntBinaryOperator wrap(McIntBinaryOperator orig)
     {
-        return (int arg1, int arg2) -> {
+        return (int arg1, int arg2) ->
+        {
             try
             {
                 return orig.applyAsInt(arg1, arg2);
@@ -636,13 +661,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> LongFunction<T> wrap(McLongFunction<T> orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 return orig.apply(arg);
@@ -663,7 +689,8 @@ public class McFunctionUtils
      */
     public static LongSupplier wrap(McLongSupplier orig)
     {
-        return () -> {
+        return () ->
+        {
             try
             {
                 return orig.getAsLong();
@@ -684,7 +711,8 @@ public class McFunctionUtils
      */
     public static LongPredicate wrap(McLongPredicate orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 return orig.test(arg);
@@ -705,7 +733,8 @@ public class McFunctionUtils
      */
     public static LongToIntFunction wrap(McLongToIntFunction orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 return orig.applyAsInt(arg);
@@ -726,7 +755,8 @@ public class McFunctionUtils
      */
     public static LongToDoubleFunction wrap(McLongToDoubleFunction orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg);
@@ -747,7 +777,8 @@ public class McFunctionUtils
      */
     public static LongUnaryOperator wrap(McLongUnaryOperator orig)
     {
-        return (long arg) -> {
+        return (long arg) ->
+        {
             try
             {
                 return orig.applyAsLong(arg);
@@ -768,7 +799,8 @@ public class McFunctionUtils
      */
     public static LongBinaryOperator wrap(McLongBinaryOperator orig)
     {
-        return (long arg1, long arg2) -> {
+        return (long arg1, long arg2) ->
+        {
             try
             {
                 return orig.applyAsLong(arg1, arg2);
@@ -785,13 +817,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ObjDoubleConsumer<T> wrap(McObjDoubleConsumer<T> orig)
     {
-        return (T arg1, double arg2) -> {
+        return (T arg1, double arg2) ->
+        {
             try
             {
                 orig.accept(arg1, arg2);
@@ -808,13 +841,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ObjIntConsumer<T> wrap(McObjIntConsumer<T> orig)
     {
-        return (T arg1, int arg2) -> {
+        return (T arg1, int arg2) ->
+        {
             try
             {
                 orig.accept(arg1, arg2);
@@ -831,13 +865,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ObjLongConsumer<T> wrap(McObjLongConsumer<T> orig)
     {
-        return (T arg1, long arg2) -> {
+        return (T arg1, long arg2) ->
+        {
             try
             {
                 orig.accept(arg1, arg2);
@@ -854,13 +889,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> Predicate<T> wrap(McPredicate<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.test(arg);
@@ -877,13 +913,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> Supplier<T> wrap(McSupplier<T> orig)
     {
-        return () -> {
+        return () ->
+        {
             try
             {
                 return orig.get();
@@ -900,15 +937,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
+     * @return java util variant.
      */
     public static <T, U> ToDoubleBiFunction<T, U> wrap(McToDoubleBiFunction<T, U> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg1, arg2);
@@ -925,13 +963,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ToDoubleFunction<T> wrap(McToDoubleFunction<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.applyAsDouble(arg);
@@ -948,15 +987,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
+     * @return java util variant.
      */
     public static <T, U> ToIntBiFunction<T, U> wrap(McToIntBiFunction<T, U> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 return orig.applyAsInt(arg1, arg2);
@@ -973,13 +1013,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ToIntFunction<T> wrap(McToIntFunction<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.applyAsInt(arg);
@@ -996,15 +1037,16 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
      * @param <U>
      *            class param
+     * @return java util variant.
      */
     public static <T, U> ToLongBiFunction<T, U> wrap(McToLongBiFunction<T, U> orig)
     {
-        return (T arg1, U arg2) -> {
+        return (T arg1, U arg2) ->
+        {
             try
             {
                 return orig.applyAsLong(arg1, arg2);
@@ -1021,13 +1063,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> ToLongFunction<T> wrap(McToLongFunction<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.applyAsLong(arg);
@@ -1044,13 +1087,14 @@ public class McFunctionUtils
      * 
      * @param orig
      *            original.
-     * @return java util variant.
      * @param <T>
      *            class param
+     * @return java util variant.
      */
     public static <T> UnaryOperator<T> wrap(McUnaryOperator<T> orig)
     {
-        return (T arg) -> {
+        return (T arg) ->
+        {
             try
             {
                 return orig.apply(arg);

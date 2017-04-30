@@ -31,6 +31,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for item data.
+ * 
  * @author mepeisen
  *
  */

@@ -31,6 +31,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for declaring drop rules once a block is destroyed.
+ * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
@@ -39,7 +41,7 @@ public @interface BlockDropRule
 {
     
     /**
-     * Drop rule class
+     * Drop rule class.
      * @return drop rule class
      */
     Class<? extends BlockDropRuleInterface> value() default BlockDropRuleInterface.DropNull.class;

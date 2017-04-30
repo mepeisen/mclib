@@ -27,7 +27,7 @@ package de.minigameslib.mclib.api.items;
 import java.util.Random;
 
 /**
- * Interface representing drop rules
+ * Interface representing drop rules.
  * 
  * @author mepeisen
  */
@@ -35,43 +35,43 @@ public interface BlockDropRuleInterface
 {
 
     /**
-     * returns the type id for drops
-     * @param id
-     * @param variant 
-     * @param random
-     * @param fortune
+     * returns the type id for drops.
+     * @param id block id.
+     * @param variant block variant id.
+     * @param random the world random.
+     * @param fortune the players fortune.
      * @return type id
      */
     BlockId getDropType(BlockId id, BlockVariantId variant, Random random, int fortune);
 
     /**
-     * Returns the amount of drops 
-     * @param random
-     * @param fortune
+     * Returns the amount of drops.
+     * @param random the world random.
+     * @param fortune the players fortune.
      * @return amount
      */
     int getDropCount(Random random, int fortune);
 
     /**
-     * Returns the experience for drops
-     * @param id
-     * @param variant 
-     * @param random
-     * @param enchantmentLevel
+     * Returns the experience for drops.
+     * @param id the block id.
+     * @param variant the block variant id.
+     * @param random the world random.
+     * @param enchantmentLevel the tooling enchantment level.
      * @return experience
      */
     int getExpDrop(BlockId id, BlockVariantId variant, Random random, int enchantmentLevel);
 
     /**
-     * Returns the variants for drops
-     * @param id
-     * @param variant
+     * Returns the variants for drops.
+     * @param id the block id.
+     * @param variant the variant id.
      * @return variants
      */
     BlockVariantId getDropVariant(BlockId id, BlockVariantId variant);
     
     /**
-     * Rule to drop the block itself with amount 1
+     * Rule to drop the block itself with amount 1.
      */
     public class DropSelf implements BlockDropRuleInterface
     {
@@ -103,7 +103,7 @@ public interface BlockDropRuleInterface
     }
     
     /**
-     * Rule to drop nothing
+     * Rule to drop nothing.
      */
     public class DropNull implements BlockDropRuleInterface
     {

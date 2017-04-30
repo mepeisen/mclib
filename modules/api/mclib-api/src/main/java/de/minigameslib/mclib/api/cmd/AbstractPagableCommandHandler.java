@@ -108,7 +108,7 @@ public abstract class AbstractPagableCommandHandler implements CommandHandlerInt
             }
             catch (@SuppressWarnings("unused") NumberFormatException ex)
             {
-                sendNFE(command);
+                sendNumberFormatError(command);
                 sendUsage(command);
                 return;
             }
@@ -144,7 +144,7 @@ public abstract class AbstractPagableCommandHandler implements CommandHandlerInt
      * @param command
      *            the command
      */
-    private void sendNFE(CommandInterface command)
+    private void sendNumberFormatError(CommandInterface command)
     {
         command.send(CommonMessages.PagedInvalidNumber);
     }

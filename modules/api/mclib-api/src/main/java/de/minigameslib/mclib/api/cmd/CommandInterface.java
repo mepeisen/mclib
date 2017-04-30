@@ -72,7 +72,7 @@ public interface CommandInterface
     Command getCommand();
     
     /**
-     * Returns the label
+     * Returns the label.
      * 
      * @return label
      */
@@ -96,6 +96,7 @@ public interface CommandInterface
     
     /**
      * Fetches an argument by invoking given mapper, removing the first argument from arguments array.
+     * @param <T> target type
      * @param mapper the mapper to map a string argument to given function
      * @return result of fetching argument; will be empty if there are not enough arguments to be fetched or if mapper returns null.
      * @throws McException passed exception from mapper function
@@ -104,9 +105,10 @@ public interface CommandInterface
     
     /**
      * Fetches an argument by invoking given mapper, removing the first argument from arguments array; throws exception if no arguments are available.
-     * @param errorMessage
-     * @param errorArgs
+     * @param <T> target type
      * @param mapper the mapper to map a string argument to given function
+     * @param errorMessage the error message to send if no arguments are available
+     * @param errorArgs the arguments to build the error message
      * @return result of fetching argument
      * @throws McException passed exception from mapper function
      */
@@ -118,14 +120,17 @@ public interface CommandInterface
     
     /**
      * Fetches a single string from arguments, removing it from rguments list; throws exception if no arguments are available.
-     * @param errorMessage
-     * @param errorArgs
+     * @param errorMessage error message to be sent if no argument is available
+     * @param errorArgs arguments to build error message
      * @return string argument
-     * @throws McException
+     * @throws McException thrown if no argument was available
      */
     default String fetchString(LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
-        if (this.getArgs().length == 0) throw new McException(errorMessage, errorArgs);
+        if (this.getArgs().length == 0)
+        {
+            throw new McException(errorMessage, errorArgs);
+        }
         return this.fetch((cmd, arg) -> arg).get();
     }
     
@@ -154,7 +159,7 @@ public interface CommandInterface
     }
     
     /**
-     * Sends a message to command sender
+     * Sends a message to command sender.
      * 
      * @param msg
      *            message to send
@@ -253,8 +258,8 @@ public interface CommandInterface
     }
     
     /**
-     * Checks for given permission
-     * @param perm
+     * Checks for given permission.
+     * @param perm permission to be checked
      * @return {@code true} if command sender does have given permission
      */
     default boolean checkPermission(PermissionsInterface perm)
@@ -263,8 +268,8 @@ public interface CommandInterface
     }
     
     /**
-     * Checks for given permission or operator flag
-     * @param perm
+     * Checks for given permission or operator flag.
+     * @param perm permission to be checked
      * @return {@code true} if command sender does have given permission or has operator flag
      */
     default boolean checkOpPermission(PermissionsInterface perm)
@@ -284,7 +289,10 @@ public interface CommandInterface
      */
     default void permThrowException(PermissionsInterface perm, String command) throws McException
     {
-        if (!this.checkPermission(perm)) throw new McException(CommonMessages.NoPermissionForCommand, command);
+        if (!this.checkPermission(perm))
+        {
+            throw new McException(CommonMessages.NoPermissionForCommand, command);
+        }
     }
     
     /**
@@ -299,7 +307,10 @@ public interface CommandInterface
      */
     default void permOpThrowException(PermissionsInterface perm, String command) throws McException
     {
-        if (!this.checkOpPermission(perm)) throw new McException(CommonMessages.NoPermissionForCommand, command);
+        if (!this.checkOpPermission(perm))
+        {
+            throw new McException(CommonMessages.NoPermissionForCommand, command);
+        }
     }
     
     /**
@@ -308,7 +319,10 @@ public interface CommandInterface
      */
     default void checkOnline() throws McException
     {
-        if (!this.isPlayer()) throw new McException(CommonMessages.InvokeIngame);
+        if (!this.isPlayer())
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        }
     }
     
     /**
@@ -317,36 +331,45 @@ public interface CommandInterface
      */
     default void checkOffline() throws McException
     {
-        if (this.isPlayer()) throw new McException(CommonMessages.InvokeOnConsole);
+        if (this.isPlayer())
+        {
+            throw new McException(CommonMessages.InvokeOnConsole);
+        }
     }
     
     /**
      * Checks if at least {@code count} arguments are available.
-     * @param count
-     * @param errorMessage
-     * @param errorArgs
+     * @param count minimum expected argument count
+     * @param errorMessage error message to be thrown if there are not enough arguments
+     * @param errorArgs arguments to build error message
      * @throws McException thrown if not enough arguments are available
      */
     default void checkMinArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
-        if (this.getArgs().length < count) throw new McException(errorMessage, errorArgs);
+        if (this.getArgs().length < count)
+        {
+            throw new McException(errorMessage, errorArgs);
+        }
     }
     
     /**
      * Checks if not more than {@code count} arguments are available.
-     * @param count
-     * @param errorMessage
-     * @param errorArgs
+     * @param count maximum expected argument count
+     * @param errorMessage error message to be thrown if there are too many arguments
+     * @param errorArgs arguments to build error message
      * @throws McException thrown if there are too many arguments
      */
     default void checkMaxArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
-        if (this.getArgs().length > count) throw new McException(errorMessage, errorArgs);
+        if (this.getArgs().length > count)
+        {
+            throw new McException(errorMessage, errorArgs);
+        }
     }
     
     /**
-     * Checks if not more than {@code count} arguments are available. Uses TooManyArguments as exception text.
-     * @param count
+     * Checks if not more than {@code count} arguments are available. Uses {@link CommonMessages#TooManyArguments} as exception text.
+     * @param count maximum expected argument count
      * @throws McException thrown if there are too many arguments
      */
     default void checkMaxArgCount(int count) throws McException

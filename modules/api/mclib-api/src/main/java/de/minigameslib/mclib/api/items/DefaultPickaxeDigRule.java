@@ -33,6 +33,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * A default dig rule implementation for pickaxe.
+ * 
  * @author mepeisen
  *
  */
@@ -40,27 +42,27 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
 {
     
     /**
-     * effecieny on proper tooling material
+     * effecieny on proper tooling material.
      */
     protected float efficiencyOnProperMaterial = 4.0f;
     
     /**
-     * efficient materials
+     * efficient materials.
      */
     protected Set<Material> efficientMaterials = new HashSet<>();
     
     /**
-     * efficient blocks
+     * efficient blocks.
      */
-    protected Set<Material> efficientBlocks = new HashSet<>();
+    protected Set<BlockId> efficientBlocks = new HashSet<>();
     
     /**
-     * the tooling level
+     * the tooling level.
      */
     protected int toolLevel = 3;
     
     /**
-     * Constructor
+     * Constructor.
      */
     public DefaultPickaxeDigRule()
     {

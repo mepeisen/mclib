@@ -31,7 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Item representing a hoe
+ * Item representing a hoe.
  * 
  * @author mepeisen
  *

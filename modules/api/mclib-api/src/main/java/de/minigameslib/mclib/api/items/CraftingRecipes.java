@@ -31,7 +31,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to set crafting recipes
+ * Annotation to set crafting recipes.
  * 
  * @author mepeisen
  */
@@ -41,13 +41,13 @@ public @interface CraftingRecipes
 {
     
     /**
-     * the shaped recipes
+     * the shaped recipes.
      * @return shaped recipes
      */
     CraftingShapedRecipe[] shaped() default {};
     
     /**
-     * The shapeless recipes
+     * The shapeless recipes.
      * @return shapeless recipes
      */
     CraftingShapelessRecipe[] shapeless() default {};
