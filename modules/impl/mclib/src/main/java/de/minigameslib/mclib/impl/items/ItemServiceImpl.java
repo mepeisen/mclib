@@ -178,7 +178,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final Locale[] locales = Locale.getAvailableLocales();
         for (final Locale obj : locales)
         {
-            if ((obj.getDisplayCountry() != null) && (!"".equals(obj.getDisplayCountry()))) //$NON-NLS-1$
+            if (obj.getDisplayCountry() != null && !"".equals(obj.getDisplayCountry())) //$NON-NLS-1$
             {
                 this.languagesMap.computeIfAbsent(obj.getLanguage(), k -> new HashSet<>()).add(obj.getCountry());
             }
@@ -186,8 +186,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Returns the client locales to be used for resource set names
-     * @param serverLocale
+     * Returns the client locales to be used for resource set names.
+     * @param serverLocale server locale.
      * @return client locales
      */
     private Set<Locale> getClientLocales(Locale serverLocale)
@@ -198,13 +198,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         if (this.languagesMap.containsKey(serverLocale.toString()))
         {
-            return this.languagesMap.get(serverLocale.toString()).stream().map(s -> new Locale(serverLocale.toString() + '_' + s.toUpperCase())).collect(Collectors.toSet());
+            return this.languagesMap.get(serverLocale.toString()).stream().map(s -> new Locale(serverLocale.toString(), s)).collect(Collectors.toSet());
         }
         return Collections.singleton(serverLocale);
     }
     
     /**
-     * init the nms items
+     * init the nms items.
      */
     private void initNmsItems()
     {
