@@ -43,12 +43,14 @@ public @interface BlockMeta
     
     /**
      * the hardness of this block.
+     * 
      * @return block hardness
      */
     float hardness();
     
     /**
      * the resistance of this block.
+     * 
      * @return block resistance
      */
     float resistance();

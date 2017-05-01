@@ -28,6 +28,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.util.function.McConsumer;
@@ -49,6 +50,7 @@ public interface EntityInterface
     
     /**
      * Returns the type id.
+     * 
      * @return type id of this object
      */
     EntityTypeId getTypeId();
@@ -78,6 +80,7 @@ public interface EntityInterface
     
     /**
      * Returns the handler.
+     * 
      * @return associated handler.
      */
     EntityHandlerInterface getHandler();
@@ -88,31 +91,49 @@ public interface EntityInterface
     
     /**
      * Register entity related event handlers only active if this entity is involved in events.
+     * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that registers the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      */
-    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Registers an event handler object for events on this entity. Methods tagged with McEventHandler are considered as event handlers.
+     * 
      * @param plugin
+     *            plugin that registers the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      */
     void registerHandlers(Plugin plugin, McListener listener);
     
     /**
      * Remove a registered event handler.
+     * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that removes the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      */
-    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Remove a registered event handler.
+     * 
      * @param plugin
+     *            plugin that removes the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
     

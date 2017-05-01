@@ -39,6 +39,7 @@ class BlockServiceCache
     
     /**
      * Returns the block services instance.
+     * 
      * @return block services.
      */
     static BlockServiceInterface get()

@@ -38,9 +38,13 @@ public interface ItemDmgInterface
     
     /**
      * Returns the amount of damage for damaging an entity.
-     * @param stack item stack
-     * @param target target entity
-     * @param player attacking player
+     * 
+     * @param stack
+     *            item stack
+     * @param target
+     *            target entity
+     * @param player
+     *            attacking player
      * @return damage for entity attack
      */
     int getDamageByEntity(ItemStack stack, Entity target, Player player);

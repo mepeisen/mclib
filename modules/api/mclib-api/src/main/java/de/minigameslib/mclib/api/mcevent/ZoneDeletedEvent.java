@@ -47,7 +47,7 @@ public class ZoneDeletedEvent extends Event implements MinecraftEvent<ZoneDelete
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we created. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class ZoneDeletedEvent extends Event implements MinecraftEvent<ZoneDelete
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -78,7 +78,7 @@ public class ZoneDeletedEvent extends Event implements MinecraftEvent<ZoneDelete
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -86,13 +86,13 @@ public class ZoneDeletedEvent extends Event implements MinecraftEvent<ZoneDelete
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneDeletedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneDeletedEvent> when(McPredicate<ZoneDeletedEvent> test) throws McException
     {

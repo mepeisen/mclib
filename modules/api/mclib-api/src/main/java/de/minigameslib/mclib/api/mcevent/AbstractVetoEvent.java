@@ -49,7 +49,7 @@ public abstract class AbstractVetoEvent extends Event implements Cancellable
     private Serializable[]            vetoReasonArgs;
     
     /**
-     * Returns the veto reason
+     * Returns the veto reason.
      * 
      * @return the vetoReason; maybe null
      */
@@ -73,16 +73,6 @@ public abstract class AbstractVetoEvent extends Event implements Cancellable
     }
     
     /**
-     * Returns the message arguments to format the veto reason message
-     * 
-     * @return the vetoReasonArgs
-     */
-    public Serializable[] getVetoReasonArgs()
-    {
-        return this.vetoReasonArgs;
-    }
-    
-    /**
      * Sets the event cancelled.
      * 
      * @param reason
@@ -95,6 +85,16 @@ public abstract class AbstractVetoEvent extends Event implements Cancellable
         this.cancelled = true;
         this.vetoReason = reason;
         this.vetoReasonArgs = args;
+    }
+    
+    /**
+     * Returns the message arguments to format the veto reason message.
+     * 
+     * @return the vetoReasonArgs
+     */
+    public Serializable[] getVetoReasonArgs()
+    {
+        return this.vetoReasonArgs;
     }
     
 }

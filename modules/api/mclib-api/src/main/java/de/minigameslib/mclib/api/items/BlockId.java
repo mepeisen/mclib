@@ -39,6 +39,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the resource paths to the textures.
+     * 
      * @return resource paths to textures
      */
     default String[] getTextures()
@@ -56,6 +57,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the crafting recipes.
+     * 
      * @return crafting recipes
      */
     default CraftingRecipes recipes()
@@ -73,6 +75,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * the custom item model json.
+     * 
      * @return custom item model json
      */
     default String getModelJson()
@@ -90,6 +93,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     default NameProvider nameProvider()
@@ -107,6 +111,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the configured variants.
+     * 
      * @return configured variants.
      */
     @SuppressWarnings("unchecked")
@@ -131,6 +136,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * The drop rule.
+     * 
      * @return the drop rule
      */
     default BlockDropRuleInterface dropRule()
@@ -148,6 +154,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * The furnace recipe.
+     * 
      * @return the furnace recipe
      */
     default FurnaceRecipeInterface furnaceRecipe()
@@ -165,6 +172,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * The meta data.
+     * 
      * @return block meta data
      */
     default BlockMeta meta()
@@ -182,6 +190,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the stack size.
+     * 
      * @return stack size
      */
     default int stackSize()
@@ -199,6 +208,7 @@ public interface BlockId extends McUniqueEnumInterface
     
     /**
      * Returns the inventory definition.
+     * 
      * @return inventory definition
      */
     default BlockInventoryMeta inventory()

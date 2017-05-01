@@ -50,7 +50,7 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
     protected Map<String, SubCommandHandlerInterface> subCommands = new TreeMap<>();
     
     /** logger. */
-    private static final Logger LOGGER = Logger.getLogger(AbstractCompositeCommandHandler.class.getName());
+    private static final Logger                       LOGGER      = Logger.getLogger(AbstractCompositeCommandHandler.class.getName());
     
     /**
      * pre parse the command.
@@ -123,7 +123,7 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
      *            the command to be used.
      */
     protected abstract void sendUsage(CommandInterface command);
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {
@@ -139,10 +139,12 @@ public abstract class AbstractCompositeCommandHandler implements CommandHandlerI
         }
         return new ArrayList<>(this.subCommands.keySet()).stream().filter(elm -> elm.toLowerCase().startsWith(lastArg)).collect(Collectors.toList());
     }
-
+    
     /**
      * Returns the sub command by name.
-     * @param key name of the sub command
+     * 
+     * @param key
+     *            name of the sub command
      * @return the sub command; even invisible commands
      */
     public SubCommandHandlerInterface getSubCommand(String key)

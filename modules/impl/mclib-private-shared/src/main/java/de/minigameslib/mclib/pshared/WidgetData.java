@@ -44,7 +44,7 @@ public class WidgetData extends AnnotatedDataFragment
      * A label widget.
      */
     @PersistentField
-    protected Label label;
+    protected Label        label;
     
     /**
      * Submit button.
@@ -62,86 +62,98 @@ public class WidgetData extends AnnotatedDataFragment
      * The text input.
      */
     @PersistentField
-    protected TextInput textInput;
+    protected TextInput    textInput;
     
     /**
      * The list input.
      */
     @PersistentField
-    protected ListInput listInput;
+    protected ListInput    listInput;
     
     /**
      * The combobox input.
      */
     @PersistentField
-    protected ComboInput comboInput;
+    protected ComboInput   comboInput;
     
     /**
      * Returns the label widget.
+     * 
      * @return the label
      */
     public Label getLabel()
     {
         return this.label;
     }
-
+    
     /**
      * Sets the label widget.
-     * @param label the label to set
+     * 
+     * @param label
+     *            the label to set
      */
     public void setLabel(Label label)
     {
         this.label = label;
     }
-
+    
     /**
      * Returns the submit button widget.
+     * 
      * @return the submit
      */
     public SubmitButton getSubmit()
     {
         return this.submit;
     }
-
+    
     /**
      * Sets the submit button widget.
-     * @param submit the submit to set
+     * 
+     * @param submit
+     *            the submit to set
      */
     public void setSubmit(SubmitButton submit)
     {
         this.submit = submit;
     }
-
+    
     /**
      * Returns the cancel button widget.
+     * 
      * @return the cancel
      */
     public CancelButton getCancel()
     {
         return this.cancel;
     }
-
+    
     /**
      * Sets the cnacel button widget.
-     * @param cancel the cancel to set
+     * 
+     * @param cancel
+     *            the cancel to set
      */
     public void setCancel(CancelButton cancel)
     {
         this.cancel = cancel;
     }
-
+    
     /**
      * Returns the text input widget.
+     * 
      * @return the textInput
      */
     public TextInput getTextInput()
     {
         return this.textInput;
     }
-
+    
     /**
      * Sets the text input widget.
-     * @param textInput the textInput to set
+     * 
+     * @param textInput
+     *            the textInput to set
      */
     public void setTextInput(TextInput textInput)
     {
@@ -150,16 +162,19 @@ public class WidgetData extends AnnotatedDataFragment
     
     /**
      * Returns the list input widget.
+     * 
      * @return the listInput
      */
     public ListInput getListInput()
     {
         return this.listInput;
     }
-
+    
     /**
      * Sets the list input widget.
-     * @param listInput the listInput to set
+     * 
+     * @param listInput
+     *            the listInput to set
      */
     public void setListInput(ListInput listInput)
     {
@@ -168,22 +183,25 @@ public class WidgetData extends AnnotatedDataFragment
     
     /**
      * Returns the combo input widget.
+     * 
      * @return the comboInput
      */
     public ComboInput getComboInput()
     {
         return this.comboInput;
     }
-
+    
     /**
      * Sets the combo input widget.
-     * @param comboInput the comboInput to set
+     * 
+     * @param comboInput
+     *            the comboInput to set
      */
     public void setComboInput(ComboInput comboInput)
     {
         this.comboInput = comboInput;
     }
-
+    
     /**
      * A combo box input.
      */
@@ -194,202 +212,227 @@ public class WidgetData extends AnnotatedDataFragment
          * Allows empty values.
          */
         @PersistentField
-        protected boolean allowsNull;
+        protected boolean          allowsNull;
         
         /**
          * Allows new values.
          */
         @PersistentField
-        protected boolean allowsNewValues;
+        protected boolean          allowsNewValues;
         
         /**
          * Data key to query the label from data entry.
          */
         @PersistentField
-        protected String labelKey;
+        protected String           labelKey;
         
         /**
          * ID key of the selected data entry.
          */
         @PersistentField
-        protected String idKey;
+        protected String           idKey;
         
         /**
          * Form key of the selected data entry.
          */
         @PersistentField
-        protected String formKey;
+        protected String           formKey;
         
         /**
          * Form key for new values.
          */
         @PersistentField
-        protected String nformKey;
-     
+        protected String           nformKey;
+        
         /**
          * label of text input.
          */
         @PersistentField
-        protected String label;
+        protected String           label;
         
         /**
          * initial value.
          */
         @PersistentField
-        protected String value;
+        protected String           value;
         
         /**
          * the possible combobox values.
          */
         @PersistentField
         protected List<ComboValue> values = new ArrayList<>();
-
+        
         /**
          * Returns the flag to allow nulls/ empty values.
+         * 
          * @return the allowsNull
          */
         public boolean isAllowsNull()
         {
             return this.allowsNull;
         }
-
+        
         /**
          * Sets the flag to allow nulls/ empty values.
-         * @param allowsNull the allowsNull to set
+         * 
+         * @param allowsNull
+         *            the allowsNull to set
          */
         public void setAllowsNull(boolean allowsNull)
         {
             this.allowsNull = allowsNull;
         }
-
+        
         /**
          * Returns the flag to allow new values.
+         * 
          * @return the allowsNewValues
          */
         public boolean isAllowsNewValues()
         {
             return this.allowsNewValues;
         }
-
+        
         /**
          * Sets the flag to allow new values.
-         * @param allowsNewValues the allowsNewValues to set
+         * 
+         * @param allowsNewValues
+         *            the allowsNewValues to set
          */
         public void setAllowsNewValues(boolean allowsNewValues)
         {
             this.allowsNewValues = allowsNewValues;
         }
-
+        
         /**
          * Returns the data key for labels.
+         * 
          * @return the labelKey
          */
         public String getLabelKey()
         {
             return this.labelKey;
         }
-
+        
         /**
          * Sets the data key for labels.
-         * @param labelKey the labelKey to set
+         * 
+         * @param labelKey
+         *            the labelKey to set
          */
         public void setLabelKey(String labelKey)
         {
             this.labelKey = labelKey;
         }
-
+        
         /**
          * Returns the data key for ids.
+         * 
          * @return the idKey
          */
         public String getIdKey()
         {
             return this.idKey;
         }
-
+        
         /**
          * Sets the data key for ids.
-         * @param idKey the idKey to set
+         * 
+         * @param idKey
+         *            the idKey to set
          */
         public void setIdKey(String idKey)
         {
             this.idKey = idKey;
         }
-
+        
         /**
          * Sets the data key for identifying new values.
+         * 
          * @return the nformKey
          */
         public String getNformKey()
         {
             return this.nformKey;
         }
-
+        
         /**
          * Gets the data key for identifying new values.
-         * @param nformKey the nformKey to set
+         * 
+         * @param nformKey
+         *            the nformKey to set
          */
         public void setNformKey(String nformKey)
         {
             this.nformKey = nformKey;
         }
-
+        
         /**
          * Returns the data key for values.
+         * 
          * @return the formKey
          */
         public String getFormKey()
         {
             return this.formKey;
         }
-
+        
         /**
          * Sets the data keys for values.
-         * @param formKey the formKey to set
+         * 
+         * @param formKey
+         *            the formKey to set
          */
         public void setFormKey(String formKey)
         {
             this.formKey = formKey;
         }
-
+        
         /**
          * Returns the label text.
+         * 
          * @return the label
          */
         public String getLabel()
         {
             return this.label;
         }
-
+        
         /**
          * Sets the label text.
-         * @param label the label to set
+         * 
+         * @param label
+         *            the label to set
          */
         public void setLabel(String label)
         {
             this.label = label;
         }
-
+        
         /**
          * Returns the value.
+         * 
          * @return the value
          */
         public String getValue()
         {
             return this.value;
         }
-
+        
         /**
          * Sets the value.
-         * @param value the value to set
+         * 
+         * @param value
+         *            the value to set
          */
         public void setValue(String value)
         {
             this.value = value;
         }
-
+        
         /**
          * Returns the list of possible values.
+         * 
          * @return the values
          */
         public List<ComboValue> getValues()
@@ -407,26 +450,29 @@ public class WidgetData extends AnnotatedDataFragment
         /** row data. */
         @PersistentField
         protected DataSection data = new MemoryDataSection();
-
+        
         /**
          * Combo box data.
+         * 
          * @return the data
          */
         public DataSection getData()
         {
             return this.data;
         }
-
+        
         /**
          * Combo box data.
-         * @param data the data to set
+         * 
+         * @param data
+         *            the data to set
          */
         public void setData(DataSection data)
         {
             this.data = data;
         }
     }
-
+    
     /**
      * A list form input.
      */
@@ -443,43 +489,48 @@ public class WidgetData extends AnnotatedDataFragment
          * internal id to query data.
          */
         @PersistentField
-        protected String dataId;
+        protected String           dataId;
         
         /**
          * The list buttons.
          */
         @PersistentField
         protected List<ListButton> buttons = new ArrayList<>();
-
+        
         /**
          * Returns the data id.
+         * 
          * @return the dataId
          */
         public String getDataId()
         {
             return this.dataId;
         }
-
+        
         /**
          * Sets the data id.
-         * @param dataId the dataId to set
+         * 
+         * @param dataId
+         *            the dataId to set
          */
         public void setDataId(String dataId)
         {
             this.dataId = dataId;
         }
-
+        
         /**
          * Returns the column definitions.
+         * 
          * @return the columns
          */
         public List<ListColumn> getColumns()
         {
             return this.columns;
         }
-
+        
         /**
          * Returns the list buttons.
+         * 
          * @return the buttons
          */
         public List<ListButton> getButtons()
@@ -499,13 +550,13 @@ public class WidgetData extends AnnotatedDataFragment
          * Data key to query data from data entry.
          */
         @PersistentField
-        protected String dataKey;
+        protected String  dataKey;
         
         /**
          * Form key if this column represents the primary key of the data entries.
          */
         @PersistentField
-        protected String formKey;
+        protected String  formKey;
         
         /**
          * visible flag.
@@ -517,74 +568,86 @@ public class WidgetData extends AnnotatedDataFragment
          * column label.
          */
         @PersistentField
-        protected String label;
-
+        protected String  label;
+        
         /**
          * Returns the data key.
+         * 
          * @return the dataKey
          */
         public String getDataKey()
         {
             return this.dataKey;
         }
-
+        
         /**
          * Sets the data key.
-         * @param dataKey the dataKey to set
+         * 
+         * @param dataKey
+         *            the dataKey to set
          */
         public void setDataKey(String dataKey)
         {
             this.dataKey = dataKey;
         }
-
+        
         /**
          * Returns the form key.
+         * 
          * @return the formKey
          */
         public String getFormKey()
         {
             return this.formKey;
         }
-
+        
         /**
          * Sets the form key.
-         * @param formKey the formKey to set
+         * 
+         * @param formKey
+         *            the formKey to set
          */
         public void setFormKey(String formKey)
         {
             this.formKey = formKey;
         }
-
+        
         /**
          * Returns the visible flag.
+         * 
          * @return the visible
          */
         public boolean isVisible()
         {
             return this.visible;
         }
-
+        
         /**
          * Sets the visible flag.
-         * @param visible the visible to set
+         * 
+         * @param visible
+         *            the visible to set
          */
         public void setVisible(boolean visible)
         {
             this.visible = visible;
         }
-
+        
         /**
          * Returns the label key.
+         * 
          * @return the label
          */
         public String getLabel()
         {
             return this.label;
         }
-
+        
         /**
          * Sets the label key.
-         * @param label the label to set
+         * 
+         * @param label
+         *            the label to set
          */
         public void setLabel(String label)
         {
@@ -604,19 +667,22 @@ public class WidgetData extends AnnotatedDataFragment
          */
         @PersistentField
         protected boolean needsInput;
-
+        
         /**
          * Returns the needs input flag.
+         * 
          * @return the needsInput
          */
         public boolean isNeedsInput()
         {
             return this.needsInput;
         }
-
+        
         /**
          * Sets the needs input flag.
-         * @param needsInput the needsInput to set
+         * 
+         * @param needsInput
+         *            the needsInput to set
          */
         public void setNeedsInput(boolean needsInput)
         {
@@ -637,37 +703,43 @@ public class WidgetData extends AnnotatedDataFragment
         /** row limit. */
         @PersistentField
         protected int limit;
-
+        
         /**
          * Returns the start index.
+         * 
          * @return the start
          */
         public int getStart()
         {
             return this.start;
         }
-
+        
         /**
          * Sets the start index.
-         * @param start the start to set
+         * 
+         * @param start
+         *            the start to set
          */
         public void setStart(int start)
         {
             this.start = start;
         }
-
+        
         /**
          * Returns the row limit.
+         * 
          * @return the limit
          */
         public int getLimit()
         {
             return this.limit;
         }
-
+        
         /**
          * Sets the row limit.
-         * @param limit the limit to set
+         * 
+         * @param limit
+         *            the limit to set
          */
         public void setLimit(int limit)
         {
@@ -682,32 +754,36 @@ public class WidgetData extends AnnotatedDataFragment
     {
         /** total count. */
         @PersistentField
-        protected int count;
+        protected int                   count;
         
         /** row data. */
         @PersistentField
         protected List<ListResponseRow> rows = new ArrayList<>();
-
+        
         /**
          * Returns the count.
+         * 
          * @return the count
          */
         public int getCount()
         {
             return this.count;
         }
-
+        
         /**
          * Sets the count.
-         * @param count the count to set
+         * 
+         * @param count
+         *            the count to set
          */
         public void setCount(int count)
         {
             this.count = count;
         }
-
+        
         /**
          * Returns the data rows.
+         * 
          * @return the rows
          */
         public List<ListResponseRow> getRows()
@@ -724,9 +800,10 @@ public class WidgetData extends AnnotatedDataFragment
         /** row data. */
         @PersistentField
         protected DataSection data = new MemoryDataSection();
-
+        
         /**
          * Returns the row data.
+         * 
          * @return the data
          */
         public DataSection getData()
@@ -735,24 +812,23 @@ public class WidgetData extends AnnotatedDataFragment
         }
     }
     
-
     /**
      * A text input.
      */
     public static class TextInput extends AnnotatedDataFragment
     {
-     
+        
         /**
          * label of text input.
          */
         @PersistentField
-        protected String label;
+        protected String  label;
         
         /**
          * initial value.
          */
         @PersistentField
-        protected String value;
+        protected String  value;
         
         /**
          * {@code true} if empty values are allowed.
@@ -764,81 +840,91 @@ public class WidgetData extends AnnotatedDataFragment
          * the form key.
          */
         @PersistentField
-        protected String formKey;
-
+        protected String  formKey;
+        
         /**
          * Returns the label.
+         * 
          * @return the label
          */
         public String getLabel()
         {
             return this.label;
         }
-
+        
         /**
          * Sets the label.
-         * @param label the label to set
+         * 
+         * @param label
+         *            the label to set
          */
         public void setLabel(String label)
         {
             this.label = label;
         }
-
+        
         /**
          * Returns the value.
+         * 
          * @return the value
          */
         public String getValue()
         {
             return this.value;
         }
-
+        
         /**
          * Sets the value.
-         * @param value the value to set
+         * 
+         * @param value
+         *            the value to set
          */
         public void setValue(String value)
         {
             this.value = value;
         }
-
+        
         /**
          * returns the flag to allow empty values.
+         * 
          * @return the allowsEmpty
          */
         public boolean isAllowsEmpty()
         {
             return this.allowsEmpty;
         }
-
+        
         /**
          * Sets the flag to allow empty values.
-         * @param allowsEmpty the allowsEmpty to set
+         * 
+         * @param allowsEmpty
+         *            the allowsEmpty to set
          */
         public void setAllowsEmpty(boolean allowsEmpty)
         {
             this.allowsEmpty = allowsEmpty;
         }
-
+        
         /**
          * Returns the data key for values.
+         * 
          * @return the formKey
          */
         public String getFormKey()
         {
             return this.formKey;
         }
-
+        
         /**
          * Sets the data key for values.
-         * @param formKey the formKey to set
+         * 
+         * @param formKey
+         *            the formKey to set
          */
         public void setFormKey(String formKey)
         {
             this.formKey = formKey;
         }
-        
-        
         
     }
     
@@ -852,44 +938,50 @@ public class WidgetData extends AnnotatedDataFragment
          * Column span of label.
          */
         @PersistentField
-        protected int span;
+        protected int    span;
         
         /**
          * Label label.
          */
         @PersistentField
         protected String text;
-
+        
         /**
          * Returns the column span.
+         * 
          * @return the span
          */
         public int getSpan()
         {
             return this.span;
         }
-
+        
         /**
          * Sets the column span.
-         * @param span the span to set
+         * 
+         * @param span
+         *            the span to set
          */
         public void setSpan(int span)
         {
             this.span = span;
         }
-
+        
         /**
          * Returns the text.
+         * 
          * @return the text
          */
         public String getText()
         {
             return this.text;
         }
-
+        
         /**
          * Sets the text.
-         * @param text the text to set
+         * 
+         * @param text
+         *            the text to set
          */
         public void setText(String text)
         {
@@ -917,5 +1009,5 @@ public class WidgetData extends AnnotatedDataFragment
         // empt
         
     }
-
+    
 }

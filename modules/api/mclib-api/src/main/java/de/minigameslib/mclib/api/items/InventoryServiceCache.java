@@ -39,6 +39,7 @@ class InventoryServiceCache
     
     /**
      * Returns the inventors services instance.
+     * 
      * @return inventors services.
      */
     static InventoryServiceInterface get()

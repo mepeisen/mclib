@@ -39,6 +39,7 @@ class SkinServiceCache
     
     /**
      * Returns the Skin services instance.
+     * 
      * @return Skin services.
      */
     static SkinServiceInterface get()

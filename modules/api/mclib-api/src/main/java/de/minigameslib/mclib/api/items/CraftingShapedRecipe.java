@@ -39,18 +39,21 @@ public @interface CraftingShapedRecipe
     
     /**
      * amount of items.
+     * 
      * @return amount of items
      */
     int amount() default 1;
     
     /**
      * The shape to be used.
+     * 
      * @return shape to be used
      */
     String[] shape();
     
     /**
      * the shaped items.
+     * 
      * @return shaped items
      */
     CraftingShapedItem[] items();

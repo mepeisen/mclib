@@ -46,42 +46,47 @@ public class FormData extends AnnotatedDataFragment
      */
     @PersistentField
     protected String value;
-
+    
     /**
      * Returns the key.
+     * 
      * @return the key
      */
     public String getKey()
     {
         return this.key;
     }
-
+    
     /**
      * Sets the key.
-     * @param key the key to set
+     * 
+     * @param key
+     *            the key to set
      */
     public void setKey(String key)
     {
         this.key = key;
     }
-
+    
     /**
      * Returns the value.
+     * 
      * @return the value
      */
     public String getValue()
     {
         return this.value;
     }
-
+    
     /**
      * Sets the value.
-     * @param value the value to set
+     * 
+     * @param value
+     *            the value to set
      */
     public void setValue(String value)
     {
         this.value = value;
     }
     
-
 }

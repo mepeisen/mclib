@@ -35,31 +35,36 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Validator to check if a string config value or string list config value contains values not longer than x
+ * Validator to check if a string config value or string list config value contains values not longer than x.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
-@Target({FIELD, ElementType.TYPE})
+@Target({ FIELD, ElementType.TYPE })
 public @interface ValidateStrMax
 {
     
     /**
      * maximum length
+     * 
      * @return maximum length
      */
     int value();
     
     /**
-     * Validation of this annotation
+     * Validation of this annotation.
      */
     public class ValidatorInstance
     {
         /**
          * Validation
+         * 
          * @param smax
+         *            annotation value
          * @param cvi
-         * @throws McException thrown on validation errors.
+         *            configuration value
+         * @throws McException
+         *             thrown on validation errors.
          */
         public static void validate(ValidateStrMax smax, ConfigurationValueInterface cvi) throws McException
         {

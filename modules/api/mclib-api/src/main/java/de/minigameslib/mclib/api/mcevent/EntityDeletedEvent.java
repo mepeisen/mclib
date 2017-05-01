@@ -51,7 +51,7 @@ public class EntityDeletedEvent extends Event implements MinecraftEvent<EntityDe
     private static final HandlerList handlers = new HandlerList();
     
     /** the entity we created. */
-    private final EntityInterface     entity;
+    private final EntityInterface    entity;
     
     /**
      * Constructor.
@@ -71,7 +71,7 @@ public class EntityDeletedEvent extends Event implements MinecraftEvent<EntityDe
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -82,7 +82,7 @@ public class EntityDeletedEvent extends Event implements MinecraftEvent<EntityDe
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -90,13 +90,13 @@ public class EntityDeletedEvent extends Event implements MinecraftEvent<EntityDe
     {
         return handlers;
     }
-
+    
     @Override
     public EntityDeletedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityDeletedEvent> when(McPredicate<EntityDeletedEvent> test) throws McException
     {

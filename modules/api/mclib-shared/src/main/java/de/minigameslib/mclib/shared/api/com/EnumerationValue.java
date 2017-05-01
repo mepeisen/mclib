@@ -28,9 +28,8 @@ package de.minigameslib.mclib.shared.api.com;
  * Basic interface for enumerations that can be stored in data sections.
  * 
  * <p>
- * Enumeration of this type values are stored by class name and value name (method {@link #name()}).
- * Enumerations implementing the UniqueEnumerationValue interface are stored by plugin name and enumeration
- * value name. Unique enumerations can even be used after package renames and similar refactorings.
+ * Enumeration of this type values are stored by class name and value name (method {@link #name()}). Enumerations implementing the UniqueEnumerationValue interface are stored by plugin name and
+ * enumeration value name. Unique enumerations can even be used after package renames and similar refactorings.
  * </p>
  * 
  * @author mepeisen
@@ -40,6 +39,7 @@ public interface EnumerationValue
     
     /**
      * Returns the enumeration value name.
+     * 
      * @return enumeration value name.
      */
     String name();

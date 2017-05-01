@@ -42,6 +42,7 @@ public @interface PermissionComment
     
     /**
      * Returns the string comment for a permission value.
+     * 
      * @return string comment; each array entry is a single line.
      */
     String[] value();

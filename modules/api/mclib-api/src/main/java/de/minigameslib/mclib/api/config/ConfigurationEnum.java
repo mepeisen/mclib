@@ -55,6 +55,7 @@ public @interface ConfigurationEnum
     
     /**
      * enum class hint
+     * 
      * @return enum class hint
      */
     Class<? extends EnumerationValue> clazz();

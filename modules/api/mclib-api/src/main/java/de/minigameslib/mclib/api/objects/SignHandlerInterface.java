@@ -48,7 +48,8 @@ public interface SignHandlerInterface extends DataFragment
      * 
      * @param sign
      *            sign that was created.
-     * @throws McException thrown if the sign has errors.
+     * @throws McException
+     *             thrown if the sign has errors.
      */
     void onCreate(SignInterface sign) throws McException;
     
@@ -57,7 +58,8 @@ public interface SignHandlerInterface extends DataFragment
      * 
      * @param sign
      *            sign that was resumed
-     * @throws McException thrown if the sign has errors.
+     * @throws McException
+     *             thrown if the sign has errors.
      */
     void onResume(SignInterface sign) throws McException;
     
@@ -93,7 +95,7 @@ public interface SignHandlerInterface extends DataFragment
     void canChangeLocation(Location newValue) throws McException;
     
     /**
-     * Invoked upon change of location
+     * Invoked upon change of location.
      * 
      * @param newValue
      *            the new location
@@ -102,8 +104,11 @@ public interface SignHandlerInterface extends DataFragment
     
     /**
      * Checks if is is safe to create the given sign on the same location.
+     * 
      * @param handler
+     *            new handler that will be created on the same position
      * @throws McException
+     *             thrown if creation will not be allowed
      */
     default void checkCreation(SignHandlerInterface handler) throws McException
     {

@@ -42,7 +42,7 @@ public class ActionPerformedData extends AnnotatedDataFragment
      * unique id of the action that was performed.
      */
     @PersistentField
-    protected String actionId;
+    protected String         actionId;
     
     /**
      * the form data.
@@ -54,53 +54,58 @@ public class ActionPerformedData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    protected String winId;
-
+    protected String         winId;
+    
     /**
      * Returns the widget id.
+     * 
      * @return the widgetId
      */
     public String getWinId()
     {
         return this.winId;
     }
-
+    
     /**
      * Sets the widget id.
-     * @param winId the winId to set
+     * 
+     * @param winId
+     *            the winId to set
      */
     public void setWinId(String winId)
     {
         this.winId = winId;
     }
-
+    
     /**
      * Returns the action id.
+     * 
      * @return the actionId
      */
     public String getActionId()
     {
         return this.actionId;
     }
-
+    
     /**
      * Sets the action id.
-     * @param actionId the actionId to set
+     * 
+     * @param actionId
+     *            the actionId to set
      */
     public void setActionId(String actionId)
     {
         this.actionId = actionId;
     }
-
+    
     /**
      * Returns the form data list.
+     * 
      * @return the data
      */
     public List<FormData> getData()
     {
         return this.data;
     }
-    
-    
     
 }

@@ -42,118 +42,158 @@ public interface InventoryDescriptorInterface
     
     /**
      * Returns the type id of this inventory.
+     * 
      * @return type of inventory.
      */
     InventoryTypeId getTypeId();
     
     /**
      * Returns the id of this inventory.
+     * 
      * @return id of inventory.
      */
     InventoryId getId();
     
     /**
      * Returns the unique string id used during creation.
+     * 
      * @return unique string id
      */
     String getStringIdentified();
     
     /**
      * returns the locations this inventory is bound to.
+     * 
      * @return locations
      */
     List<Location> getLocations();
     
     /**
      * Returns the shared flag.
+     * 
      * @return {@code true} if inventory is shared over all players
      */
     boolean isShared();
     
     /**
      * Returns the fixed flag.
+     * 
      * @return {@code true} if inventory size is fixed
      */
     boolean isFixed();
     
     /**
      * Returns the player list having an inventory instance.
+     * 
      * @return player list for this inventory or empty list for shared inventories
      */
     List<McPlayerInterface> getPlayers();
     
     /**
      * Returns the inventory used for given player; returns a shared inventory if {@link #isShared()} is true.
-     * @param player the owning player
+     * 
+     * @param player
+     *            the owning player
      * @return inventory or {@code null} if there is no inventory
-     * @throws McException thrown if there was a technical problem reading the inventory
+     * @throws McException
+     *             thrown if there was a technical problem reading the inventory
      */
     Inventory getInventory(McPlayerInterface player) throws McException;
     
     /**
      * Returns or creates an inventory used for given player if needed; returns a shared inventory if {@link #isShared()} is true.
-     * @param player the owning player
+     * 
+     * @param player
+     *            the owning player
      * @return inventory
-     * @throws McException thrown if there was a technical problem reading or creating the inventory
+     * @throws McException
+     *             thrown if there was a technical problem reading or creating the inventory
      */
     Inventory getOrCreateInventory(McPlayerInterface player) throws McException;
     
     /**
      * Deletes inventory for given player. If {@link #isShared()} is true the inventory will be deleted for all players.
-     * @param player the owning player
-     * @throws McException thrown if there was a technical problem deleting the inventory
+     * 
+     * @param player
+     *            the owning player
+     * @throws McException
+     *             thrown if there was a technical problem deleting the inventory
      */
     void deleteInventory(McPlayerInterface player) throws McException;
     
     /**
      * Tries to shrink inventory of given player.
-     * @param player the owning player
-     * @param slotAmount number of slots that will be removed.
-     * @throws McException thrown if inventory size is fixed or shared; thrown if there not enough free slots for shrinking
+     * 
+     * @param player
+     *            the owning player
+     * @param slotAmount
+     *            number of slots that will be removed.
+     * @throws McException
+     *             thrown if inventory size is fixed or shared; thrown if there not enough free slots for shrinking
      */
     void shrinkInventory(McPlayerInterface player, int slotAmount) throws McException;
     
     /**
      * Tries to shrink inventory of all players.
-     * @param slotAmount number of slots that will be removed.
-     * @throws McException thrown if inventory size is fixed; thrown if there not enough free slots for shrinking
+     * 
+     * @param slotAmount
+     *            number of slots that will be removed.
+     * @throws McException
+     *             thrown if inventory size is fixed; thrown if there not enough free slots for shrinking
      */
     void shrinkInventory(int slotAmount) throws McException;
     
     /**
      * Tries to set inventory size of given player to given slot count.
-     * @param player the owning player
-     * @param slots number of slots/ new size
-     * @throws McException thrown if inventory size is fixed or shared; thrown if there not enough free slots for shrinking
+     * 
+     * @param player
+     *            the owning player
+     * @param slots
+     *            number of slots/ new size
+     * @throws McException
+     *             thrown if inventory size is fixed or shared; thrown if there not enough free slots for shrinking
      */
     void setInventorySize(McPlayerInterface player, int slots) throws McException;
     
     /**
      * Tries to set inventory size of all players to given slot count.
-     * @param slots number of slots/ new size.
-     * @throws McException thrown if inventory size is fixed; thrown if there not enough free slots for shrinking
+     * 
+     * @param slots
+     *            number of slots/ new size.
+     * @throws McException
+     *             thrown if inventory size is fixed; thrown if there not enough free slots for shrinking
      */
     void setInventorySize(int slots) throws McException;
     
     /**
      * Tries to grow inventory of given player.
-     * @param player the owning player
-     * @param slotAmount the amount of slots that will be added.
-     * @throws McException thrown if inventory size is fixed or shared
+     * 
+     * @param player
+     *            the owning player
+     * @param slotAmount
+     *            the amount of slots that will be added.
+     * @throws McException
+     *             thrown if inventory size is fixed or shared
      */
     void growInventory(McPlayerInterface player, int slotAmount) throws McException;
     
     /**
      * Tries to grow inventory of all players.
-     * @param slotAmount the amount of slots that will be added.
-     * @throws McException thrown if inventory size is fixed
+     * 
+     * @param slotAmount
+     *            the amount of slots that will be added.
+     * @throws McException
+     *             thrown if inventory size is fixed
      */
     void growInventory(int slotAmount) throws McException;
     
     /**
      * Open inventory GUI for given player.
-     * @param player owning player
-     * @throws McException thrown if there was a technical problem reading or creating the inventory
+     * 
+     * @param player
+     *            owning player
+     * @throws McException
+     *             thrown if there was a technical problem reading or creating the inventory
      */
     void openInventory(McPlayerInterface player) throws McException;
     

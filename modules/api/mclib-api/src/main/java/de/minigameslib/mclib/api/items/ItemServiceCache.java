@@ -39,6 +39,7 @@ class ItemServiceCache
     
     /**
      * Returns the item services instance.
+     * 
      * @return item services.
      */
     static ItemServiceInterface get()

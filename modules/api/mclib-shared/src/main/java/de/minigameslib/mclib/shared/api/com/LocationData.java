@@ -32,7 +32,7 @@ package de.minigameslib.mclib.shared.api.com;
 public class LocationData implements LocationDataFragment
 {
     
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     /**
      * the x coordinate.
      */
@@ -47,23 +47,23 @@ public class LocationData implements LocationDataFragment
      * the z coordinate.
      */
     private double z;
-    //CHECKSTYLE:ON
+    // CHECKSTYLE:ON
     
     /**
      * The yaw.
      */
-    private float yaw;
+    private float  yaw;
     
     /**
      * The pitch.
      */
-    private float pitch;
+    private float  pitch;
     
     /**
      * the world name.
      */
     private String world;
-
+    
     /**
      * Constructor to load from file.
      */
@@ -71,15 +71,22 @@ public class LocationData implements LocationDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor with new data.
-     * @param x the x coordinate
-     * @param y the y coordinate.
-     * @param z the z coordinate.
-     * @param yaw the yaw.
-     * @param pitch the pitch.
-     * @param world the world name.
+     * 
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate.
+     * @param z
+     *            the z coordinate.
+     * @param yaw
+     *            the yaw.
+     * @param pitch
+     *            the pitch.
+     * @param world
+     *            the world name.
      */
     public LocationData(double x, double y, double z, float yaw, float pitch, String world)
     {
@@ -90,43 +97,43 @@ public class LocationData implements LocationDataFragment
         this.pitch = pitch;
         this.world = world;
     }
-
+    
     @Override
     public double getX()
     {
         return this.x;
     }
-
+    
     @Override
     public double getY()
     {
         return this.y;
     }
-
+    
     @Override
     public double getZ()
     {
         return this.z;
     }
-
+    
     @Override
     public float getYaw()
     {
         return this.yaw;
     }
-
+    
     @Override
     public float getPitch()
     {
         return this.pitch;
     }
-
+    
     @Override
     public String getWorld()
     {
         return this.world;
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -144,7 +151,7 @@ public class LocationData implements LocationDataFragment
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -194,7 +201,7 @@ public class LocationData implements LocationDataFragment
         }
         return true;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -205,18 +212,18 @@ public class LocationData implements LocationDataFragment
         this.yaw = section.getFloat("yaw"); //$NON-NLS-1$
         this.world = section.getString("world"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
-        section.set("x",  this.x); //$NON-NLS-1$
-        section.set("y",  this.y); //$NON-NLS-1$
-        section.set("z",  this.z); //$NON-NLS-1$
-        section.set("pitch",  this.pitch); //$NON-NLS-1$
-        section.set("yaw",  this.yaw); //$NON-NLS-1$
-        section.set("world",  this.world); //$NON-NLS-1$
+        section.set("x", this.x); //$NON-NLS-1$
+        section.set("y", this.y); //$NON-NLS-1$
+        section.set("z", this.z); //$NON-NLS-1$
+        section.set("pitch", this.pitch); //$NON-NLS-1$
+        section.set("yaw", this.yaw); //$NON-NLS-1$
+        section.set("world", this.world); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {

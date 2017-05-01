@@ -31,72 +31,76 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
  * Outgoing stub for false checks of minigames predicates.
+ * 
  * @author mepeisen
- * @param <T> argument class
+ * @param <T>
+ *            argument class
  */
 public final class FalseStub<T> implements McOutgoingStubbing<T>
 {
-
+    
     /**
      * stubbed element.
      */
     private final T elm;
-
+    
     /**
      * Constructor to create the stub.
-     * @param elm stubbed element
+     * 
+     * @param elm
+     *            stubbed element
      */
     public FalseStub(T elm)
     {
         this.elm = elm;
     }
-
+    
     @Override
     public McOutgoingStubbing<T> _else(McConsumer<T> consumer) throws McException
     {
         consumer.accept(this.elm);
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<T> _elseThrow(McFunction<T, McException> consumer) throws McException
     {
         throw consumer.apply(this.elm);
     }
-
+    
     @Override
     public McOutgoingStubbing<T> _elseThrow(LocalizedMessageInterface msg) throws McException
     {
         throw new McException(msg);
     }
-
+    
     @Override
     public McOutgoingStubbing<T> _elseThrow(LocalizedMessageInterface msg, McFunction<T, Serializable[]> args2) throws McException
     {
         throw new McException(msg, args2.apply(this.elm));
     }
-
+    
     @Override
     public McOutgoingStubbing<T> then(McConsumer<T> consumer) throws McException
     {
         // does nothing
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<T> thenThrow(McFunction<T, McException> consumer) throws McException
     {
         // does nothing
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<T> thenThrow(LocalizedMessageInterface msg) throws McException
     {
         // does nothing
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<T> thenThrow(LocalizedMessageInterface msg, McFunction<T, Serializable[]> args2) throws McException
     {

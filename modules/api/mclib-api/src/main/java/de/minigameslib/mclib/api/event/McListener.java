@@ -27,7 +27,9 @@ package de.minigameslib.mclib.api.event;
 /**
  * Marker interface for objects acting as event listeners.
  * 
+ * <p>
  * Similar to bukkits Listener interface.
+ * </p>
  * 
  * @author mepeisen
  */

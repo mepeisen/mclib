@@ -75,20 +75,29 @@ public interface ConfigServiceInterface
     
     /**
      * Creates a gui editor item for editing given configuration variable.
-     * @param config configuration variable to edit
-     * @param onChange listener for config changes
-     * @param contextProvider a function to setup context before reading or storing values 
+     * 
+     * @param config
+     *            configuration variable to edit
+     * @param onChange
+     *            listener for config changes
+     * @param contextProvider
+     *            a function to setup context before reading or storing values
      * @return editor item
-     * @throws McException thrown on problems creating the item
+     * @throws McException
+     *             thrown on problems creating the item
      */
     ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException;
     
     /**
      * Creates a gui editor item for editing given configuration variable.
-     * @param config configuration variable to edit
-     * @param onChange listener for config changes
+     * 
+     * @param config
+     *            configuration variable to edit
+     * @param onChange
+     *            listener for config changes
      * @return editor item
-     * @throws McException thrown on problems creating the item
+     * @throws McException
+     *             thrown on problems creating the item
      */
     ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException;
     

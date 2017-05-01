@@ -46,31 +46,48 @@ public interface ExtensionServiceInterface
     
     /**
      * Registers given extension
-     * @param plugin java plugin declaring the extension
-     * @param extPoint target extension point
-     * @param extension extension to register
+     * 
+     * @param <T>
+     *            extension class
+     * @param plugin
+     *            java plugin declaring the extension
+     * @param extPoint
+     *            target extension point
+     * @param extension
+     *            extension to register
      */
     <T extends ExtensionInterface> void register(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension);
     
     /**
      * Removes a registered extension
-     * @param plugin java plugin declaring the extension
-     * @param extPoint target extension point
-     * @param extension extension to remove
+     * 
+     * @param <T>
+     *            extension class
+     * @param plugin
+     *            java plugin declaring the extension
+     * @param extPoint
+     *            target extension point
+     * @param extension
+     *            extension to remove
      */
     <T extends ExtensionInterface> void remove(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension);
     
     /**
      * Removes all extension points used by given plugin.
+     * 
      * @param plugin
+     *            plugin that removes all extensions
      */
     void removeAllExtensions(Plugin plugin);
     
     /**
      * Returns the extensions declared by plugins for given extension point.
-     * @param extPoint extension point.
+     * 
+     * @param extPoint
+     *            extension point.
      * @return extensions.
-     * @param <T> extension class
+     * @param <T>
+     *            extension class
      */
     <T extends ExtensionInterface> Iterable<T> getExtensions(ExtensionPointInterface<? extends T> extPoint);
     

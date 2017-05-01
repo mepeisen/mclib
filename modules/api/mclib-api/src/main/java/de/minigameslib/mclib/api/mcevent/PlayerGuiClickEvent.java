@@ -50,16 +50,16 @@ public class PlayerGuiClickEvent extends AbstractVetoEvent implements MinecraftE
 {
     
     /** handlers list. */
-    private static final HandlerList   handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     
     /** the gui the player opened. */
-    private final ClickGuiInterface    gui;
+    private final ClickGuiInterface  gui;
     
     /** the player. */
-    private final McPlayerInterface player;
+    private final McPlayerInterface  player;
     
     /** the clicked gui item. */
-    private final ClickGuiItem         item;
+    private final ClickGuiItem       item;
     
     /**
      * Constructor.
@@ -105,7 +105,7 @@ public class PlayerGuiClickEvent extends AbstractVetoEvent implements MinecraftE
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -116,7 +116,7 @@ public class PlayerGuiClickEvent extends AbstractVetoEvent implements MinecraftE
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -124,13 +124,13 @@ public class PlayerGuiClickEvent extends AbstractVetoEvent implements MinecraftE
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerGuiClickEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerGuiClickEvent> when(McPredicate<PlayerGuiClickEvent> test) throws McException
     {

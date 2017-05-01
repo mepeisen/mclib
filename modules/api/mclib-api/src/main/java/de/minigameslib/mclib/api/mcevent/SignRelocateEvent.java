@@ -51,21 +51,23 @@ public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     private static final HandlerList handlers = new HandlerList();
     
     /** the sign we created. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /** the old location. */
-    private final Location oldLocation;
+    private final Location           oldLocation;
     
     /** the new location. */
-    private final Location newLocation;
+    private final Location           newLocation;
     
     /**
      * Constructor.
      * 
      * @param sign
      *            the relocated sign.
-     * @param oldLocation 
-     * @param newLocation 
+     * @param oldLocation
+     *            the old location
+     * @param newLocation
+     *            the new location
      */
     public SignRelocateEvent(SignInterface sign, final Location oldLocation, final Location newLocation)
     {
@@ -82,15 +84,17 @@ public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     
     /**
      * Returns the old location.
+     * 
      * @return the oldLocation
      */
     public Location getOldCuboid()
     {
         return this.oldLocation;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newLocation
      */
     public Location getNewCuboid()
@@ -99,7 +103,7 @@ public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -110,7 +114,7 @@ public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -118,13 +122,13 @@ public class SignRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     {
         return handlers;
     }
-
+    
     @Override
     public SignRelocateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignRelocateEvent> when(McPredicate<SignRelocateEvent> test) throws McException
     {

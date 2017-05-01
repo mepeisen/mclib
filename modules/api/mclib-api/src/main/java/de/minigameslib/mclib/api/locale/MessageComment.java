@@ -42,30 +42,34 @@ public @interface MessageComment
     
     /**
      * Returns the string comment for a message.
+     * 
      * @return string comment; each array entry is a single line.
      */
     String[] value();
     
     /**
      * Returns the comment on message arguments.
+     * 
      * @return message argumnts.
      */
     Argument[] args() default {};
     
     /**
-     * Message argument annotation
+     * Message argument annotation.
      */
     @interface Argument
     {
         
         /**
          * Type of the argument
+         * 
          * @return Java type of the argument
          */
         String type() default "String";
         
         /**
          * Returns the string comment for the message argument.
+         * 
          * @return string comment; each array entry is a single line.
          */
         String[] value();

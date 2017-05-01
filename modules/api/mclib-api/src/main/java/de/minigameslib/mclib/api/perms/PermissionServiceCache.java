@@ -39,6 +39,7 @@ class PermissionServiceCache
     
     /**
      * Returns the enumeration services instance.
+     * 
      * @return enumeration services.
      */
     static PermissionServiceInterface get()

@@ -41,12 +41,16 @@ public class ColorData implements ColorDataFragment
     private byte green;
     /** blue color component. */
     private byte blue;
-
+    
     /**
      * Constructor for new color data.
-     * @param red red color component
-     * @param green green color component
-     * @param blue blue color component
+     * 
+     * @param red
+     *            red color component
+     * @param green
+     *            green color component
+     * @param blue
+     *            blue color component
      */
     public ColorData(byte red, byte green, byte blue)
     {
@@ -54,7 +58,7 @@ public class ColorData implements ColorDataFragment
         this.green = green;
         this.blue = blue;
     }
-
+    
     /**
      * Constructor for reading from file.
      */
@@ -62,7 +66,7 @@ public class ColorData implements ColorDataFragment
     {
         // empty
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -73,7 +77,7 @@ public class ColorData implements ColorDataFragment
         result = prime * result + this.red;
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -104,7 +108,7 @@ public class ColorData implements ColorDataFragment
         }
         return true;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -112,7 +116,7 @@ public class ColorData implements ColorDataFragment
         this.green = section.getByte("g", (byte) 0); //$NON-NLS-1$
         this.blue = section.getByte("b", (byte) 0); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
@@ -120,7 +124,7 @@ public class ColorData implements ColorDataFragment
         section.set("g", this.green); //$NON-NLS-1$
         section.set("b", this.blue); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
@@ -131,37 +135,37 @@ public class ColorData implements ColorDataFragment
         result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("r", "g", "b"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return result;
     }
-
+    
     @Override
     public byte getRed()
     {
         return this.red;
     }
-
+    
     @Override
     public byte getGreen()
     {
         return this.green;
     }
-
+    
     @Override
     public byte getBlue()
     {
         return this.blue;
     }
-
+    
     @Override
     public int getRedAsInt()
     {
         return this.red & 0xFF;
     }
-
+    
     @Override
     public int getGreenAsInt()
     {
         return this.green & 0xFF;
     }
-
+    
     @Override
     public int getBlueAsInt()
     {

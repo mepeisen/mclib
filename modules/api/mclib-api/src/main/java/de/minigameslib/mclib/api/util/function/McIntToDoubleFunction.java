@@ -35,11 +35,12 @@ import de.minigameslib.mclib.api.McException;
 @FunctionalInterface
 public interface McIntToDoubleFunction
 {
-
+    
     /**
      * Applies this function to the given argument.
      *
-     * @param value the function argument
+     * @param value
+     *            the function argument
      * @return the function result
      * @throws McException
      *             thrown on problems, f.e. networking errors.

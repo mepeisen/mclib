@@ -51,21 +51,23 @@ public class ComponentRelocateEvent extends AbstractVetoEvent implements Minecra
     private static final HandlerList handlers = new HandlerList();
     
     /** the component we created. */
-    private final ComponentInterface     component;
+    private final ComponentInterface component;
     
     /** the old location. */
-    private final Location oldLocation;
+    private final Location           oldLocation;
     
     /** the new location. */
-    private final Location newLocation;
+    private final Location           newLocation;
     
     /**
      * Constructor.
      * 
      * @param component
      *            the relocated component.
-     * @param oldLocation 
-     * @param newLocation 
+     * @param oldLocation
+     *            old location
+     * @param newLocation
+     *            new location
      */
     public ComponentRelocateEvent(ComponentInterface component, final Location oldLocation, final Location newLocation)
     {
@@ -82,15 +84,17 @@ public class ComponentRelocateEvent extends AbstractVetoEvent implements Minecra
     
     /**
      * Returns the old location.
+     * 
      * @return the oldLocation
      */
     public Location getOldCuboid()
     {
         return this.oldLocation;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newLocation
      */
     public Location getNewCuboid()
@@ -99,7 +103,7 @@ public class ComponentRelocateEvent extends AbstractVetoEvent implements Minecra
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -110,7 +114,7 @@ public class ComponentRelocateEvent extends AbstractVetoEvent implements Minecra
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -118,13 +122,13 @@ public class ComponentRelocateEvent extends AbstractVetoEvent implements Minecra
     {
         return handlers;
     }
-
+    
     @Override
     public ComponentRelocateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ComponentRelocateEvent> when(McPredicate<ComponentRelocateEvent> test) throws McException
     {

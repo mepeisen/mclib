@@ -51,7 +51,7 @@ public interface AnvilGuiInterface
     ItemStack getItem();
     
     /**
-     * Handles input
+     * Handles input.
      * 
      * @param input
      *            the string input

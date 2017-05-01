@@ -36,8 +36,11 @@ public interface ItemRepairInterface
     
     /**
      * Checks if item is repairable.
-     * @param toRepair item to be repaired.
-     * @param repair second item.
+     * 
+     * @param toRepair
+     *            item to be repaired.
+     * @param repair
+     *            second item.
      * @return {@code true} if repairable
      */
     boolean getIsRepairable(ItemStack toRepair, ItemStack repair);

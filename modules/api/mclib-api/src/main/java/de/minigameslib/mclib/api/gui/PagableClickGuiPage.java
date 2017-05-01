@@ -34,25 +34,28 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 /**
  * Base class for click gui pages with multiple pages.
  * 
+ * <p>
  * Can be used in click gui containers having 6 lines.
+ * </p>
  * 
  * @author mepeisen
- * @param <T> element type
+ * @param <T>
+ *            element type
  */
 public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
 {
     
-    /** number of items per page */
+    /** number of items per page. */
     protected static final int ITEMS_PER_LINE = 9;
     
-    /** number of items per page */
+    /** number of items per page. */
     protected static final int ITEMS_PER_PAGE = ITEMS_PER_LINE * 4;
     
-    /** numeric page num */
-    private int pageNum = 1;
+    /** numeric page num. */
+    private int                pageNum        = 1;
     
     /**
-     * Constructor to create the first page
+     * Constructor to create the first page.
      */
     public PagableClickGuiPage()
     {
@@ -60,8 +63,10 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * Constructor to create given page
+     * Constructor to create given page.
+     * 
      * @param pageNum
+     *            page number to be displayed, starting with 1
      */
     public PagableClickGuiPage(int pageNum)
     {
@@ -69,23 +74,26 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * Returns the number of elements
+     * Returns the number of elements.
+     * 
      * @return count of elements
      */
     protected abstract int count();
     
     /**
      * Returns total number of pages.
+     * 
      * @return total page number.
      */
     protected int totalPages()
     {
-        return (int) Math.ceil(this.count() / ITEMS_PER_PAGE);
+        return (int) Math.ceil((double) this.count() / ITEMS_PER_PAGE);
     }
     
     /**
-     * Returns current page
-     * @return current page.
+     * Returns current page.
+     * 
+     * @return current page, starting with 1
      */
     protected int page()
     {
@@ -93,28 +101,36 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * Returns the elements for this page
-     * @param start start index
-     * @param limit maximum limit
-     * @return list of elements to be displayed 
+     * Returns the elements for this page.
+     * 
+     * @param start
+     *            start index
+     * @param limit
+     *            maximum limit
+     * @return list of elements to be displayed
      */
     protected abstract List<T> getElements(int start, int limit);
     
     /**
-     * Maps elements to click gui item
-     * @param line 
-     * @param col 
-     * @param index 
+     * Maps elements to click gui item.
+     * 
+     * @param line
+     *            line number
+     * @param col
+     *            column number
+     * @param index
+     *            absolute item index
      * @param elm
+     *            item element
      * @return click gui item
      */
     protected abstract ClickGuiItem map(int line, int col, int index, T elm);
-
+    
     @Override
     public ClickGuiItem[][] getItems()
     {
         final List<T> list = this.getElements((this.pageNum - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
-        return new ClickGuiItem[][]{
+        return new ClickGuiItem[][] {
             firstLine(),
             null,
             // items
@@ -126,14 +142,19 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * Returns the first line
+     * Returns the first line.
+     * 
      * @return first line
      */
     protected abstract ClickGuiItem[] firstLine();
-
+    
     /**
+     * Creates a line of items.
+     * 
      * @param items
+     *            the items collection
      * @param start
+     *            starting index
      * @return line of icons
      */
     private ClickGuiItem[] itemsLine(Collection<T> items, int start)
@@ -152,21 +173,29 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * refresh gui
+     * Refresh gui.
+     * 
      * @param player
+     *            target player
      * @param session
+     *            gui session
      * @param gui
+     *            click gui interface
      */
     protected void onRefresh(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
     {
         session.setNewPage(this);
     }
-
+    
     /**
-     * prev page
+     * Moves to previous page.
+     * 
      * @param player
+     *            target player
      * @param session
+     *            gui session
      * @param gui
+     *            click gui interface
      */
     protected void onPrevPage(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
     {
@@ -178,10 +207,14 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
     }
     
     /**
-     * next page
+     * Moves to next page.
+     * 
      * @param player
+     *            target player
      * @param session
+     *            gui session
      * @param gui
+     *            click gui interface
      */
     protected void onNextPage(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
     {

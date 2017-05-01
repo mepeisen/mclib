@@ -39,6 +39,7 @@ class MessageServiceCache
     
     /**
      * Returns the message services instance.
+     * 
      * @return message services.
      */
     static MessageServiceInterface get()

@@ -44,6 +44,7 @@ import de.minigameslib.mclib.api.MinecraftVersionsType;
  * 
  * @author mepeisen
  */
+@SuppressWarnings("deprecation")
 @MinecraftVersionRange(max = MinecraftVersionsType.V1_10)
 public interface McPlayerInventoryEvent extends MinecraftEvent<PlayerInventoryEvent, McPlayerInventoryEvent>
 {

@@ -35,20 +35,24 @@ import java.util.HashSet;
 public class VectorData implements VectorDataFragment
 {
     
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     /** x coordinate. */
     private double x;
     /** y coordinate. */
     private double y;
     /** z coordinate. */
     private double z;
-    //CHECKSTYLE:ON
-
+    // CHECKSTYLE:ON
+    
     /**
      * Constructor to create vector from new data.
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
+     * 
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param z
+     *            the z coordinate
      */
     public VectorData(double x, double y, double z)
     {
@@ -64,7 +68,7 @@ public class VectorData implements VectorDataFragment
     {
         // empty
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -79,7 +83,7 @@ public class VectorData implements VectorDataFragment
         result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -110,7 +114,7 @@ public class VectorData implements VectorDataFragment
         }
         return true;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -118,7 +122,7 @@ public class VectorData implements VectorDataFragment
         this.y = section.getDouble("y", 0.0d); //$NON-NLS-1$
         this.z = section.getDouble("z", 0.0d); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
@@ -126,7 +130,7 @@ public class VectorData implements VectorDataFragment
         section.set("y", this.y); //$NON-NLS-1$
         section.set("z", this.z); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
@@ -137,19 +141,19 @@ public class VectorData implements VectorDataFragment
         result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("x", "y", "z"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return result;
     }
-
+    
     @Override
     public double getX()
     {
         return this.x;
     }
-
+    
     @Override
     public double getY()
     {
         return this.y;
     }
-
+    
     @Override
     public double getZ()
     {

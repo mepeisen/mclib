@@ -42,6 +42,7 @@ public @interface CraftingShapelessRecipe
     
     /**
      * amount of items.
+     * 
      * @return amount of items
      */
     int amount() default 1;

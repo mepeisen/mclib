@@ -39,6 +39,7 @@ class McLibCache
     
     /**
      * Returns the minecraft common library instance.
+     * 
      * @return minecraft common library.
      */
     static McLibInterface get()

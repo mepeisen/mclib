@@ -28,9 +28,8 @@ package de.minigameslib.mclib.shared.api.com;
  * An extension interface to DataSections.
  * 
  * <p>
- * A commentable data section can hold comment lines for the section itself or for
- * single values within the data section. Not all data section implementations support
- * this feature. Check the data section with instanceof if the feature is supported.
+ * A commentable data section can hold comment lines for the section itself or for single values within the data section. Not all data section implementations support this feature. Check the data
+ * section with instanceof if the feature is supported.
  * </p>
  * 
  * @author mepeisen
@@ -40,27 +39,35 @@ public interface CommentableDataSection
     
     /**
      * Returns the comments for this section.
+     * 
      * @return section comments lines, each array entry is one line; maybe {@code null}
      */
     String[] getSectionComments();
     
     /**
      * Sets the comments for this section.
-     * @param commentLines comments lines, each array entry is one line; maybe {@code null} to clear the comments.
+     * 
+     * @param commentLines
+     *            comments lines, each array entry is one line; maybe {@code null} to clear the comments.
      */
     void setSectionComments(String[] commentLines);
     
     /**
      * Returns the value comments for a value identified by key.
-     * @param key The key the comment is associated with. Periods are not allowed.
+     * 
+     * @param key
+     *            The key the comment is associated with. Periods are not allowed.
      * @return comments lines, each array entry is one line; maybe {@code null}
      */
     String[] getValueComments(String key);
     
     /**
      * Sets the comments associated with given key.
-     * @param key The key the comment is associated with. Periods are not allowed.
-     * @param commentLines comments lines, each array entry is one line; maybe {@code null} to clear the comments.
+     * 
+     * @param key
+     *            The key the comment is associated with. Periods are not allowed.
+     * @param commentLines
+     *            comments lines, each array entry is one line; maybe {@code null} to clear the comments.
      */
     void setValueComments(String key, String[] commentLines);
     

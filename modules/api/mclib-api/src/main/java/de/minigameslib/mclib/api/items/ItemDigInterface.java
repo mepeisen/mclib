@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Item rule for dig/ harvest.
+ * 
  * @author mepeisen
  *
  */
@@ -39,41 +40,57 @@ public interface ItemDigInterface
     
     /**
      * Returns the harvest speed modified.
-     * @param stack item stack (tool item used)
-     * @param material target block material
+     * 
+     * @param stack
+     *            item stack (tool item used)
+     * @param material
+     *            target block material
      * @return harvest
      */
     float getHarvestSpeed(ItemStack stack, Material material);
     
     /**
      * Returns the harvest speed modified.
-     * @param stack item stack (tool item used)
-     * @param block block id of target block
-     * @param variant block variant id of target block
+     * 
+     * @param stack
+     *            item stack (tool item used)
+     * @param block
+     *            block id of target block
+     * @param variant
+     *            block variant id of target block
      * @return harvest
      */
     float getHarvestSpeed(ItemStack stack, BlockId block, BlockVariantId variant);
     
     /**
      * Returns the damage by harvesting a block.
-     * @param stack item stack
-     * @param block target block
-     * @param player player using the item
+     * 
+     * @param stack
+     *            item stack
+     * @param block
+     *            target block
+     * @param player
+     *            player using the item
      * @return harvest block modifier
      */
     int getDamageByBlock(ItemStack stack, Block block, Player player);
     
     /**
      * Checks if block can be harvested.
-     * @param material target material to be checked
+     * 
+     * @param material
+     *            target material to be checked
      * @return true for harvest block
      */
     boolean canHarvest(Material material);
     
     /**
      * Checks if block can be harvested.
-     * @param block target block id to be checked
-     * @param variant target block variant id to be checked
+     * 
+     * @param block
+     *            target block id to be checked
+     * @param variant
+     *            target block variant id to be checked
      * @return true for harvest block
      */
     boolean canHarvest(BlockId block, BlockVariantId variant);

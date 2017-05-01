@@ -33,6 +33,7 @@ public interface NameProvider
 {
     /**
      * the name provider.
+     * 
      * @return name provider.
      */
     LocalizedMessageInterface getName();

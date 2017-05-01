@@ -39,6 +39,7 @@ class EnumServiceCache
     
     /**
      * Returns the enumeration services instance.
+     * 
      * @return enumeration services.
      */
     static EnumServiceInterface get()

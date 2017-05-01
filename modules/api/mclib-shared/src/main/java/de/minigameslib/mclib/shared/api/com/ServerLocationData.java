@@ -32,7 +32,7 @@ package de.minigameslib.mclib.shared.api.com;
 public class ServerLocationData implements ServerLocationDataFragment
 {
     
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     /**
      * the x coordinate.
      */
@@ -47,28 +47,28 @@ public class ServerLocationData implements ServerLocationDataFragment
      * the z coordinate.
      */
     private double z;
-    //CHECKSTYLE:ON
+    // CHECKSTYLE:ON
     
     /**
      * The yaw.
      */
-    private float yaw;
+    private float  yaw;
     
     /**
      * The pitch.
      */
-    private float pitch;
+    private float  pitch;
     
     /**
      * the world name.
      */
     private String world;
-
+    
     /**
      * the server name.
      */
     private String name;
-
+    
     /**
      * Constructor to read from file.
      */
@@ -76,16 +76,24 @@ public class ServerLocationData implements ServerLocationDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor with new data.
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param yaw the yaw
-     * @param pitch the pitch
-     * @param world the world name
-     * @param serverName the servers name
+     * 
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param z
+     *            the z coordinate
+     * @param yaw
+     *            the yaw
+     * @param pitch
+     *            the pitch
+     * @param world
+     *            the world name
+     * @param serverName
+     *            the servers name
      */
     public ServerLocationData(double x, double y, double z, float yaw, float pitch, String world, String serverName)
     {
@@ -97,49 +105,49 @@ public class ServerLocationData implements ServerLocationDataFragment
         this.world = world;
         this.name = serverName;
     }
-
+    
     @Override
     public String getName()
     {
         return this.name;
     }
-
+    
     @Override
     public double getX()
     {
         return this.x;
     }
-
+    
     @Override
     public double getY()
     {
         return this.y;
     }
-
+    
     @Override
     public double getZ()
     {
         return this.z;
     }
-
+    
     @Override
     public float getYaw()
     {
         return this.yaw;
     }
-
+    
     @Override
     public float getPitch()
     {
         return this.pitch;
     }
-
+    
     @Override
     public String getWorld()
     {
         return this.world;
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -158,7 +166,7 @@ public class ServerLocationData implements ServerLocationDataFragment
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -219,7 +227,7 @@ public class ServerLocationData implements ServerLocationDataFragment
         }
         return true;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -231,19 +239,19 @@ public class ServerLocationData implements ServerLocationDataFragment
         this.world = section.getString("world"); //$NON-NLS-1$
         this.name = section.getString("server"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
-        section.set("x",  this.x); //$NON-NLS-1$
-        section.set("y",  this.y); //$NON-NLS-1$
-        section.set("z",  this.z); //$NON-NLS-1$
-        section.set("pitch",  this.pitch); //$NON-NLS-1$
-        section.set("yaw",  this.yaw); //$NON-NLS-1$
-        section.set("world",  this.world); //$NON-NLS-1$
-        section.set("server",  this.name); //$NON-NLS-1$
+        section.set("x", this.x); //$NON-NLS-1$
+        section.set("y", this.y); //$NON-NLS-1$
+        section.set("z", this.z); //$NON-NLS-1$
+        section.set("pitch", this.pitch); //$NON-NLS-1$
+        section.set("yaw", this.yaw); //$NON-NLS-1$
+        section.set("world", this.world); //$NON-NLS-1$
+        section.set("server", this.name); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {

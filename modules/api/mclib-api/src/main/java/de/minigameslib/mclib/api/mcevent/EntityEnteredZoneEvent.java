@@ -49,18 +49,18 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
 {
     
     /** handlers list. */
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList          handlers = new HandlerList();
     
     /** the zone that was entered. */
-    private final ZoneInterface      zone;
+    private final ZoneInterface               zone;
     
     /** the entity entering the zone. */
-    private final Entity  entity;
+    private final Entity                      entity;
     
-    /** mclib entity */
-    private final EntityInterface mcEntity;
+    /** mclib entity. */
+    private final EntityInterface             mcEntity;
     
-    /** mclib entities */
+    /** mclib entities. */
     private final Collection<EntityInterface> mcEntities;
     
     /**
@@ -84,7 +84,7 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
     {
         return this.mcEntity;
     }
-
+    
     @Override
     public Iterable<EntityInterface> getEntities()
     {
@@ -98,7 +98,7 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
     }
     
     /**
-     * Returns the entity that was entering the zone
+     * Returns the entity that was entering the zone.
      * 
      * @return the entering entity
      */
@@ -106,9 +106,9 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
     {
         return this.entity;
     }
-
+    
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -119,7 +119,7 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -127,13 +127,13 @@ public class EntityEnteredZoneEvent extends Event implements MinecraftEvent<Enti
     {
         return handlers;
     }
-
+    
     @Override
     public EntityEnteredZoneEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityEnteredZoneEvent> when(McPredicate<EntityEnteredZoneEvent> test) throws McException
     {

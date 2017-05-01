@@ -84,8 +84,8 @@ public interface McOutgoingStubbing<T>
      *             thrown with given error code
      */
     McOutgoingStubbing<T> thenThrow(LocalizedMessageInterface msg, McFunction<T, Serializable[]> args) throws McException;
-
-    //CHECKSTYLE:OFF
+    
+    // CHECKSTYLE:OFF
     /**
      * Let the given consumer be invoked if the condition does not meet the criteria.
      * 
@@ -131,6 +131,6 @@ public interface McOutgoingStubbing<T>
      *             thrown with given error code
      */
     McOutgoingStubbing<T> _elseThrow(LocalizedMessageInterface msg, McFunction<T, Serializable[]> args) throws McException;
-    //CHECKSTYLE:ON
+    // CHECKSTYLE:ON
     
 }

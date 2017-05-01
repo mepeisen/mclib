@@ -51,7 +51,7 @@ public class SignCreatedEvent extends Event implements MinecraftEvent<SignCreate
     private static final HandlerList handlers = new HandlerList();
     
     /** the sign we created. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /**
      * Constructor.
@@ -71,7 +71,7 @@ public class SignCreatedEvent extends Event implements MinecraftEvent<SignCreate
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -82,7 +82,7 @@ public class SignCreatedEvent extends Event implements MinecraftEvent<SignCreate
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -90,13 +90,13 @@ public class SignCreatedEvent extends Event implements MinecraftEvent<SignCreate
     {
         return handlers;
     }
-
+    
     @Override
     public SignCreatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignCreatedEvent> when(McPredicate<SignCreatedEvent> test) throws McException
     {

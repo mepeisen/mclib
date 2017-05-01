@@ -65,8 +65,11 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
     
     /**
      * Sets the user message.
-     * @param locale locale to use
-     * @param message message to be used.
+     * 
+     * @param locale
+     *            locale to use
+     * @param message
+     *            message to be used.
      */
     public void setUserMessage(Locale locale, String message)
     {
@@ -82,8 +85,11 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
     
     /**
      * Sets the admin message.
-     * @param locale locale to use
-     * @param message message array to be used.
+     * 
+     * @param locale
+     *            locale to use
+     * @param message
+     *            message array to be used.
      */
     public void setAdminMessage(Locale locale, String message)
     {
@@ -139,7 +145,8 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
     }
     
     /**
-     * Returns the languages
+     * Returns the languages.
+     * 
      * @return languages
      */
     public Set<Locale> getLanguages()
@@ -188,7 +195,7 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
         }
         return smsg;
     }
-
+    
     @Override
     public String[] getUnformattedUserMessageLine(Locale locale)
     {
@@ -217,25 +224,25 @@ public class LocalizedConfigString implements DataFragment, LocalizedMessageInte
         }
         return smsg;
     }
-
+    
     @Override
     public String[] getUnformattedAdminMessageLine(Locale locale)
     {
         throw new IllegalStateException("Invalid message class."); //$NON-NLS-1$
     }
-
+    
     @Override
     public String name()
     {
         throw new IllegalStateException();
     }
-
+    
     @Override
     public Plugin getPlugin()
     {
         throw new IllegalStateException();
     }
-
+    
     @Override
     public String path()
     {

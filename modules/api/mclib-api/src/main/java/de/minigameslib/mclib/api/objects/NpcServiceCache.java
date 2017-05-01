@@ -39,6 +39,7 @@ class NpcServiceCache
     
     /**
      * Returns the npc services instance.
+     * 
      * @return npc services.
      */
     static NpcServiceInterface get()

@@ -45,16 +45,20 @@ public interface SGuiFormBuilderInterface
      * @param span
      *            1 (only label column) or 2 (whole dialog size)
      * @param text
+     *            localized text
      * @param args
+     *            arguments to build text
      * @return this object for chaining
      */
     SGuiFormBuilderInterface addText(int span, LocalizedMessageInterface text, Serializable... args);
     
     /**
-     * Adds a submit button
+     * Adds a submit button.
      * 
      * @param label
+     *            label text
      * @param labelArgs
+     *            arguments to build label
      * @param action
      *            an action to parse the form data; can throw exceptions to indicate form errors.
      * @return this object for chaining
@@ -62,11 +66,14 @@ public interface SGuiFormBuilderInterface
     SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action);
     
     /**
-     * Adds a cancel button
+     * Adds a cancel button.
      * 
      * @param label
+     *            label text
      * @param labelArgs
+     *            arguments to build label
      * @param action
+     *            action to nvoke on button click
      * @return this object for chaining
      */
     SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action);
@@ -75,10 +82,15 @@ public interface SGuiFormBuilderInterface
      * Adds text input field.
      * 
      * @param label
+     *            label text
      * @param labelArgs
+     *            arguments to build label
      * @param formKey
+     *            key in form data for widget value
      * @param initialValue
+     *            the initial value
      * @param allowsEmpty
+     *            {@code true} if empty/null values are allowed
      * @return this object for chaining
      */
     SGuiFormBuilderInterface addTextInput(LocalizedMessageInterface label, Serializable[] labelArgs, String formKey, String initialValue, boolean allowsEmpty);
@@ -96,8 +108,11 @@ public interface SGuiFormBuilderInterface
      * Adds a combo box
      * 
      * @param label
+     *            label text
      * @param labelArgs
+     *            arguments to build label
      * @param allowsNull
+     *            {@code true} if empty/null values are allowed
      * @param idKey
      *            the key to receive ids from data section
      * @param labelKey
@@ -111,14 +126,17 @@ public interface SGuiFormBuilderInterface
      * @return this object for chaining
      */
     SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
-            List<DataSection> values);
+        List<DataSection> values);
     
     /**
      * Adds a combo box that allows new values to be entered
      * 
      * @param label
+     *            label text
      * @param labelArgs
+     *            arguments to build label
      * @param allowsNull
+     *            {@code true} if empty/null values are allowed
      * @param idKey
      *            the key to receive ids from data section
      * @param labelKey
@@ -134,7 +152,7 @@ public interface SGuiFormBuilderInterface
      * @return this object for chaining
      */
     SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
-            List<DataSection> values, String newValueKey);
+        List<DataSection> values, String newValueKey);
     
     /**
      * Displays the form on client.

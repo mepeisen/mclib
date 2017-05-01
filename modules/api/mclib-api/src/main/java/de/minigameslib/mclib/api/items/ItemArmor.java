@@ -43,42 +43,49 @@ public @interface ItemArmor
     
     /**
      * The armor slot.
+     * 
      * @return armor slot
      */
     ArmorSlot slot();
     
     /**
      * Returns the amount of damage reduce.
+     * 
      * @return amount of damage reduce
      */
     int dmgReduceAmount();
     
     /**
      * the durability of this item.
+     * 
      * @return item durability
      */
     int durability();
     
     /**
      * the armor toughness.
+     * 
      * @return armor toughness
      */
     float toughness();
     
     /**
      * Return the enchantability factor of the item, most of the time is based on material.
+     * 
      * @return Return the enchantability factor of the item, most of the time is based on material
      */
     int getItemEnchantability();
     
     /**
      * Returns the repair rule.
+     * 
      * @return repair rule
      */
     Class<? extends ItemRepairInterface> repairRule();
-
+    
     /**
      * The armor slot.
+     * 
      * @author mepeisen
      *
      */
@@ -93,5 +100,5 @@ public @interface ItemArmor
         /** boots. */
         Boots
     }
-
+    
 }

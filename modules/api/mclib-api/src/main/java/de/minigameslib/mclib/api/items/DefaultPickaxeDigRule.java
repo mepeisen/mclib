@@ -44,22 +44,22 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
     /**
      * effecieny on proper tooling material.
      */
-    protected float efficiencyOnProperMaterial = 4.0f;
+    protected float         efficiencyOnProperMaterial = 4.0f;
     
     /**
      * efficient materials.
      */
-    protected Set<Material> efficientMaterials = new HashSet<>();
+    protected Set<Material> efficientMaterials         = new HashSet<>();
     
     /**
      * efficient blocks.
      */
-    protected Set<BlockId> efficientBlocks = new HashSet<>();
+    protected Set<BlockId>  efficientBlocks            = new HashSet<>();
     
     /**
      * the tooling level.
      */
-    protected int toolLevel = 3;
+    protected int           toolLevel                  = 3;
     
     /**
      * Constructor.
@@ -94,14 +94,14 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
         this.efficientMaterials.add(Material.STONE_BUTTON);
         this.efficientMaterials.add(Material.STONE_PLATE);
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, Material material)
     {
         final BlockServiceInterface bsi = BlockServiceInterface.instance();
         if (bsi.isRock(material)
-                || bsi.isOre(material)
-                || bsi.isHeavy(material))
+            || bsi.isOre(material)
+            || bsi.isHeavy(material))
         {
             return this.efficiencyOnProperMaterial;
         }
@@ -111,14 +111,14 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, BlockId block, BlockVariantId variant)
     {
         final BlockServiceInterface bsi = BlockServiceInterface.instance();
         if (bsi.isRock(block)
-                || bsi.isOre(block)
-                || bsi.isHeavy(block))
+            || bsi.isOre(block)
+            || bsi.isHeavy(block))
         {
             return this.efficiencyOnProperMaterial;
         }
@@ -128,13 +128,13 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public int getDamageByBlock(ItemStack stack, Block block, Player player)
     {
         return 2;
     }
-
+    
     @Override
     public boolean canHarvest(Material material)
     {
@@ -144,19 +144,19 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
         }
         
         if (material == Material.DIAMOND_BLOCK || material == Material.DIAMOND_ORE
-                || material == Material.EMERALD_BLOCK || material == Material.EMERALD_ORE
-                || material == Material.GOLD_BLOCK || material == Material.GOLD_ORE
-                || material == Material.REDSTONE_BLOCK || material == Material.REDSTONE_ORE)
+            || material == Material.EMERALD_BLOCK || material == Material.EMERALD_ORE
+            || material == Material.GOLD_BLOCK || material == Material.GOLD_ORE
+            || material == Material.REDSTONE_BLOCK || material == Material.REDSTONE_ORE)
         {
             return this.toolLevel >= 2;
         }
         
         if (material == Material.IRON_BLOCK || material == Material.IRON_ORE
-                || material == Material.LAPIS_BLOCK || material == Material.LAPIS_ORE)
+            || material == Material.LAPIS_BLOCK || material == Material.LAPIS_ORE)
         {
             return this.toolLevel >= 1;
         }
-
+        
         final BlockServiceInterface bsi = BlockServiceInterface.instance();
         if (bsi.isRock(material) || bsi.isOre(material) || bsi.isHeavy(material))
         {
@@ -164,7 +164,7 @@ public class DefaultPickaxeDigRule implements ItemDigInterface
         }
         return false;
     }
-
+    
     @Override
     public boolean canHarvest(BlockId block, BlockVariantId variant)
     {

@@ -41,7 +41,7 @@ public class QueryFormRequestData extends AnnotatedDataFragment
      * form input id.
      */
     @PersistentField
-    protected String inputId;
+    protected String      inputId;
     
     /**
      * the query arguments.
@@ -53,46 +53,53 @@ public class QueryFormRequestData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    protected String winId;
-
+    protected String      winId;
+    
     /**
      * Returns the window id.
+     * 
      * @return the widgetId
      */
     public String getWinId()
     {
         return this.winId;
     }
-
+    
     /**
      * Sets the window id.
-     * @param winId the winId to set
+     * 
+     * @param winId
+     *            the winId to set
      */
     public void setWinId(String winId)
     {
         this.winId = winId;
     }
-
+    
     /**
      * Returns the input id.
+     * 
      * @return the inputId
      */
     public String getInputId()
     {
         return this.inputId;
     }
-
+    
     /**
      * Sets the input id.
-     * @param inputId the inputId to set
+     * 
+     * @param inputId
+     *            the inputId to set
      */
     public void setInputId(String inputId)
     {
         this.inputId = inputId;
     }
-
+    
     /**
      * Returns the form data.
+     * 
      * @return the data
      */
     public DataSection getData()

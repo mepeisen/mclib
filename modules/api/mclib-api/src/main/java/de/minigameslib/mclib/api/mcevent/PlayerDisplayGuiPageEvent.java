@@ -57,7 +57,7 @@ public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<P
     private final ClickGuiInterface     gui;
     
     /** the player. */
-    private final McPlayerInterface  player;
+    private final McPlayerInterface     player;
     
     /** the opened page. */
     private final ClickGuiPageInterface page;
@@ -96,7 +96,7 @@ public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<P
     }
     
     /**
-     * Returns the opened page
+     * Returns the opened page.
      * 
      * @return the page
      */
@@ -106,7 +106,7 @@ public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<P
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -117,7 +117,7 @@ public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<P
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -125,13 +125,13 @@ public class PlayerDisplayGuiPageEvent extends Event implements MinecraftEvent<P
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerDisplayGuiPageEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerDisplayGuiPageEvent> when(McPredicate<PlayerDisplayGuiPageEvent> test) throws McException
     {

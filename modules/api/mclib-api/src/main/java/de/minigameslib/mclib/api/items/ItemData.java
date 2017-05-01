@@ -43,30 +43,35 @@ public @interface ItemData
     
     /**
      * Returns the resource paths to the textures
+     * 
      * @return resource paths to textures
      */
     String[] textures();
     
     /**
      * Returns the resource paths to the textures; used by custom armor
+     * 
      * @return resource paths to textures
      */
     String[] modelTextures() default {};
     
     /**
      * the custom item model json
+     * 
      * @return custom item model json
      */
     String modelJson();
     
     /**
      * Returns true for modded items
+     * 
      * @return true for modded items supporting durability, meta and other options
      */
     boolean modEnabled() default false;
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     Class<? extends NameProvider> name() default NullNameProvider.class;

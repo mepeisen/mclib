@@ -34,7 +34,8 @@ public interface Condition
 {
     
     /**
-     * Tests the condition
+     * Tests the condition.
+     * 
      * @return true if the extension will be active; false if it will be inactive
      */
     boolean test();

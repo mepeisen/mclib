@@ -48,7 +48,8 @@ public interface ComponentHandlerInterface extends DataFragment
      * 
      * @param component
      *            component that is created.
-     * @throws McException thrown if the component has errors.
+     * @throws McException
+     *             thrown if the component has errors.
      */
     void onCreate(ComponentInterface component) throws McException;
     
@@ -57,7 +58,8 @@ public interface ComponentHandlerInterface extends DataFragment
      * 
      * @param component
      *            component hat is resumed.
-     * @throws McException thrown if the component has errors.
+     * @throws McException
+     *             thrown if the component has errors.
      */
     void onResume(ComponentInterface component) throws McException;
     
@@ -93,7 +95,7 @@ public interface ComponentHandlerInterface extends DataFragment
     void canChangeLocation(Location newValue) throws McException;
     
     /**
-     * Invoked upon change of location
+     * Invoked upon change of location.
      * 
      * @param newValue
      *            the new location
@@ -102,8 +104,11 @@ public interface ComponentHandlerInterface extends DataFragment
     
     /**
      * Checks if is is safe to create the given component on the same location.
+     * 
      * @param handler
+     *            new handler that will be created on the same position
      * @throws McException
+     *             thrown if creation will not be allowed
      */
     default void checkCreation(ComponentHandlerInterface handler) throws McException
     {

@@ -208,9 +208,9 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      *            the location to check
      * @return true if the location is within this cuboid without y coord, otherwise false
      */
-    public boolean containsLocWithoutYD(final Location loc)
+    public boolean containsLocWithoutYd(final Location loc)
     {
-        return this.cuboid == null ? false : this.cuboid.containsLocWithoutYD(loc);
+        return this.cuboid == null ? false : this.cuboid.containsLocWithoutYd(loc);
     }
     
 }

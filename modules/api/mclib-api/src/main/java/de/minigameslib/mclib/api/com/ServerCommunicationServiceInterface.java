@@ -49,7 +49,8 @@ public interface ServerCommunicationServiceInterface extends CommunicationEndpoi
     /**
      * Removes all communication endpoints declared by given plugin.
      * 
-     * @param plugin plugin whose communication endpoints will be removed
+     * @param plugin
+     *            plugin whose communication endpoints will be removed
      */
     void removeAllCommunicationEndpoints(Plugin plugin);
     

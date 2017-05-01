@@ -42,24 +42,28 @@ public @interface BlockVariantData
     
     /**
      * Returns the resource paths to the textures
+     * 
      * @return resource paths to textures
      */
     String[] textures();
     
     /**
      * the custom item model json
+     * 
      * @return custom item model json
      */
     String modelJson();
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     Class<? extends NameProvider> name() default NullNameProvider.class;
     
     /**
      * The block opqueness
+     * 
      * @return block opaqueness
      */
     boolean opaque() default true;

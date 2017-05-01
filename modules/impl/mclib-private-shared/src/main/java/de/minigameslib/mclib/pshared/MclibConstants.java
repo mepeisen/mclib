@@ -45,11 +45,11 @@ public interface MclibConstants
     /**
      * the minimum item id for custom items.
      */
-    int MIN_ITEM_ID = 3750;
+    int MIN_ITEM_ID  = 3750;
     
     /**
      * the maximum item id for custom items.
      */
-    int MAX_ITEM_ID = 3999;
+    int MAX_ITEM_ID  = 3999;
     
 }

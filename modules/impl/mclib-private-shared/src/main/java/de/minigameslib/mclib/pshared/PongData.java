@@ -48,29 +48,33 @@ public class PongData extends AnnotatedDataFragment
      * Api version of client.
      */
     @PersistentField
-    protected int api;
-
+    protected int                  api;
+    
     /**
      * Returns the available client extensions including version numbers.
+     * 
      * @return the clientExtensions
      */
     public Map<String, Integer> getClientExtensions()
     {
         return this.ext;
     }
-
+    
     /**
      * Returns the api version number supported by client mod.
+     * 
      * @return the api
      */
     public int getApi()
     {
         return this.api;
     }
-
+    
     /**
      * Sets the api version number supported by client.
-     * @param api the api to set
+     * 
+     * @param api
+     *            the api to set
      */
     public void setApi(int api)
     {

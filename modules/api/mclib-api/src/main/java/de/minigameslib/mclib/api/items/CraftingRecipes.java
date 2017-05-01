@@ -42,12 +42,14 @@ public @interface CraftingRecipes
     
     /**
      * the shaped recipes.
+     * 
      * @return shaped recipes
      */
     CraftingShapedRecipe[] shaped() default {};
     
     /**
      * The shapeless recipes.
+     * 
      * @return shapeless recipes
      */
     CraftingShapelessRecipe[] shapeless() default {};

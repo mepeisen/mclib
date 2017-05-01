@@ -42,6 +42,7 @@ public @interface CheckClientExtension
     
     /**
      * Returns the client extensions to be tested.
+     * 
      * @return client extensions that must be available to activate given extension.
      */
     String[] value();

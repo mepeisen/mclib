@@ -39,7 +39,7 @@ public class ButtonData extends AnnotatedDataFragment
      * Button label.
      */
     @PersistentField
-    protected String label;
+    protected String  label;
     
     /**
      * {@code true} if an action listener is installed on server side.
@@ -51,86 +51,96 @@ public class ButtonData extends AnnotatedDataFragment
      * Action id; only set if an action listener is present.
      */
     @PersistentField
-    protected String actionId;
+    protected String  actionId;
     
     /**
      * {@code true} if this button closes the dialog.
      */
     @PersistentField
     protected boolean isCloseAction;
-
+    
     /**
      * Returns the label.
+     * 
      * @return the label
      */
     public String getLabel()
     {
         return this.label;
     }
-
+    
     /**
      * Sets the label.
-     * @param label the label to set
+     * 
+     * @param label
+     *            the label to set
      */
     public void setLabel(String label)
     {
         this.label = label;
     }
-
+    
     /**
      * Returns the has action listener flag.
+     * 
      * @return the hasActionListener
      */
     public boolean isHasActionListener()
     {
         return this.hasActionListener;
     }
-
+    
     /**
      * Sets the has action listener flag.
-     * @param hasActionListener the hasActionListener to set
+     * 
+     * @param hasActionListener
+     *            the hasActionListener to set
      */
     public void setHasActionListener(boolean hasActionListener)
     {
         this.hasActionListener = hasActionListener;
     }
-
+    
     /**
      * Retrurns the action id.
+     * 
      * @return the actionId
      */
     public String getActionId()
     {
         return this.actionId;
     }
-
+    
     /**
      * Sets the action id.
-     * @param actionId the actionId to set
+     * 
+     * @param actionId
+     *            the actionId to set
      */
     public void setActionId(String actionId)
     {
         this.actionId = actionId;
     }
-
+    
     /**
      * Returns the close action flag.
+     * 
      * @return the isCloseAction
      */
     public boolean isCloseAction()
     {
         return this.isCloseAction;
     }
-
+    
     /**
      * Sets the close action flag.
-     * @param isCloseAction the isCloseAction to set
+     * 
+     * @param isCloseAction
+     *            the isCloseAction to set
      */
     public void setCloseAction(boolean isCloseAction)
     {
         this.isCloseAction = isCloseAction;
     }
-
     
-
 }

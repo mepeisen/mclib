@@ -50,7 +50,7 @@ public class ObjectDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     private static final HandlerList handlers = new HandlerList();
     
     /** the object we deleted. */
-    private final ObjectInterface     object;
+    private final ObjectInterface    object;
     
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class ObjectDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -81,7 +81,7 @@ public class ObjectDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -89,13 +89,13 @@ public class ObjectDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     {
         return handlers;
     }
-
+    
     @Override
     public ObjectDeleteEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ObjectDeleteEvent> when(McPredicate<ObjectDeleteEvent> test) throws McException
     {

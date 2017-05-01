@@ -51,21 +51,23 @@ public class ZoneRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we created. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /** the old location. */
-    private final Cuboid oldCuboid;
+    private final Cuboid             oldCuboid;
     
     /** the new location. */
-    private final Cuboid newCuboid;
+    private final Cuboid             newCuboid;
     
     /**
      * Constructor.
      * 
      * @param zone
      *            the relocated zone.
-     * @param oldCuboid 
-     * @param newCuboid 
+     * @param oldCuboid
+     *            the old cubiod
+     * @param newCuboid
+     *            the new cuboid
      */
     public ZoneRelocateEvent(ZoneInterface zone, final Cuboid oldCuboid, final Cuboid newCuboid)
     {
@@ -82,15 +84,17 @@ public class ZoneRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     
     /**
      * Returns the old location.
+     * 
      * @return the oldCuboid
      */
     public Cuboid getOldCuboid()
     {
         return this.oldCuboid;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newCuboid
      */
     public Cuboid getNewCuboid()
@@ -99,7 +103,7 @@ public class ZoneRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -110,7 +114,7 @@ public class ZoneRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -118,13 +122,13 @@ public class ZoneRelocateEvent extends AbstractVetoEvent implements MinecraftEve
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneRelocateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneRelocateEvent> when(McPredicate<ZoneRelocateEvent> test) throws McException
     {

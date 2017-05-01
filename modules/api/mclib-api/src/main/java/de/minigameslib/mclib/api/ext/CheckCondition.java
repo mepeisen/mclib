@@ -42,6 +42,7 @@ public @interface CheckCondition
     
     /**
      * The condition to be used.
+     * 
      * @return condition to check.
      */
     Class<? extends Condition> value();

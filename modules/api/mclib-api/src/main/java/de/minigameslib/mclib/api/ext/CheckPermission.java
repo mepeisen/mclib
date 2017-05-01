@@ -42,6 +42,7 @@ public @interface CheckPermission
     
     /**
      * Returns the permissions to be tested
+     * 
      * @return permissions to be tested.
      */
     String[] value();

@@ -47,7 +47,7 @@ public class ZoneCreatedEvent extends Event implements MinecraftEvent<ZoneCreate
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we created. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class ZoneCreatedEvent extends Event implements MinecraftEvent<ZoneCreate
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -78,7 +78,7 @@ public class ZoneCreatedEvent extends Event implements MinecraftEvent<ZoneCreate
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -86,13 +86,13 @@ public class ZoneCreatedEvent extends Event implements MinecraftEvent<ZoneCreate
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneCreatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneCreatedEvent> when(McPredicate<ZoneCreatedEvent> test) throws McException
     {

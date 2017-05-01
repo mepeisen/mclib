@@ -51,7 +51,7 @@ public class SignDeletedEvent extends Event implements MinecraftEvent<SignDelete
     private static final HandlerList handlers = new HandlerList();
     
     /** the sign we created. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /**
      * Constructor.
@@ -71,7 +71,7 @@ public class SignDeletedEvent extends Event implements MinecraftEvent<SignDelete
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -82,7 +82,7 @@ public class SignDeletedEvent extends Event implements MinecraftEvent<SignDelete
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -90,13 +90,13 @@ public class SignDeletedEvent extends Event implements MinecraftEvent<SignDelete
     {
         return handlers;
     }
-
+    
     @Override
     public SignDeletedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignDeletedEvent> when(McPredicate<SignDeletedEvent> test) throws McException
     {

@@ -31,12 +31,12 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public class ServerData implements ServerDataFragment
 {
-
+    
     /**
      * the server name.
      */
     private String name;
-
+    
     /**
      * Constructor to read from file.
      */
@@ -44,40 +44,42 @@ public class ServerData implements ServerDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor with new data.
-     * @param name server name
+     * 
+     * @param name
+     *            server name
      */
     public ServerData(String name)
     {
         this.name = name;
     }
-
+    
     @Override
     public String getName()
     {
         return this.name;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
         this.name = section.getString("name"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
-        section.set("name",  this.name); //$NON-NLS-1$
+        section.set("name", this.name); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
         return section.isString("name"); //$NON-NLS-1$
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -86,7 +88,7 @@ public class ServerData implements ServerDataFragment
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

@@ -38,6 +38,7 @@ public interface BungeeServerInterface
     
     /**
      * Returns the server name.
+     * 
      * @return server name.
      */
     String getName();
@@ -45,14 +46,18 @@ public interface BungeeServerInterface
     /**
      * Sends given data to the other side of the communication endpoint to this server instance.
      * 
-     * @param id communication endpoint to use
-     * @param data data to be sent
+     * @param id
+     *            communication endpoint to use
+     * @param data
+     *            data to be sent
      */
     void send(CommunicationEndpointId id, DataSection... data);
     
     /**
      * Transfers player to given server.
-     * @param player player to be transferred
+     * 
+     * @param player
+     *            player to be transferred
      */
     void transferPlayer(McPlayerInterface player);
     

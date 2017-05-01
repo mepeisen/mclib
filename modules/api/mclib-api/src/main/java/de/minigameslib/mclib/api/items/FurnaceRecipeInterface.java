@@ -36,18 +36,26 @@ public interface FurnaceRecipeInterface
     
     /**
      * Returns the receipe for given item or block. Either item or block is null.
-     * @param item the item to be smelt or {@code null} if a block is smelt
-     * @param block the block to be smelt or {@code null} if an item is smelt
-     * @param variant the block variant to be smelt or {@code null} if an item is smelt
+     * 
+     * @param item
+     *            the item to be smelt or {@code null} if a block is smelt
+     * @param block
+     *            the block to be smelt or {@code null} if an item is smelt
+     * @param variant
+     *            the block variant to be smelt or {@code null} if an item is smelt
      * @return receip
      */
     ItemStack getReceipe(ItemId item, BlockId block, BlockVariantId variant);
     
     /**
      * Returns the receipe for given item or block. Either item or block is null.
-     * @param item the item to be smelt or {@code null} if a block is smelt
-     * @param block the block to be smelt or {@code null} if an item is smelt
-     * @param variant the block variant to be smelt or {@code null} if an item is smelt
+     * 
+     * @param item
+     *            the item to be smelt or {@code null} if a block is smelt
+     * @param block
+     *            the block to be smelt or {@code null} if an item is smelt
+     * @param variant
+     *            the block variant to be smelt or {@code null} if an item is smelt
      * @return experience value
      */
     float getExperience(ItemId item, BlockId block, BlockVariantId variant);

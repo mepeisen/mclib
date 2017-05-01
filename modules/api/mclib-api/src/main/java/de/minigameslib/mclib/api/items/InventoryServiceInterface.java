@@ -50,87 +50,123 @@ public interface InventoryServiceInterface
     
     /**
      * Returns inventory ids for given types.
-     * @param types inventory types.
+     * 
+     * @param types
+     *            inventory types.
      * @return inventories.
      */
     List<InventoryId> getInventoryIds(InventoryTypeId... types);
     
     /**
      * Deletes all inventories of given types.
-     * @param types inventory types.
-     * @throws McException thrown on problems (f.e. IOException)
+     * 
+     * @param types
+     *            inventory types.
+     * @throws McException
+     *             thrown on problems (f.e. IOException)
      */
     void deleteAllInventories(InventoryTypeId... types) throws McException;
     
     /**
      * Deletes all inventories of given ids.
-     * @param ids inventory ids.
-     * @throws McException thrown on problems (f.e. IOException)
+     * 
+     * @param ids
+     *            inventory ids.
+     * @throws McException
+     *             thrown on problems (f.e. IOException)
      */
     void deleteInventories(InventoryId... ids) throws McException;
     
     /**
      * Returns global inventory of given type and string id; global inventories are unique within servers.
-     * @param type the inventory type
-     * @param stringIdentifier a unique (server-wide) identifier to identify the inventory 
+     * 
+     * @param type
+     *            the inventory type
+     * @param stringIdentifier
+     *            a unique (server-wide) identifier to identify the inventory
      * @return global inventory identifies by given string id; {@code null} if it does not exist
      */
     InventoryId getInventory(InventoryTypeId type, String stringIdentifier);
     
     /**
      * Returns inventory of given type and location.
-     * @param type inventory type
-     * @param location inventory location
+     * 
+     * @param type
+     *            inventory type
+     * @param location
+     *            inventory location
      * @return inventory bound to given location; {@code null} if inventory was not created before
      */
     InventoryId getInventory(InventoryTypeId type, Location location);
     
     /**
      * Returns the inventory descriptor for given inventory.
-     * @param id inventory id
+     * 
+     * @param id
+     *            inventory id
      * @return inventory descriptor; {@code null} if inventory is invalid
      */
     InventoryDescriptorInterface getInventory(InventoryId id);
     
     /**
-     * Returns global inventory of given type and string id; global inventories are unique within servers.
-     * Creates inventory if it does not exist.
-     * @param type the inventory type
-     * @param initialSize initial inventory size in slots
-     * @param fixed {@code true} if size is fixed
-     * @param shared {@code true} if all players share inventory
-     * @param stringIdentifier a unique (server-wide) identifier to identify the inventory 
+     * Returns global inventory of given type and string id; global inventories are unique within servers. Creates inventory if it does not exist.
+     * 
+     * @param type
+     *            the inventory type
+     * @param initialSize
+     *            initial inventory size in slots
+     * @param fixed
+     *            {@code true} if size is fixed
+     * @param shared
+     *            {@code true} if all players share inventory
+     * @param stringIdentifier
+     *            a unique (server-wide) identifier to identify the inventory
      * @return global inventory identifies by given string id
-     * @throws McException thrown on problems (f.e. IOException)
+     * @throws McException
+     *             thrown on problems (f.e. IOException)
      */
     InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, String stringIdentifier) throws McException;
     
     /**
-     * Returns inventory of given type and location.
-     * Creates inventory if it does not exist.
-     * @param type inventory type
-     * @param initialSize initial inventory size in slots
-     * @param fixed {@code true} if size is fixed
-     * @param shared {@code true} if all players share inventory
-     * @param location inventory location
+     * Returns inventory of given type and location. Creates inventory if it does not exist.
+     * 
+     * @param type
+     *            inventory type
+     * @param initialSize
+     *            initial inventory size in slots
+     * @param fixed
+     *            {@code true} if size is fixed
+     * @param shared
+     *            {@code true} if all players share inventory
+     * @param location
+     *            inventory location
      * @return inventory bound to given location
-     * @throws McException thrown on problems (f.e. IOException)
+     * @throws McException
+     *             thrown on problems (f.e. IOException)
      */
     InventoryId getOrCreateInventory(InventoryTypeId type, int initialSize, boolean fixed, boolean shared, Location location) throws McException;
     
     /**
      * Bind inventory to new locations.
-     * @param id inventory id
-     * @param locations new locations
-     * @throws McException thrown if there was a problem binding the inventory (f.e. IOException); thrown if the locations are already in use
+     * 
+     * @param id
+     *            inventory id
+     * @param locations
+     *            new locations
+     * @throws McException
+     *             thrown if there was a problem binding the inventory (f.e. IOException); thrown if the locations are already in use
      */
     void bindInventory(InventoryId id, Location... locations) throws McException;
     
     /**
      * Unbind inventory from existing locations.
-     * @param id inventory id
-     * @param locations existing locations to be removed
-     * @throws McException thrown if there was a problem unbinding the inventory (f.e. IOException); thrown if the locations are not in use by given inventory
+     * 
+     * @param id
+     *            inventory id
+     * @param locations
+     *            existing locations to be removed
+     * @throws McException
+     *             thrown if there was a problem unbinding the inventory (f.e. IOException); thrown if the locations are not in use by given inventory
      */
     void unbindInventory(InventoryId id, Location... locations) throws McException;
     

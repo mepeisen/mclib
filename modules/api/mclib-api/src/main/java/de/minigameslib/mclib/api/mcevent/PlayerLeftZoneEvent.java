@@ -80,7 +80,7 @@ public class PlayerLeftZoneEvent extends Event implements MinecraftEvent<PlayerL
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -91,7 +91,7 @@ public class PlayerLeftZoneEvent extends Event implements MinecraftEvent<PlayerL
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -99,13 +99,13 @@ public class PlayerLeftZoneEvent extends Event implements MinecraftEvent<PlayerL
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerLeftZoneEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerLeftZoneEvent> when(McPredicate<PlayerLeftZoneEvent> test) throws McException
     {

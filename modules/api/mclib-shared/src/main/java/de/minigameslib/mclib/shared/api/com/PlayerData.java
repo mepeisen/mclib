@@ -37,14 +37,17 @@ public class PlayerData implements PlayerDataFragment
 {
     
     /** player uuid. */
-    private UUID playerUuid;
+    private UUID   playerUuid;
     /** player name. */
     private String playerName;
-
+    
     /**
      * Constructor to create with new data.
-     * @param playerUuid the players uuid
-     * @param playerName the players display name
+     * 
+     * @param playerUuid
+     *            the players uuid
+     * @param playerName
+     *            the players display name
      */
     public PlayerData(UUID playerUuid, String playerName)
     {
@@ -59,7 +62,7 @@ public class PlayerData implements PlayerDataFragment
     {
         // empty
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -69,7 +72,7 @@ public class PlayerData implements PlayerDataFragment
         result = prime * result + ((this.playerUuid == null) ? 0 : this.playerUuid.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -110,21 +113,21 @@ public class PlayerData implements PlayerDataFragment
         }
         return true;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
         this.playerUuid = UUID.fromString(section.getString("uuid", "")); //$NON-NLS-1$ //$NON-NLS-2$
         this.playerName = section.getString("name", "?"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
         section.set("uuid", this.playerUuid.toString()); //$NON-NLS-1$
         section.set("name", this.playerName); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
@@ -135,10 +138,12 @@ public class PlayerData implements PlayerDataFragment
         result &= section.getKeys(true).equals(new HashSet<>(Arrays.asList("uuid", "name"))); //$NON-NLS-1$ //$NON-NLS-2$
         return result;
     }
-
+    
     /**
      * Checks for string being a UUID.
-     * @param str string to be tested
+     * 
+     * @param str
+     *            string to be tested
      * @return {@code true} if this is a uuid
      */
     private boolean isUuid(String str)
@@ -157,13 +162,13 @@ public class PlayerData implements PlayerDataFragment
             return false;
         }
     }
-
+    
     @Override
     public UUID getPlayerUUID()
     {
         return this.playerUuid;
     }
-
+    
     @Override
     public String getDisplayName()
     {

@@ -31,8 +31,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used for information only.
- * It shows the minimum api version of a method or entire type. 
+ * This annotation is used for information only. It shows the minimum api version of a method or entire type.
  * 
  * @author mepeisen
  * 
@@ -45,6 +44,7 @@ public @interface ApiVersion
     
     /**
      * Returns the minimum version
+     * 
      * @return minimum version
      */
     int value();

@@ -32,12 +32,12 @@ package de.minigameslib.mclib.api.ext;
  * </p>
  * 
  * <p>
- * An extension point can be used for other libraries to add extensions. Common example is
- * the command extension point to inject sub commands for the gui.
+ * An extension point can be used for other libraries to add extensions. Common example is the command extension point to inject sub commands for the gui.
  * </p>
  * 
  * @author mepeisen
- * @param <T> the extension interface to implement.
+ * @param <T>
+ *            the extension interface to implement.
  */
 public interface ExtensionPointInterface<T extends ExtensionInterface>
 {
@@ -51,12 +51,14 @@ public interface ExtensionPointInterface<T extends ExtensionInterface>
     
     /**
      * Returns the extension class that must be implemented by extensions for this extension point.
+     * 
      * @return extension class.
      */
     Class<T> extensionClass();
     
     /**
      * Returns the extensions declared by plugins for this extension point.
+     * 
      * @return plugin extensions.
      */
     default Iterable<T> getExtensions()

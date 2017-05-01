@@ -39,131 +39,131 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface LocalizedMessage
 {
-
-    /**
-     * Represents black
-     */
-    String BLACK = "§0"; //$NON-NLS-1$
     
     /**
-     * Represents dark blue
+     * Represents black.
      */
-    String DARK_BLUE = "§1"; //$NON-NLS-1$
+    String BLACK             = "§0";    //$NON-NLS-1$
     
     /**
-     * Represents dark green
+     * Represents dark blue.
      */
-    String DARK_GREEN = "§2"; //$NON-NLS-1$
+    String DARK_BLUE         = "§1";    //$NON-NLS-1$
     
     /**
-     * Represents dark blue (aqua)
+     * Represents dark green.
      */
-    String DARK_AQUA = "§3"; //$NON-NLS-1$
+    String DARK_GREEN        = "§2";    //$NON-NLS-1$
     
     /**
-     * Represents dark red
+     * Represents dark blue (aqua).
      */
-    String DARK_RED = "§4"; //$NON-NLS-1$
+    String DARK_AQUA         = "§3";    //$NON-NLS-1$
     
     /**
-     * Represents dark purple
+     * Represents dark red.
      */
-    String DARK_PURPLE = "§5"; //$NON-NLS-1$
+    String DARK_RED          = "§4";    //$NON-NLS-1$
     
     /**
-     * Represents gold
+     * Represents dark purple.
      */
-    String GOLD = "§6"; //$NON-NLS-1$
+    String DARK_PURPLE       = "§5";    //$NON-NLS-1$
     
     /**
-     * Represents gray
+     * Represents gold.
      */
-    String GRAY = "§7"; //$NON-NLS-1$
+    String GOLD              = "§6";    //$NON-NLS-1$
     
     /**
-     * Represents dark gray
+     * Represents gray.
      */
-    String DARK_GRAY = "§8"; //$NON-NLS-1$
+    String GRAY              = "§7";    //$NON-NLS-1$
     
     /**
-     * Represents blue
+     * Represents dark gray.
      */
-    String BLUE = "§9"; //$NON-NLS-1$
+    String DARK_GRAY         = "§8";    //$NON-NLS-1$
     
     /**
-     * Represents green
+     * Represents blue.
      */
-    String GREEN = "§a"; //$NON-NLS-1$
+    String BLUE              = "§9";    //$NON-NLS-1$
     
     /**
-     * Represents aqua
+     * Represents green.
      */
-    String AQUA = "§b"; //$NON-NLS-1$
+    String GREEN             = "§a";    //$NON-NLS-1$
     
     /**
-     * Represents red
+     * Represents aqua.
      */
-    String RED = "§c"; //$NON-NLS-1$
+    String AQUA              = "§b";    //$NON-NLS-1$
     
     /**
-     * Represents light purple
+     * Represents red.
      */
-    String LIGHT_PURPLE = "§d"; //$NON-NLS-1$
+    String RED               = "§c";    //$NON-NLS-1$
     
     /**
-     * Represents yellow
+     * Represents light purple.
      */
-    String YELLOW = "§e"; //$NON-NLS-1$
+    String LIGHT_PURPLE      = "§d";    //$NON-NLS-1$
     
     /**
-     * Represents white
+     * Represents yellow.
      */
-    String WHITE = "§f"; //$NON-NLS-1$
+    String YELLOW            = "§e";    //$NON-NLS-1$
     
     /**
-     * Represents magical characters that change around randomly
+     * Represents white.
      */
-    String MAGIC = "§k"; //$NON-NLS-1$
+    String WHITE             = "§f";    //$NON-NLS-1$
+    
+    /**
+     * Represents magical characters that change around randomly.
+     */
+    String MAGIC             = "§k";    //$NON-NLS-1$
     
     /**
      * Makes the text bold.
      */
-    String BOLD = "§l"; //$NON-NLS-1$
+    String BOLD              = "§l";    //$NON-NLS-1$
     
     /**
      * Makes a line appear through the text.
      */
-    String STRIKETHROUGH = "§m"; //$NON-NLS-1$
+    String STRIKETHROUGH     = "§m";    //$NON-NLS-1$
     
     /**
      * Makes the text appear underlined.
      */
-    String UNDERLINE = "§n"; //$NON-NLS-1$
+    String UNDERLINE         = "§n";    //$NON-NLS-1$
     
     /**
      * Makes the text italic.
      */
-    String ITALIC = "§o"; //$NON-NLS-1$
+    String ITALIC            = "§o";    //$NON-NLS-1$
     
     /**
      * Resets all previous chat colors or formats.
      */
-    String RESET = "§r"; //$NON-NLS-1$
+    String RESET             = "§r";    //$NON-NLS-1$
     
     /** semantic color: error message severity. */
-    String ERROR_COLOR = DARK_RED;
+    String ERROR_COLOR       = DARK_RED;
     /** semantic color: information message severity. */
     String INFORMATION_COLOR = WHITE;
     /** semantic color: loser message severity. */
-    String LOSER_COLOR = RED;
+    String LOSER_COLOR       = RED;
     /** semantic color: success message severity. */
-    String SUCCESS_COLOR = GREEN;
+    String SUCCESS_COLOR     = GREEN;
     /** semantic color: warning message severity. */
-    String WARNING_COLOR = YELLOW;
+    String WARNING_COLOR     = YELLOW;
     /** semantic color: winner message severity. */
-    String WINNER_COLOR = GOLD;
+    String WINNER_COLOR      = GOLD;
     /** semantic color: message arguments or chat codes. */
-    String CODE_COLOR = BLUE;
+    String CODE_COLOR        = BLUE;
     
     /**
      * Returns the default user message used as fallback; must be in locale returned by {@link LocalizedMessages#defaultLocale()}.
@@ -186,9 +186,10 @@ public @interface LocalizedMessage
      * @return default message; empty string if it should default to the user message
      */
     String defaultAdminMessage() default "";
-
+    
     /**
      * Returns the message severity.
+     * 
      * @return message severity.
      */
     MessageSeverityType severity() default MessageSeverityType.Information;

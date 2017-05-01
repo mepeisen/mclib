@@ -25,7 +25,7 @@
 package de.minigameslib.mclib.api.locale;
 
 /**
- * Message severity enumeration
+ * Message severity enumeration.
  * 
  * @author mepeisen
  */

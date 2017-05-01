@@ -31,39 +31,45 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public interface LocationDataFragment extends DataFragment
 {
-
+    
     /**
      * Returns the x coordinate.
+     * 
      * @return the x
      */
     double getX();
-
+    
     /**
      * Returns the y coordinate.
+     * 
      * @return the y
      */
     double getY();
-
+    
     /**
      * Returns the z coordinate.
+     * 
      * @return the z
      */
     double getZ();
     
     /**
      * The yaw.
+     * 
      * @return yaw.
      */
     float getYaw();
     
     /**
      * The pitch.
+     * 
      * @return pitch.
      */
     float getPitch();
     
     /**
      * Name of the world.
+     * 
      * @return name of the world.
      */
     String getWorld();

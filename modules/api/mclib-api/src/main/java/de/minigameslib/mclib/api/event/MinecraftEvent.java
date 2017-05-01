@@ -44,20 +44,24 @@ import de.minigameslib.mclib.api.util.function.McPredicate;
  * 
  * @author mepeisen
  * 
- * @param <Evt> Event class
- * @param <MgEvt> Minigame event class
+ * @param <EVT>
+ *            Event class
+ * @param <MGEVT>
+ *            Minigame event class
  */
-public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<Evt, MgEvt>>
+public interface MinecraftEvent<EVT extends Event, MGEVT extends MinecraftEvent<EVT, MGEVT>>
 {
     
     /**
-     * Returns the original event
-     * @return original event this rule 
+     * Returns the original event.
+     * 
+     * @return original event this rule
      */
-    Evt getBukkitEvent();
+    EVT getBukkitEvent();
     
     /**
      * Returns the object causing this event.
+     * 
      * @return object causing this event or {@code null} if this event was not caused by an object.
      */
     default ObjectInterface getObject()
@@ -67,6 +71,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the zone causing this event.
+     * 
      * @return zone causing this event or {@code null} if this event was outside any zone.
      */
     default ZoneInterface getZone()
@@ -76,6 +81,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the player causing this event.
+     * 
      * @return player causing this event or {@code null} if this event was not caused by any player.
      */
     default McPlayerInterface getPlayer()
@@ -85,6 +91,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the sign causing this event.
+     * 
      * @return sign causing this event or {@code null} if this event was not involving a sign.
      */
     default SignInterface getSign()
@@ -94,6 +101,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the entity causing this event.
+     * 
      * @return entity causing this event or {@code null} if this event was not involving an entity.
      */
     default EntityInterface getEntity()
@@ -104,6 +112,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the component causing this event.
+     * 
      * @return component causing this event or {@code null} if this event was not involving a component.
      */
     default ComponentInterface getComponent()
@@ -113,6 +122,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the objects associated with this event.
+     * 
      * @return object list
      */
     default Iterable<ObjectInterface> getObjects()
@@ -127,6 +137,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the zones associated with this event.
+     * 
      * @return zone list
      */
     default Iterable<ZoneInterface> getZones()
@@ -141,6 +152,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the signs associated with this event.
+     * 
      * @return sign list
      */
     default Iterable<SignInterface> getSigns()
@@ -155,6 +167,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the components associated with this event.
+     * 
      * @return component list
      */
     default Iterable<ComponentInterface> getComponents()
@@ -169,6 +182,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the players associated with this event.
+     * 
      * @return player list
      */
     default Iterable<McPlayerInterface> getPlayers()
@@ -183,6 +197,7 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
     
     /**
      * Returns the entities associated with this event.
+     * 
      * @return entity list
      */
     default Iterable<EntityInterface> getEntities()
@@ -212,6 +227,6 @@ public interface MinecraftEvent<Evt extends Event, MgEvt extends MinecraftEvent<
      * @throws McException
      *             will be thrown if either the test function or then/else consumers throw the exception.
      */
-    McOutgoingStubbing<MgEvt> when(McPredicate<MgEvt> test) throws McException;
+    McOutgoingStubbing<MGEVT> when(McPredicate<MGEVT> test) throws McException;
     
 }

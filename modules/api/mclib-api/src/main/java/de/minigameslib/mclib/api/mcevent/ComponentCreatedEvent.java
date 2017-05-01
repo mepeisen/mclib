@@ -47,7 +47,7 @@ public class ComponentCreatedEvent extends Event implements MinecraftEvent<Compo
     private static final HandlerList handlers = new HandlerList();
     
     /** the component we created. */
-    private final ComponentInterface     component;
+    private final ComponentInterface component;
     
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class ComponentCreatedEvent extends Event implements MinecraftEvent<Compo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -78,7 +78,7 @@ public class ComponentCreatedEvent extends Event implements MinecraftEvent<Compo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -86,13 +86,13 @@ public class ComponentCreatedEvent extends Event implements MinecraftEvent<Compo
     {
         return handlers;
     }
-
+    
     @Override
     public ComponentCreatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ComponentCreatedEvent> when(McPredicate<ComponentCreatedEvent> test) throws McException
     {

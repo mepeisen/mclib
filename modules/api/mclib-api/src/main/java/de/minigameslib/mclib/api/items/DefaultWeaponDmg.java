@@ -35,7 +35,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class DefaultWeaponDmg implements ItemDmgInterface
 {
-
+    
     @Override
     public int getDamageByEntity(ItemStack stack, Entity target, Player player)
     {

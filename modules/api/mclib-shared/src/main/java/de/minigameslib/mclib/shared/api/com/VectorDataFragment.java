@@ -31,21 +31,24 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public interface VectorDataFragment extends DataFragment
 {
-
+    
     /**
      * Returns the x vector/ coordinate.
+     * 
      * @return the x
      */
     double getX();
-
+    
     /**
      * Returns the y vector/ coordinate.
+     * 
      * @return the y
      */
     double getY();
-
+    
     /**
      * Returns the z vector/ coordinate.
+     * 
      * @return the z
      */
     double getZ();

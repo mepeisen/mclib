@@ -50,9 +50,12 @@ public interface McPlayerJoinEvent extends MinecraftEvent<PlayerJoinEvent, McPla
 {
     
     /**
-     * Sets the join message
-     * @param msg join message
-     * @param args message arguments
+     * Sets the join message.
+     * 
+     * @param msg
+     *            join message
+     * @param args
+     *            message arguments
      */
     default void setJoinMessage(LocalizedMessageInterface msg, Serializable... args)
     {

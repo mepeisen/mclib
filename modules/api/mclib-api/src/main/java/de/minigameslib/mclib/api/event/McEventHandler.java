@@ -32,7 +32,9 @@ import java.lang.annotation.Target;
 /**
  * McLib event listener method. Add this to methods inside a class implementing the Listener interface.
  *
+ * <p>
  * Similar to Bukkits EventHandler.
+ * </p>
  * 
  * @author mepeisen
  */

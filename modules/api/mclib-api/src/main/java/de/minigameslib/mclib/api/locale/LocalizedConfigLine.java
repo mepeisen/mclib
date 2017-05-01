@@ -48,12 +48,12 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
     /**
      * serial version uid.
      */
-    private static final long   serialVersionUID = -2121306517414707420L;
+    private static final long         serialVersionUID = -2121306517414707420L;
     
     /**
      * The default locale.
      */
-    private Locale              defaultLocale    = Locale.ENGLISH;
+    private Locale                    defaultLocale    = Locale.ENGLISH;
     
     /**
      * The user strings per locale.
@@ -67,8 +67,11 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
     
     /**
      * Sets the user messages.
-     * @param locale locale to use
-     * @param message message array to be used.
+     * 
+     * @param locale
+     *            locale to use
+     * @param message
+     *            message array to be used.
      */
     public void setUserMessages(Locale locale, String[] message)
     {
@@ -89,8 +92,11 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
     
     /**
      * Sets the admin messages.
-     * @param locale locale to use
-     * @param message message array to be used.
+     * 
+     * @param locale
+     *            locale to use
+     * @param message
+     *            message array to be used.
      */
     public void setAdminMessages(Locale locale, String[] message)
     {
@@ -151,7 +157,8 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
     }
     
     /**
-     * Returns the languages
+     * Returns the languages.
+     * 
      * @return languages
      */
     public Set<Locale> getLanguages()
@@ -235,19 +242,19 @@ public class LocalizedConfigLine implements DataFragment, LocalizedMessageInterf
         }
         return smsg.toArray(new String[smsg.size()]);
     }
-
+    
     @Override
     public String name()
     {
         throw new IllegalStateException();
     }
-
+    
     @Override
     public Plugin getPlugin()
     {
         throw new IllegalStateException();
     }
-
+    
     @Override
     public String path()
     {

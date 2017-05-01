@@ -50,7 +50,7 @@ public class ComponentCreateEvent extends AbstractVetoEvent implements Minecraft
     private static final HandlerList handlers = new HandlerList();
     
     /** the component we created. */
-    private final ComponentInterface     component;
+    private final ComponentInterface component;
     
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class ComponentCreateEvent extends AbstractVetoEvent implements Minecraft
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -81,7 +81,7 @@ public class ComponentCreateEvent extends AbstractVetoEvent implements Minecraft
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -89,13 +89,13 @@ public class ComponentCreateEvent extends AbstractVetoEvent implements Minecraft
     {
         return handlers;
     }
-
+    
     @Override
     public ComponentCreateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ComponentCreateEvent> when(McPredicate<ComponentCreateEvent> test) throws McException
     {

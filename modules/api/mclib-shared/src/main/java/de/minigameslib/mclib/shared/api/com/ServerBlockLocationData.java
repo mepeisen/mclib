@@ -31,34 +31,34 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public class ServerBlockLocationData implements ServerBlockLocationDataFragment
 {
-
+    
     /**
      * the server name.
      */
     private String name;
-
-    //CHECKSTYLE:OFF
+    
+    // CHECKSTYLE:OFF
     /**
      * the x coordinate.
      */
-    private int x;
-
+    private int    x;
+    
     /**
      * the y coordinate.
      */
-    private int y;
-
+    private int    y;
+    
     /**
      * the z coordinate.
      */
-    private int z;
-    //CHECKSTYLE:ON
+    private int    z;
+    // CHECKSTYLE:ON
     
     /**
      * Name of the world.
      */
     private String world;
-
+    
     /**
      * Constructor to read from file.
      */
@@ -66,14 +66,20 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor with new data.
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param z the z coordinate
-     * @param world the world name
-     * @param serverName the servers name
+     * 
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param z
+     *            the z coordinate
+     * @param world
+     *            the world name
+     * @param serverName
+     *            the servers name
      */
     public ServerBlockLocationData(int x, int y, int z, String world, String serverName)
     {
@@ -83,37 +89,37 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
         this.world = world;
         this.name = serverName;
     }
-
+    
     @Override
     public int getX()
     {
         return this.x;
     }
-
+    
     @Override
     public int getY()
     {
         return this.y;
     }
-
+    
     @Override
     public int getZ()
     {
         return this.z;
     }
-
+    
     @Override
     public String getWorld()
     {
         return this.world;
     }
-
+    
     @Override
     public String getName()
     {
         return this.name;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -123,17 +129,17 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
         this.world = section.getString("world"); //$NON-NLS-1$
         this.name = section.getString("server"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
-        section.set("x",  this.x); //$NON-NLS-1$
-        section.set("y",  this.y); //$NON-NLS-1$
-        section.set("z",  this.z); //$NON-NLS-1$
-        section.set("world",  this.world); //$NON-NLS-1$
-        section.set("server",  this.name); //$NON-NLS-1$
+        section.set("x", this.x); //$NON-NLS-1$
+        section.set("y", this.y); //$NON-NLS-1$
+        section.set("z", this.z); //$NON-NLS-1$
+        section.set("world", this.world); //$NON-NLS-1$
+        section.set("server", this.name); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
@@ -143,7 +149,7 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
                 && section.isString("world") //$NON-NLS-1$
                 && section.isString("server"); //$NON-NLS-1$
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -156,7 +162,7 @@ public class ServerBlockLocationData implements ServerBlockLocationDataFragment
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

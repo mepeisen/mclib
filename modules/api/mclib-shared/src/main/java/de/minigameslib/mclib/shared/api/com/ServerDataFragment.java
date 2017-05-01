@@ -31,9 +31,10 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public interface ServerDataFragment extends DataFragment
 {
-
+    
     /**
      * Name of the server.
+     * 
      * @return name of the server.
      */
     String getName();

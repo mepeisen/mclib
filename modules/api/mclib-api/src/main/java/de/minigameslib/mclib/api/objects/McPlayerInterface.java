@@ -40,6 +40,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.McStorage;
 import de.minigameslib.mclib.api.cli.ClientInterface;
+import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.gui.AnvilGuiInterface;
@@ -283,9 +284,23 @@ public interface McPlayerInterface extends PlayerDataFragment
     ZoneInterface getZone();
     
     /**
+     * Returns a zone the player is within and that is of given type.
+     * 
+     * <p>
+     * This method returns the "primary zone". If the zones are overlapping this may be a random
+     * </p>
+     * 
+     * @param type
+     *            zone types to be checked
+     * @return the zone or {@code null} if no matching zone was found.
+     */
+    ZoneInterface getZone(ZoneTypeId... type);
+    
+    /**
      * Checks if the player is within given zone.
      * 
      * @param zone
+     *            zone to be checked.
      * @return {@code true} if player is inside given zone.
      */
     boolean isInsideZone(ZoneInterface zone);
@@ -294,37 +309,28 @@ public interface McPlayerInterface extends PlayerDataFragment
      * Checks if the player is inside at least one of the given zones.
      * 
      * @param zone
+     *            zones to be checked.
      * @return {@code true} if player is at least inside one of the given zones.
      */
     boolean isInsideRandomZone(ZoneInterface... zone);
     
     /**
-     * Checks if the player is inside every of the given zones.
-     * 
-     * @param zone
-     * @return {@code true} if player is inside of the given zones.
-     */
-    boolean isInsideAllZones(ZoneInterface... zone);
-    
-    /**
-     * Returns a zone the player is within and that is of given type.
-     * 
-     * <p>
-     * This method returns the "primary zone". If the zones are overlapping this may be a random
-     * </p>
-     * 
-     * @param type
-     * @return the zone or {@code null} if no matching zone was found.
-     */
-    ZoneInterface getZone(ZoneTypeId... type);
-    
-    /**
      * Checks if the player is inside at least one of the given zones of given type.
      * 
      * @param type
+     *            zone types to be checked.
      * @return {@code true} if player is at least inside one of the given zones.
      */
     boolean isInsideRandomZone(ZoneTypeId... type);
+    
+    /**
+     * Checks if the player is inside every of the given zones.
+     * 
+     * @param zone
+     *            zones to be checked
+     * @return {@code true} if player is inside of the given zones.
+     */
+    boolean isInsideAllZones(ZoneInterface... zone);
     
     /**
      * Returns the zone the player is within.
@@ -334,9 +340,10 @@ public interface McPlayerInterface extends PlayerDataFragment
     Collection<ZoneInterface> getZones();
     
     /**
-     * Returns the zone of given types the player is within
+     * Returns the zone of given types the player is within.
      * 
      * @param type
+     *            zone types array
      * @return zone list
      */
     Collection<ZoneInterface> getZones(ZoneTypeId... type);
@@ -386,9 +393,12 @@ public interface McPlayerInterface extends PlayerDataFragment
      * Sends given data to client side of this player.
      *
      * @param endpoint
+     *            communication endpoint
      * @param data
+     *            data to be sent
      * 
      * @throws IllegalStateException
+     *             thrown on communication problems
      */
     void sendToClient(CommunicationEndpointId endpoint, DataSection... data);
     
@@ -397,19 +407,26 @@ public interface McPlayerInterface extends PlayerDataFragment
     /**
      * Register player related event handlers only active if this player is involved in events.
      * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that registers the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      * @throws IllegalStateException
      *             thrown if player is offline
      */
-    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Registers an event handler object for events on this player. Methods tagged with McEventHandler are considered as event handlers.
      * 
      * @param plugin
+     *            plugin that registers the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      * @throws IllegalStateException
      *             thrown if player is offline
      */
@@ -418,17 +435,24 @@ public interface McPlayerInterface extends PlayerDataFragment
     /**
      * Remove a registered event handler.
      * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that removes the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      */
-    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Remove a registered event handler.
      * 
      * @param plugin
+     *            plugin that removes the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
     
@@ -437,7 +461,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -451,7 +475,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTask(plugin, task);
             });
         }
@@ -471,7 +496,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -487,7 +512,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTaskAsynchronously(plugin, task);
             });
         }
@@ -504,7 +530,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -520,7 +546,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTaskLater(plugin, delay, task);
             });
         }
@@ -540,7 +567,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -556,7 +583,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTaskLaterAsynchronously(plugin, delay, task);
             });
         }
@@ -573,7 +601,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -594,7 +622,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTaskTimer(plugin, delay, period, task);
             });
         }
@@ -614,7 +643,7 @@ public interface McPlayerInterface extends PlayerDataFragment
      * 
      * <p>
      * This method will run the new method with a copy of current context.
-     * <p>
+     * </p>
      *
      * @param plugin
      *            the reference to the plugin scheduling task
@@ -635,7 +664,8 @@ public interface McPlayerInterface extends PlayerDataFragment
     {
         try
         {
-            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () -> {
+            return McLibInterface.instance().calculateInNewContext(null, null, this, null, null, () ->
+            {
                 return McLibInterface.instance().runTaskTimerAsynchronously(plugin, delay, period, task);
             });
         }

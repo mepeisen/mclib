@@ -37,7 +37,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public class DefaultSwordDigRule implements ItemDigInterface
 {
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, Material material)
     {
@@ -47,13 +47,13 @@ public class DefaultSwordDigRule implements ItemDigInterface
             return 15.0f;
         }
         return !bsi.isPlant(material)
-                && !bsi.isVine(material)
-                && !bsi.isCoral(material)
-                && !bsi.isLeaves(material)
-                && !bsi.isGourd(material)
+            && !bsi.isVine(material)
+            && !bsi.isCoral(material)
+            && !bsi.isLeaves(material)
+            && !bsi.isGourd(material)
                 ? 1.0F : 1.5F;
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, BlockId block, BlockVariantId variant)
     {
@@ -63,25 +63,25 @@ public class DefaultSwordDigRule implements ItemDigInterface
             return 15.0f;
         }
         return !bsi.isPlant(block)
-                && !bsi.isVine(block)
-                && !bsi.isCoral(block)
-                && !bsi.isLeaves(block)
-                && !bsi.isGourd(block)
+            && !bsi.isVine(block)
+            && !bsi.isCoral(block)
+            && !bsi.isLeaves(block)
+            && !bsi.isGourd(block)
                 ? 1.0F : 1.5F;
     }
-
+    
     @Override
     public int getDamageByBlock(ItemStack stack, Block block, Player player)
     {
         return 2;
     }
-
+    
     @Override
     public boolean canHarvest(Material material)
     {
         return BlockServiceInterface.instance().isWeb(Material.WEB);
     }
-
+    
     @Override
     public boolean canHarvest(BlockId block, BlockVariantId variant)
     {

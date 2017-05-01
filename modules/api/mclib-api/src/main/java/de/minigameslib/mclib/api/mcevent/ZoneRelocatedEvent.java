@@ -48,21 +48,23 @@ public class ZoneRelocatedEvent extends Event implements MinecraftEvent<ZoneRelo
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we relocated. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /** the old location. */
-    private final Cuboid oldCuboid;
+    private final Cuboid             oldCuboid;
     
     /** the new location. */
-    private final Cuboid newCuboid;
+    private final Cuboid             newCuboid;
     
     /**
      * Constructor.
      * 
      * @param zone
      *            the relocated zone.
-     * @param oldCuboid 
-     * @param newCuboid 
+     * @param oldCuboid
+     *            the old cuboid
+     * @param newCuboid
+     *            the new cuboid
      */
     public ZoneRelocatedEvent(ZoneInterface zone, final Cuboid oldCuboid, final Cuboid newCuboid)
     {
@@ -79,24 +81,26 @@ public class ZoneRelocatedEvent extends Event implements MinecraftEvent<ZoneRelo
     
     /**
      * Returns the old location.
+     * 
      * @return the oldCuboid
      */
     public Cuboid getOldCuboid()
     {
         return this.oldCuboid;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newCuboid
      */
     public Cuboid getNewCuboid()
     {
         return this.newCuboid;
     }
-
+    
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -107,7 +111,7 @@ public class ZoneRelocatedEvent extends Event implements MinecraftEvent<ZoneRelo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -115,13 +119,13 @@ public class ZoneRelocatedEvent extends Event implements MinecraftEvent<ZoneRelo
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneRelocatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneRelocatedEvent> when(McPredicate<ZoneRelocatedEvent> test) throws McException
     {

@@ -31,27 +31,31 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public interface BlockLocationDataFragment extends DataFragment
 {
-
+    
     /**
      * Returns the x coordinate.
+     * 
      * @return the x
      */
     int getX();
-
+    
     /**
      * Returns the y coordinate.
+     * 
      * @return the y
      */
     int getY();
-
+    
     /**
      * Returns the z coordinate.
+     * 
      * @return the z
      */
     int getZ();
     
     /**
      * Name of the world.
+     * 
      * @return name of the world.
      */
     String getWorld();

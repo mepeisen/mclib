@@ -34,6 +34,7 @@ import de.minigameslib.mclib.api.MinecraftVersionsType;
 
 /**
  * Annotation to indicate a version range for minecraft events.
+ * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
@@ -43,12 +44,14 @@ public @interface MinecraftVersionRange
     
     /**
      * Minimum version for minecraft servers.
+     * 
      * @return minimum versions.
      */
     MinecraftVersionsType min() default MinecraftVersionsType.Unknown;
     
     /**
      * maximum version for minecraft servers.
+     * 
      * @return maximum version.
      */
     MinecraftVersionsType max() default MinecraftVersionsType.Unknown;

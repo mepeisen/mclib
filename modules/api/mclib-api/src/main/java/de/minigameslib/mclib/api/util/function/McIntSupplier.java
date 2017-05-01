@@ -35,7 +35,7 @@ import de.minigameslib.mclib.api.McException;
 @FunctionalInterface
 public interface McIntSupplier
 {
-
+    
     /**
      * Gets a result.
      *

@@ -33,39 +33,55 @@ import java.util.Random;
  */
 public interface BlockDropRuleInterface
 {
-
+    
     /**
      * returns the type id for drops.
-     * @param id block id.
-     * @param variant block variant id.
-     * @param random the world random.
-     * @param fortune the players fortune.
+     * 
+     * @param id
+     *            block id.
+     * @param variant
+     *            block variant id.
+     * @param random
+     *            the world random.
+     * @param fortune
+     *            the players fortune.
      * @return type id
      */
     BlockId getDropType(BlockId id, BlockVariantId variant, Random random, int fortune);
-
+    
     /**
      * Returns the amount of drops.
-     * @param random the world random.
-     * @param fortune the players fortune.
+     * 
+     * @param random
+     *            the world random.
+     * @param fortune
+     *            the players fortune.
      * @return amount
      */
     int getDropCount(Random random, int fortune);
-
+    
     /**
      * Returns the experience for drops.
-     * @param id the block id.
-     * @param variant the block variant id.
-     * @param random the world random.
-     * @param enchantmentLevel the tooling enchantment level.
+     * 
+     * @param id
+     *            the block id.
+     * @param variant
+     *            the block variant id.
+     * @param random
+     *            the world random.
+     * @param enchantmentLevel
+     *            the tooling enchantment level.
      * @return experience
      */
     int getExpDrop(BlockId id, BlockVariantId variant, Random random, int enchantmentLevel);
-
+    
     /**
      * Returns the variants for drops.
-     * @param id the block id.
-     * @param variant the variant id.
+     * 
+     * @param id
+     *            the block id.
+     * @param variant
+     *            the variant id.
      * @return variants
      */
     BlockVariantId getDropVariant(BlockId id, BlockVariantId variant);
@@ -75,25 +91,25 @@ public interface BlockDropRuleInterface
      */
     public class DropSelf implements BlockDropRuleInterface
     {
-
+        
         @Override
         public BlockId getDropType(BlockId id, BlockVariantId variant, Random random, int fortune)
         {
             return id;
         }
-
+        
         @Override
         public int getDropCount(Random random, int fortune)
         {
             return 1;
         }
-
+        
         @Override
         public int getExpDrop(BlockId id, BlockVariantId variant, Random random, int enchantmentLevel)
         {
             return 0;
         }
-
+        
         @Override
         public BlockVariantId getDropVariant(BlockId id, BlockVariantId variant)
         {
@@ -107,25 +123,25 @@ public interface BlockDropRuleInterface
      */
     public class DropNull implements BlockDropRuleInterface
     {
-
+        
         @Override
         public BlockId getDropType(BlockId id, BlockVariantId variant, Random random, int fortune)
         {
             return null;
         }
-
+        
         @Override
         public int getDropCount(Random random, int fortune)
         {
             return 0;
         }
-
+        
         @Override
         public int getExpDrop(BlockId id, BlockVariantId variant, Random random, int enchantmentLevel)
         {
             return 0;
         }
-
+        
         @Override
         public BlockVariantId getDropVariant(BlockId id, BlockVariantId variant)
         {

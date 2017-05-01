@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 
  * <p>
  * Whenever the enum service finds en enum with this annotation during {@link EnumServiceInterface#registerEnumClass(org.bukkit.plugin.Plugin, Class)} it will force to load the other enums too.
- * </p> 
+ * </p>
  * 
  * @author mepeisen
  */
@@ -45,7 +45,8 @@ public @interface ChildEnum
 {
     
     /**
-     * Returns the child enumeration classes 
+     * Returns the child enumeration classes
+     * 
      * @return child enumeration classes
      */
     Class<? extends Enum<?>>[] value();

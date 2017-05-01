@@ -107,16 +107,18 @@ public interface GuiSessionInterface extends DataFragment
      * @param title
      *            the title to be displayed.
      * @param titleArgs
+     *            arguments to build the title string
      * @param message
      *            the message to be displayed.
      * @param messageArgs
+     *            arguments to build the messages string
      * @param okButton
      *            the ok button or {@code null} to use a default ok button.
      * @return smart gui dialog reference.
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException;
+    SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton okButton) throws McException;
     
     /**
      * Displays an info button
@@ -124,16 +126,18 @@ public interface GuiSessionInterface extends DataFragment
      * @param title
      *            the title to be displayed.
      * @param titleArgs
+     *            arguments to build the title string
      * @param message
      *            the message to be displayed.
      * @param messageArgs
+     *            arguments to build the messages string
      * @param okButton
      *            the ok button or {@code null} to use a default ok button.
      * @return smart gui dialog reference.
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton) throws McException;
+    SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton okButton) throws McException;
     
     /**
      * Creates a new gui button with custom label.
@@ -141,11 +145,12 @@ public interface GuiSessionInterface extends DataFragment
      * @param label
      *            custom gui label.
      * @param labelArgs
+     *            arguments to build the label string
      * @return smart gui button
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[]) throws McException;
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs) throws McException;
     
     /**
      * Creates a new gui button with custom label.
@@ -153,13 +158,14 @@ public interface GuiSessionInterface extends DataFragment
      * @param label
      *            custom gui label.
      * @param labelArgs
+     *            arguments to build the label string
      * @param action
      *            callback to be invoked once the user clicks the button in gui
      * @return smart gui button
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action) throws McException;
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action) throws McException;
     
     /**
      * Creates a new gui button with custom label.
@@ -167,6 +173,7 @@ public interface GuiSessionInterface extends DataFragment
      * @param label
      *            custom gui label.
      * @param labelArgs
+     *            arguments to build the label string
      * @param action
      *            callback to be invoked once the user clicks the button in gui
      * @param closeAction
@@ -175,7 +182,7 @@ public interface GuiSessionInterface extends DataFragment
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException;
+    GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException;
     
     /**
      * Interface to represent a gui button.
@@ -191,9 +198,11 @@ public interface GuiSessionInterface extends DataFragment
      * @param title
      *            the title to be displayed.
      * @param titleArgs
+     *            arguments to build the title string
      * @param message
      *            the message to be displayed.
      * @param messageArgs
+     *            arguments to build the messages string
      * @param yesButton
      *            the yes button or {@code null} to use a default yes button.
      * @param noButton
@@ -202,8 +211,8 @@ public interface GuiSessionInterface extends DataFragment
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton, GuiButton noButton)
-            throws McException;
+    SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton yesButton, GuiButton noButton)
+        throws McException;
     
     /**
      * Displays a yes/no/cancel confirmation dialog
@@ -211,9 +220,11 @@ public interface GuiSessionInterface extends DataFragment
      * @param title
      *            the title to be displayed.
      * @param titleArgs
+     *            arguments to build the title string
      * @param message
      *            the message to be displayed.
      * @param messageArgs
+     *            arguments to build the messages string
      * @param yesButton
      *            the yes button or {@code null} to use a default yes button.
      * @param noButton
@@ -224,8 +235,8 @@ public interface GuiSessionInterface extends DataFragment
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
-            GuiButton noButton, GuiButton cancelButton) throws McException;
+    SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton yesButton,
+        GuiButton noButton, GuiButton cancelButton) throws McException;
     
     /**
      * Creates a form builder to produce forms.
@@ -233,21 +244,26 @@ public interface GuiSessionInterface extends DataFragment
      * @param title
      *            the title to be used in form.
      * @param titleArgs
+     *            arguments to build the titles string
      * @param closable
+     *            {@code true} if fom is closable
      * @param closeAction
+     *            action to be invoked on form close
      * @return form builder
      * @throws McException
      *             thrown if player has no smart gui.
      */
-    SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable titleArgs[], boolean closable, McRunnable closeAction) throws McException;
+    SGuiFormBuilderInterface sguiForm(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable, McRunnable closeAction) throws McException;
     
     /**
      * Creates a new marker and displays it on client.
      * 
      * @param component
      *            the component to display.
-     * @param label 
-     * @param labelArgs 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -259,8 +275,10 @@ public interface GuiSessionInterface extends DataFragment
      * 
      * @param sign
      *            the sign to display.
-     * @param label 
-     * @param labelArgs 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -272,8 +290,10 @@ public interface GuiSessionInterface extends DataFragment
      * 
      * @param zone
      *            the component to display.
-     * @param label 
-     * @param labelArgs 
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -285,12 +305,18 @@ public interface GuiSessionInterface extends DataFragment
      * 
      * @param component
      *            the component to display.
-     * @param r red color
-     * @param g green color
-     * @param b blue color
-     * @param alpha alpha channel
-     * @param label 
-     * @param labelArgs 
+     * @param r
+     *            red color
+     * @param g
+     *            green color
+     * @param b
+     *            blue color
+     * @param alpha
+     *            alpha channel
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -302,12 +328,18 @@ public interface GuiSessionInterface extends DataFragment
      * 
      * @param sign
      *            the sign to display.
-     * @param r red color
-     * @param g green color
-     * @param b blue color
-     * @param alpha alpha channel
-     * @param label 
-     * @param labelArgs 
+     * @param r
+     *            red color
+     * @param g
+     *            green color
+     * @param b
+     *            blue color
+     * @param alpha
+     *            alpha channel
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -319,12 +351,18 @@ public interface GuiSessionInterface extends DataFragment
      * 
      * @param zone
      *            the component to display.
-     * @param r red color
-     * @param g green color
-     * @param b blue color
-     * @param alpha alpha channel
-     * @param label 
-     * @param labelArgs 
+     * @param r
+     *            red color
+     * @param g
+     *            green color
+     * @param b
+     *            blue color
+     * @param alpha
+     *            alpha channel
+     * @param label
+     *            custom gui label.
+     * @param labelArgs
+     *            arguments to build the label string
      * @return marker interface to control the marker.
      * @throws McException
      *             thrown if player has no smart gui.
@@ -357,7 +395,9 @@ public interface GuiSessionInterface extends DataFragment
          * Updates the marker label
          * 
          * @param label
+         *            custom gui label.
          * @param args
+         *            arguments to build the label string
          * 
          * @throws McException
          *             thrown if player has no smart gui.

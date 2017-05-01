@@ -31,29 +31,29 @@ package de.minigameslib.mclib.shared.api.com;
  */
 public class BlockLocationData implements BlockLocationDataFragment
 {
-
-    //CHECKSTYLE:OFF
+    
+    // CHECKSTYLE:OFF
     /**
      * the x coordinate.
      */
-    private int x;
-
+    private int    x;
+    
     /**
      * the y coordinate.
      */
-    private int y;
-
+    private int    y;
+    
     /**
      * the z coordinate.
      */
-    private int z;
-    //CHECKSTYLE:ON
+    private int    z;
+    // CHECKSTYLE:ON
     
     /**
      * Name of the world.
      */
     private String world;
-
+    
     /**
      * Constructor for reading from file.
      */
@@ -61,13 +61,18 @@ public class BlockLocationData implements BlockLocationDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor for new object.
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @param z z coordinate.
-     * @param world world name
+     * 
+     * @param x
+     *            x coordinate.
+     * @param y
+     *            y coordinate.
+     * @param z
+     *            z coordinate.
+     * @param world
+     *            world name
      */
     public BlockLocationData(int x, int y, int z, String world)
     {
@@ -76,31 +81,31 @@ public class BlockLocationData implements BlockLocationDataFragment
         this.z = z;
         this.world = world;
     }
-
+    
     @Override
     public int getX()
     {
         return this.x;
     }
-
+    
     @Override
     public int getY()
     {
         return this.y;
     }
-
+    
     @Override
     public int getZ()
     {
         return this.z;
     }
-
+    
     @Override
     public String getWorld()
     {
         return this.world;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -109,16 +114,16 @@ public class BlockLocationData implements BlockLocationDataFragment
         this.z = section.getInt("z"); //$NON-NLS-1$
         this.world = section.getString("world"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
-        section.set("x",  this.x); //$NON-NLS-1$
-        section.set("y",  this.y); //$NON-NLS-1$
-        section.set("z",  this.z); //$NON-NLS-1$
-        section.set("world",  this.world); //$NON-NLS-1$
+        section.set("x", this.x); //$NON-NLS-1$
+        section.set("y", this.y); //$NON-NLS-1$
+        section.set("z", this.z); //$NON-NLS-1$
+        section.set("world", this.world); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
@@ -127,7 +132,7 @@ public class BlockLocationData implements BlockLocationDataFragment
                 && section.isInt("z") //$NON-NLS-1$
                 && section.isString("world"); //$NON-NLS-1$
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -139,7 +144,7 @@ public class BlockLocationData implements BlockLocationDataFragment
         result = prime * result + this.z;
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

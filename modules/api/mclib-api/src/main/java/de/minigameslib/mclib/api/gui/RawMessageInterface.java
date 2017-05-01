@@ -40,78 +40,117 @@ public interface RawMessageInterface
     
     /**
      * Adds a localized and preformatted message.
+     * 
      * @param message
+     *            localized message text
      * @param args
+     *            arguments to build message
      * @return this object for chaining.
      */
     RawMessageInterface addMsg(LocalizedMessageInterface message, Serializable... args);
-
+    
     /**
      * Adds a localized and preformatted message including a hover
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param hover
+     *            hover text
      * @param hoverArgs
+     *            arguments to build hover text
      * @return this object for chaining.
      */
     RawMessageInterface addHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable... hoverArgs);
     
     /**
      * Adds a clickable hover
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param hover
+     *            hover text
      * @param hoverArgs
+     *            arguments to build hover text
      * @param command
-     * @param execute {@code true} to execute the command on click; {@code false} to print the command in chat
+     *            command text for execution
+     * @param execute
+     *            {@code true} to execute the command on click; {@code false} to print the command in chat
      * @return this object for chaining.
      */
     RawMessageInterface addClickableHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable[] hoverArgs, String command, boolean execute);
     
     /**
      * Adds a clickable hover
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param hover
+     *            hover text
      * @param hoverArgs
+     *            arguments to build hover text
      * @param handler
-     * @param expires the date/time the click link expires
+     *            command handler for execution
+     * @param expires
+     *            the date/time the click link expires
      * @return this object for chaining.
      */
-    RawMessageInterface addClickableHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable[] hoverArgs, McRunnable handler, LocalDateTime expires);
+    RawMessageInterface addClickableHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable[] hoverArgs, McRunnable handler,
+        LocalDateTime expires);
     
     /**
      * Adds clickable text
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param command
-     * @param execute {@code true} to execute the command on click; {@code false} to print the command in chat
+     *            command text for execution
+     * @param execute
+     *            {@code true} to execute the command on click; {@code false} to print the command in chat
      * @return this object for chaining.
      */
     RawMessageInterface addCommand(LocalizedMessageInterface message, Serializable[] messageArgs, String command, boolean execute);
     
     /**
      * Adds clickable text
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param handler
-     * @param expires the date/time the click link expires
+     *            command handlet for execution
+     * @param expires
+     *            the date/time the click link expires
      * @return this object for chaining.
      */
     RawMessageInterface addHandler(LocalizedMessageInterface message, Serializable[] messageArgs, McRunnable handler, LocalDateTime expires);
     
     /**
      * Adds a clickable url to open with browser
+     * 
      * @param message
+     *            localized message text
      * @param messageArgs
+     *            arguments to build message
      * @param url
+     *            url to invoke on click
      * @return this object for chaining.
      */
     RawMessageInterface addUrl(LocalizedMessageInterface message, Serializable[] messageArgs, String url);
     
     /**
      * Adds a raw json text (be careful with this method)
+     * 
      * @param rawJson
+     *            raw json text to display
      * @return this object for chaining.
      */
     RawMessageInterface add(String rawJson);

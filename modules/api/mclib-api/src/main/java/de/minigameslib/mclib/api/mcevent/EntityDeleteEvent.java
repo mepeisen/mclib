@@ -54,7 +54,7 @@ public class EntityDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we deleted. */
-    private final EntityInterface     entity;
+    private final EntityInterface    entity;
     
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class EntityDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -85,7 +85,7 @@ public class EntityDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -93,13 +93,13 @@ public class EntityDeleteEvent extends AbstractVetoEvent implements MinecraftEve
     {
         return handlers;
     }
-
+    
     @Override
     public EntityDeleteEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityDeleteEvent> when(McPredicate<EntityDeleteEvent> test) throws McException
     {

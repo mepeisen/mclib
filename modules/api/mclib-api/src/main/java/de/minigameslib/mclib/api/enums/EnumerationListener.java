@@ -32,24 +32,33 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  * Listener for watching newly registered or removed enumerations.
  * 
  * @author mepeisen
- * @param <T> enumeration class
+ * @param <T>
+ *            enumeration class
  */
 public interface EnumerationListener<T extends EnumerationValue>
 {
     
     /**
-     * On registered enumeration
+     * On registered enumeration.
+     * 
      * @param plugin
+     *            plugin that registered enumerations
      * @param clazz
-     * @param values 
+     *            enumeration interface
+     * @param values
+     *            registered values
      */
     void onEnumRegistered(Plugin plugin, Class<? extends T> clazz, T[] values);
     
     /**
-     * on removed enumeration
+     * on removed enumeration.
+     * 
      * @param plugin
+     *            plugin that removed enumerations
      * @param clazz
-     * @param values 
+     *            enumeration interface
+     * @param values
+     *            removed values
      */
     void onEnumRemoved(Plugin plugin, Class<? extends T> clazz, T[] values);
     

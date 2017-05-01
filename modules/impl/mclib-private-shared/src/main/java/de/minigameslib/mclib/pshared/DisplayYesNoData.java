@@ -39,13 +39,13 @@ public class DisplayYesNoData extends AnnotatedDataFragment
      * Title of the message box.
      */
     @PersistentField
-    protected String title;
+    protected String     title;
     
     /**
      * Text content of the message box.
      */
     @PersistentField
-    protected String message;
+    protected String     message;
     
     /**
      * Yes-Button.
@@ -63,92 +63,107 @@ public class DisplayYesNoData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    protected String id;
-
+    protected String     id;
+    
     /**
      * Returns the window id.
+     * 
      * @return the id
      */
     public String getId()
     {
         return this.id;
     }
-
+    
     /**
      * Sets the window id.
-     * @param id the id to set
+     * 
+     * @param id
+     *            the id to set
      */
     public void setId(String id)
     {
         this.id = id;
     }
-
+    
     /**
      * Returns the title.
+     * 
      * @return the title
      */
     public String getTitle()
     {
         return this.title;
     }
-
+    
     /**
      * Sets the title.
-     * @param title the title to set
+     * 
+     * @param title
+     *            the title to set
      */
     public void setTitle(String title)
     {
         this.title = title;
     }
-
+    
     /**
      * Returns the message text.
+     * 
      * @return the message
      */
     public String getMessage()
     {
         return this.message;
     }
-
+    
     /**
      * Sets the message text.
-     * @param message the message to set
+     * 
+     * @param message
+     *            the message to set
      */
     public void setMessage(String message)
     {
         this.message = message;
     }
-
+    
     /**
      * returns the yes button.
+     * 
      * @return the yesButton
      */
     public ButtonData getYesButton()
     {
         return this.yesButton;
     }
-
+    
     /**
      * Sets the yes button.
-     * @param yesButton the yesButton to set
+     * 
+     * @param yesButton
+     *            the yesButton to set
      */
     public void setYesButton(ButtonData yesButton)
     {
         this.yesButton = yesButton;
     }
-
+    
     /**
      * Returns the no button.
+     * 
      * @return the noButton
      */
     public ButtonData getNoButton()
     {
         return this.noButton;
     }
-
+    
     /**
      * Sets the no button.
-     * @param noButton the noButton to set
+     * 
+     * @param noButton
+     *            the noButton to set
      */
     public void setNoButton(ButtonData noButton)
     {

@@ -47,7 +47,7 @@ public class ObjectDeletedEvent extends Event implements MinecraftEvent<ObjectDe
     private static final HandlerList handlers = new HandlerList();
     
     /** the object we created. */
-    private final ObjectInterface     object;
+    private final ObjectInterface    object;
     
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class ObjectDeletedEvent extends Event implements MinecraftEvent<ObjectDe
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -78,7 +78,7 @@ public class ObjectDeletedEvent extends Event implements MinecraftEvent<ObjectDe
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -86,13 +86,13 @@ public class ObjectDeletedEvent extends Event implements MinecraftEvent<ObjectDe
     {
         return handlers;
     }
-
+    
     @Override
     public ObjectDeletedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ObjectDeletedEvent> when(McPredicate<ObjectDeletedEvent> test) throws McException
     {

@@ -35,25 +35,29 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Validator to check if a config value is set
+ * Validator to check if a config value is set.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
-@Target({FIELD, ElementType.TYPE})
+@Target({ FIELD, ElementType.TYPE })
 public @interface ValidateIsset
 {
     
     /**
-     * Validation of this annotation
+     * Validation of this annotation.
      */
     public class ValidatorInstance
     {
         /**
          * Validation
+         * 
          * @param isset
+         *            annotation value
          * @param cvi
-         * @throws McException thrown on validation errors.
+         *            config value
+         * @throws McException
+         *             thrown on validation errors.
          */
         public static void validate(ValidateIsset isset, ConfigurationValueInterface cvi) throws McException
         {

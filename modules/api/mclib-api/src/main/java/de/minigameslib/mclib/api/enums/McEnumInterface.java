@@ -38,6 +38,7 @@ public interface McEnumInterface extends EnumerationValue
     
     /**
      * Returns the plugin declaring the given interface.
+     * 
      * @return plugin declaring given interface.
      */
     default Plugin getPlugin()
@@ -47,6 +48,7 @@ public interface McEnumInterface extends EnumerationValue
     
     /**
      * Returns the plugin name.
+     * 
      * @return plugin name.
      */
     default String getPluginName()

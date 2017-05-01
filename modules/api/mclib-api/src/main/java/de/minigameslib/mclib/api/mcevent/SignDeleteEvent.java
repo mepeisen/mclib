@@ -54,7 +54,7 @@ public class SignDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we deleted. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class SignDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -85,7 +85,7 @@ public class SignDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -93,13 +93,13 @@ public class SignDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     {
         return handlers;
     }
-
+    
     @Override
     public SignDeleteEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignDeleteEvent> when(McPredicate<SignDeleteEvent> test) throws McException
     {

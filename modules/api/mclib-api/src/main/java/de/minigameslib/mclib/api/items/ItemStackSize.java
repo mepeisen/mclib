@@ -42,6 +42,7 @@ public @interface ItemStackSize
     
     /**
      * Maximum stack size
+     * 
      * @return maximum stack size
      */
     int value();

@@ -42,6 +42,7 @@ public @interface ConfigComment
     
     /**
      * Returns the string comment for a configuration value.
+     * 
      * @return string comment; each array entry is a single line.
      */
     String[] value();

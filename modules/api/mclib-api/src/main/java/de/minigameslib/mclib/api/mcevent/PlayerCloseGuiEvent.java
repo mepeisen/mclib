@@ -37,6 +37,8 @@ import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 
 /**
+ * Event to show up that player closes a gui.
+ * 
  * @author mepeisen
  *
  */
@@ -44,13 +46,13 @@ public class PlayerCloseGuiEvent extends Event implements MinecraftEvent<PlayerC
 {
     
     /** handlers list. */
-    private static final HandlerList   handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     
     /** the gui the player closed. */
-    private final ClickGuiInterface    gui;
+    private final ClickGuiInterface  gui;
     
     /** the player. */
-    private final McPlayerInterface player;
+    private final McPlayerInterface  player;
     
     /**
      * Constructor.
@@ -83,7 +85,7 @@ public class PlayerCloseGuiEvent extends Event implements MinecraftEvent<PlayerC
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -94,7 +96,7 @@ public class PlayerCloseGuiEvent extends Event implements MinecraftEvent<PlayerC
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -102,13 +104,13 @@ public class PlayerCloseGuiEvent extends Event implements MinecraftEvent<PlayerC
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerCloseGuiEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerCloseGuiEvent> when(McPredicate<PlayerCloseGuiEvent> test) throws McException
     {

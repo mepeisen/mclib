@@ -46,7 +46,8 @@ public interface ObjectHandlerInterface extends DataFragment
      * 
      * @param object
      *            object that is created.
-     * @throws McException thrown if the object has errors.
+     * @throws McException
+     *             thrown if the object has errors.
      */
     void onCreate(ObjectInterface object) throws McException;
     
@@ -55,7 +56,8 @@ public interface ObjectHandlerInterface extends DataFragment
      * 
      * @param object
      *            object that is resumed
-     * @throws McException thrown if the object has errors.
+     * @throws McException
+     *             thrown if the object has errors.
      */
     void onResume(ObjectInterface object) throws McException;
     
@@ -80,13 +82,4 @@ public interface ObjectHandlerInterface extends DataFragment
      */
     void onDelete();
     
-    /**
-     * Checks if is is safe to create the given object for same bukkit object.
-     * @param handler
-     * @throws McException
-     */
-    default void checkCreation(ObjectHandlerInterface handler) throws McException
-    {
-        // empty.
-    }
 }

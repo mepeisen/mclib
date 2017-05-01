@@ -28,11 +28,12 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Rule allowing repairing the item itself.
+ * 
  * @author mepeisen
  */
 public class SelfRepair implements ItemRepairInterface
 {
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair)

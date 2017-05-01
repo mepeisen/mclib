@@ -35,31 +35,36 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Validator to check if a list config value contains a mximum of x entries
+ * Validator to check if a list config value contains a mximum of x entries.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
-@Target({FIELD, ElementType.TYPE})
+@Target({ FIELD, ElementType.TYPE })
 public @interface ValidateListMax
 {
     
     /**
      * maximum entries
+     * 
      * @return maximum entries
      */
     int value();
     
     /**
-     * Validation of this annotation
+     * Validation of this annotation.
      */
     public class ValidatorInstance
     {
         /**
          * Validation
+         * 
          * @param lmax
+         *            annotation value
          * @param cvi
-         * @throws McException thrown on validation errors.
+         *            configuration value
+         * @throws McException
+         *             thrown on validation errors.
          */
         public static void validate(ValidateListMax lmax, ConfigurationValueInterface cvi) throws McException
         {
@@ -101,10 +106,10 @@ public @interface ValidateListMax
             else if (cvi.isEnumList())
             {
                 // TODO check enum list
-//                if (cvi.isset() && cvi.getEnumList().length > lmax.value())
-//                {
-//                    throw new McException(CommonMessages.ValidateListTooBig, cvi.path(), cvi.getEnumList().length, lmax.value());
-//                }
+                // if (cvi.isset() && cvi.getEnumList().length > lmax.value())
+                // {
+                // throw new McException(CommonMessages.ValidateListTooBig, cvi.path(), cvi.getEnumList().length, lmax.value());
+                // }
             }
             else if (cvi.isFloatList())
             {
@@ -137,10 +142,10 @@ public @interface ValidateListMax
             else if (cvi.isObjectList())
             {
                 // TODO check object list
-//                if (cvi.isset() && cvi.getObjectList().length > lmax.value())
-//                {
-//                    throw new McException(CommonMessages.ValidateListTooBig, cvi.path(), cvi.getObjectList().length, lmax.value());
-//                }
+                // if (cvi.isset() && cvi.getObjectList().length > lmax.value())
+                // {
+                // throw new McException(CommonMessages.ValidateListTooBig, cvi.path(), cvi.getObjectList().length, lmax.value());
+                // }
             }
             else if (cvi.isPlayerList())
             {

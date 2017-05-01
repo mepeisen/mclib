@@ -34,96 +34,112 @@ public enum CoreMessages
     
     /**
      * Ping from server to client.
+     * 
      * @see PingData
      */
     Ping,
     
     /**
      * Pong from client to server.
+     * 
      * @see PongData
      */
     Pong,
     
     /**
      * displays an error message.
+     * 
      * @see DisplayErrorData
      */
     DisplayError,
     
     /**
      * displays a yes/no message.
+     * 
      * @see DisplayYesNoData
      */
     DisplayYesNo,
     
     /**
      * displays a yes/no/cancel message.
+     * 
      * @see DisplayYesNoCancelData
      */
     DisplayYesNoCancel,
     
     /**
      * displays an info message.
+     * 
      * @see DisplayInfoData
      */
     DisplayInfo,
     
     /**
      * displays a panel/window.
+     * 
      * @see DisplayResizableWinData
      */
     DisplayResizableWin,
     
     /**
      * client notifies about a closed window.
+     * 
      * @see WinClosedData
      */
     WinClosed,
     
     /**
      * server requires a window to be closed.
+     * 
      * @see CloseWinData
      */
     CloseWin,
     
     /**
      * An action has performed from client side.
+     * 
      * @see ActionPerformedData
      */
     ActionPerformed,
     
     /**
      * Sends an error message to an existing resizable win.
+     * 
      * @see SendErrorData
      */
     SendError,
     
     /**
      * Form data for form inputs (f.e. lists) has been queried.
+     * 
      * @see QueryFormRequestData
      */
     QueryFormRequest,
     
     /**
      * Form data for form inputs (f.e. lists).
+     * 
      * @see QueryFormAnswerData
      */
     QueryFormAnswer,
     
     /**
      * Displays a marker.
+     * 
      * @see DisplayMarkerData
      */
     DisplayMarker,
     
     /**
      * Removes a marker.
+     * 
      * @see RemoveMarkerData
      */
     RemoveMarker,
     
     /**
      * Removes all displayed markers.
+     * 
      * @see ResetMarkersData
      */
     ResetMarkers,

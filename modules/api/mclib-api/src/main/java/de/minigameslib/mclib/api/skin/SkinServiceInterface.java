@@ -33,7 +33,7 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
- * Helper for skin support
+ * Helper for skin support.
  * 
  * @author mepeisen
  */
@@ -52,69 +52,98 @@ public interface SkinServiceInterface
     
     /**
      * Load skin from data section.
+     * 
      * @param section
+     *            the data section to load from
      * @param key
+     *            data key
      * @return skin
-     * @throws McException thrown if data section does not contain a saved skin
+     * @throws McException
+     *             thrown if data section does not contain a saved skin
      */
     SkinInterface load(DataFragment section, String key) throws McException;
     
     /**
-     * Saves skin to data section
+     * Saves skin to data section.
+     * 
      * @param skin
+     *            the skin to save
      * @param section
+     *            the data section to save to
      * @param key
-     * @throws McException thrown on errors
+     *            data key
+     * @throws McException
+     *             thrown on errors
      */
     void save(SkinInterface skin, DataFragment section, String key) throws McException;
     
     /**
-     * Returns the skin for given player
+     * Returns the skin for given player.
+     * 
      * @param player
+     *            target player
      * @return player skin
      */
     SkinInterface get(McPlayerInterface player);
     
     /**
-     * Returns the skin for given human entity
+     * Returns the skin for given human entity.
+     * 
      * @param entity
+     *            target entity
      * @return skin from human
-     * @throws McException thrown if given entity is not a human
+     * @throws McException
+     *             thrown if given entity is not a human
      */
     SkinInterface getFromHuman(EntityInterface entity) throws McException;
     
     /**
-     * Returns the skin snapshot, freezing the skin
+     * Returns the skin snapshot, freezing the skin.
+     * 
      * @param skin
-     * @param completion completion function
+     *            skin
+     * @param completion
+     *            completion function
      */
     void getSkinSnapshot(SkinInterface skin, McConsumer<SkinInterface> completion);
     
     /**
-     * Returns the skin snapshot, freezing the skin
+     * Returns the skin snapshot, freezing the skin.
+     * 
      * @param player
-     * @param completion completion function
+     *            target player
+     * @param completion
+     *            completion function
      */
     void getSkinSnapshot(McPlayerInterface player, McConsumer<SkinInterface> completion);
     
     /**
-     * Sets a sking to human entity
+     * Sets a sking to human entity.
+     * 
      * @param entity
+     *            target entity
      * @param skin
-     * @throws McException thrown if given entity is not a human
+     *            skin to set
+     * @throws McException
+     *             thrown if given entity is not a human
      */
     void setToHuman(EntityInterface entity, SkinInterface skin) throws McException;
     
     /**
-     * Clears the skin cache for given player
+     * Clears the skin cache for given player; be careful using this, because the Mohjang API does not allow skin queries too often.
+     * 
      * @param player
+     *            target player
      */
     void clearSkinCache(McPlayerInterface player);
     
     /**
-     * Returns an item stack representing a skull for given skin
+     * Returns an item stack representing a skull for given skin.
+     * 
      * @param skin
+     *            the skin to use
      * @param name
+     *            the item name ot use
      * @return skull
      */
     ItemStack getSkull(SkinInterface skin, String name);

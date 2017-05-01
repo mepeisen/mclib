@@ -42,6 +42,7 @@ import org.bukkit.event.player.PlayerChatEvent;
  * 
  * @author mepeisen
  */
+@SuppressWarnings("deprecation")
 public interface McPlayerChatEvent extends MinecraftEvent<PlayerChatEvent, McPlayerChatEvent>
 {
     

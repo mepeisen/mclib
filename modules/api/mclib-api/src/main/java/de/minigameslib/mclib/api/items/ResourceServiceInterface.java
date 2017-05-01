@@ -51,77 +51,94 @@ public interface ResourceServiceInterface
     
     /**
      * Changes the resource pack download url for current server resource version.
-     * @param url the download url
+     * 
+     * @param url
+     *            the download url
      */
     void setDownloadUrl(String url);
     
     /**
      * Changes the resource pack download url.
-     * @param url download url
-     * @param version server resource version
+     * 
+     * @param url
+     *            download url
+     * @param version
+     *            server resource version
      */
     void setDownloadUrl(String url, ResourceVersion version);
     
     /**
      * Returns the download url.
+     * 
      * @return download url.
      */
     String getDownloadUrl();
     
     /**
      * Returns the download url.
-     * @param version resource version
+     * 
+     * @param version
+     *            resource version
      * @return download url.
      */
     String getDownloadUrl(ResourceVersion version);
     
     /**
      * Returns true for automatic resource download on login.
+     * 
      * @return automatic resource download flag
      */
     boolean isAutoResourceDownload();
     
     /**
      * Sets the automatic resource download flag.
-     * @param newValue automatic resource download flag
+     * 
+     * @param newValue
+     *            automatic resource download flag
      */
     void setAutoResourceDownload(boolean newValue);
     
     /**
      * Returns the number of ticks to wait for automatic resource download.
+     * 
      * @return automatic resource download.
      */
     int getAutoResourceTicks();
     
     /**
      * Sets the number of ticks to wait for automatic resource download.
-     * @param ticks number of ticks waiting before download
+     * 
+     * @param ticks
+     *            number of ticks waiting before download
      */
     void setAutoResourceTicks(int ticks);
     
     /**
      * Checks if the player has accepted and installed the resource pack.
-     * @param player target player
+     * 
+     * @param player
+     *            target player
      * @return {@code true} if player has installed the resource pack.
      */
     boolean hasResourcePack(McPlayerInterface player);
     
     /**
      * Returns the resource pack status.
-     * @param player target player
+     * 
+     * @param player
+     *            target player
      * @return resource pack status or {@code null} if unknown
      */
     ResourcePackStatus getState(McPlayerInterface player);
-
+    
     /**
      * Status of the resource pack.
      */
     public enum ResourcePackStatus
     {
-
+        
         /**
-         * The resource pack has been successfully downloaded and applied to the
-         * client.
+         * The resource pack has been successfully downloaded and applied to the client.
          */
         SUCCESSFULLY_LOADED,
         /**
@@ -140,45 +157,64 @@ public interface ResourceServiceInterface
     
     /**
      * Forces downloading the resource pack (sends download request).
-     * @param player target player
-     * @param success invoked on successful download
+     * 
+     * @param player
+     *            target player
+     * @param success
+     *            invoked on successful download
      */
     void forceDownload(McPlayerInterface player, McRunnable success);
     
     /**
      * Forces downloading the resource pack (sends download request).
-     * @param player target player
-     * @param url a custom url
-     * @param success invoked on successful download
-     * @param failure invoked on failed downloads
-     * @param declined invoked on declined downloads
+     * 
+     * @param player
+     *            target player
+     * @param url
+     *            a custom url
+     * @param success
+     *            invoked on successful download
+     * @param failure
+     *            invoked on failed downloads
+     * @param declined
+     *            invoked on declined downloads
      */
     void forceDownload(McPlayerInterface player, String url, McRunnable success, McRunnable failure, McRunnable declined);
     
     /**
      * Creates a resource pack file for all installed items; creates it for current server version.
-     * @param target target file
-     * @throws IOException thrown if there was a problem writing the file
+     * 
+     * @param target
+     *            target file
+     * @throws IOException
+     *             thrown if there was a problem writing the file
      */
     void createResourcePack(File target) throws IOException;
     
     /**
      * Creates a resource pack file for all installed items; creates it for current server version.
-     * @param target target file
-     * @param version the version to be used
-     * @throws IOException thrown if there was a problem writing the file
+     * 
+     * @param target
+     *            target file
+     * @param version
+     *            the version to be used
+     * @throws IOException
+     *             thrown if there was a problem writing the file
      */
     void createResourcePack(File target, ResourceVersion version) throws IOException;
     
     /**
      * Returns the resource version for given minecraft version type.
-     * @param minecraftVersion minecraft version type.
+     * 
+     * @param minecraftVersion
+     *            minecraft version type.
      * @return resource version
      */
     ResourceVersion getResourceVersion(MinecraftVersionsType minecraftVersion);
     
     /**
      * The resource version enum.
+     * 
      * @author mepeisen
      */
     public enum ResourceVersion

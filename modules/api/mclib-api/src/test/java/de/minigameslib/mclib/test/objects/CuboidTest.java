@@ -184,7 +184,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#containsLocWithoutYD(Location)}
+     * Tests {@link Cuboid#containsLocWithoutYd(Location)}
      */
     @Test
     public void containsLocWithoutYD()
@@ -192,35 +192,35 @@ public class CuboidTest
         final World world = mock(World.class);
         final World world2 = mock(World.class);
         final Cuboid cub1 = new Cuboid(new Location(world, 1, 1, 1), new Location(world, 5, 5, 5));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 2, 2)));
-        assertFalse(cub1.containsLocWithoutYD(new Location(world2, 2, 2, 2)));
-        assertFalse(cub1.containsLocWithoutYD(null));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 2, 2)));
+        assertFalse(cub1.containsLocWithoutYd(new Location(world2, 2, 2, 2)));
+        assertFalse(cub1.containsLocWithoutYd(null));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 0, 2, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, -1, 2, 2)));
-        assertFalse(cub1.containsLocWithoutYD(new Location(world, -2, 2, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 0, 2, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, -1, 2, 2)));
+        assertFalse(cub1.containsLocWithoutYd(new Location(world, -2, 2, 2)));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 0, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, -1, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, -2, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 0, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, -1, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, -2, 2)));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 2, 0)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 2, -1)));
-        assertFalse(cub1.containsLocWithoutYD(new Location(world, 2, 2, -2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 2, 0)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 2, -1)));
+        assertFalse(cub1.containsLocWithoutYd(new Location(world, 2, 2, -2)));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 6, 2, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 7, 2, 2)));
-        assertFalse(cub1.containsLocWithoutYD(new Location(world, 8, 2, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 6, 2, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 7, 2, 2)));
+        assertFalse(cub1.containsLocWithoutYd(new Location(world, 8, 2, 2)));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 6, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 7, 2)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 8, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 6, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 7, 2)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 8, 2)));
         
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 2, 6)));
-        assertTrue(cub1.containsLocWithoutYD(new Location(world, 2, 2, 7)));
-        assertFalse(cub1.containsLocWithoutYD(new Location(world, 2, 2, 8)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 2, 6)));
+        assertTrue(cub1.containsLocWithoutYd(new Location(world, 2, 2, 7)));
+        assertFalse(cub1.containsLocWithoutYd(new Location(world, 2, 2, 8)));
         
-        assertFalse(new Cuboid().containsLocWithoutYD(new Location(world, 2, 2, 2)));
+        assertFalse(new Cuboid().containsLocWithoutYd(new Location(world, 2, 2, 2)));
     }
     
     /**

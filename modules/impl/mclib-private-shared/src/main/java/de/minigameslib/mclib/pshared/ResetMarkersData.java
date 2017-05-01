@@ -35,5 +35,5 @@ public class ResetMarkersData extends AnnotatedDataFragment
 {
     
     // no fields
-
+    
 }

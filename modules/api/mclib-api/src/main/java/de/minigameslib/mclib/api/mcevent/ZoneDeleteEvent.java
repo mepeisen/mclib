@@ -50,7 +50,7 @@ public class ZoneDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we deleted. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class ZoneDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -81,7 +81,7 @@ public class ZoneDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -89,13 +89,13 @@ public class ZoneDeleteEvent extends AbstractVetoEvent implements MinecraftEvent
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneDeleteEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneDeleteEvent> when(McPredicate<ZoneDeleteEvent> test) throws McException
     {

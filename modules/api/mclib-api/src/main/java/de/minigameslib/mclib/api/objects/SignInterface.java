@@ -31,6 +31,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.plugin.Plugin;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.event.McEventHandler;
 import de.minigameslib.mclib.api.event.McListener;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
@@ -53,6 +54,7 @@ public interface SignInterface
     
     /**
      * Returns the type id.
+     * 
      * @return type id of this object
      */
     SignTypeId getTypeId();
@@ -98,22 +100,30 @@ public interface SignInterface
     Sign getBukkitSign();
     
     /**
-     * Sets line contents
+     * Sets line contents.
+     * 
      * @param index
+     *            line index starting with 0
      * @param content
+     *            line content
      */
     void setLine(int index, String content);
     
     /**
-     * Sets line contents
+     * Sets line contents.
+     * 
      * @param index
+     *            line index starting with 0
      * @param content
+     *            localized line content
      * @param args
+     *            arguments to build line content
      */
     void setLine(int index, LocalizedMessageInterface content, Serializable... args);
     
     /**
      * Returns the handler.
+     * 
      * @return associated handler.
      */
     SignHandlerInterface getHandler();
@@ -122,31 +132,49 @@ public interface SignInterface
     
     /**
      * Register sign related event handlers only active if this sign is involved in events.
+     * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that registers the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      */
-    <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Registers an event handler object for events on this sign. Methods tagged with McEventHandler are considered as event handlers.
+     * 
      * @param plugin
+     *            plugin that registers the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      */
     void registerHandlers(Plugin plugin, McListener listener);
     
     /**
      * Remove a registered event handler.
+     * 
+     * @param <EVT>
+     *            event class
      * @param plugin
+     *            plugin that removes the handler
      * @param clazz
+     *            event class
      * @param handler
+     *            handler to be invoked on event
      */
-    <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler);
+    <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler);
     
     /**
      * Remove a registered event handler.
+     * 
      * @param plugin
+     *            plugin that removes the handler
      * @param listener
+     *            listener class having methods tagged with {@link McEventHandler}
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
     

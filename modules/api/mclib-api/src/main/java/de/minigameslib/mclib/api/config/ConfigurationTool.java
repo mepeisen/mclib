@@ -44,17 +44,24 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return class
+     * @param <ANNOT>
+     *            annotation class
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param calculator
-     * @return calculator func.
+     *            calculator function
+     * @return return value.
      */
-    static <Ret, Annot extends Annotation> Ret calculate(ConfigurationValueInterface val, Class<Annot> clazz, Calculator<Ret, Annot> calculator)
+    static <RET, ANNOT extends Annotation> RET calculate(ConfigurationValueInterface val, Class<ANNOT> clazz, Calculator<RET, ANNOT> calculator)
     {
         try
         {
             final ConfigurationValues configs = val.getClass().getAnnotation(ConfigurationValues.class);
-            final Annot config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
+            final ANNOT config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
             if (configs == null || config == null)
             {
                 throw new IllegalStateException("Invalid configuration class."); //$NON-NLS-1$
@@ -72,33 +79,52 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return class
+     * @param <ANNOT>
+     *            annotation class
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param path
+     *            path function
      * @param calculator
-     * @return calculator func.
+     *            calculator function
+     * @return return value.
      */
-    static <Ret, Annot extends Annotation> Ret calculate(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueCalculator<Ret, Annot> calculator)
+    static <RET, ANNOT extends Annotation> RET calculate(ConfigurationValueInterface val, Class<ANNOT> clazz, PathCalculator<ANNOT> path, ValueCalculator<RET, ANNOT> calculator)
     {
-        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
+        final Calculator<RET, ANNOT> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
         return calculate(val, clazz, calc);
     }
     
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return class
+     * @param <ANNOT>
+     *            annotation class
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param path
+     *            path function
      * @param calculator
+     *            calculator function
      * @param defaultValue
-     * @return calculator func.
+     *            default value function
+     * @return return value.
      */
-    static <Ret, Annot extends Annotation> Ret calculate(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueCalculator<Ret, Annot> calculator, ValueCalculator<Ret, Annot> defaultValue)
+    static <RET, ANNOT extends Annotation> RET calculate(ConfigurationValueInterface val, Class<ANNOT> clazz, PathCalculator<ANNOT> path, ValueCalculator<RET, ANNOT> calculator,
+            ValueCalculator<RET, ANNOT> defaultValue)
     {
-        final Calculator<Ret, Annot> calc = (val2, configs, config, lib, minigame) -> {
+        final Calculator<RET, ANNOT> calc = (val2, configs, config, lib, minigame) ->
+        {
             final String spath = path.supply(val, configs, config, lib);
-            Ret res = minigame.getConfig(configs.file()).contains(spath) ? calculator.supply(val, configs, config, lib, minigame, spath) : null;
+            RET res = minigame.getConfig(configs.file()).contains(spath) ? calculator.supply(val, configs, config, lib, minigame, spath) : null;
             if (res == null && defaultValue != null)
             {
                 res = defaultValue.supply(val, configs, config, lib, minigame, spath);
@@ -111,33 +137,50 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return type
      * @param val
+     *            config value
      * @param subpath
+     *            subpath
      * @param calculator
-     * @return calculator func.
+     *            calculator function
+     * @return return value.
      */
-    static <Ret> Ret calculate(ConfigurationValueInterface val, String subpath, ValueCalculator<Ret, ConfigurationSection> calculator)
+    static <RET> RET calculate(ConfigurationValueInterface val, String subpath, ValueCalculator<RET, ConfigurationSection> calculator)
     {
-        final Calculator<Ret, ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
+        final Calculator<RET, ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> calculator.supply(val, configs, config, lib, minigame,
+                sectionPath().supply(val, configs, config, lib) + '.' + subpath);
         return calculate(val, ConfigurationSection.class, calc);
     }
     
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return type
+     * @param <ANNOT>
+     *            annotation class
      * @param val
-     * @param retClazz
+     *            config value
      * @param clazz
+     *            annotation class
+     * @param retClazz
+     *            return class
      * @param path
+     *            path function
      * @param calculator
-     * @return calculator func.
+     *            calculator function
+     * @return return value
      */
-    static <Ret, Annot extends Annotation> Ret[] calculateList(ConfigurationValueInterface val, Class<Annot> clazz, Class<Ret> retClazz, PathCalculator<Annot> path, ArrayValueCalculator<Ret, Annot> calculator)
+    static <RET, ANNOT extends Annotation> RET[] calculateList(ConfigurationValueInterface val, Class<ANNOT> clazz, Class<RET> retClazz, PathCalculator<ANNOT> path,
+            ArrayValueCalculator<RET, ANNOT> calculator)
     {
         @SuppressWarnings("unchecked")
-        final Calculator<Ret[], Annot> calc = (val2, configs, config, lib, minigame) -> {
+        final Calculator<RET[], ANNOT> calc = (val2, configs, config, lib, minigame) ->
+        {
             final DataSection section = minigame.getConfig(configs.file()).getSection(path.supply(val, configs, config, lib));
-            final List<Ret> list = new ArrayList<>();
+            final List<RET> list = new ArrayList<>();
             if (section != null)
             {
                 for (final String key : section.getKeys(false))
@@ -145,7 +188,7 @@ class ConfigurationTool
                     list.add(calculator.supply(val, configs, config, lib, minigame, section, key));
                 }
             }
-            return list.toArray((Ret[]) Array.newInstance(retClazz, list.size()));
+            return list.toArray((RET[]) Array.newInstance(retClazz, list.size()));
         };
         return calculate(val, clazz, calc);
     }
@@ -153,18 +196,25 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <RET>
+     *            return type
      * @param val
+     *            config value
      * @param retClazz
+     *            return class
      * @param subpath
+     *            subpath
      * @param calculator
-     * @return calculator func.
+     *            calculator function
+     * @return return value
      */
-    static <Ret> Ret[] calculateList(ConfigurationValueInterface val, String subpath, Class<Ret> retClazz, ArrayValueCalculator<Ret, ConfigurationSection> calculator)
+    static <RET> RET[] calculateList(ConfigurationValueInterface val, String subpath, Class<RET> retClazz, ArrayValueCalculator<RET, ConfigurationSection> calculator)
     {
         @SuppressWarnings("unchecked")
-        final Calculator<Ret[], ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> {
+        final Calculator<RET[], ConfigurationSection> calc = (val2, configs, config, lib, minigame) ->
+        {
             final DataSection section = minigame.getConfig(configs.file()).getSection(sectionPath().supply(val, configs, config, lib) + '.' + subpath);
-            final List<Ret> list = new ArrayList<>();
+            final List<RET> list = new ArrayList<>();
             if (section != null)
             {
                 for (final String key : section.getKeys(false))
@@ -172,7 +222,7 @@ class ConfigurationTool
                     list.add(calculator.supply(val, configs, config, lib, minigame, section, key));
                 }
             }
-            return list.toArray((Ret[]) Array.newInstance(retClazz, list.size()));
+            return list.toArray((RET[]) Array.newInstance(retClazz, list.size()));
         };
         return calculate(val, ConfigurationSection.class, calc);
     }
@@ -180,16 +230,21 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <ANNOT>
+     *            annotation class
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param consumer
+     *            consumer function
      */
-    static <Annot extends Annotation> void consume(ConfigurationValueInterface val, Class<Annot> clazz, Consumer<Annot> consumer)
+    static <ANNOT extends Annotation> void consume(ConfigurationValueInterface val, Class<ANNOT> clazz, Consumer<ANNOT> consumer)
     {
         try
         {
             final ConfigurationValues configs = val.getClass().getAnnotation(ConfigurationValues.class);
-            final Annot config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
+            final ANNOT config = val.getClass().getDeclaredField(val.name()).getAnnotation(clazz);
             if (configs == null || config == null)
             {
                 throw new IllegalStateException("Invalid configuration class."); //$NON-NLS-1$
@@ -207,14 +262,20 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <ANNOT>
+     *            annotation class
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param path
+     *            path function
      * @param consumer
+     *            consumer function
      */
-    static <Annot extends Annotation> void consume(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, ValueConsumer<Annot> consumer)
+    static <ANNOT extends Annotation> void consume(ConfigurationValueInterface val, Class<ANNOT> clazz, PathCalculator<ANNOT> path, ValueConsumer<ANNOT> consumer)
     {
-        final Consumer<Annot> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
+        final Consumer<ANNOT> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame, path.supply(val, configs, config, lib));
         consume(val, clazz, calc);
     }
     
@@ -222,28 +283,42 @@ class ConfigurationTool
      * Calculates a value by using a calculator func.
      * 
      * @param val
+     *            config value
      * @param subpath
+     *            subpath
      * @param consumer
+     *            consumer function
      */
     static void consume(ConfigurationValueInterface val, String subpath, ValueConsumer<ConfigurationSection> consumer)
     {
         final Class<ConfigurationSection> clazz = ConfigurationSection.class;
-        final Consumer<ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame, sectionPath().supply(val, configs, config, lib) + '.' + subpath);
+        final Consumer<ConfigurationSection> calc = (val2, configs, config, lib, minigame) -> consumer.apply(val, configs, config, lib, minigame,
+                sectionPath().supply(val, configs, config, lib) + '.' + subpath);
         consume(val, clazz, calc);
     }
     
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <T>
+     *            array type
+     * @param <ANNOT>
+     *            annotation type
      * @param val
+     *            config value
      * @param clazz
+     *            annotation class
      * @param path
+     *            path function
      * @param value
+     *            array value
      * @param consumer
+     *            consumer function
      */
-    static <T, Annot extends Annotation> void consumeList(ConfigurationValueInterface val, Class<Annot> clazz, PathCalculator<Annot> path, T[] value, ArrayValueConsumer<T, Annot> consumer)
+    static <T, ANNOT extends Annotation> void consumeList(ConfigurationValueInterface val, Class<ANNOT> clazz, PathCalculator<ANNOT> path, T[] value, ArrayValueConsumer<T, ANNOT> consumer)
     {
-        final ValueConsumer<Annot> vconsumer = (val2, configs, config, lib, minigame, spath) -> {
+        final ValueConsumer<ANNOT> vconsumer = (val2, configs, config, lib, minigame, spath) ->
+        {
             DataSection section = minigame.getConfig(configs.file()).getSection(spath);
             if (section == null)
             {
@@ -267,14 +342,21 @@ class ConfigurationTool
     /**
      * Calculates a value by using a calculator func.
      * 
+     * @param <T>
+     *            array type
      * @param val
+     *            config value
      * @param subpath
+     *            subpath
      * @param value
+     *            array value
      * @param consumer
+     *            consumer function
      */
     static <T> void consumeList(ConfigurationValueInterface val, String subpath, T[] value, ArrayValueConsumer<T, ConfigurationSection> consumer)
     {
-        final ValueConsumer<ConfigurationSection> vconsumer = (val2, configs, config, lib, minigame, spath) -> {
+        final ValueConsumer<ConfigurationSection> vconsumer = (val2, configs, config, lib, minigame, spath) ->
+        {
             DataSection section = minigame.getConfig(configs.file()).getSection(spath);
             if (section == null)
             {
@@ -299,8 +381,10 @@ class ConfigurationTool
      * Checks if the given config value has given annotation.
      * 
      * @param val
+     *            config value
      * @param clazz
-     * @return {qcode true} if the config value has diven annotation
+     *            annotation class
+     * @return {@code true} if the config value has diven annotation
      */
     static boolean isType(ConfigurationValueInterface val, Class<? extends Annotation> clazz)
     {
@@ -316,7 +400,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -326,7 +410,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -336,7 +420,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -346,7 +430,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -356,7 +440,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -366,7 +450,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -376,7 +460,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -386,7 +470,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -396,7 +480,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -406,7 +490,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -416,7 +500,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -426,7 +510,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -436,7 +520,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -446,7 +530,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -456,7 +540,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -466,7 +550,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -476,7 +560,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -486,7 +570,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -496,7 +580,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -506,7 +590,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -516,7 +600,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -526,7 +610,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -536,7 +620,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -546,7 +630,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -556,7 +640,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -566,7 +650,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -576,7 +660,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -586,7 +670,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -596,7 +680,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -606,7 +690,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -616,7 +700,7 @@ class ConfigurationTool
     }
     
     /**
-     * Returns the path calculator for given type
+     * Returns the path calculator for given type.
      * 
      * @return path calculator
      */
@@ -628,157 +712,196 @@ class ConfigurationTool
     /**
      * Calculator to fetch data.
      * 
-     * @param <Ret>
+     * @param <RET>
      *            return clazz
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface Calculator<Ret, Annot extends Annotation>
+    interface Calculator<RET, ANNOT extends Annotation>
     {
         
         /**
          * Calculates the value from config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @return return value
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame) throws Exception;
+        RET supply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
     /**
      * Calculator to fetch data.
      * 
-     * @param <Ret>
+     * @param <RET>
      *            return clazz
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface ValueCalculator<Ret, Annot extends Annotation>
+    interface ValueCalculator<RET, ANNOT extends Annotation>
     {
         
         /**
          * Calculates the value from config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @param path
+         *            config path
          * @return return value
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
+        RET supply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
     /**
      * Calculator to fetch data.
      * 
-     * @param <Ret>
+     * @param <RET>
      *            return clazz
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface ArrayValueCalculator<Ret, Annot extends Annotation>
+    interface ArrayValueCalculator<RET, ANNOT extends Annotation>
     {
         
         /**
          * Calculates the value from config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @param section
+         *            config section
          * @param key
+         *            config key
          * @return return value
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        Ret supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, DataSection section, String key) throws Exception;
+        RET supply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame, DataSection section, String key) throws Exception;
         
     }
     
     /**
      * Calculator for config path calculation.
      * 
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface PathCalculator<Annot extends Annotation>
+    interface PathCalculator<ANNOT extends Annotation>
     {
         
         /**
          * Calculates the path from config annotation.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @return return value
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        String supply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib) throws Exception;
+        String supply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib) throws Exception;
         
     }
     
     /**
      * Calculator to parse data.
      * 
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface Consumer<Annot extends Annotation>
+    interface Consumer<ANNOT extends Annotation>
     {
         
         /**
          * Consume config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame) throws Exception;
         
     }
     
     /**
      * Calculator to parse data.
      * 
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface ValueConsumer<Annot extends Annotation>
+    interface ValueConsumer<ANNOT extends Annotation>
     {
         
         /**
          * Consume config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @param path
+         *            config path
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame, String path) throws Exception;
         
     }
     
@@ -787,27 +910,36 @@ class ConfigurationTool
      * 
      * @param <T>
      *            array element clazz
-     * @param <Annot>
+     * @param <ANNOT>
      *            annotation clazz
      */
     @FunctionalInterface
-    interface ArrayValueConsumer<T, Annot extends Annotation>
+    interface ArrayValueConsumer<T, ANNOT extends Annotation>
     {
         
         /**
          * Consume config.
          * 
          * @param val
+         *            config value
          * @param configs
+         *            configuration values annotation
          * @param config
+         *            config annotation
          * @param lib
+         *            mclib interface
          * @param minigame
+         *            config accessor
          * @param section
+         *            config section
          * @param path
+         *            config path
          * @param element
+         *            array element
          * @throws Exception
+         *             thrown for problems accessing the config
          */
-        void apply(ConfigurationValueInterface val, ConfigurationValues configs, Annot config, McLibInterface lib, ConfigInterface minigame, DataSection section, String path, T element)
+        void apply(ConfigurationValueInterface val, ConfigurationValues configs, ANNOT config, McLibInterface lib, ConfigInterface minigame, DataSection section, String path, T element)
                 throws Exception;
         
     }

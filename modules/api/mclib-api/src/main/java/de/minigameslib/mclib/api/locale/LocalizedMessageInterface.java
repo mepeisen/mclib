@@ -42,7 +42,8 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
 {
     
     /**
-     * Returns unique id of this message
+     * Returns unique id of this message.
+     * 
      * @return id
      */
     default String id()
@@ -88,6 +89,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     
     /**
      * Returns the path within messages.yml for this message
+     * 
      * @return path
      */
     default String path()
@@ -102,6 +104,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     
     /**
      * Returns the description for this message.
+     * 
      * @return description
      */
     default MessageComment description()
@@ -314,7 +317,10 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         final String[] smsg = this.getUnformattedUserMessageLine(locale);
-        if (smsg == null) return new String[0];
+        if (smsg == null)
+        {
+            return new String[0];
+        }
         final String[] result = new String[smsg.length];
         int i = 0;
         for (final String lmsg : smsg)
@@ -354,7 +360,10 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         final String[] smsg = this.getUnformattedAdminMessageLine(locale);
-        if (smsg == null) return new String[0];
+        if (smsg == null)
+        {
+            return new String[0];
+        }
         final String[] result = new String[smsg.length];
         int i = 0;
         for (final String lmsg : smsg)
@@ -390,7 +399,8 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
      */
     default DynamicListArg toListArg(int startLine, int lineLimit, Serializable... args)
     {
-        return (loc, isAdmin) -> {
+        return (loc, isAdmin) ->
+        {
             final String[] list = isAdmin ? this.toAdminMessageLine(loc, args) : this.toUserMessageLine(loc, args);
             if (list == null)
             {

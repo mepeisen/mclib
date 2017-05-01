@@ -48,21 +48,23 @@ public class SignRelocatedEvent extends Event implements MinecraftEvent<SignRelo
     private static final HandlerList handlers = new HandlerList();
     
     /** the sign we relocated. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /** the old location. */
-    private final Location oldLocation;
+    private final Location           oldLocation;
     
     /** the new location. */
-    private final Location newLocation;
+    private final Location           newLocation;
     
     /**
      * Constructor.
      * 
      * @param sign
      *            the relocated sign.
-     * @param oldLocation 
-     * @param newLocation 
+     * @param oldLocation
+     *            the old location
+     * @param newLocation
+     *            the new location
      */
     public SignRelocatedEvent(SignInterface sign, final Location oldLocation, final Location newLocation)
     {
@@ -79,24 +81,26 @@ public class SignRelocatedEvent extends Event implements MinecraftEvent<SignRelo
     
     /**
      * Returns the old location.
+     * 
      * @return the oldLocation
      */
     public Location getOldCuboid()
     {
         return this.oldLocation;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newLocation
      */
     public Location getNewCuboid()
     {
         return this.newLocation;
     }
-
+    
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -107,7 +111,7 @@ public class SignRelocatedEvent extends Event implements MinecraftEvent<SignRelo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -115,13 +119,13 @@ public class SignRelocatedEvent extends Event implements MinecraftEvent<SignRelo
     {
         return handlers;
     }
-
+    
     @Override
     public SignRelocatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignRelocatedEvent> when(McPredicate<SignRelocatedEvent> test) throws McException
     {

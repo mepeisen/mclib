@@ -39,6 +39,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the mod item flag.
+     * 
      * @return mod item flag
      */
     default boolean isModded()
@@ -56,6 +57,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the resource paths to the textures.
+     * 
      * @return resource paths to textures
      */
     default String[] getTextures()
@@ -73,6 +75,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the resource paths to the textures; used by custom armor.
+     * 
      * @return resource paths to textures
      */
     default String[] getModelTextures()
@@ -90,6 +93,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the crafting recipes.
+     * 
      * @return crafting recipes
      */
     default CraftingRecipes recipes()
@@ -107,6 +111,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * the custom item model json.
+     * 
      * @return custom item model json
      */
     default String getModelJson()
@@ -124,6 +129,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The furnace recipe.
+     * 
      * @return the furnace recipe
      */
     default FurnaceRecipeInterface furnaceRecipe()
@@ -141,6 +147,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     default NameProvider nameProvider()
@@ -158,6 +165,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the stack size.
+     * 
      * @return stack size
      */
     default int stackSize()
@@ -175,6 +183,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The armor data.
+     * 
      * @return item armor data
      */
     default ItemArmor armor()
@@ -192,6 +201,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The sword data.
+     * 
      * @return item sword data
      */
     default ItemSword sword()
@@ -209,6 +219,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The shovel data.
+     * 
      * @return item shovel data
      */
     default ItemShovel shovel()
@@ -226,6 +237,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The pickaxe data.
+     * 
      * @return item sword data
      */
     default ItemPickaxe pickaxe()
@@ -243,6 +255,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The hoe data.
+     * 
      * @return item hoe data
      */
     default ItemHoe hoe()
@@ -260,6 +273,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * The axe data.
+     * 
      * @return item axe data
      */
     default ItemAxe axe()
@@ -296,6 +310,7 @@ public interface ItemId extends McUniqueEnumInterface
     
     /**
      * Returns the item classes of this item.
+     * 
      * @return item classes
      */
     default ItemClass[] getItemClasses()

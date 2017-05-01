@@ -38,21 +38,26 @@ public class SimpleAnvilGui implements AnvilGuiInterface
 {
     
     /** the gui id. */
-    private final AnvilGuiId guiId;
+    private final AnvilGuiId         guiId;
     
     /** the item stack. */
-    private final ItemStack item;
+    private final ItemStack          item;
     
     /** the cancel action. */
-    private final Runnable cancelAction;
+    private final Runnable           cancelAction;
     
     /** the input check/ action. */
     private final McConsumer<String> inputAction;
-
+    
     /**
+     * Constructor to create the anvil gui.
+     * 
      * @param guiId
+     *            anvil gui id.
      * @param item
+     *            the item to be used
      * @param inputAction
+     *            the consumer for commiting values.
      */
     public SimpleAnvilGui(AnvilGuiId guiId, ItemStack item, McConsumer<String> inputAction)
     {
@@ -61,12 +66,18 @@ public class SimpleAnvilGui implements AnvilGuiInterface
         this.inputAction = inputAction;
         this.cancelAction = null;
     }
-
+    
     /**
+     * Constructor to create the anvil gui including cancel action.
+     * 
      * @param guiId
+     *            anvil gui id.
      * @param item
+     *            the item to be used
      * @param cancelAction
+     *            invoked on cancelling/closing the anvil gui
      * @param inputAction
+     *            the consumer for commiting values.
      */
     public SimpleAnvilGui(AnvilGuiId guiId, ItemStack item, Runnable cancelAction, McConsumer<String> inputAction)
     {
@@ -75,7 +86,7 @@ public class SimpleAnvilGui implements AnvilGuiInterface
         this.cancelAction = cancelAction;
         this.inputAction = inputAction;
     }
-
+    
     @Override
     public AnvilGuiId getUniqueId()
     {

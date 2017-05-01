@@ -54,7 +54,7 @@ public class EntityCreateEvent extends AbstractVetoEvent implements MinecraftEve
     private static final HandlerList handlers = new HandlerList();
     
     /** the entity we created. */
-    private final EntityInterface     entity;
+    private final EntityInterface    entity;
     
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class EntityCreateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -85,7 +85,7 @@ public class EntityCreateEvent extends AbstractVetoEvent implements MinecraftEve
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -93,13 +93,13 @@ public class EntityCreateEvent extends AbstractVetoEvent implements MinecraftEve
     {
         return handlers;
     }
-
+    
     @Override
     public EntityCreateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityCreateEvent> when(McPredicate<EntityCreateEvent> test) throws McException
     {

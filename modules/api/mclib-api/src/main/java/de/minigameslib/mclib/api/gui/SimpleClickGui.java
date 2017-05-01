@@ -33,19 +33,23 @@ public class SimpleClickGui implements ClickGuiInterface
 {
     
     /** the unique gui id. */
-    private final ClickGuiId guiId;
+    private final ClickGuiId            guiId;
     
     /** the initial gui page. */
     private final ClickGuiPageInterface initPage;
     
     /** the line count. */
-    private final int lineCount;
+    private final int                   lineCount;
     
     /**
-     * Constructor
+     * Constructor to create a simple click gui.
+     * 
      * @param guiId
+     *            the gui id.
      * @param initPage
+     *            the initial page.
      * @param lineCount
+     *            the line count.
      */
     public SimpleClickGui(ClickGuiId guiId, ClickGuiPageInterface initPage, int lineCount)
     {
@@ -53,7 +57,7 @@ public class SimpleClickGui implements ClickGuiInterface
         this.initPage = initPage;
         this.lineCount = lineCount;
     }
-
+    
     @Override
     public ClickGuiId getUniqueId()
     {

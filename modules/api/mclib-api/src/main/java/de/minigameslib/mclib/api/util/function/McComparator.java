@@ -320,9 +320,9 @@ public interface McComparator<T>
      */
     public static final class NullComparator<T> implements McComparator<T>
     {
-
+        
         /** flag nullFirst. */
-        private final boolean             nullFirst;
+        private final boolean         nullFirst;
         
         /** real comparator. */
         private final McComparator<T> real;

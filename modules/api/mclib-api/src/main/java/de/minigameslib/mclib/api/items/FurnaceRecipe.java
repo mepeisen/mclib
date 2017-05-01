@@ -43,6 +43,7 @@ public @interface FurnaceRecipe
     
     /**
      * the furnace recipe rule
+     * 
      * @return furnace recipe rule
      */
     Class<? extends FurnaceRecipeInterface> value();

@@ -40,23 +40,26 @@ public class RemoveMarkerData extends AnnotatedDataFragment
      */
     @PersistentField
     protected String markerId;
-
+    
     /**
      * Returns the marker id.
+     * 
      * @return the markerId
      */
     public String getMarkerId()
     {
         return this.markerId;
     }
-
+    
     /**
      * Sets the marker id.
-     * @param markerId the markerId to set
+     * 
+     * @param markerId
+     *            the markerId to set
      */
     public void setMarkerId(String markerId)
     {
         this.markerId = markerId;
     }
-
+    
 }

@@ -38,7 +38,8 @@ public interface McRunnable
     /**
      * method to execute.
      * 
-     * @throws McException thrown on errors.
+     * @throws McException
+     *             thrown on errors.
      */
     void run() throws McException;
     

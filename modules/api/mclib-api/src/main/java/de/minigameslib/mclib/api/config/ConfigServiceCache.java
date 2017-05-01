@@ -39,6 +39,7 @@ class ConfigServiceCache
     
     /**
      * Returns the configuration services instance.
+     * 
      * @return configuration services.
      */
     static ConfigServiceInterface get()

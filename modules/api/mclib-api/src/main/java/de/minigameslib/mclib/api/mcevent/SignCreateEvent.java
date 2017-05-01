@@ -54,7 +54,7 @@ public class SignCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     private static final HandlerList handlers = new HandlerList();
     
     /** the sign we created. */
-    private final SignInterface     sign;
+    private final SignInterface      sign;
     
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class SignCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -85,7 +85,7 @@ public class SignCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -93,13 +93,13 @@ public class SignCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     {
         return handlers;
     }
-
+    
     @Override
     public SignCreateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<SignCreateEvent> when(McPredicate<SignCreateEvent> test) throws McException
     {

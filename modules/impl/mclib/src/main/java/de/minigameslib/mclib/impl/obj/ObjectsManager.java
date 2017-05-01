@@ -1068,21 +1068,21 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     @Override
-    public Collection<ZoneInterface> findZonesWithoutYD(Location location)
+    public Collection<ZoneInterface> findZonesWithoutYd(Location location)
     {
         if (location == null)
             return Collections.emptyList();
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYD(location))
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYd(location))
                 .collect(Collectors.toList());
     }
     
     @Override
-    public ZoneInterface findZoneWithoutYD(Location location)
+    public ZoneInterface findZoneWithoutYd(Location location)
     {
         if (location == null)
             return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(c -> c.getCuboid().containsLocWithoutYD(location)).findFirst();
+                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1459,7 +1459,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     @Override
-    public ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type)
+    public ZoneInterface findZoneWithoutYd(Location location, ZoneTypeId... type)
     {
         if (location == null || type == null || type.length == 0)
             return null;
@@ -1470,12 +1470,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutYD(location)).findFirst();
+                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
     @Override
-    public Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type)
+    public Collection<ZoneInterface> findZonesWithoutYd(Location location, ZoneTypeId... type)
     {
         if (location == null || type == null || type.length == 0)
             return Collections.emptyList();
@@ -1486,7 +1486,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
                 .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutYD(location)).collect(Collectors.toList());
+                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).collect(Collectors.toList());
     }
     
     @Override

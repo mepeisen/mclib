@@ -42,6 +42,7 @@ public @interface BlockDropRule
     
     /**
      * Drop rule class.
+     * 
      * @return drop rule class
      */
     Class<? extends BlockDropRuleInterface> value() default BlockDropRuleInterface.DropNull.class;

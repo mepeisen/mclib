@@ -39,6 +39,7 @@ class BungeeServiceCache
     
     /**
      * Returns the bungee services instance.
+     * 
      * @return bungee services.
      */
     static BungeeServiceInterface get()

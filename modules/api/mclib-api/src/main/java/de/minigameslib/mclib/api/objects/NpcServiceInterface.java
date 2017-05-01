@@ -30,7 +30,7 @@ import org.bukkit.entity.Villager;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Interface to support npc spawning
+ * Interface to support npc spawning.
  * 
  * @author mepeisen
  */
@@ -49,12 +49,14 @@ public interface NpcServiceInterface
     
     /**
      * Creates a npc builder to spawn a npc.
+     * 
      * @return npc builder.
      */
     VillagerBuilderInterface villager();
     
     /**
      * Creates a player builder to spawn a human.
+     * 
      * @return human builder.
      */
     HumanBuilderInterface human();
@@ -66,8 +68,10 @@ public interface NpcServiceInterface
     {
         
         /**
-         * Sets the given profession
+         * Sets the given profession.
+         * 
          * @param profession
+         *            humans profession
          * @return this object for chaining.
          */
         VillagerBuilderInterface profession(Villager.Profession profession);
@@ -81,15 +85,19 @@ public interface NpcServiceInterface
     {
         
         /**
-         * Uses the skin from given player
+         * Uses the skin from given player.
+         * 
          * @param player
+         *            player to take the skin from.
          * @return this object for chaining.
          */
         HumanBuilderInterface skin(McPlayerInterface player);
         
         /**
-         * Sets Display name
+         * Sets Display name.
+         * 
          * @param name
+         *            the display name
          * @return this object for chaining
          */
         HumanBuilderInterface name(String name);
@@ -98,35 +106,44 @@ public interface NpcServiceInterface
     
     /**
      * Interface to help creating npcs.
-     * @param <T> builder class
+     * 
+     * @param <T>
+     *            builder class
      */
     public interface NpcBuilderInterface<T extends NpcBuilderInterface<T>>
     {
         
         /**
          * Creates a persistent npc.
+         * 
          * @return this object for chaining.
          */
         T persistent();
         
         /**
-         * Creates the npc entity
+         * Creates the npc entity.
+         * 
          * @return npc entity
-         * @throws McException thrown for invalid configurations or creation errors
+         * @throws McException
+         *             thrown for invalid configurations or creation errors
          */
         EntityInterface create() throws McException;
         
         /**
-         * Creates a npc with given type handler
-         * @param type entity type
-         * @param handler entity type handler
+         * Creates a npc with given type handler.
+         * 
+         * @param type
+         *            entity type
+         * @param handler
+         *            entity type handler
          * @return this object for chaining.
          */
         T handler(EntityTypeId type, EntityHandlerInterface handler);
         
         /**
-         * Sets the npc location/ yaw/ pitch
-         * @param location
+         * Sets the npc location/ yaw/ pitch.
+         * 
+         * @param location the location.
          * @return this object for chaining.
          */
         T location(Location location);

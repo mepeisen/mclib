@@ -42,18 +42,21 @@ public @interface BlockData
     
     /**
      * the block variants (max. 16 variants)
+     * 
      * @return block variants
      */
     Class<? extends BlockVariantId> variants() default CustomVariantId.class;
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     Class<? extends NameProvider> name() default NullNameProvider.class;
     
     /**
      * A single default variant.
+     * 
      * @author mepeisen
      */
     public enum CustomVariantId implements BlockVariantId

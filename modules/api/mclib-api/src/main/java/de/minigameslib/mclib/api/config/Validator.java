@@ -32,17 +32,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Validator for configuration files or config enums
+ * Validator for configuration files or config enums.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
-@Target({FIELD, ElementType.TYPE})
+@Target({ FIELD, ElementType.TYPE })
 public @interface Validator
 {
     
     /**
      * Validator class
+     * 
      * @return validator class
      */
     Class<? extends ValidatorInterface> value();

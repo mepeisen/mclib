@@ -46,37 +46,43 @@ public class SendErrorData extends AnnotatedDataFragment
      */
     @PersistentField
     protected String id;
-
+    
     /**
      * Returns the window id.
+     * 
      * @return the id
      */
     public String getId()
     {
         return this.id;
     }
-
+    
     /**
      * Sets the window id.
-     * @param id the id to set
+     * 
+     * @param id
+     *            the id to set
      */
     public void setId(String id)
     {
         this.id = id;
     }
-
+    
     /**
      * Returns the error message text.
+     * 
      * @return the message
      */
     public String getMessage()
     {
         return this.message;
     }
-
+    
     /**
      * Sets the error message text.
-     * @param message the message to set
+     * 
+     * @param message
+     *            the message to set
      */
     public void setMessage(String message)
     {

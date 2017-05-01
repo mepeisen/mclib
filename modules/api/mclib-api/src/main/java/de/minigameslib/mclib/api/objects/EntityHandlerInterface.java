@@ -46,7 +46,8 @@ public interface EntityHandlerInterface extends DataFragment
      * 
      * @param entity
      *            entity that is created.
-     * @throws McException thrown if the entity has errors.
+     * @throws McException
+     *             thrown if the entity has errors.
      */
     void onCreate(EntityInterface entity) throws McException;
     
@@ -55,7 +56,8 @@ public interface EntityHandlerInterface extends DataFragment
      * 
      * @param entity
      *            entity that is resumed
-     * @throws McException thrown if the entity has errors.
+     * @throws McException
+     *             thrown if the entity has errors.
      */
     void onResume(EntityInterface entity) throws McException;
     
@@ -82,8 +84,11 @@ public interface EntityHandlerInterface extends DataFragment
     
     /**
      * Checks if is is safe to create the given entity for same bukkit entity.
+     * 
      * @param handler
+     *            new handler that will be created on the same position
      * @throws McException
+     *             thrown if creation will not be allowed
      */
     default void checkCreation(EntityHandlerInterface handler) throws McException
     {

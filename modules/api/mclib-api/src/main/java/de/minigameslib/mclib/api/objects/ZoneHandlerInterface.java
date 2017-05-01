@@ -46,7 +46,8 @@ public interface ZoneHandlerInterface extends DataFragment
      * 
      * @param zone
      *            zone taht was created.
-     * @throws McException thrown if the zone has errors.
+     * @throws McException
+     *             thrown if the zone has errors.
      */
     void onCreate(ZoneInterface zone) throws McException;
     
@@ -55,7 +56,8 @@ public interface ZoneHandlerInterface extends DataFragment
      * 
      * @param zone
      *            zone that was resumed.
-     * @throws McException thrown if the zone has errors.
+     * @throws McException
+     *             thrown if the zone has errors.
      */
     void onResume(ZoneInterface zone) throws McException;
     
@@ -91,7 +93,7 @@ public interface ZoneHandlerInterface extends DataFragment
     void canChangeCuboid(Cuboid newValue) throws McException;
     
     /**
-     * Invoked upon change of location
+     * Invoked upon change of location.
      * 
      * @param newValue
      *            the new location
@@ -100,9 +102,13 @@ public interface ZoneHandlerInterface extends DataFragment
     
     /**
      * Checks if is is safe to create the given zone that shares locations.
-     * @param cuboid The cuboid of the new zone
+     * 
+     * @param cuboid
+     *            The cuboid of the new zone
      * @param handler
+     *            new handler that will be created on the same or shared position
      * @throws McException
+     *             thrown if creation will not be allowed
      */
     default void checkCreation(Cuboid cuboid, ZoneHandlerInterface handler) throws McException
     {

@@ -35,7 +35,7 @@ import de.minigameslib.mclib.api.McException;
 @FunctionalInterface
 public interface McBooleanSupplier
 {
-
+    
     /**
      * Gets a result.
      *

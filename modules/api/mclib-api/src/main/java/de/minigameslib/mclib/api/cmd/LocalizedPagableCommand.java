@@ -42,12 +42,15 @@ public class LocalizedPagableCommand extends AbstractPagableCommandHandler
     private LocalizedMessageInterface localizedMessage;
     
     /** the pagable header line. */
-    private Serializable header;
+    private Serializable              header;
     
     /**
      * Constructor to create the pagable command.
-     * @param localizedMessage the message to be displayed
-     * @param header the header component for the page header.
+     * 
+     * @param localizedMessage
+     *            the message to be displayed
+     * @param header
+     *            the header component for the page header.
      */
     public LocalizedPagableCommand(LocalizedMessageInterface localizedMessage, Serializable header)
     {
@@ -57,7 +60,9 @@ public class LocalizedPagableCommand extends AbstractPagableCommandHandler
     
     /**
      * gets lines from message.
-     * @param cmd command interface
+     * 
+     * @param cmd
+     *            command interface
      * @return lines.
      */
     private Serializable[] toLines(CommandInterface cmd)
@@ -66,10 +71,10 @@ public class LocalizedPagableCommand extends AbstractPagableCommandHandler
         {
             return cmd.getPlayer().encodeMessage(this.localizedMessage);
         }
-        return cmd.isOp() ? this.localizedMessage.toAdminMessageLine(McLibInterface.instance().getDefaultLocale()) :
-                    this.localizedMessage.toUserMessageLine(McLibInterface.instance().getDefaultLocale());
+        return cmd.isOp() ? this.localizedMessage.toAdminMessageLine(McLibInterface.instance().getDefaultLocale())
+                : this.localizedMessage.toUserMessageLine(McLibInterface.instance().getDefaultLocale());
     }
-
+    
     @Override
     protected int getLineCount(CommandInterface command)
     {

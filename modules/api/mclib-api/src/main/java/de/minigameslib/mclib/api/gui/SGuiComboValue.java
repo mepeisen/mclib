@@ -37,18 +37,23 @@ public class SGuiComboValue
 {
     
     /** the internal key. */
-    private final String key;
+    private final String                    key;
     
     /** the value to display. */
     private final LocalizedMessageInterface value;
     
     /** arguments. */
-    private final Serializable[] args;
-
+    private final Serializable[]            args;
+    
     /**
+     * Constructor to create a new combo value.
+     * 
      * @param key
+     *            identifier to identify the data value
      * @param value
+     *            text representation
      * @param args
+     *            arguments to build the text representation
      */
     public SGuiComboValue(String key, LocalizedMessageInterface value, Serializable... args)
     {
@@ -56,24 +61,30 @@ public class SGuiComboValue
         this.value = value;
         this.args = args;
     }
-
+    
     /**
+     * Returns the identifier of the value.
+     * 
      * @return the key
      */
     public String getKey()
     {
         return this.key;
     }
-
+    
     /**
+     * Returns the text representation of the value.
+     * 
      * @return the value
      */
     public LocalizedMessageInterface getValue()
     {
         return this.value;
     }
-
+    
     /**
+     * Returns the arguments to build the text representation.
+     * 
      * @return the args
      */
     public Serializable[] getArgs()

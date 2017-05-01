@@ -34,8 +34,7 @@ import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
  * </p>
  * 
  * <p>
- * IMPLEMENTATION HINT: The plugin name and the enumeration value name are used to identify this type.
- * If you change them the components get broken.
+ * IMPLEMENTATION HINT: The plugin name and the enumeration value name are used to identify this type. If you change them the components get broken.
  * </p>
  * 
  * @author mepeisen

@@ -44,17 +44,17 @@ public class DefaultAxeDigRule implements ItemDigInterface
     /**
      * effecieny on proper tooling material.
      */
-    protected float efficiencyOnProperMaterial = 4.0f;
+    protected float         efficiencyOnProperMaterial = 4.0f;
     
     /**
      * efficient materials.
      */
-    protected Set<Material> efficientMaterials = new HashSet<>();
+    protected Set<Material> efficientMaterials         = new HashSet<>();
     
     /**
      * efficient blocks.
      */
-    protected Set<BlockId> efficientBlocks = new HashSet<>();
+    protected Set<BlockId>  efficientBlocks            = new HashSet<>();
     
     /**
      * Constructor.
@@ -73,14 +73,14 @@ public class DefaultAxeDigRule implements ItemDigInterface
         this.efficientMaterials.add(Material.WOOD_BUTTON);
         this.efficientMaterials.add(Material.WOOD_PLATE);
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, Material material)
     {
         final BlockServiceInterface bsi = BlockServiceInterface.instance();
         if (bsi.isWood(material)
-                || bsi.isPlant(material)
-                || bsi.isVine(material))
+            || bsi.isPlant(material)
+            || bsi.isVine(material))
         {
             return this.efficiencyOnProperMaterial;
         }
@@ -90,14 +90,14 @@ public class DefaultAxeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, BlockId block, BlockVariantId variant)
     {
         final BlockServiceInterface bsi = BlockServiceInterface.instance();
         if (bsi.isWood(block)
-                || bsi.isPlant(block)
-                || bsi.isVine(block))
+            || bsi.isPlant(block)
+            || bsi.isVine(block))
         {
             return this.efficiencyOnProperMaterial;
         }
@@ -107,19 +107,19 @@ public class DefaultAxeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public int getDamageByBlock(ItemStack stack, Block block, Player player)
     {
         return 2;
     }
-
+    
     @Override
     public boolean canHarvest(Material material)
     {
         return false;
     }
-
+    
     @Override
     public boolean canHarvest(BlockId block, BlockVariantId variant)
     {

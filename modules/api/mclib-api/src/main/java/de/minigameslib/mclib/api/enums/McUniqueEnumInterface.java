@@ -42,6 +42,7 @@ public interface McUniqueEnumInterface extends UniqueEnumerationValue
     
     /**
      * Returns the plugin declaring the given interface.
+     * 
      * @return plugin declaring given interface.
      */
     default Plugin getPlugin()

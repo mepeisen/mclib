@@ -52,6 +52,8 @@ public interface EnumServiceInterface
     /**
      * Registers enumeration classes.
      * 
+     * @param <T>
+     *            enumeration class
      * @param plugin
      *            plugin that registers enum classes.
      * @param clazz
@@ -92,6 +94,28 @@ public interface EnumServiceInterface
     <T extends EnumerationValue> Set<T> getEnumValues(Class<T> clazz);
     
     /**
+     * Returns the enumeration values of given plugin implementing given interface class.
+     * 
+     * @param plugin
+     *            the plugin whose enum values are returned
+     * @param clazz
+     *            class/interface for filtering the enum values
+     * @param <T>
+     *            class param
+     * @return enumeration values
+     */
+    <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz);
+    
+    /**
+     * Returns the enumeration values of given plugin.
+     * 
+     * @param plugin
+     *            the plugin whose enum values are returned
+     * @return all registered enumeration values.
+     */
+    Set<Enum<?>> getEnumValues(Plugin plugin);
+    
+    /**
      * Returns the enumeration value implementing given interface class from given plugin and with given name.
      * 
      * @param clazz
@@ -107,32 +131,16 @@ public interface EnumServiceInterface
     <T extends UniqueEnumerationValue> T getEnumValue(Class<T> clazz, String plugin, String name);
     
     /**
-     * Returns the enumeration values of given plugin.
-     * 
-     * @param plugin
-     *            the plugin whose enum values are returned
-     * @return all registered enumeration values.
-     */
-    Set<Enum<?>> getEnumValues(Plugin plugin);
-    
-    /**
-     * Returns the enumeration values of given plugin implementing given interface class.
-     * 
-     * @param plugin
-     *            the plugin whose enum values are returned
-     * @param clazz
-     *            class/interface for filtering the enum values
-     * @param <T>
-     *            class param
-     * @return enumeration values
-     */
-    <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz);
-    
-    /**
      * Registers a listener to watch for changes in enumerations
-     * @param plugin the plugin registering the listener
-     * @param clazz enumeration class
-     * @param listener enumeration listener
+     * 
+     * @param <T>
+     *            enumeration class
+     * @param plugin
+     *            the plugin registering the listener
+     * @param clazz
+     *            enumeration class
+     * @param listener
+     *            enumeration listener
      */
     <T extends EnumerationValue> void registerEnumerationListener(Plugin plugin, Class<T> clazz, EnumerationListener<T> listener);
     

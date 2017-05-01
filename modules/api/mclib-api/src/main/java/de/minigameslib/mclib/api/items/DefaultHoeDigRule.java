@@ -44,18 +44,18 @@ public class DefaultHoeDigRule implements ItemDigInterface
     /**
      * effecieny on proper tooling material.
      */
-    protected float efficiencyOnProperMaterial = 4.0f;
+    protected float         efficiencyOnProperMaterial = 4.0f;
     
     /**
      * efficient materials.
      */
-    protected Set<Material> efficientMaterials = new HashSet<>();
+    protected Set<Material> efficientMaterials         = new HashSet<>();
     
     /**
      * efficient blocks.
      */
-    protected Set<BlockId> efficientBlocks = new HashSet<>();
-
+    protected Set<BlockId>  efficientBlocks            = new HashSet<>();
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, Material material)
     {
@@ -65,7 +65,7 @@ public class DefaultHoeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public float getHarvestSpeed(ItemStack stack, BlockId block, BlockVariantId variant)
     {
@@ -75,19 +75,19 @@ public class DefaultHoeDigRule implements ItemDigInterface
         }
         return 1.0f;
     }
-
+    
     @Override
     public int getDamageByBlock(ItemStack stack, Block block, Player player)
     {
         return 2;
     }
-
+    
     @Override
     public boolean canHarvest(Material material)
     {
         return false;
     }
-
+    
     @Override
     public boolean canHarvest(BlockId block, BlockVariantId variant)
     {

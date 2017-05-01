@@ -47,24 +47,28 @@ public @interface BlockInventoryMeta
     
     /**
      * the inventory size in slots.
+     * 
      * @return number of slots
      */
     int size();
     
     /**
      * {@code true} for fixed size inventories.
-     * @return {@code true} if inventory size cannot be changed 
+     * 
+     * @return {@code true} if inventory size cannot be changed
      */
     boolean fixed() default true;
     
     /**
      * {@code true} for shared inventories.
+     * 
      * @return {@code true} if all players share the inventory
      */
     boolean shared() default true;
     
     /**
      * block inventory handler.
+     * 
      * @return block inventory handler
      */
     Class<? extends BlockInventoryInterface> blockInventory();
@@ -77,34 +81,52 @@ public @interface BlockInventoryMeta
         
         /**
          * Returns an inventory to be used for this block.
-         * @param block the block id
-         * @param variant the variant id
-         * @param location the block location
-         * @param player the player creating the block
-         * @param initialSize the initial size as specified in {@link BlockInventoryMeta#size()}
-         * @param fixed the initial fixed flag as specified in {@link BlockInventoryMeta#fixed()}
-         * @param shared the initial shared flag as specified in {@link BlockInventoryMeta#shared()}
-         * @throws McException thrown if player is not allowed to create an inventory at this position
+         * 
+         * @param block
+         *            the block id
+         * @param variant
+         *            the variant id
+         * @param location
+         *            the block location
+         * @param player
+         *            the player creating the block
+         * @param initialSize
+         *            the initial size as specified in {@link BlockInventoryMeta#size()}
+         * @param fixed
+         *            the initial fixed flag as specified in {@link BlockInventoryMeta#fixed()}
+         * @param shared
+         *            the initial shared flag as specified in {@link BlockInventoryMeta#shared()}
+         * @throws McException
+         *             thrown if player is not allowed to create an inventory at this position
          */
         void createInventory(BlockId block, BlockVariantId variant, Location location, McPlayerInterface player, int initialSize, boolean fixed, boolean shared) throws McException;
         
         /**
-         * Returns an inventory to be used for opening.
-         * This method will be invoked after creation but without opening the inventory to initialize the inventory for player placing the block.
-         * @param block the block id
-         * @param variant the variant id
-         * @param location the block location
-         * @param player the player right clicking the block
+         * Returns an inventory to be used for opening. This method will be invoked after creation but without opening the inventory to initialize the inventory for player placing the block.
+         * 
+         * @param block
+         *            the block id
+         * @param variant
+         *            the variant id
+         * @param location
+         *            the block location
+         * @param player
+         *            the player right clicking the block
          * @return {@code null} for not opening any inventory (silently drop event)
-         * @throws McException thrown if player is not allowed to open an inventory
+         * @throws McException
+         *             thrown if player is not allowed to open an inventory
          */
         InventoryId getInventory(BlockId block, BlockVariantId variant, Location location, McPlayerInterface player) throws McException;
-
+        
         /**
          * break handler.
-         * @param block the block id
-         * @param variant the variant id
-         * @param location the block location
+         * 
+         * @param block
+         *            the block id
+         * @param variant
+         *            the variant id
+         * @param location
+         *            the block location
          */
         void onBreak(BlockId block, BlockVariantId variant, Location location);
         

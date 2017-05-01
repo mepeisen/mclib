@@ -39,6 +39,7 @@ class ExtensionServiceCache
     
     /**
      * Returns the extension services instance.
+     * 
      * @return extension services.
      */
     static ExtensionServiceInterface get()

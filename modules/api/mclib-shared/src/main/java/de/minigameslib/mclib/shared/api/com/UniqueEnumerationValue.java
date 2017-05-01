@@ -34,6 +34,7 @@ public interface UniqueEnumerationValue extends EnumerationValue
     
     /**
      * Returns the plugin name.
+     * 
      * @return plugin name.
      */
     String getPluginName();

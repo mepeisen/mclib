@@ -52,27 +52,37 @@ public interface ClickGuiPageInterface
     
     /**
      * Returns the click items.
+     * 
      * @return click items; first array dimension is the line; second the column.
      */
     ClickGuiItem[][] getItems();
-
+    
     /**
-     * dummy fill item
+     * dummy fill item.
+     * 
      * @param line
+     *            line number
      * @param col
+     *            column number
      * @return dummy fill icon
      */
     static ClickGuiItem itemFill(int line, int col)
     {
         byte color = 0;
-        if ((line * COL_COUNT + col) % 2 == 1) color = 1;
-        return new ClickGuiItem(new ItemStack(Material.STAINED_GLASS_PANE, 1, color), CommonMessages.IconFill, (player, session, gui) -> {/*empty*/});
+        if ((line * COL_COUNT + col) % 2 != 0)
+        {
+            color = 1;
+        }
+        return new ClickGuiItem(new ItemStack(Material.STAINED_GLASS_PANE, 1, color), CommonMessages.IconFill, null);
     }
     
     /**
-     * Creates an inventory with filler icons
+     * Creates an inventory with filler icons.
+     * 
      * @param src
+     *            source array/ source line
      * @param line
+     *            line number
      * @return inventory
      */
     static ClickGuiItem[] withFillers(ClickGuiItem[] src, int line)
@@ -93,10 +103,13 @@ public interface ClickGuiPageInterface
     }
     
     /**
-     * Creates an inventory with filler icons
+     * Creates an inventory with filler icons.
+     * 
      * @param src
+     *            source inventory
      * @param lineCount
-     * @return inventory
+     *            result line count
+     * @return result inventory
      */
     static ClickGuiItem[][] withFillers(ClickGuiItem[][] src, int lineCount)
     {

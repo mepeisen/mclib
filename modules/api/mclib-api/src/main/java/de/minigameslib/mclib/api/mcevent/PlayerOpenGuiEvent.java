@@ -48,13 +48,13 @@ public class PlayerOpenGuiEvent extends AbstractVetoEvent implements MinecraftEv
 {
     
     /** handlers list. */
-    private static final HandlerList   handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     
     /** the gui the player opened. */
-    private final ClickGuiInterface    gui;
+    private final ClickGuiInterface  gui;
     
     /** the player. */
-    private final McPlayerInterface player;
+    private final McPlayerInterface  player;
     
     /**
      * Constructor.
@@ -87,7 +87,7 @@ public class PlayerOpenGuiEvent extends AbstractVetoEvent implements MinecraftEv
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -98,7 +98,7 @@ public class PlayerOpenGuiEvent extends AbstractVetoEvent implements MinecraftEv
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -106,13 +106,13 @@ public class PlayerOpenGuiEvent extends AbstractVetoEvent implements MinecraftEv
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerOpenGuiEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerOpenGuiEvent> when(McPredicate<PlayerOpenGuiEvent> test) throws McException
     {

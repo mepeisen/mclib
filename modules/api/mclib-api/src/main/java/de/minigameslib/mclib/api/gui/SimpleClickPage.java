@@ -38,24 +38,30 @@ public class SimpleClickPage implements ClickGuiPageInterface
     private final LocalizedMessageInterface pageName;
     
     /** the page items. */
-    private final ClickGuiItem[][] items;
-
+    private final ClickGuiItem[][]          items;
+    
     /**
-     * Constructor
+     * Constructor to create a simple click page for click guis.
+     * 
      * @param pageName
+     *            name of the page.
      * @param rowCount
+     *            the row count.
      */
     public SimpleClickPage(LocalizedMessageInterface pageName, int rowCount)
     {
         this.pageName = pageName;
-        if (rowCount < 1 || rowCount > 6) throw new IllegalArgumentException("rowCount out of range"); //$NON-NLS-1$
+        if (rowCount < 1 || rowCount > 6)
+        {
+            throw new IllegalArgumentException("rowCount out of range"); //$NON-NLS-1$
+        }
         this.items = new ClickGuiItem[rowCount][];
         for (int i = 0; i < rowCount; i++)
         {
-            this.items[i] = new ClickGuiItem[9]; 
+            this.items[i] = new ClickGuiItem[9];
         }
     }
-
+    
     @Override
     public LocalizedMessageInterface getPageName()
     {
@@ -69,10 +75,14 @@ public class SimpleClickPage implements ClickGuiPageInterface
     }
     
     /**
-     * Sets the item at given position
-     * @param rowNum row position (between 0 and rowCount-1) 
-     * @param colNum column position (between 0 and 8)
-     * @param item the item to set
+     * Sets the item at given position.
+     * 
+     * @param rowNum
+     *            row position (between 0 and rowCount-1)
+     * @param colNum
+     *            column position (between 0 and 8)
+     * @param item
+     *            the item to set
      * @return this object for chaining
      */
     public SimpleClickPage setItem(int rowNum, int colNum, ClickGuiItem item)

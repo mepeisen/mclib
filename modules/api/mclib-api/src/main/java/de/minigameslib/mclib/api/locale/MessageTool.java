@@ -39,13 +39,19 @@ class MessageTool
      * Converts the given source array to serialized target array that can be passed to String.format
      * 
      * @param locale
+     *            the locale to be used for formatting
      * @param isAdmin
+     *            {@code true} if admin message will be used and {@code false} if user message will be used
      * @param src
+     *            source argument list
      * @return converted array
      */
     public static Serializable[] convertArgs(Locale locale, boolean isAdmin, Serializable[] src)
     {
-        if (src == null) return new Serializable[0];
+        if (src == null)
+        {
+            return new Serializable[0];
+        }
         final Serializable[] result = new Serializable[src.length];
         for (int i = 0; i < src.length; i++)
         {

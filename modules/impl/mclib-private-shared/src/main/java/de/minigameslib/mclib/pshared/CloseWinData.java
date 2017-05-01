@@ -40,19 +40,22 @@ public class CloseWinData extends AnnotatedDataFragment
      */
     @PersistentField
     protected String winId;
-
+    
     /**
      * Returns the window id.
+     * 
      * @return the widgetId
      */
     public String getWinId()
     {
         return this.winId;
     }
-
+    
     /**
      * Sets the window id.
-     * @param winId the winId to set
+     * 
+     * @param winId
+     *            the winId to set
      */
     public void setWinId(String winId)
     {

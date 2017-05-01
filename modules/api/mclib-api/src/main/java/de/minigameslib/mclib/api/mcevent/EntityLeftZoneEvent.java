@@ -49,18 +49,18 @@ public class EntityLeftZoneEvent extends Event implements MinecraftEvent<EntityL
 {
     
     /** handlers list. */
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList          handlers = new HandlerList();
     
     /** the zone that was left. */
-    private final ZoneInterface      zone;
+    private final ZoneInterface               zone;
     
     /** the entity leaving the zone. */
-    private final Entity  entity;
+    private final Entity                      entity;
     
-    /** mclib entity */
-    private final EntityInterface mcEntity;
+    /** mclib entity. */
+    private final EntityInterface             mcEntity;
     
-    /** mclib entities */
+    /** mclib entities. */
     private final Collection<EntityInterface> mcEntities;
     
     /**
@@ -86,7 +86,7 @@ public class EntityLeftZoneEvent extends Event implements MinecraftEvent<EntityL
     }
     
     /**
-     * Returns the entity that was leaving the zone
+     * Returns the entity that was leaving the zone.
      * 
      * @return the leaving entity
      */
@@ -100,15 +100,15 @@ public class EntityLeftZoneEvent extends Event implements MinecraftEvent<EntityL
     {
         return this.mcEntity;
     }
-
+    
     @Override
     public Iterable<EntityInterface> getEntities()
     {
         return this.mcEntities;
     }
-
+    
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -119,7 +119,7 @@ public class EntityLeftZoneEvent extends Event implements MinecraftEvent<EntityL
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -127,13 +127,13 @@ public class EntityLeftZoneEvent extends Event implements MinecraftEvent<EntityL
     {
         return handlers;
     }
-
+    
     @Override
     public EntityLeftZoneEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityLeftZoneEvent> when(McPredicate<EntityLeftZoneEvent> test) throws McException
     {

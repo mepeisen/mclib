@@ -48,21 +48,23 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
     private static final HandlerList handlers = new HandlerList();
     
     /** the component we relocated. */
-    private final ComponentInterface     component;
+    private final ComponentInterface component;
     
     /** the old location. */
-    private final Location oldLocation;
+    private final Location           oldLocation;
     
     /** the new location. */
-    private final Location newLocation;
+    private final Location           newLocation;
     
     /**
      * Constructor.
      * 
      * @param component
      *            the relocated component.
-     * @param oldLocation 
-     * @param newLocation 
+     * @param oldLocation
+     *            old location
+     * @param newLocation
+     *            new location
      */
     public ComponentRelocatedEvent(ComponentInterface component, final Location oldLocation, final Location newLocation)
     {
@@ -79,24 +81,26 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
     
     /**
      * Returns the old location.
+     * 
      * @return the oldLocation
      */
     public Location getOldCuboid()
     {
         return this.oldLocation;
     }
-
+    
     /**
      * Returns the new location.
+     * 
      * @return the newLocation
      */
     public Location getNewCuboid()
     {
         return this.newLocation;
     }
-
+    
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -107,7 +111,7 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -115,13 +119,13 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
     {
         return handlers;
     }
-
+    
     @Override
     public ComponentRelocatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ComponentRelocatedEvent> when(McPredicate<ComponentRelocatedEvent> test) throws McException
     {

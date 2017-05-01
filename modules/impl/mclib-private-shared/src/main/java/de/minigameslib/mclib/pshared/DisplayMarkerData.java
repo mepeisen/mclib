@@ -39,48 +39,54 @@ public class DisplayMarkerData extends AnnotatedDataFragment
      * marker id.
      */
     @PersistentField
-    protected String markerId;
+    protected String     markerId;
     
     /**
      * the marker data to be displayed.
      */
     @PersistentField
     protected MarkerData marker;
-
+    
     /**
      * Returns the marker id.
+     * 
      * @return the markerId
      */
     public String getMarkerId()
     {
         return this.markerId;
     }
-
+    
     /**
      * Sets the marker id.
-     * @param markerId the markerId to set
+     * 
+     * @param markerId
+     *            the markerId to set
      */
     public void setMarkerId(String markerId)
     {
         this.markerId = markerId;
     }
-
+    
     /**
      * Returns the marker data.
+     * 
      * @return the marker
      */
     public MarkerData getMarker()
     {
         return this.marker;
     }
-
+    
     /**
      * Sets the marker data.
-     * @param marker the marker to set
+     * 
+     * @param marker
+     *            the marker to set
      */
     public void setMarker(MarkerData marker)
     {
         this.marker = marker;
     }
-
+    
 }

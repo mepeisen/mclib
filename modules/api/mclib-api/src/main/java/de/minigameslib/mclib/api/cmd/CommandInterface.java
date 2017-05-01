@@ -96,21 +96,31 @@ public interface CommandInterface
     
     /**
      * Fetches an argument by invoking given mapper, removing the first argument from arguments array.
-     * @param <T> target type
-     * @param mapper the mapper to map a string argument to given function
+     * 
+     * @param <T>
+     *            target type
+     * @param mapper
+     *            the mapper to map a string argument to given function
      * @return result of fetching argument; will be empty if there are not enough arguments to be fetched or if mapper returns null.
-     * @throws McException passed exception from mapper function
+     * @throws McException
+     *             passed exception from mapper function
      */
     <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException;
     
     /**
      * Fetches an argument by invoking given mapper, removing the first argument from arguments array; throws exception if no arguments are available.
-     * @param <T> target type
-     * @param mapper the mapper to map a string argument to given function
-     * @param errorMessage the error message to send if no arguments are available
-     * @param errorArgs the arguments to build the error message
+     * 
+     * @param <T>
+     *            target type
+     * @param mapper
+     *            the mapper to map a string argument to given function
+     * @param errorMessage
+     *            the error message to send if no arguments are available
+     * @param errorArgs
+     *            the arguments to build the error message
      * @return result of fetching argument
-     * @throws McException passed exception from mapper function
+     * @throws McException
+     *             passed exception from mapper function
      */
     default <T> T fetch(McBiFunction<CommandInterface, String, T> mapper, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
@@ -120,10 +130,14 @@ public interface CommandInterface
     
     /**
      * Fetches a single string from arguments, removing it from rguments list; throws exception if no arguments are available.
-     * @param errorMessage error message to be sent if no argument is available
-     * @param errorArgs arguments to build error message
+     * 
+     * @param errorMessage
+     *            error message to be sent if no argument is available
+     * @param errorArgs
+     *            arguments to build error message
      * @return string argument
-     * @throws McException thrown if no argument was available
+     * @throws McException
+     *             thrown if no argument was available
      */
     default String fetchString(LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
@@ -176,7 +190,7 @@ public interface CommandInterface
         {
             final Locale locale = this.getLocale();
             final boolean isAdmin = this.getSender().isOp();
-            final String[] msglines = msg.isSingleLine() ? new String[]{msg.toArg(args).apply(locale, isAdmin)} : msg.toListArg(args).apply(locale, isAdmin);
+            final String[] msglines = msg.isSingleLine() ? new String[] { msg.toArg(args).apply(locale, isAdmin) } : msg.toListArg(args).apply(locale, isAdmin);
             for (final String msg2 : msglines)
             {
                 // TODO use semantic colors
@@ -259,7 +273,9 @@ public interface CommandInterface
     
     /**
      * Checks for given permission.
-     * @param perm permission to be checked
+     * 
+     * @param perm
+     *            permission to be checked
      * @return {@code true} if command sender does have given permission
      */
     default boolean checkPermission(PermissionsInterface perm)
@@ -269,7 +285,9 @@ public interface CommandInterface
     
     /**
      * Checks for given permission or operator flag.
-     * @param perm permission to be checked
+     * 
+     * @param perm
+     *            permission to be checked
      * @return {@code true} if command sender does have given permission or has operator flag
      */
     default boolean checkOpPermission(PermissionsInterface perm)
@@ -315,7 +333,9 @@ public interface CommandInterface
     
     /**
      * Checks if player invoked this command online.
-     * @throws McException thrown if command is invoked on runtime console
+     * 
+     * @throws McException
+     *             thrown if command is invoked on runtime console
      */
     default void checkOnline() throws McException
     {
@@ -327,7 +347,9 @@ public interface CommandInterface
     
     /**
      * Checks if player invoked this command on runtime console.
-     * @throws McException thrown if command is invoked online
+     * 
+     * @throws McException
+     *             thrown if command is invoked online
      */
     default void checkOffline() throws McException
     {
@@ -339,10 +361,15 @@ public interface CommandInterface
     
     /**
      * Checks if at least {@code count} arguments are available.
-     * @param count minimum expected argument count
-     * @param errorMessage error message to be thrown if there are not enough arguments
-     * @param errorArgs arguments to build error message
-     * @throws McException thrown if not enough arguments are available
+     * 
+     * @param count
+     *            minimum expected argument count
+     * @param errorMessage
+     *            error message to be thrown if there are not enough arguments
+     * @param errorArgs
+     *            arguments to build error message
+     * @throws McException
+     *             thrown if not enough arguments are available
      */
     default void checkMinArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
@@ -354,10 +381,15 @@ public interface CommandInterface
     
     /**
      * Checks if not more than {@code count} arguments are available.
-     * @param count maximum expected argument count
-     * @param errorMessage error message to be thrown if there are too many arguments
-     * @param errorArgs arguments to build error message
-     * @throws McException thrown if there are too many arguments
+     * 
+     * @param count
+     *            maximum expected argument count
+     * @param errorMessage
+     *            error message to be thrown if there are too many arguments
+     * @param errorArgs
+     *            arguments to build error message
+     * @throws McException
+     *             thrown if there are too many arguments
      */
     default void checkMaxArgCount(int count, LocalizedMessageInterface errorMessage, Serializable... errorArgs) throws McException
     {
@@ -369,8 +401,11 @@ public interface CommandInterface
     
     /**
      * Checks if not more than {@code count} arguments are available. Uses {@link CommonMessages#TooManyArguments} as exception text.
-     * @param count maximum expected argument count
-     * @throws McException thrown if there are too many arguments
+     * 
+     * @param count
+     *            maximum expected argument count
+     * @throws McException
+     *             thrown if there are too many arguments
      */
     default void checkMaxArgCount(int count) throws McException
     {

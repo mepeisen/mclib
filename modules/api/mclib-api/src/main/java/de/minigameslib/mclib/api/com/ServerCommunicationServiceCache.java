@@ -39,6 +39,7 @@ class ServerCommunicationServiceCache
     
     /**
      * Returns the communication services instance.
+     * 
      * @return communication services.
      */
     static ServerCommunicationServiceInterface get()

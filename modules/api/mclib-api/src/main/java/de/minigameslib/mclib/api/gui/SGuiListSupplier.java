@@ -38,7 +38,7 @@ public interface SGuiListSupplier
 {
     
     /**
-     * Select Data from list without ordering or filtering
+     * Select Data from list without ordering or filtering.
      * 
      * @param startIndex
      *            the start index

@@ -61,79 +61,114 @@ public interface ObjectServiceInterface
     /**
      * Registers an object handler.
      * 
+     * @param <T>
+     *            handler class
      * @param type
+     *            type id
      * @param handler
+     *            handler class
      * @throws McException
+     *             thrown if there are problems during initialization
      */
     <T extends ObjectHandlerInterface> void register(ObjectTypeId type, Class<T> handler) throws McException;
     
     /**
      * Registers a component handler.
      * 
+     * @param <T>
+     *            handler class
      * @param type
+     *            type id
      * @param handler
+     *            handler class
      * @throws McException
+     *             thrown if there are problems during initialization
      */
     <T extends ComponentHandlerInterface> void register(ComponentTypeId type, Class<T> handler) throws McException;
     
     /**
      * Registers an entity handler.
      * 
+     * @param <T>
+     *            handler class
      * @param type
+     *            type id
      * @param handler
+     *            handler class
      * @throws McException
+     *             thrown if there are problems during initialization
      */
     <T extends EntityHandlerInterface> void register(EntityTypeId type, Class<T> handler) throws McException;
     
     /**
      * Registers a sign handler.
      * 
+     * @param <T>
+     *            handler class
      * @param type
+     *            type id
      * @param handler
+     *            handler class
      * @throws McException
+     *             thrown if there are problems during initialization
      */
     <T extends SignHandlerInterface> void register(SignTypeId type, Class<T> handler) throws McException;
     
     /**
      * Registers a zone handler.
      * 
+     * @param <T>
+     *            handler class
      * @param type
+     *            type id
      * @param handler
+     *            handler class
      * @throws McException
+     *             thrown if there are problems during initialization
      */
     <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException;
     
     /**
      * Returns the component type for given id.
+     * 
      * @param id
+     *            component id
      * @return type or {@code null} if the type is not registered/ unknown
      */
     ComponentTypeId getType(ComponentIdInterface id);
     
     /**
      * Returns the object type for given id.
+     * 
      * @param id
+     *            object id
      * @return type or {@code null} if the type is not registered/ unknown
      */
     ObjectTypeId getType(ObjectIdInterface id);
     
     /**
      * Returns the entity type for given id.
+     * 
      * @param id
+     *            entity id
      * @return type or {@code null} if the type is not registered/ unknown
      */
     EntityTypeId getType(EntityIdInterface id);
     
     /**
      * Returns the zone type for given id.
+     * 
      * @param id
+     *            zone id
      * @return type or {@code null} if the type is not registered/ unknown
      */
     ZoneTypeId getType(ZoneIdInterface id);
     
     /**
      * Returns the sign type for given id.
+     * 
      * @param id
+     *            sign id
      * @return type or {@code null} if the type is not registered/ unknown
      */
     SignTypeId getType(SignIdInterface id);
@@ -142,7 +177,9 @@ public interface ObjectServiceInterface
      * Tries to resume objects.
      * 
      * @param plugin
-     * @param reportConsumer A consumer getting the report for the underlying object loading.
+     *            plugin owning the objects
+     * @param reportConsumer
+     *            A consumer getting the report for the underlying object loading.
      */
     void resumeObjects(Plugin plugin, Consumer<ResumeReport> reportConsumer);
     
@@ -153,7 +190,7 @@ public interface ObjectServiceInterface
     {
         
         /**
-         * checks if the object can be loaded successful
+         * checks if the object can be loaded successful.
          * 
          * @return {@code true} if the objects are loaded successful
          */
@@ -195,7 +232,7 @@ public interface ObjectServiceInterface
         Iterable<ZoneIdInterface> getBrokenZones();
         
         /**
-         * Returns the exception that was caught during component loading
+         * Returns the exception that was caught during component loading.
          * 
          * @param id
          *            the component id of the broken component
@@ -204,7 +241,7 @@ public interface ObjectServiceInterface
         McException getException(ComponentIdInterface id);
         
         /**
-         * Returns the exception that was caught during object loading
+         * Returns the exception that was caught during object loading.
          * 
          * @param id
          *            the object id of the broken component
@@ -213,7 +250,7 @@ public interface ObjectServiceInterface
         McException getException(ObjectIdInterface id);
         
         /**
-         * Returns the exception that was caught during entity loading
+         * Returns the exception that was caught during entity loading.
          * 
          * @param id
          *            the entity id of the broken entity
@@ -222,7 +259,7 @@ public interface ObjectServiceInterface
         McException getException(EntityIdInterface id);
         
         /**
-         * Returns the exception that was caught during sign loading
+         * Returns the exception that was caught during sign loading.
          * 
          * @param id
          *            the sign id of the broken sign
@@ -231,7 +268,7 @@ public interface ObjectServiceInterface
         McException getException(SignIdInterface id);
         
         /**
-         * Returns the exception that was caught during zone loading
+         * Returns the exception that was caught during zone loading.
          * 
          * @param id
          *            the zone id of the broken zone
@@ -244,8 +281,10 @@ public interface ObjectServiceInterface
     // player api
     
     /**
-     * Checks if given player is a human
+     * Checks if given player is a human.
+     * 
      * @param player
+     *            target player to be checked
      * @return checks for human npcs
      */
     boolean isHuman(Player player);
@@ -292,6 +331,7 @@ public interface ObjectServiceInterface
      * Finds objects by type.
      * 
      * @param type
+     *            object type array
      * @return objects by type.
      */
     Collection<ObjectInterface> findObjects(ObjectTypeId... type);
@@ -324,16 +364,6 @@ public interface ObjectServiceInterface
     ComponentInterface findComponent(Location location);
     
     /**
-     * Finds components by location.
-     * 
-     * @param location
-     *            bukkit location
-     * 
-     * @return Components or empty collection if no component was found.
-     */
-    Collection<ComponentInterface> findComponents(Location location);
-    
-    /**
      * Finds a component by block.
      * 
      * @param block
@@ -342,6 +372,25 @@ public interface ObjectServiceInterface
      * @return Component or {@code null} if no component was found.
      */
     ComponentInterface findComponent(Block block);
+    
+    /**
+     * Finds component by id.
+     * 
+     * @param id
+     *            the component id to search for
+     * @return Component or {@code null} if no component was found.
+     */
+    ComponentInterface findComponent(ComponentIdInterface id);
+    
+    /**
+     * Finds components by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Components or empty collection if no component was found.
+     */
+    Collection<ComponentInterface> findComponents(Location location);
     
     /**
      * Finds a components by block.
@@ -354,18 +403,10 @@ public interface ObjectServiceInterface
     Collection<ComponentInterface> findComponents(Block block);
     
     /**
-     * Finds component by id.
-     * 
-     * @param id
-     *            the component id to search for
-     * @return Component or {@code null} if no component was found.
-     */
-    ComponentInterface findComponent(ComponentIdInterface id);
-    
-    /**
      * Finds components by type.
      * 
      * @param type
+     *            component type array
      * @return components by type.
      */
     Collection<ComponentInterface> findComponents(ComponentTypeId... type);
@@ -400,6 +441,15 @@ public interface ObjectServiceInterface
     EntityInterface findEntity(Entity entity);
     
     /**
+     * Finds entity by id.
+     * 
+     * @param id
+     *            the entity id to search for
+     * @return Entity or {@code null} if no entity was found.
+     */
+    EntityInterface findEntity(EntityIdInterface id);
+    
+    /**
      * Finds entities by bukkit entity.
      * 
      * @param entity
@@ -410,13 +460,13 @@ public interface ObjectServiceInterface
     Collection<EntityInterface> findEntities(Entity entity);
     
     /**
-     * Finds entity by id.
+     * Finds entites by type.
      * 
-     * @param id
-     *            the entity id to search for
-     * @return Entity or {@code null} if no entity was found.
+     * @param type
+     *            entity type array
+     * @return entities by type
      */
-    EntityInterface findEntity(EntityIdInterface id);
+    Collection<EntityInterface> findEntities(EntityTypeId... type);
     
     /**
      * Creates a new entity with given handler.
@@ -435,14 +485,6 @@ public interface ObjectServiceInterface
      */
     EntityInterface createEntity(EntityTypeId type, Entity entity, EntityHandlerInterface handler, boolean persist) throws McException;
     
-    /**
-     * Finds entites by type.
-     * 
-     * @param type
-     * @return entities by type
-     */
-    Collection<EntityInterface> findEntities(EntityTypeId... type);
-    
     // sign api
     
     /**
@@ -456,16 +498,6 @@ public interface ObjectServiceInterface
     SignInterface findSign(Location location);
     
     /**
-     * Finds a signs by location.
-     * 
-     * @param location
-     *            bukkit location
-     * 
-     * @return Signs or empty collection if no sign was found
-     */
-    Collection<SignInterface> findSigns(Location location);
-    
-    /**
      * Finds a sign by block.
      * 
      * @param block
@@ -474,16 +506,6 @@ public interface ObjectServiceInterface
      * @return Sign or {@code null} if no sign was found.
      */
     SignInterface findSign(Block block);
-    
-    /**
-     * Finds a signs by block.
-     * 
-     * @param block
-     *            bukkit block
-     * 
-     * @return Signs or empty collection if no sign was found
-     */
-    Collection<SignInterface> findSigns(Block block);
     
     /**
      * Finds a sign by bukkit sign.
@@ -496,6 +518,35 @@ public interface ObjectServiceInterface
     SignInterface findSign(Sign sign);
     
     /**
+     * Finds sign by id.
+     * 
+     * @param id
+     *            the sign id to search for
+     * @return Sign or {@code null} if no sign was found.
+     */
+    SignInterface findSign(SignIdInterface id);
+    
+    /**
+     * Finds a signs by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Signs or empty collection if no sign was found
+     */
+    Collection<SignInterface> findSigns(Location location);
+    
+    /**
+     * Finds a signs by block.
+     * 
+     * @param block
+     *            bukkit block
+     * 
+     * @return Signs or empty collection if no sign was found
+     */
+    Collection<SignInterface> findSigns(Block block);
+    
+    /**
      * Finds a signs by bukkit sign.
      * 
      * @param sign
@@ -506,13 +557,13 @@ public interface ObjectServiceInterface
     Collection<SignInterface> findSigns(Sign sign);
     
     /**
-     * Finds sign by id.
+     * Find signs by type.
      * 
-     * @param id
-     *            the sign id to search for
-     * @return Sign or {@code null} if no sign was found.
+     * @param type
+     *            sign type array
+     * @return signs by type.
      */
-    SignInterface findSign(SignIdInterface id);
+    Collection<SignInterface> findSigns(SignTypeId... type);
     
     /**
      * Creates a new sign with given handler.
@@ -531,31 +582,32 @@ public interface ObjectServiceInterface
      */
     SignInterface createSign(SignTypeId type, Sign sign, SignHandlerInterface handler, boolean persist) throws McException;
     
-    /**
-     * Find signs by type.
-     * 
-     * @param type
-     * @return signs by type.
-     */
-    Collection<SignInterface> findSigns(SignTypeId... type);
-    
     // zone api
     
     /**
-     * a special mode enumeration for searching zones by cuboid
+     * a special mode enumeration for searching zones by cuboid.
      * 
      */
     public enum CuboidMode
     {
-        /** finds matching components (identical) */
+        /** finds matching components (identical). */
         FindMatching,
-        /** finds child components */
+        /** finds child components. */
         FindChildren,
-        /** finds parent components */
+        /** finds parent components. */
         FindParents,
-        /** finds overlapping components */
+        /** finds overlapping components. */
         FindOverlapping
     }
+    
+    /**
+     * Finds zone by id.
+     * 
+     * @param id
+     *            the zone id to search for
+     * @return Zone or {@code null} if no zone was found.
+     */
+    ZoneInterface findZone(ZoneIdInterface id);
     
     /**
      * Finds a zone by location.
@@ -734,6 +786,15 @@ public interface ObjectServiceInterface
     Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type);
     
     /**
+     * Find zones by type.
+     * 
+     * @param type
+     *            zone type array
+     * @return zones by type
+     */
+    Collection<ZoneInterface> findZones(ZoneTypeId... type);
+    
+    /**
      * Finds a zone by location.
      * 
      * <p>
@@ -833,9 +894,9 @@ public interface ObjectServiceInterface
      * 
      * @return Zone or {@code null} if no zone was found.
      * 
-     * @see Cuboid#containsLocWithoutYD(Location)
+     * @see Cuboid#containsLocWithoutYd(Location)
      */
-    ZoneInterface findZoneWithoutYD(Location location);
+    ZoneInterface findZoneWithoutYd(Location location);
     
     /**
      * Finds a zone by location.
@@ -855,9 +916,9 @@ public interface ObjectServiceInterface
      * 
      * @return Zone or {@code null} if no zone was found.
      * 
-     * @see Cuboid#containsLocWithoutYD(Location)
+     * @see Cuboid#containsLocWithoutYd(Location)
      */
-    ZoneInterface findZoneWithoutYD(Location location, ZoneTypeId... type);
+    ZoneInterface findZoneWithoutYd(Location location, ZoneTypeId... type);
     
     /**
      * Finds all zones by location.
@@ -875,9 +936,9 @@ public interface ObjectServiceInterface
      * 
      * @return Zone or {@code null} if no zone was found.
      * 
-     * @see Cuboid#containsLocWithoutYD(Location)
+     * @see Cuboid#containsLocWithoutYd(Location)
      */
-    Collection<ZoneInterface> findZonesWithoutYD(Location location);
+    Collection<ZoneInterface> findZonesWithoutYd(Location location);
     
     /**
      * Finds all zones by location.
@@ -897,18 +958,9 @@ public interface ObjectServiceInterface
      * 
      * @return Zone or {@code null} if no zone was found.
      * 
-     * @see Cuboid#containsLocWithoutYD(Location)
+     * @see Cuboid#containsLocWithoutYd(Location)
      */
-    Collection<ZoneInterface> findZonesWithoutYD(Location location, ZoneTypeId... type);
-    
-    /**
-     * Finds zone by id.
-     * 
-     * @param id
-     *            the zone id to search for
-     * @return Zone or {@code null} if no zone was found.
-     */
-    ZoneInterface findZone(ZoneIdInterface id);
+    Collection<ZoneInterface> findZonesWithoutYd(Location location, ZoneTypeId... type);
     
     /**
      * Creates a new zone with given handler.
@@ -926,13 +978,5 @@ public interface ObjectServiceInterface
      *             thrown if the zone could not be created
      */
     ZoneInterface createZone(ZoneTypeId type, Cuboid cuboid, ZoneHandlerInterface handler, boolean persist) throws McException;
-    
-    /**
-     * Find zones by type
-     * 
-     * @param type
-     * @return zones by type
-     */
-    Collection<ZoneInterface> findZones(ZoneTypeId... type);
     
 }

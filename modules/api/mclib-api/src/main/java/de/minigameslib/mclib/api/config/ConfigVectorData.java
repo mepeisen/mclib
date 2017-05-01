@@ -37,25 +37,31 @@ public class ConfigVectorData extends VectorData
 {
     
     /**
+     * Constructor for new data.
+     * 
      * @param x
+     *            the x coordinate
      * @param y
+     *            the y coordinate
      * @param z
+     *            the z coordinate
      */
     public ConfigVectorData(double x, double y, double z)
     {
         super(x, y, z);
     }
-
+    
     /**
-     * Constructor
+     * Constructor for reeading from file.
      */
     public ConfigVectorData()
     {
         super();
     }
-
+    
     /**
      * Converts this vector to a bukkit vector.
+     * 
      * @return bukkit vector.
      */
     public Vector toBukkitVector()
@@ -65,7 +71,9 @@ public class ConfigVectorData extends VectorData
     
     /**
      * Converts bukkit vector to config vector.
+     * 
      * @param bukkitVector
+     *            the bukkit vector to convert
      * @return config vector
      */
     public static ConfigVectorData fromBukkitVector(Vector bukkitVector)

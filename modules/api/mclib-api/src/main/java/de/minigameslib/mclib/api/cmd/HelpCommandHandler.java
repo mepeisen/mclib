@@ -48,13 +48,13 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
 {
     
     /** help on sub command. */
-    private SubCommandHandlerInterface subCommand;
+    private SubCommandHandlerInterface      subCommand;
     
     /** help on composite command. */
     private AbstractCompositeCommandHandler compositeCommand;
     
     /** logger. */
-    private static final Logger LOGGER = Logger.getLogger(HelpCommandHandler.class.getName());
+    private static final Logger             LOGGER = Logger.getLogger(HelpCommandHandler.class.getName());
     
     @Override
     public void handle(CommandInterface command) throws McException
@@ -81,7 +81,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         }
         super.handle(command);
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {
@@ -91,7 +91,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         }
         return getVisibleCommands(command).map(e -> e.getKey()).filter(elm -> elm.toLowerCase().startsWith(lastArg)).collect(Collectors.toList());
     }
-
+    
     /**
      * Constructor.
      * 
@@ -125,7 +125,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
     {
         return CommonMessages.HelpLongDescription;
     }
-
+    
     @Override
     protected int getLineCount(CommandInterface command)
     {
@@ -140,13 +140,13 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         }
         return description.toListArg(command.getCommandPath()).apply(command.getLocale(), command.isOp()).length;
     }
-
+    
     @Override
     protected Serializable getHeader(CommandInterface command)
     {
         return CommonMessages.HelpHeader.toArg(command.getCommandPath());
     }
-
+    
     @Override
     protected Serializable[] getLines(CommandInterface command, int start, int count)
     {
@@ -168,7 +168,7 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
                     }
                     catch (Throwable t)
                     {
-                        LOGGER.log(Level.WARNING, "Problems getting short description on command " + key + "/" + sch, t);  //$NON-NLS-1$//$NON-NLS-2$
+                        LOGGER.log(Level.WARNING, "Problems getting short description on command " + key + "/" + sch, t); //$NON-NLS-1$//$NON-NLS-2$
                     }
                     result.add(CommonMessages.HelpLineUsage.toArg(key, shortDesc));
                 }
@@ -180,20 +180,21 @@ public class HelpCommandHandler extends AbstractPagableCommandHandler implements
         {
             if (start == 0)
             {
-                return new Serializable[]{
+                return new Serializable[] {
                         description.toArg(
-                                new Serializable[]{command.getCommandPath()}
-                        ).apply(command.getLocale(), command.isOp())
-                    };
+                                new Serializable[] { command.getCommandPath() }).apply(command.getLocale(), command.isOp())
+                };
             }
             return new Serializable[0];
         }
-        return description.toListArg(start, count, new Serializable[]{command.getCommandPath()}).apply(command.getLocale(), command.isOp());
+        return description.toListArg(start, count, new Serializable[] { command.getCommandPath() }).apply(command.getLocale(), command.isOp());
     }
-
+    
     /**
      * Filters sub commands by checking for visibility.
-     * @param command the command to check for visible sub commands
+     * 
+     * @param command
+     *            the command to check for visible sub commands
      * @return the visible sub commands
      */
     private Stream<Entry<String, SubCommandHandlerInterface>> getVisibleCommands(CommandInterface command)

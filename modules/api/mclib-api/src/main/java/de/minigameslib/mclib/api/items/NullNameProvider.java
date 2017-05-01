@@ -31,7 +31,7 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
  */
 public class NullNameProvider implements NameProvider
 {
-
+    
     @Override
     public LocalizedMessageInterface getName()
     {

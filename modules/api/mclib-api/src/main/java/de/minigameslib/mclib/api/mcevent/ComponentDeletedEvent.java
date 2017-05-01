@@ -47,7 +47,7 @@ public class ComponentDeletedEvent extends Event implements MinecraftEvent<Compo
     private static final HandlerList handlers = new HandlerList();
     
     /** the component we created. */
-    private final ComponentInterface     component;
+    private final ComponentInterface component;
     
     /**
      * Constructor.
@@ -67,7 +67,7 @@ public class ComponentDeletedEvent extends Event implements MinecraftEvent<Compo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -78,7 +78,7 @@ public class ComponentDeletedEvent extends Event implements MinecraftEvent<Compo
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -86,13 +86,13 @@ public class ComponentDeletedEvent extends Event implements MinecraftEvent<Compo
     {
         return handlers;
     }
-
+    
     @Override
     public ComponentDeletedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ComponentDeletedEvent> when(McPredicate<ComponentDeletedEvent> test) throws McException
     {

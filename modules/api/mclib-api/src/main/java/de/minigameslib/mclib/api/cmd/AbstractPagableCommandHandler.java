@@ -77,7 +77,7 @@ public abstract class AbstractPagableCommandHandler implements CommandHandlerInt
         int page = 1;
         int pageLimit = 10;
         int lineCount = this.getLineCount(command);
-        int pageCount = (int) Math.ceil((double)lineCount / pageLimit);
+        int pageCount = (int) Math.ceil((double) lineCount / pageLimit);
         if (pageCount == 0)
         {
             pageCount++;
@@ -159,7 +159,7 @@ public abstract class AbstractPagableCommandHandler implements CommandHandlerInt
     {
         command.send(CommonMessages.PageUsage, command.getCommandPath());
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {

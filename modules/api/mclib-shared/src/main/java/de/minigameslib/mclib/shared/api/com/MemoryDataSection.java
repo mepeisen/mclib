@@ -56,7 +56,7 @@ public class MemoryDataSection implements DataSection
     /** map contents. */
     private final Map<String, Object>            contents             = new LinkedHashMap<>();
     
-    /** 
+    /**
      * Current fragment implementations for interfaces like {@link PlayerDataFragment}.
      */
     private static final Map<Class<?>, Class<?>> fragmentImpls        = new ConcurrentHashMap<>();
@@ -68,7 +68,7 @@ public class MemoryDataSection implements DataSection
     static final Set<Class<?>>                   PRIM_TYPES           = new HashSet<>();
     
     /** the unique enum value factory. */
-    private static UniqueEnumValueFactory uniqueEnumValueFactory;
+    private static UniqueEnumValueFactory        uniqueEnumValueFactory;
     
     static
     {
@@ -112,11 +112,15 @@ public class MemoryDataSection implements DataSection
      * Warning: This method is not meant to be used by plugins.
      * </p>
      * 
-     * @param <T> data fragment class (interface)
-     * @param <Q> data fragment class (implementation)
+     * @param <T>
+     *            data fragment class (interface)
+     * @param <Q>
+     *            data fragment class (implementation)
      * 
-     * @param interfaz Interface used in API
-     * @param impl implementation class to be used by data sections
+     * @param interfaz
+     *            Interface used in API
+     * @param impl
+     *            implementation class to be used by data sections
      */
     public static <T extends DataFragment, Q extends T> void initFragmentImplementation(Class<T> interfaz, Class<Q> impl)
     {
@@ -137,7 +141,8 @@ public class MemoryDataSection implements DataSection
      * Warning: This method is not meant to be used by plugins.
      * </p>
      * 
-     * @param factory the enum value factory to be used for resolving unique enumerations
+     * @param factory
+     *            the enum value factory to be used for resolving unique enumerations
      */
     public static void initUniqueEnumValueFactory(UniqueEnumValueFactory factory)
     {
@@ -233,9 +238,13 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Creates a new sub section.
-     * @param path2 path of the new sub section
-     * @param name2 name of the new sub section
-     * @param parent2 parent section
+     * 
+     * @param path2
+     *            path of the new sub section
+     * @param name2
+     *            name of the new sub section
+     * @param parent2
+     *            parent section
      * @return sub section.
      */
     protected MemoryDataSection createSection(String path2, String name2, MemoryDataSection parent2)
@@ -250,7 +259,8 @@ public class MemoryDataSection implements DataSection
         result.addAll(this.contents.keySet());
         if (deep)
         {
-            this.contents.entrySet().stream().filter(o -> o.getValue() instanceof MemoryDataSection).forEach(entry -> {
+            this.contents.entrySet().stream().filter(o -> o.getValue() instanceof MemoryDataSection).forEach(entry ->
+            {
                 final MemoryDataSection child = (MemoryDataSection) entry.getValue();
                 child.getKeys(true).stream().map(k -> entry.getKey() + '.' + k).forEach(result::add);
             });
@@ -262,7 +272,8 @@ public class MemoryDataSection implements DataSection
     public Map<String, Object> getValues(boolean deep)
     {
         final Map<String, Object> result = new HashMap<>();
-        this.contents.entrySet().forEach(entry -> {
+        this.contents.entrySet().forEach(entry ->
+        {
             if (entry.getValue() instanceof MemoryDataSection)
             {
                 if (deep)
@@ -399,7 +410,9 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Clears contents for given key.
-     * @param key the key that will be cleared; may contain '.' for nested keys
+     * 
+     * @param key
+     *            the key that will be cleared; may contain '.' for nested keys
      */
     private void clear(String key)
     {
@@ -418,8 +431,11 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Sets a value for given key.
-     * @param key the key to be set
-     * @param value the new value
+     * 
+     * @param key
+     *            the key to be set
+     * @param value
+     *            the new value
      */
     private void doSet(String key, Object value)
     {
@@ -474,9 +490,13 @@ public class MemoryDataSection implements DataSection
     
     /**
      * Returns an indexed key filled with nulls for better sorting.
-     * @param i index number
-     * @param size total size of list
-     * @param prefix prefix to be used
+     * 
+     * @param i
+     *            index number
+     * @param size
+     *            total size of list
+     * @param prefix
+     *            prefix to be used
      * @return index string key
      */
     private String getIndexedKey(int i, int size, String prefix)
@@ -1177,9 +1197,12 @@ public class MemoryDataSection implements DataSection
     /**
      * Safe cast (checks for invalid elements).
      * 
-     * @param clazz target class.
-     * @param list list of elements to be casted
-     * @param <T> element class
+     * @param clazz
+     *            target class.
+     * @param list
+     *            list of elements to be casted
+     * @param <T>
+     *            element class
      * @return casted list
      */
     @SuppressWarnings("unchecked")
@@ -1329,7 +1352,7 @@ public class MemoryDataSection implements DataSection
         final DataSection child = this.getSection(key);
         if (child != null)
         {
-            final Map<String,List<?>> result = new HashMap<>();
+            final Map<String, List<?>> result = new HashMap<>();
             for (final String subkey : new TreeSet<>(child.getKeys(false)))
             {
                 result.put(subkey, child.getPrimitiveList(subkey));
@@ -1377,7 +1400,7 @@ public class MemoryDataSection implements DataSection
         final DataSection child = this.getSection(key);
         if (child != null)
         {
-            final Map<String,List<T>> result = new HashMap<>();
+            final Map<String, List<T>> result = new HashMap<>();
             for (final String subkey : new TreeSet<>(child.getKeys(false)))
             {
                 result.put(subkey, child.getFragmentList(clazz, subkey));
@@ -1619,8 +1642,10 @@ public class MemoryDataSection implements DataSection
     /**
      * Safe create instances of given class.
      * 
-     * @param clazz target class of new instance
-     * @param <T> data fragment class
+     * @param clazz
+     *            target class of new instance
+     * @param <T>
+     *            data fragment class
      * @return new instance
      */
     private <T extends DataFragment> T safeCreate(Class<T> clazz)
@@ -1655,7 +1680,7 @@ public class MemoryDataSection implements DataSection
     {
         this.contents.clear();
     }
-
+    
     @Override
     public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key)
     {
@@ -1691,14 +1716,14 @@ public class MemoryDataSection implements DataSection
             return null;
         }
     }
-
+    
     @Override
     public <T extends EnumerationValue> T getEnumValue(Class<T> clazz, String key, T defaultValue)
     {
         final T result = this.getEnumValue(clazz, key);
         return result == null ? defaultValue : result;
     }
-
+    
     @Override
     public <T extends Enum<?>> T getEnum(Class<T> clazz, String key)
     {
@@ -1716,14 +1741,14 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends Enum<?>> T getEnum(Class<T> clazz, String key, T defaultValue)
     {
         final T result = this.getEnum(clazz, key);
         return result == null ? defaultValue : result;
     }
-
+    
     @Override
     public <T extends EnumerationValue> List<T> getEnumValueList(Class<T> clazz, String key)
     {
@@ -1744,7 +1769,7 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends EnumerationValue> Map<String, T> getEnumValueMap(Class<T> clazz, String key)
     {
@@ -1760,7 +1785,7 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends EnumerationValue> List<Map<String, T>> getEnumValueMapList(Class<T> clazz, String key)
     {
@@ -1776,14 +1801,14 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends EnumerationValue> Map<String, List<T>> getEnumValueListMap(Class<T> clazz, String key)
     {
         final DataSection child = this.getSection(key);
         if (child != null)
         {
-            final Map<String,List<T>> result = new HashMap<>();
+            final Map<String, List<T>> result = new HashMap<>();
             for (final String subkey : new TreeSet<>(child.getKeys(false)))
             {
                 result.put(subkey, child.getEnumValueList(clazz, subkey));
@@ -1792,7 +1817,7 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends Enum<?>> List<T> getEnumList(Class<T> clazz, String key)
     {
@@ -1813,7 +1838,7 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends Enum<?>> Map<String, T> getEnumMap(Class<T> clazz, String key)
     {
@@ -1829,7 +1854,7 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends Enum<?>> List<Map<String, T>> getEnumMapList(Class<T> clazz, String key)
     {
@@ -1845,14 +1870,14 @@ public class MemoryDataSection implements DataSection
         }
         return null;
     }
-
+    
     @Override
     public <T extends Enum<?>> Map<String, List<T>> getEnumListMap(Class<T> clazz, String key)
     {
         final DataSection child = this.getSection(key);
         if (child != null)
         {
-            final Map<String,List<T>> result = new HashMap<>();
+            final Map<String, List<T>> result = new HashMap<>();
             for (final String subkey : new TreeSet<>(child.getKeys(false)))
             {
                 result.put(subkey, child.getEnumList(clazz, subkey));
@@ -1870,10 +1895,15 @@ public class MemoryDataSection implements DataSection
     {
         /**
          * Creates enum value for given plugin/name and class type.
-         * @param plugin plugin name
-         * @param name enum value name
-         * @param clazz target class
-         * @param <T> enum class
+         * 
+         * @param plugin
+         *            plugin name
+         * @param name
+         *            enum value name
+         * @param clazz
+         *            target class
+         * @param <T>
+         *            enum class
          * @return enum value or {@code null} if the given enum value was not registered
          */
         <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz);

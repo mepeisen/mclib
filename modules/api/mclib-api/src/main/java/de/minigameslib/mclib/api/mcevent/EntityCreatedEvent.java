@@ -51,7 +51,7 @@ public class EntityCreatedEvent extends Event implements MinecraftEvent<EntityCr
     private static final HandlerList handlers = new HandlerList();
     
     /** the entity we created. */
-    private final EntityInterface     entity;
+    private final EntityInterface    entity;
     
     /**
      * Constructor.
@@ -71,7 +71,7 @@ public class EntityCreatedEvent extends Event implements MinecraftEvent<EntityCr
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -82,7 +82,7 @@ public class EntityCreatedEvent extends Event implements MinecraftEvent<EntityCr
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -90,13 +90,13 @@ public class EntityCreatedEvent extends Event implements MinecraftEvent<EntityCr
     {
         return handlers;
     }
-
+    
     @Override
     public EntityCreatedEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<EntityCreatedEvent> when(McPredicate<EntityCreatedEvent> test) throws McException
     {

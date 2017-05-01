@@ -36,6 +36,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * Returns the resource paths to the textures.
+     * 
      * @return resource paths to textures
      */
     default String[] getTextures()
@@ -53,6 +54,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * Returns the opaque flag.
+     * 
      * @return opaque flag
      */
     default boolean isOpaque()
@@ -70,6 +72,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * Returns the crafting recipes.
+     * 
      * @return crafting recipes
      */
     default CraftingRecipes recipes()
@@ -87,6 +90,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * the custom item model json.
+     * 
      * @return custom item model json
      */
     default String getModelJson()
@@ -104,6 +108,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * The furnace recipe.
+     * 
      * @return the furnace recipe
      */
     default FurnaceRecipeInterface furnaceRecipe()
@@ -121,12 +126,14 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * Returns the numeric id (variant id).
+     * 
      * @return numeric id
      */
     int ordinal();
     
     /**
      * Returns the provider for getting the item name.
+     * 
      * @return provider for getting the name.
      */
     default NameProvider nameProvider()
@@ -144,6 +151,7 @@ public interface BlockVariantId extends McUniqueEnumInterface
     
     /**
      * Returns the inventory definition.
+     * 
      * @return inventory definition
      */
     default BlockInventoryMeta inventory()

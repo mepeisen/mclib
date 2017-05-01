@@ -39,6 +39,7 @@ class ObjectServiceCache
     
     /**
      * Returns the object services instance.
+     * 
      * @return object services.
      */
     static ObjectServiceInterface get()

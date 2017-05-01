@@ -39,13 +39,13 @@ public class DisplayInfoData extends AnnotatedDataFragment
      * Title of the message box.
      */
     @PersistentField
-    protected String title;
+    protected String     title;
     
     /**
      * Text content of the message box.
      */
     @PersistentField
-    protected String message;
+    protected String     message;
     
     /**
      * OK-Button.
@@ -57,74 +57,86 @@ public class DisplayInfoData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    protected String id;
-
+    protected String     id;
+    
     /**
      * Returns the window id.
+     * 
      * @return the id
      */
     public String getId()
     {
         return this.id;
     }
-
+    
     /**
      * Sets the window id.
-     * @param id the id to set
+     * 
+     * @param id
+     *            the id to set
      */
     public void setId(String id)
     {
         this.id = id;
     }
-
+    
     /**
      * Returns the title.
+     * 
      * @return the title
      */
     public String getTitle()
     {
         return this.title;
     }
-
+    
     /**
      * Sets the title.
-     * @param title the title to set
+     * 
+     * @param title
+     *            the title to set
      */
     public void setTitle(String title)
     {
         this.title = title;
     }
-
+    
     /**
      * Returns the message text.
+     * 
      * @return the message
      */
     public String getMessage()
     {
         return this.message;
     }
-
+    
     /**
      * Sets the message text.
-     * @param message the message to set
+     * 
+     * @param message
+     *            the message to set
      */
     public void setMessage(String message)
     {
         this.message = message;
     }
-
+    
     /**
      * Returns the ok button.
+     * 
      * @return the okButton
      */
     public ButtonData getOkButton()
     {
         return this.okButton;
     }
-
+    
     /**
      * Sets the ok button.
-     * @param okButton the okButton to set
+     * 
+     * @param okButton
+     *            the okButton to set
      */
     public void setOkButton(ButtonData okButton)
     {

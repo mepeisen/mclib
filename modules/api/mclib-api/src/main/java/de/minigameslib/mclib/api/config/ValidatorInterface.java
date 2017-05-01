@@ -27,7 +27,7 @@ package de.minigameslib.mclib.api.config;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Common interface for validations
+ * Common interface for validations.
  * 
  * @author mepeisen
  */
@@ -36,8 +36,11 @@ public interface ValidatorInterface
     
     /**
      * Validates a configuration file or a single value.
-     * @param cvi the config value to check; {@code null} to check a whole file
+     * 
+     * @param cvi
+     *            the config value to check; {@code null} to check a whole file
      * @throws McException
+     *             thrown on validation failures
      */
     void validate(ConfigurationValueInterface cvi) throws McException;
     

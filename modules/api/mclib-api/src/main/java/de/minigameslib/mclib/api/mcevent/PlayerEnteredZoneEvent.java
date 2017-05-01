@@ -80,7 +80,7 @@ public class PlayerEnteredZoneEvent extends Event implements MinecraftEvent<Play
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -91,7 +91,7 @@ public class PlayerEnteredZoneEvent extends Event implements MinecraftEvent<Play
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -99,13 +99,13 @@ public class PlayerEnteredZoneEvent extends Event implements MinecraftEvent<Play
     {
         return handlers;
     }
-
+    
     @Override
     public PlayerEnteredZoneEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<PlayerEnteredZoneEvent> when(McPredicate<PlayerEnteredZoneEvent> test) throws McException
     {

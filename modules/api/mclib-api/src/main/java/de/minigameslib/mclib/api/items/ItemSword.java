@@ -43,48 +43,56 @@ public @interface ItemSword
     
     /**
      * the durability of this item.
+     * 
      * @return item durability
      */
     int durability();
-
+    
     /**
      * Returns the amount of damage this item will deal. One heart of damage is equal to 2 damage points.
+     * 
      * @return Returns the amount of damage this item will deal. One heart of damage is equal to 2 damage points.
      */
     float damageVsEntity();
     
     /**
      * the attack damage modifier.
+     * 
      * @return attack damage modifier
      */
     double damage();
     
     /**
      * the attack speed modifier.
+     * 
      * @return attack speed modifier
      */
     double speed();
     
     /**
      * Return the enchantability factor of the item, most of the time is based on material.
+     * 
      * @return Return the enchantability factor of the item, most of the time is based on material
      */
     int getItemEnchantability();
     
     /**
      * Returns the repair rule.
+     * 
      * @return repair rule
      */
     Class<? extends ItemRepairInterface> repairRule();
     
     /**
      * Returns the damage rule.
+     * 
      * @return damage rule
      */
     Class<? extends ItemDmgInterface> dmgRule();
     
     /**
      * Returns the dig rule.
+     * 
      * @return dig rule
      */
     Class<? extends ItemDigInterface> digRule();

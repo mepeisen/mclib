@@ -31,19 +31,23 @@ import de.minigameslib.mclib.api.McException;
  * 
  * @author mepeisen
  *
- * @param <T> the type of the first argument to the function
- * @param <U> the type of the second argument to the function
+ * @param <T>
+ *            the type of the first argument to the function
+ * @param <U>
+ *            the type of the second argument to the function
  *
  */
 @FunctionalInterface
 public interface McToDoubleBiFunction<T, U>
 {
-
+    
     /**
      * Applies this function to the given arguments.
      *
-     * @param arg1 the first function argument
-     * @param arg2 the second function argument
+     * @param arg1
+     *            the first function argument
+     * @param arg2
+     *            the second function argument
      * @return the function result
      * @throws McException
      *             thrown on problems, f.e. networking errors.

@@ -103,6 +103,7 @@ public class ClickGuiItem
     
     /**
      * Returns the movable flag.
+     * 
      * @return the moveable
      */
     public boolean isMoveable()
@@ -112,6 +113,7 @@ public class ClickGuiItem
     
     /**
      * Sets the movable flag.
+     * 
      * @param moveable
      *            the moveable to set
      */
@@ -122,6 +124,7 @@ public class ClickGuiItem
     
     /**
      * Returns the item stack.
+     * 
      * @return the itemStack
      */
     public ItemStack getItemStack()
@@ -131,6 +134,7 @@ public class ClickGuiItem
     
     /**
      * Returns the display name.
+     * 
      * @return the displayName
      */
     public LocalizedMessageInterface getDisplayName()
@@ -140,6 +144,7 @@ public class ClickGuiItem
     
     /**
      * Sets the display name.
+     * 
      * @return the displayName
      */
     public Serializable[] getDisplayNameArgs()

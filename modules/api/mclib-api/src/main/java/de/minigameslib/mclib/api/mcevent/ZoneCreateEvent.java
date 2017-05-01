@@ -50,7 +50,7 @@ public class ZoneCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     private static final HandlerList handlers = new HandlerList();
     
     /** the zone we created. */
-    private final ZoneInterface     zone;
+    private final ZoneInterface      zone;
     
     /**
      * Constructor.
@@ -70,7 +70,7 @@ public class ZoneCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -81,7 +81,7 @@ public class ZoneCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     }
     
     /**
-     * Returns the handlers list
+     * Returns the handlers list.
      * 
      * @return handlers
      */
@@ -89,13 +89,13 @@ public class ZoneCreateEvent extends AbstractVetoEvent implements MinecraftEvent
     {
         return handlers;
     }
-
+    
     @Override
     public ZoneCreateEvent getBukkitEvent()
     {
         return this;
     }
-
+    
     @Override
     public McOutgoingStubbing<ZoneCreateEvent> when(McPredicate<ZoneCreateEvent> test) throws McException
     {

@@ -39,13 +39,13 @@ public class McException extends Exception
     /**
      * serial version uid.
      */
-    private static final long       serialVersionUID = 4482601783924644721L;
+    private static final long               serialVersionUID = 4482601783924644721L;
     
     /** the error message. */
     private final LocalizedMessageInterface msg;
     
     /** the message arguments. */
-    private final Serializable[]    args;
+    private final Serializable[]            args;
     
     /**
      * Constructor.
@@ -102,8 +102,10 @@ public class McException extends Exception
     /**
      * Converts given code and args to a loggable text.
      * 
-     * @param msg2 localized message
-     * @param args2 arguments to build message
+     * @param msg2
+     *            localized message
+     * @param args2
+     *            arguments to build message
      * @return exception string for logging.
      */
     private static String toString(LocalizedMessageInterface msg2, Serializable[] args2)

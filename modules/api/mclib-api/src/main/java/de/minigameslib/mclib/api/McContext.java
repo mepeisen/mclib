@@ -85,14 +85,18 @@ public interface McContext
     String resolveContextVar(String src);
     
     /**
-     * Runs the code in new context; changes made inside the runnable will be undone.
-     * Sets the given data before calling the runnable
+     * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
      * 
-     * @param event the event to set 
-     * @param command the command to set
-     * @param player the player to set
-     * @param zone the zone to set
-     * @param component the component to set
+     * @param event
+     *            the event to set
+     * @param command
+     *            the command to set
+     * @param player
+     *            the player to set
+     * @param zone
+     *            the zone to set
+     * @param component
+     *            the component to set
      * @param runnable
      *            the runnable to execute.
      * @throws McException
@@ -134,14 +138,18 @@ public interface McContext
     <T> T calculateInNewContext(McSupplier<T> runnable) throws McException;
     
     /**
-     * Runs the code in new context; changes made inside the runnable will be undone.
-     * Sets the given data before calling the runnable
+     * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
      * 
-     * @param event the event to set 
-     * @param command the command to set
-     * @param player the player to set
-     * @param zone the zone to set
-     * @param component the component to set
+     * @param event
+     *            the event to set
+     * @param command
+     *            the command to set
+     * @param player
+     *            the player to set
+     * @param zone
+     *            the zone to set
+     * @param component
+     *            the component to set
      * @param runnable
      *            the runnable to execute.
      * @param <T>
@@ -346,9 +354,12 @@ public interface McContext
     {
         /**
          * Invoked to run the task
-         * @param task bukkit task interface
-         * @throws McException thrown if there were problems during task execution. If task was executed with current user this exception
-         *     will be printed as error message to the current user. Be careful to throw this on recurring tasks.
+         * 
+         * @param task
+         *            bukkit task interface
+         * @throws McException
+         *             thrown if there were problems during task execution. If task was executed with current user this exception will be printed as error message to the current user. Be careful to
+         *             throw this on recurring tasks.
          */
         void run(BukkitTask task) throws McException;
     }
@@ -360,16 +371,18 @@ public interface McContext
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException;
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
      * Schedules this in the Bukkit scheduler to run asynchronously.
      * </p>
@@ -378,14 +391,18 @@ public interface McContext
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
      */
     BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException;
-
+    
     /**
      * Schedules this to run after the specified number of server ticks.
      * 
@@ -393,75 +410,88 @@ public interface McContext
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException;
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
-     * Schedules this to run asynchronously after the specified number of
-     * server ticks.
+     * Schedules this to run asynchronously after the specified number of server ticks.
      * </p>
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
+     * @throws IllegalArgumentException
+     *             if plugin is null
      */
     BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException;
-
+    
     /**
-     * Schedules this to repeatedly run until cancelled, starting after the
-     * specified number of server ticks.
+     * Schedules this to repeatedly run until cancelled, starting after the specified number of server ticks.
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task
-     * @param period the ticks to wait between runs
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task
+     * @param period
+     *            the ticks to wait between runs
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
      * @see BukkitScheduler#runTaskTimer(Plugin, Runnable, long, long)
      */
     BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException;
-
+    
     /**
-     * <b>Asynchronous tasks should never access any API in Bukkit. Great care
-     * should be taken to assure the thread-safety of asynchronous tasks.</b>
+     * <b>Asynchronous tasks should never access any API in Bukkit. Great care should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
-     * Schedules this to repeatedly run asynchronously until cancelled,
-     * starting after the specified number of server ticks.
+     * Schedules this to repeatedly run asynchronously until cancelled, starting after the specified number of server ticks.
      * </p>
      * 
      * <p>
      * This method will run the new method with a copy of current context.
      * </p>
      *
-     * @param plugin the reference to the plugin scheduling task
-     * @param delay the ticks to wait before running the task for the first
-     *     time
-     * @param period the ticks to wait between runs
-     * @param task the task to be run
+     * @param plugin
+     *            the reference to the plugin scheduling task
+     * @param delay
+     *            the ticks to wait before running the task for the first time
+     * @param period
+     *            the ticks to wait between runs
+     * @param task
+     *            the task to be run
      * @return a BukkitTask that contains the id number
-     * @throws IllegalArgumentException if plugin is null
-     * @throws IllegalStateException if this was already scheduled
-     * @see BukkitScheduler#runTaskTimerAsynchronously(Plugin, Runnable, long,
-     *     long)
+     * @throws IllegalArgumentException
+     *             if plugin is null
+     * @throws IllegalStateException
+     *             if this was already scheduled
+     * @see BukkitScheduler#runTaskTimerAsynchronously(Plugin, Runnable, long, long)
      */
     BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException;
     

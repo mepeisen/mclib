@@ -42,19 +42,19 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
      * Title of the window.
      */
     @PersistentField
-    protected String title;
+    protected String           title;
     
     /**
      * {@code true} true if a close button is added.
      */
     @PersistentField
-    protected boolean closable;
+    protected boolean          closable;
     
     /**
      * Number of columns.
      */
     @PersistentField
-    protected int numColumns;
+    protected int              numColumns;
     
     /**
      * Content widgets.
@@ -72,91 +72,105 @@ public class DisplayResizableWinData extends AnnotatedDataFragment
      * The window id.
      */
     @PersistentField
-    protected String id;
-
+    protected String           id;
+    
     /**
      * Returns the window id.
+     * 
      * @return the id
      */
     public String getId()
     {
         return this.id;
     }
-
+    
     /**
      * Sets the window id.
-     * @param id the id to set
+     * 
+     * @param id
+     *            the id to set
      */
     public void setId(String id)
     {
         this.id = id;
     }
-
+    
     /**
      * Returns the number of columns.
+     * 
      * @return the numColumns
      */
     public int getNumColumns()
     {
         return this.numColumns;
     }
-
+    
     /**
      * Sets the number of columns.
-     * @param numColumns the numColumns to set
+     * 
+     * @param numColumns
+     *            the numColumns to set
      */
     public void setNumColumns(int numColumns)
     {
         this.numColumns = numColumns;
     }
-
+    
     /**
      * Returns the widgets list.
+     * 
      * @return the widgets
      */
     public List<WidgetData> getWidgets()
     {
         return this.widgets;
     }
-
+    
     /**
      * Returns the title.
+     * 
      * @return the title
      */
     public String getTitle()
     {
         return this.title;
     }
-
+    
     /**
      * Sets the title.
-     * @param title the title to set
+     * 
+     * @param title
+     *            the title to set
      */
     public void setTitle(String title)
     {
         this.title = title;
     }
-
+    
     /**
      * Returns the closable flag.
+     * 
      * @return the closable
      */
     public boolean isClosable()
     {
         return this.closable;
     }
-
+    
     /**
      * Sets the closable flag.
-     * @param closable the closable to set
+     * 
+     * @param closable
+     *            the closable to set
      */
     public void setClosable(boolean closable)
     {
         this.closable = closable;
     }
-
+    
     /**
      * Returns the list of buttons.
+     * 
      * @return the buttons
      */
     public List<ButtonData> getButtons()
