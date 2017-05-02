@@ -128,7 +128,7 @@ public @interface ValidateLMin
             }
             else if (cvi.isLongList())
             {
-                for (final long l : cvi.getShortList())
+                for (final long l : cvi.getLongList())
                 {
                     if (l < lmin.value())
                     {

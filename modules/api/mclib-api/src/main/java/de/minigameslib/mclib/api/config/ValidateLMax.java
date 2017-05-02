@@ -100,7 +100,7 @@ public @interface ValidateLMax
             {
                 for (final byte b : cvi.getByteList())
                 {
-                    if (b < lmax.value())
+                    if (b > lmax.value())
                     {
                         throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), b, lmax.value());
                     }
@@ -110,7 +110,7 @@ public @interface ValidateLMax
             {
                 for (final short s : cvi.getShortList())
                 {
-                    if (s < lmax.value())
+                    if (s > lmax.value())
                     {
                         throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), s, lmax.value());
                     }
@@ -120,7 +120,7 @@ public @interface ValidateLMax
             {
                 for (final int i : cvi.getIntList())
                 {
-                    if (i < lmax.value())
+                    if (i > lmax.value())
                     {
                         throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), i, lmax.value());
                     }
@@ -128,9 +128,9 @@ public @interface ValidateLMax
             }
             else if (cvi.isLongList())
             {
-                for (final long l : cvi.getShortList())
+                for (final long l : cvi.getLongList())
                 {
-                    if (l < lmax.value())
+                    if (l > lmax.value())
                     {
                         throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), l, lmax.value());
                     }

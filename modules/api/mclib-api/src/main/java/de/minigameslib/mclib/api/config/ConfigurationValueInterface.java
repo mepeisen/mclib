@@ -2869,6 +2869,11 @@ public interface ConfigurationValueInterface extends EnumerationValue
                 validator.value().newInstance().validate(this);
             }
         }
+        catch (McException ex)
+        {
+            // rethrow validation errors
+            throw ex;
+        }
         catch (@SuppressWarnings("unused") Exception ex)
         {
             // silently ignore

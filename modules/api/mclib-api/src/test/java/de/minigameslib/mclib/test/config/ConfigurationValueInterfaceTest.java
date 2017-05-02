@@ -129,7 +129,7 @@ public class ConfigurationValueInterfaceTest
 
     /**
      * Some setup.
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException thrown on problems
      */
     @Before
     public void setup() throws ClassNotFoundException
@@ -140,7 +140,8 @@ public class ConfigurationValueInterfaceTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
         this.objsrv = mock(ObjectServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.objects.ObjectServiceCache"), "SERVICES", this.objsrv); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
+        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>()
+        {
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable
             {
