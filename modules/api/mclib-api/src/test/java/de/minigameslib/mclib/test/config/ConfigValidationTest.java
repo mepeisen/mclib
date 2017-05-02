@@ -40,8 +40,10 @@ import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
+import de.minigameslib.mclib.api.config.ConfigVectorData;
 import de.minigameslib.mclib.api.config.ConfigurationBool;
 import de.minigameslib.mclib.api.config.ConfigurationBoolList;
 import de.minigameslib.mclib.api.config.ConfigurationByte;
@@ -1612,6 +1614,114 @@ public class ConfigValidationTest
     {
         ConfigValues.TestListMaxString.setStringList(new String[]{"1", "2", "3"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ConfigValues.TestListMaxString.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMin}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMinColorSuccess() throws McException
+    {
+        ConfigValues.TestListMinColor.setColorList(new ConfigColorData[]{new ConfigColorData(1, 2, 3), new ConfigColorData(2, 3, 4)});
+        ConfigValues.TestListMinColor.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMin}.
+     * @throws McException thrown on validation error (expected)
+     */
+    @Test(expected = McException.class)
+    public void testListMinColorFails() throws McException
+    {
+        ConfigValues.TestListMinColor.setColorList(new ConfigColorData[]{new ConfigColorData(1, 2, 3)});
+        ConfigValues.TestListMinColor.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMaxColorSuccessOnNotSet() throws McException
+    {
+        ConfigValues.TestListMaxColor.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMaxColorSuccess() throws McException
+    {
+        ConfigValues.TestListMaxColor.setColorList(new ConfigColorData[]{new ConfigColorData(1, 2, 3), new ConfigColorData(2, 3, 4)});
+        ConfigValues.TestListMaxColor.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error (expected)
+     */
+    @Test(expected = McException.class)
+    public void testListMaxColorFails() throws McException
+    {
+        ConfigValues.TestListMaxColor.setColorList(new ConfigColorData[]{new ConfigColorData(1, 2, 3), new ConfigColorData(2, 3, 4), new ConfigColorData(3, 4, 5)});
+        ConfigValues.TestListMaxColor.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMin}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMinVectorSuccess() throws McException
+    {
+        ConfigValues.TestListMinVector.setVectorList(new ConfigVectorData[]{new ConfigVectorData(1, 2, 3), new ConfigVectorData(2, 3, 4)});
+        ConfigValues.TestListMinVector.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMin}.
+     * @throws McException thrown on validation error (expected)
+     */
+    @Test(expected = McException.class)
+    public void testListMinVectorFails() throws McException
+    {
+        ConfigValues.TestListMinVector.setVectorList(new ConfigVectorData[]{new ConfigVectorData(1, 2, 3)});
+        ConfigValues.TestListMinVector.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMaxVectorSuccessOnNotSet() throws McException
+    {
+        ConfigValues.TestListMaxVector.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error
+     */
+    @Test
+    public void testListMaxVectorSuccess() throws McException
+    {
+        ConfigValues.TestListMaxVector.setVectorList(new ConfigVectorData[]{new ConfigVectorData(1, 2, 3), new ConfigVectorData(2, 3, 4)});
+        ConfigValues.TestListMaxVector.validate();
+    }
+    
+    /**
+     * tests {@link ValidateListMax}.
+     * @throws McException thrown on validation error (expected)
+     */
+    @Test(expected = McException.class)
+    public void testListMaxVectorFails() throws McException
+    {
+        ConfigValues.TestListMaxVector.setVectorList(new ConfigVectorData[]{new ConfigVectorData(1, 2, 3), new ConfigVectorData(2, 3, 4), new ConfigVectorData(3, 4, 5)});
+        ConfigValues.TestListMaxVector.validate();
     }
     
     // etc

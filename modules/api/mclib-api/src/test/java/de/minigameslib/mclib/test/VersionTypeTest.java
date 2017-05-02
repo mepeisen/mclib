@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import de.minigameslib.mclib.api.MinecraftVersionsType;
+import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
  * Test for {@link MinecraftVersionsType}.
@@ -87,7 +88,7 @@ public class VersionTypeTest
     }
     
     /**
-     * tests the isEqual method
+     * tests the isEqual method.
      */
     @Test
     public void testEquals()
@@ -104,13 +105,18 @@ public class VersionTypeTest
         assertTrue(MinecraftVersionsType.V1_7_R3.isEqual(MinecraftVersionsType.V1_7));
         assertTrue(MinecraftVersionsType.V1_7_R4.isEqual(MinecraftVersionsType.V1_7_R4));
         assertTrue(MinecraftVersionsType.V1_7_R4.isEqual(MinecraftVersionsType.V1_7));
+        assertTrue(MinecraftVersionsType.V1_7.isEqual(MinecraftVersionsType.V1_7));
 
         assertTrue(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.V1_8_R1));
         assertTrue(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.V1_8_R2));
+        assertTrue(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.V1_8_R3));
         assertTrue(MinecraftVersionsType.V1_8_R1.isEqual(MinecraftVersionsType.V1_8_R1));
         assertTrue(MinecraftVersionsType.V1_8_R1.isEqual(MinecraftVersionsType.V1_8));
         assertTrue(MinecraftVersionsType.V1_8_R2.isEqual(MinecraftVersionsType.V1_8_R2));
         assertTrue(MinecraftVersionsType.V1_8_R2.isEqual(MinecraftVersionsType.V1_8));
+        assertTrue(MinecraftVersionsType.V1_8_R3.isEqual(MinecraftVersionsType.V1_8_R3));
+        assertTrue(MinecraftVersionsType.V1_8_R3.isEqual(MinecraftVersionsType.V1_8));
+        assertTrue(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.V1_8));
 
         assertTrue(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.V1_9_R1));
         assertTrue(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.V1_9_R2));
@@ -118,29 +124,68 @@ public class VersionTypeTest
         assertTrue(MinecraftVersionsType.V1_9_R1.isEqual(MinecraftVersionsType.V1_9));
         assertTrue(MinecraftVersionsType.V1_9_R2.isEqual(MinecraftVersionsType.V1_9_R2));
         assertTrue(MinecraftVersionsType.V1_9_R2.isEqual(MinecraftVersionsType.V1_9));
+        assertTrue(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.V1_9));
 
         assertTrue(MinecraftVersionsType.V1_10.isEqual(MinecraftVersionsType.V1_10_R1));
         assertTrue(MinecraftVersionsType.V1_10_R1.isEqual(MinecraftVersionsType.V1_10_R1));
         assertTrue(MinecraftVersionsType.V1_10_R1.isEqual(MinecraftVersionsType.V1_10));
+        assertTrue(MinecraftVersionsType.V1_10.isEqual(MinecraftVersionsType.V1_10));
+
+        assertTrue(MinecraftVersionsType.V1_11.isEqual(MinecraftVersionsType.V1_11_R1));
+        assertTrue(MinecraftVersionsType.V1_11_R1.isEqual(MinecraftVersionsType.V1_11_R1));
+        assertTrue(MinecraftVersionsType.V1_11_R1.isEqual(MinecraftVersionsType.V1_11));
+        assertTrue(MinecraftVersionsType.V1_11.isEqual(MinecraftVersionsType.V1_11));
 
         assertTrue(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.Unknown));
         
         assertFalse(MinecraftVersionsType.V1_7.isEqual(MinecraftVersionsType.Unknown));
-        assertFalse(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.Unknown));
-        assertFalse(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.Unknown));
-        assertFalse(MinecraftVersionsType.V1_10.isEqual(MinecraftVersionsType.Unknown));
         assertFalse(MinecraftVersionsType.V1_7_R1.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_7_R2.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_7_R3.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_7_R4.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_8.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_8_R1.isEqual(MinecraftVersionsType.Unknown));
         assertFalse(MinecraftVersionsType.V1_8_R2.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_8_R3.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.Unknown));
         assertFalse(MinecraftVersionsType.V1_9_R1.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_9_R2.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_10.isEqual(MinecraftVersionsType.Unknown));
         assertFalse(MinecraftVersionsType.V1_10_R1.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_11.isEqual(MinecraftVersionsType.Unknown));
+        assertFalse(MinecraftVersionsType.V1_11_R1.isEqual(MinecraftVersionsType.Unknown));
         assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_7));
-        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_8));
-        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_9));
-        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_10));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_7_R1));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_7_R2));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_7_R3));
         assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_7_R4));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_8));
         assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_8_R1));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_8_R2));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_8_R3));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_9));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_9_R1));
         assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_9_R2));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_10));
         assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_10_R1));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_11));
+        assertFalse(MinecraftVersionsType.Unknown.isEqual(MinecraftVersionsType.V1_11_R1));
+        assertFalse(MinecraftVersionsType.V1_7.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_7_R1.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_7_R2.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_7_R3.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_7_R4.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_8.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_8_R1.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_8_R2.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_8_R3.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_9.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_9_R1.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_9_R2.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_10.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_10_R1.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_11.isEqual(null));
+        assertFalse(MinecraftVersionsType.V1_11_R1.isEqual(null));
 
         assertFalse(MinecraftVersionsType.V1_7.isEqual(MinecraftVersionsType.V1_8));
         assertFalse(MinecraftVersionsType.V1_9.isEqual(MinecraftVersionsType.V1_8));
@@ -148,10 +193,11 @@ public class VersionTypeTest
         assertFalse(MinecraftVersionsType.V1_7_R1.isEqual(MinecraftVersionsType.V1_7_R2));
         assertFalse(MinecraftVersionsType.V1_7_R4.isEqual(MinecraftVersionsType.V1_8_R1));
         assertFalse(MinecraftVersionsType.V1_10_R1.isEqual(MinecraftVersionsType.V1_9_R2));
+        assertFalse(MinecraftVersionsType.V1_11_R1.isEqual(MinecraftVersionsType.V1_9_R2));
     }
     
     /**
-     * tests the isBelow method
+     * tests the isBelow method.
      */
     @Test
     public void testIsBelow()
@@ -215,7 +261,7 @@ public class VersionTypeTest
     }
     
     /**
-     * tests the isAfter method
+     * tests the isAfter method.
      */
     @Test
     public void testIsAfter()
@@ -279,7 +325,7 @@ public class VersionTypeTest
     }
     
     /**
-     * tests the isAtLeast method
+     * tests the isAtLeast method.
      */
     @Test
     public void testIsAtLeast()
@@ -340,6 +386,28 @@ public class VersionTypeTest
         assertFalse(MinecraftVersionsType.V1_7_R1.isAtLeast(MinecraftVersionsType.V1_7_R2));
         assertFalse(MinecraftVersionsType.V1_7_R4.isAtLeast(MinecraftVersionsType.V1_8_R1));
         assertTrue(MinecraftVersionsType.V1_10_R1.isAtLeast(MinecraftVersionsType.V1_9_R2));
+    }
+    
+    /**
+     * tests {@link MinecraftVersionsType#mavenVersionString()}.
+     */
+    @Test
+    public void testMavenString()
+    {
+        assertEquals("v1_7_R1", MinecraftVersionsType.V1_7_R1.mavenVersionString()); //$NON-NLS-1$
+        assertEquals("v1_8_R2", MinecraftVersionsType.V1_8_R2.mavenVersionString()); //$NON-NLS-1$
+        assertEquals("v1_9_R1", MinecraftVersionsType.V1_9.mavenVersionString()); //$NON-NLS-1$
+        assertEquals("v1_9_R1", MinecraftVersionsType.V1_9_R1.mavenVersionString()); //$NON-NLS-1$
+        assertEquals("v1_11_R1", MinecraftVersionsType.V1_11.mavenVersionString()); //$NON-NLS-1$
+    }
+    
+    /**
+     * Test enum class.
+     */
+    @Test
+    public void testEnum()
+    {
+        CommonTestUtil.testEnumClass(MinecraftVersionsType.class);
     }
     
 }
