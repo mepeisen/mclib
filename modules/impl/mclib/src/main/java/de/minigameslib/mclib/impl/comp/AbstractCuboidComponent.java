@@ -48,7 +48,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
     
     /** the cuboid. */
     protected Cuboid cuboid;
-
+    
     /**
      * Constructor to create the component.
      * 
@@ -60,7 +60,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      *            the config file
      * @param owner
      *            the component owner
-     * @throws McException 
+     * @throws McException
      */
     public AbstractCuboidComponent(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner) throws McException
     {
@@ -150,9 +150,10 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
             this.setWorldChunks(chunks);
         }
     }
-
+    
     /**
      * Returns the cuboid.
+     * 
      * @return cuboid of this component.
      */
     public Cuboid getCuboid()
@@ -162,8 +163,10 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
     
     /**
      * Sets the cuboid
-     * @param cub cuboid of the component.
-     * @throws McException 
+     * 
+     * @param cub
+     *            cuboid of the component.
+     * @throws McException
      */
     public void setCuboid(Cuboid cub) throws McException
     {

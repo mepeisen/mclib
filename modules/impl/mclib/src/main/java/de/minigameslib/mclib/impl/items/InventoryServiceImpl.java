@@ -88,18 +88,18 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     
     /** component registry for inventory objects */
     final ComponentRegistry                              objects                = new ComponentRegistry();
-
+    
     /** configuration folder */
-    File configFolder;
+    File                                                 configFolder;
     
     /** main config file */
-    File configFile;
+    File                                                 configFile;
     
     /** the known inventories */
-    List<InventoryRegistryData> inventoryIds = new ArrayList<>();
+    List<InventoryRegistryData>                          inventoryIds           = new ArrayList<>();
     
     /** logger */
-    static final Logger LOGGER = Logger.getLogger(InventoryServiceImpl.class.getName());
+    static final Logger                                  LOGGER                 = Logger.getLogger(InventoryServiceImpl.class.getName());
     
     /**
      * @param configFolder
@@ -107,7 +107,8 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     public InventoryServiceImpl(File configFolder)
     {
         this.configFolder = configFolder;
-        if (!this.configFolder.exists()) this.configFolder.mkdirs();
+        if (!this.configFolder.exists())
+            this.configFolder.mkdirs();
         this.configFile = new File(this.configFolder, "registry.yml"); //$NON-NLS-1$
         if (this.configFile.exists())
         {
@@ -182,7 +183,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     public InventoryId getInventory(InventoryTypeId type, Location location)
     {
         final Optional<InventoryComponent> comp = this.objects.fetch(new WorldChunk(location)).stream().map(c -> (InventoryComponent) c).filter(i -> i.getLocations().contains(location))
-                .filter(i -> i.getTypeId() == type).findFirst();
+            .filter(i -> i.getTypeId() == type).findFirst();
         return comp.isPresent() ? comp.get().getId() : null;
     }
     
@@ -318,7 +319,7 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
         CannotChangeFixedInventory,
         
     }
-
+    
     @Override
     public void onEnumRegistered(Plugin plugin, Class<? extends InventoryTypeId> clazz, InventoryTypeId[] values)
     {
@@ -329,29 +330,29 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
             {
                 for (final InventoryTypeId type : values)
                 {
-                    InventoryServiceImpl.this.inventoryIds.stream().
-                        filter(r -> r.getPluginName().equals(type.getPluginName()) && r.getEnumName().equals(type.name())).
-                        forEach(r -> {
-                            try
+                    InventoryServiceImpl.this.inventoryIds.stream().filter(r -> r.getPluginName().equals(type.getPluginName()) && r.getEnumName().equals(type.name())).forEach(r ->
+                    {
+                        try
+                        {
+                            final InventoryComponent comp = new InventoryComponent(InventoryServiceImpl.this.objects, new File(InventoryServiceImpl.this.configFolder, "inv-" + r.getUuid() + ".yml"), //$NON-NLS-1$ //$NON-NLS-2$
+                                InventoryServiceImpl.this);
+                            InventoryServiceImpl.this.inventories.put(comp.getId(), comp);
+                            InventoryServiceImpl.this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());
+                            if (comp.getData().getIdentifier() != null)
                             {
-                                final InventoryComponent comp = new InventoryComponent(InventoryServiceImpl.this.objects, new File(InventoryServiceImpl.this.configFolder, "inv-" + r.getUuid() + ".yml"), InventoryServiceImpl.this); //$NON-NLS-1$ //$NON-NLS-2$
-                                InventoryServiceImpl.this.inventories.put(comp.getId(), comp);
-                                InventoryServiceImpl.this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());
-                                if (comp.getData().getIdentifier() != null)
-                                {
-                                    InventoryServiceImpl.this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(comp.getData().getIdentifier(), comp.getId());
-                                }
+                                InventoryServiceImpl.this.inventoryByTypeAndName.computeIfAbsent(type, t -> new HashMap<>()).put(comp.getData().getIdentifier(), comp.getId());
                             }
-                            catch (McException e)
-                            {
-                                LOGGER.log(Level.WARNING, "Problems reading inventory", e); //$NON-NLS-1$
-                            }
-                        });
+                        }
+                        catch (McException e)
+                        {
+                            LOGGER.log(Level.WARNING, "Problems reading inventory", e); //$NON-NLS-1$
+                        }
+                    });
                 }
             }
         }.runTaskLater(plugin, 1);
     }
-
+    
     @Override
     public void onEnumRemoved(Plugin plugin, Class<? extends InventoryTypeId> clazz, InventoryTypeId[] values)
     {
@@ -365,13 +366,13 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
             }
         }
     }
-
+    
     @Override
     public void onDelete(AbstractComponent component) throws McException
     {
         final InventoryComponent inv = (InventoryComponent) component;
         final InventoryTypeId type = inv.getTypeId();
-        this.inventoryIds.remove(new InventoryRegistryData(type.getPluginName(), ((InventoryIdImpl)inv.getId()).getUuid().toString(), type.name()));
+        this.inventoryIds.remove(new InventoryRegistryData(type.getPluginName(), ((InventoryIdImpl) inv.getId()).getUuid().toString(), type.name()));
         final YmlFile yml = new YmlFile();
         yml.setFragmentList("list", this.inventoryIds); //$NON-NLS-1$
         try

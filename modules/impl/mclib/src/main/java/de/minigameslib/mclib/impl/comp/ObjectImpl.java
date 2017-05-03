@@ -56,21 +56,21 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
 {
     
     /** the object id. */
-    private final ObjectId id;
+    private final ObjectId               id;
     
     /** the object handler. */
     private final ObjectHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus               eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
-     * @param plugin 
-     * @param id 
-     * @param handler 
-     * @param config 
-     * @param owner 
-     * @throws McException 
+     * @param plugin
+     * @param id
+     * @param handler
+     * @param config
+     * @param owner
+     * @throws McException
      */
     public ObjectImpl(Plugin plugin, ObjectId id, ObjectHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -82,13 +82,13 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
             this.eventBus.registerHandlers(plugin, (McListener) this.handler);
         }
     }
-
+    
     @Override
     public ObjectIdInterface getObjectId()
     {
         return this.id;
     }
-
+    
     @Override
     public void delete() throws McException
     {
@@ -96,7 +96,8 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ObjectInterface.class, this);
             this.handler.canDelete();
         });
@@ -107,14 +108,15 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         {
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
-
-        McLibInterface.instance().runInCopiedContext(() -> {
+        
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ObjectInterface.class, this);
             super.delete();
             this.handler.onDelete();
         });
         this.eventBus.clear();
-
+        
         final ObjectDeletedEvent deletedEvent = new ObjectDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
@@ -145,13 +147,13 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
             this.handler.write(core.createSection("handler")); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public ObjectHandlerInterface getHandler()
     {
         return this.handler;
     }
-
+    
     /**
      * Clears all event registrations
      */
@@ -192,13 +194,14 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public ObjectTypeId getTypeId()
     {

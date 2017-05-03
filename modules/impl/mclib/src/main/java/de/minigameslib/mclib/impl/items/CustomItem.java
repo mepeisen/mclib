@@ -39,11 +39,11 @@ public class CustomItem extends AnnotatedDataFragment
     
     /** the plugin name. */
     @PersistentField
-    protected String pluginName;
+    protected String          pluginName;
     
     /** the enum name. */
     @PersistentField
-    protected String enumName;
+    protected String          enumName;
     
     /** the type. */
     @PersistentField
@@ -51,30 +51,30 @@ public class CustomItem extends AnnotatedDataFragment
     
     /** the item durability. */
     @PersistentField
-    protected short durability;
+    protected short           durability;
     
     /**
      * the numeric item id for modded items
      */
     @PersistentField
-    protected int numId;
+    protected int             numId;
     
     /** the durability. */
-    private Durability customDurability;
+    private Durability        customDurability;
     
     /** the item id. */
-    private ItemId itemId;
+    private ItemId            itemId;
     
     /** the name provider. */
-    private NameProvider nameProvider;
-
+    private NameProvider      nameProvider;
+    
     /**
      */
     public CustomItem()
     {
         // empty
     }
-
+    
     /**
      * @param pluginName
      * @param enumName
@@ -84,7 +84,7 @@ public class CustomItem extends AnnotatedDataFragment
         this.pluginName = pluginName;
         this.enumName = enumName;
     }
-
+    
     /**
      * @param pluginName
      * @param enumName
@@ -96,7 +96,7 @@ public class CustomItem extends AnnotatedDataFragment
         this.enumName = enumName;
         this.setItemId(itemId);
     }
-
+    
     /**
      * @return the numId
      */
@@ -104,15 +104,16 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.numId;
     }
-
+    
     /**
-     * @param numId the numId to set
+     * @param numId
+     *            the numId to set
      */
     public void setNumId(int numId)
     {
         this.numId = numId;
     }
-
+    
     /**
      * @return the nameProvider
      */
@@ -120,7 +121,7 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.nameProvider;
     }
-
+    
     /**
      * @return the durability
      */
@@ -128,24 +129,26 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.durability;
     }
-
+    
     /**
-     * @param durability the durability to set
+     * @param durability
+     *            the durability to set
      */
     public void setDurability(short durability)
     {
         this.durability = durability;
     }
-
+    
     /**
-     * @param itemId the itemId to set
+     * @param itemId
+     *            the itemId to set
      */
     public void setItemId(ItemId itemId)
     {
         this.itemId = itemId;
         this.nameProvider = itemId == null ? null : itemId.nameProvider();
     }
-
+    
     /**
      * @return the customType
      */
@@ -153,15 +156,16 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.customType;
     }
-
+    
     /**
-     * @param customType the customType to set
+     * @param customType
+     *            the customType to set
      */
     public void setCustomType(CustomItemTypes customType)
     {
         this.customType = customType;
     }
-
+    
     /**
      * @return the customDurability
      */
@@ -169,16 +173,17 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.customDurability;
     }
-
+    
     /**
-     * @param customDurability the customDurability to set
+     * @param customDurability
+     *            the customDurability to set
      */
     public void setCustomDurability(Durability customDurability)
     {
         this.customDurability = customDurability;
         this.durability = customDurability.getItemStackDurability();
     }
-
+    
     /**
      * @return the pluginName
      */
@@ -186,7 +191,7 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.pluginName;
     }
-
+    
     /**
      * @return the enumName
      */
@@ -194,7 +199,7 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.enumName;
     }
-
+    
     /**
      * @return the itemId
      */
@@ -202,7 +207,7 @@ public class CustomItem extends AnnotatedDataFragment
     {
         return this.itemId;
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -212,7 +217,7 @@ public class CustomItem extends AnnotatedDataFragment
         result = prime * result + ((this.pluginName == null) ? 0 : this.pluginName.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

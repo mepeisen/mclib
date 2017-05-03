@@ -214,7 +214,7 @@ import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
  * @author mepeisen
  */
 public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceInterface, MessageServiceInterface, PermissionServiceInterface, McLibInterface, ServerCommunicationServiceInterface,
-        ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
+    ExtensionServiceInterface, PluginMessageListener, BungeeServiceInterface, MgEventListener
 {
     
     /**
@@ -381,7 +381,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         // item service
         initItemsAndBlocksAndResources();
-
+        
         Bukkit.getServicesManager().register(InventoryServiceInterface.class, new InventoryServiceImpl(new File(this.getDataFolder(), "inventories")), this, ServicePriority.Highest); //$NON-NLS-1$
         
         CommunicationEndpointId.CommunicationServiceCache.init(this);
@@ -407,7 +407,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         }
         MclibPlugin.this.itemService.init();
     }
-
+    
     /**
      * 
      */
@@ -436,7 +436,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.serversPing = new GetServersPing();
         this.serversPing.runTaskTimer(this, 20 * 5, 20 * 60); // once per minute
     }
-
+    
     /**
      * 
      */
@@ -463,7 +463,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             }
         }.runTaskLater(this, 1);
     }
-
+    
     /**
      * 
      */
@@ -479,7 +479,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().load(EventSystemInterface.class).addEventListener(this);
         this.eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     }
-
+    
     /**
      * 
      */
@@ -520,7 +520,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         this.registerEvent(this, ZoneRelocatedEvent.class);
         this.registerEvent(this, ZoneRelocateEvent.class);
     }
-
+    
     /**
      * 
      */
@@ -549,7 +549,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             }
         }.runTaskLaterAsynchronously(this, 2);
     }
-
+    
     /**
      * 
      */
@@ -567,7 +567,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         
         Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
     }
-
+    
     /**
      * 
      */
@@ -1319,7 +1319,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             final McPlayerInterface mcp = this.players.getPlayer(player);
             try
             {
-                this.runInNewContext(() -> {
+                this.runInNewContext(() ->
+                {
                     this.setContext(McPlayerInterface.class, mcp);
                     final NetMessage msg = new NetMessage();
                     final ByteArrayDataInput input = ByteStreams.newDataInput(buf);
@@ -1758,13 +1759,13 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         Bukkit.getServicesManager().load(EventSystemInterface.class).registerEvent(plugin, clazz);
     }
-
+    
     @Override
     public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException
     {
         return AbstractConfigOption.create(config).getItem(onChange, contextProvider);
     }
-
+    
     @Override
     public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException
     {
@@ -1773,6 +1774,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     
     /**
      * handle inventory close event.
+     * 
      * @param evt
      */
     @EventHandler
@@ -1780,7 +1782,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         if (evt.getInventory() instanceof InventoryListener)
         {
-            ((InventoryListener)evt.getInventory()).handle(evt);
+            ((InventoryListener) evt.getInventory()).handle(evt);
         }
     }
     

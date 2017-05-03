@@ -45,6 +45,8 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 
 /**
+ * Implementation of enumeration services.
+ * 
  * @author mepeisen
  *
  */
@@ -54,37 +56,42 @@ class EnumServiceImpl implements EnumServiceInterface
     // TODO performance tuning. remove synchronized
     
     /** logging. */
-    private static final Logger LOGGER = Logger.getLogger(EnumServiceImpl.class.getName());
+    private static final Logger                                                                                  LOGGER            = Logger.getLogger(EnumServiceImpl.class.getName());
     
     /** enumeration values, listed by plugin. */
-    private final Map<Plugin, Set<Enum<?>>> enumsByPlugin = new HashMap<>();
+    private final Map<Plugin, Set<Enum<?>>>                                                                      enumsByPlugin     = new HashMap<>();
     
     /** enumeration values, listed by plugin and name. */
-    private final Map<String, Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>>> uniqueEnums = new HashMap<>();
+    private final Map<String, Map<Class<? extends UniqueEnumerationValue>, Map<String, UniqueEnumerationValue>>> uniqueEnums       = new HashMap<>();
     
     /** map from enumeration valur oto registering plugin. */
-    private final Map<Enum<?>, Plugin> pluginsByEnum = new HashMap<>();
+    private final Map<Enum<?>, Plugin>                                                                           pluginsByEnum     = new HashMap<>();
     
     /**
-     * enumeration listeners by plugin
+     * enumeration listeners by plugin.
      */
-    private final Map<Plugin, List<EnumerationListener<?>>> listenersByPlugin = new HashMap<>();
+    private final Map<Plugin, List<EnumerationListener<?>>>                                                      listenersByPlugin = new HashMap<>();
     
     /**
-     * Listeners by class
+     * Listeners by class.
      */
-    private final Map<Class<?>, List<EnumerationListener<?>>> listeners = new HashMap<>();
-
+    private final Map<Class<?>, List<EnumerationListener<?>>>                                                    listeners         = new HashMap<>();
+    
     @Override
     public <T extends Enum<?> & EnumerationValue> void registerEnumClass(Plugin plugin, Class<T> clazz)
     {
         this.registerEnumClass0(plugin, clazz);
     }
-
+    
     /**
-     * Register enum
+     * Register enumeration.
+     * 
+     * @param <T>
+     *            enumeration class
      * @param plugin
+     *            plugin that owns enumeration.
      * @param clazz
+     *            enumeration class to be registered.
      */
     private <T extends Enum<?>> void registerEnumClass0(Plugin plugin, Class<T> clazz)
     {
@@ -130,12 +137,22 @@ class EnumServiceImpl implements EnumServiceInterface
     }
     
     /**
-     * Calls listener class for new plugins
+     * Calls listener class for new plugins.
+     * 
+     * @param <T>
+     *            enum class (interface)
+     * @param <Q>
+     *            real enum class (impl)
      * @param plugin
+     *            plugin that registers enumeration
      * @param listenerClass
+     *            the enum class (interface)
      * @param realClass
+     *            the real enumeration class (impl)
      * @param values
+     *            the enumeration values
      * @param listener
+     *            the listener to be called
      */
     @SuppressWarnings("unchecked")
     private <T extends EnumerationValue, Q extends T> void callListener(Plugin plugin, Class<?> listenerClass, Class<?> realClass, List<?> values, EnumerationListener<?> listener)
@@ -144,22 +161,36 @@ class EnumServiceImpl implements EnumServiceInterface
     }
     
     /**
-     * Calls listener class for new plugins
+     * Calls listener class for new plugins.
+     * 
+     * @param <T>
+     *            enum class (interface)
+     * @param <Q>
+     *            real enum class (impl)
      * @param plugin
+     *            plugin that registers enumeration
      * @param listenerClass
+     *            the enum class (interface)
      * @param realClass
+     *            the real enumeration class (impl)
      * @param values
+     *            the enumeration values
      * @param listener
+     *            the listener to be called
      */
     @SuppressWarnings("unchecked")
     private <T extends EnumerationValue, Q extends T> void callListener2(Plugin plugin, Class<T> listenerClass, Class<Q> realClass, List<Q> values, EnumerationListener<T> listener)
     {
-        listener.onEnumRegistered(plugin, realClass, values.toArray((T[])Array.newInstance(listenerClass, values.size())));
+        listener.onEnumRegistered(plugin, realClass, values.toArray((T[]) Array.newInstance(listenerClass, values.size())));
     }
-
+    
     /**
+     * Returns the map of unique enumerations for given class.
+     * 
      * @param plugin
+     *            plugin owning the enumerations
      * @param clazz
+     *            enumeration class (interface)
      * @return unique enumeration map
      */
     private List<Map<String, UniqueEnumerationValue>> getUniqueMap(Plugin plugin, Class<?> clazz)
@@ -176,7 +207,7 @@ class EnumServiceImpl implements EnumServiceInterface
         }
         return result;
     }
-
+    
     @Override
     public void unregisterAllEnumerations(Plugin plugin)
     {
@@ -186,7 +217,7 @@ class EnumServiceImpl implements EnumServiceInterface
             if (set != null)
             {
                 set.forEach(this.pluginsByEnum::remove);
-                this.enumsByPlugin.remove(set);
+                this.enumsByPlugin.remove(plugin);
             }
             
             final List<EnumerationListener<?>> list = this.listenersByPlugin.remove(plugin);
@@ -196,16 +227,17 @@ class EnumServiceImpl implements EnumServiceInterface
             }
         }
     }
-
+    
+    @SuppressWarnings("cast")
     @Override
     public Plugin getPlugin(EnumerationValue enumValue)
     {
         synchronized (this.enumsByPlugin)
         {
-            return this.pluginsByEnum.get(enumValue);
+            return this.pluginsByEnum.get((Enum<?>) enumValue);
         }
     }
-
+    
     @Override
     public Set<Enum<?>> getEnumValues(Plugin plugin)
     {
@@ -215,7 +247,28 @@ class EnumServiceImpl implements EnumServiceInterface
             return s == null ? Collections.emptySet() : Collections.unmodifiableSet(s);
         }
     }
-
+    
+    @Override
+    public <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            final Set<Enum<?>> s = this.enumsByPlugin.get(plugin);
+            return s == null ? Collections.emptySet() : s.stream().filter(o -> clazz.isInstance(o)).map(o -> clazz.cast(o)).collect(Collectors.toSet());
+        }
+    }
+    
+    @Override
+    public <T extends EnumerationValue> Set<T> getEnumValues(Class<T> clazz)
+    {
+        synchronized (this.enumsByPlugin)
+        {
+            final Set<T> result = new HashSet<>();
+            this.enumsByPlugin.values().forEach(s -> s.stream().filter(e -> clazz.isInstance(e)).map(e -> clazz.cast(e)).forEach(result::add));
+            return result;
+        }
+    }
+    
     @Override
     public <T extends UniqueEnumerationValue> T getEnumValue(Class<T> clazz, String plugin, String name)
     {
@@ -233,33 +286,18 @@ class EnumServiceImpl implements EnumServiceInterface
         }
         return null;
     }
-
-    @Override
-    public <T extends EnumerationValue> Set<T> getEnumValues(Plugin plugin, Class<T> clazz)
-    {
-        synchronized (this.enumsByPlugin)
-        {
-            final Set<Enum<?>> s = this.enumsByPlugin.get(plugin);
-            return s == null ? Collections.emptySet() : s.stream().filter(o -> clazz.isInstance(o)).map(o -> clazz.cast(o)).collect(Collectors.toSet());
-        }
-    }
-
-    @Override
-    public <T extends EnumerationValue> Set<T> getEnumValues(Class<T> clazz)
-    {
-        synchronized (this.enumsByPlugin)
-        {
-            final Set<T> result = new HashSet<>();
-            this.enumsByPlugin.values().forEach(s -> s.stream().filter(e -> clazz.isInstance(e)).map(e -> clazz.cast(e)).forEach(result::add));
-            return result;
-        }
-    }
     
     /**
-     * enum value factory method
+     * enum value factory method.
+     * 
+     * @param <T>
+     *            enumeration class (interface)
      * @param plugin
+     *            plugin owning the enumeration
      * @param name
+     *            enumeration value name
      * @param clazz
+     *            enumeration class (interface)
      * @return enumeration value or {@code null} if it does not exist
      */
     public <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
@@ -278,7 +316,7 @@ class EnumServiceImpl implements EnumServiceInterface
         }
         return null;
     }
-
+    
     @Override
     public <T extends EnumerationValue> void registerEnumerationListener(Plugin plugin, Class<T> clazz, EnumerationListener<T> listener)
     {

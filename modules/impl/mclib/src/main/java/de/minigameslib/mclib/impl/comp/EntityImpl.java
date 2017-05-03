@@ -61,35 +61,35 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     // TODO fetch entity die events
     
     /** the bukkit entity. */
-    private Entity entity;
+    private Entity                       entity;
     
     /** the event id. */
-    private final EntityId id;
+    private final EntityId               id;
     
     /** the event handler. */
     private final EntityHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus               eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * the entity uuid.
      */
-    private UUID entityUuid;
-
+    private UUID                         entityUuid;
+    
     /**
      * Dyncmic entity type
      */
-    private DynamicEntityType dynamic;
+    private DynamicEntityType            dynamic;
     
     /**
-     * @param plugin 
+     * @param plugin
      * @param entity
-     * @param id 
-     * @param handler 
-     * @param config 
-     * @param owner 
-     * @throws McException 
+     * @param id
+     * @param handler
+     * @param config
+     * @param owner
+     * @throws McException
      */
     public EntityImpl(Plugin plugin, Entity entity, EntityId id, EntityHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -106,13 +106,13 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             this.entityUuid = this.entity.getUniqueId();
         }
     }
-
+    
     @Override
     public EntityIdInterface getEntityId()
     {
         return this.id;
     }
-
+    
     @Override
     public void delete() throws McException
     {
@@ -120,7 +120,8 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(EntityInterface.class, this);
             this.handler.canDelete();
         });
@@ -131,8 +132,9 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
         {
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
-
-        McLibInterface.instance().runInCopiedContext(() -> {
+        
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(EntityInterface.class, this);
             super.delete();
             this.handler.onDelete();
@@ -143,7 +145,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
         {
             this.dynamic.onDelete(getBukkitEntity());
         }
-
+        
         final EntityDeletedEvent deletedEvent = new EntityDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
@@ -182,7 +184,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             this.handler.write(core.createSection("handler")); //$NON-NLS-1$
             if (this.entityUuid != null)
             {
-                core.set("entityUuid", this.entityUuid.toString());  //$NON-NLS-1$
+                core.set("entityUuid", this.entityUuid.toString()); //$NON-NLS-1$
             }
             if (this.dynamic != null)
             {
@@ -199,13 +201,13 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             }
         }
     }
-
+    
     @Override
     public EntityHandlerInterface getHandler()
     {
         return this.handler;
     }
-
+    
     /**
      * Clears all event registrations
      */
@@ -246,25 +248,26 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public EntityTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getEntityId());
     }
-
+    
     @Override
     public Entity getBukkitEntity()
     {
         return this.entity;
     }
-
+    
     /**
      * @param entity2
      */
@@ -276,7 +279,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
             this.entityUuid = this.entity.getUniqueId();
         }
     }
-
+    
     /**
      * @return entity uuid
      */
@@ -284,7 +287,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     {
         return this.entityUuid;
     }
-
+    
     /**
      * @param t
      */
@@ -300,7 +303,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     {
         return this.dynamic;
     }
-
+    
     /**
      * @return the dynamiic section data config
      */

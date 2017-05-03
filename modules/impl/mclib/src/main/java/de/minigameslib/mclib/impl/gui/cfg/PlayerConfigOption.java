@@ -53,7 +53,7 @@ public class PlayerConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,12 +64,13 @@ public class PlayerConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
      * @param contextProvider
      * @param onChange
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {

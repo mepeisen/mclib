@@ -131,12 +131,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     /** the session storage. */
     private StorageImpl           sessionStorage = new StorageImpl();
-
+    
     /** previous session */
     private GuiSessionInterface   prevSession;
-
+    
     /** pause flag */
-    private boolean isPaused;
+    private boolean               isPaused;
     
     /**
      * Constructor
@@ -234,10 +234,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
                     final ItemStack stack = itemline[column].getItemStack().clone();
                     if (itemline[column].getDisplayName() != null)
                     {
-                        final String displayName =
-                                this.player.getBukkitPlayer().isOp() ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
-                                        : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
-                        ;
+                        final String displayName = this.player.getBukkitPlayer().isOp()
+                            ? itemline[column].getDisplayName().toAdminMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs())
+                            : itemline[column].getDisplayName().toUserMessage(this.player.getPreferredLocale(), itemline[column].getDisplayNameArgs());
                         items.setDisplayName(stack, displayName);
                     }
                     result.add(stack);
@@ -356,7 +355,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             // TODO resume smart gui
         }
     }
-
+    
     /**
      * @param oldSession
      */
@@ -417,7 +416,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }.runTaskLater((Plugin) McLibInterface.instance(), 1);
         }
     }
-
+    
     /**
      * Translates a string from colored string to gui string
      * 
@@ -588,7 +587,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     @Override
     public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
-            throws McException
+        throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -638,7 +637,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     @Override
     public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
-            throws McException
+        throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -680,7 +679,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         button.setCloseAction(closeAction);
         if (action != null)
         {
-            button.setAction((sgui, data) -> {
+            button.setAction((sgui, data) ->
+            {
                 final DataSection form = new MemoryDataSection();
                 data.forEach(entry -> form.set(entry.getKey(), entry.getValue()));
                 action.accept(sgui, form);
@@ -691,7 +691,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     @Override
     public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
-            GuiButton noButton) throws McException
+        GuiButton noButton) throws McException
     {
         checkForSmartGui();
         initSmartGui();
@@ -715,7 +715,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     
     @Override
     public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
-            GuiButton noButton, GuiButton cancelButton) throws McException
+        GuiButton noButton, GuiButton cancelButton) throws McException
     {
         checkForSmartGui();
         initSmartGui();

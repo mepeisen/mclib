@@ -31,6 +31,7 @@ import de.minigameslib.mclib.api.config.ConfigurationValues;
 
 /**
  * Core configuration values for modded worlds.
+ * 
  * @author mepeisen
  */
 @ConfigurationValues(path = "mod", file = "moddedworld.yml")

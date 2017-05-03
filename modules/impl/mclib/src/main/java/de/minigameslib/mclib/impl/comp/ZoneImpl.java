@@ -59,23 +59,23 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
 {
     
     /** zone id. */
-    private final ZoneId id;
+    private final ZoneId               id;
     
     /** zone handler. */
     private final ZoneHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
-     * @param plugin 
+     * @param plugin
      * @param registry
      * @param cuboid
-     * @param id 
-     * @param handler 
-     * @param config 
-     * @param owner 
-     * @throws McException 
+     * @param id
+     * @param handler
+     * @param config
+     * @param owner
+     * @throws McException
      */
     public ZoneImpl(Plugin plugin, ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -87,7 +87,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
             this.eventBus.registerHandlers(plugin, (McListener) this.handler);
         }
     }
-
+    
     @Override
     public ZoneId getZoneId()
     {
@@ -101,7 +101,8 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ZoneInterface.class, this);
             this.handler.canDelete();
         });
@@ -113,8 +114,8 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
         
-
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ZoneInterface.class, this);
             super.delete();
             this.handler.onDelete();
@@ -124,12 +125,13 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         final ZoneDeletedEvent deletedEvent = new ZoneDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
-
+    
     @Override
     public void setCuboid(Cuboid cub) throws McException
     {
         final Cuboid old = this.cuboid;
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ZoneInterface.class, this);
             this.handler.canChangeCuboid(cub);
         });
@@ -139,8 +141,9 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         {
             throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
         }
-
-        McLibInterface.instance().runInCopiedContext(() -> {
+        
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ZoneInterface.class, this);
             super.setCuboid(cub);
             this.handler.onCuboidChange(cub);
@@ -149,7 +152,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         final ZoneRelocatedEvent relocatedEvent = new ZoneRelocatedEvent(this, old, cub);
         Bukkit.getPluginManager().callEvent(relocatedEvent);
     }
-
+    
     @Override
     protected void saveData(DataSection coreSection)
     {
@@ -164,61 +167,61 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         // the id is already read from registry.yml
         this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
-
+    
     @Override
     public ZoneHandlerInterface getHandler()
     {
         return this.handler;
     }
-
+    
     @Override
     public Collection<ZoneInterface> getChildZones()
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindChildren);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getChildZones(ZoneTypeId... type)
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindChildren, type);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getParentZones()
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindParents);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getParentZones(ZoneTypeId... type)
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindParents, type);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getMatchingZones()
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindMatching);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getMatchingZones(ZoneTypeId... type)
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindMatching, type);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getOverlappingZones()
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type)
     {
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping, type);
     }
-
+    
     /**
      * Clears all event registrations
      */
@@ -259,13 +262,14 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public ZoneTypeId getTypeId()
     {

@@ -49,27 +49,26 @@ import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
  */
 public enum DynamicEntityType
 {
-
+    
     /** a dummy villager. */
     DUMMY_VILLAGER(DummyVillager::onResume, DummyVillager::onStore, DummyVillager::onDelete),
-
+    
     /** a dummy human. */
-    DUMMY_HUMAN(DummyHuman::onResume, DummyHuman::onStore, DummyHuman::onDelete)
-    ;
+    DUMMY_HUMAN(DummyHuman::onResume, DummyHuman::onStore, DummyHuman::onDelete);
     
     /** resume function. */
-    private final Function<DataSection, Entity> resume;
+    private final Function<DataSection, Entity>   resume;
     
     /** store function. */
     private final BiConsumer<DataSection, Entity> store;
     
     /** delete function. */
-    private final Consumer<Entity> delete;
+    private final Consumer<Entity>                delete;
     
     /**
      * @param resume
      * @param store
-     * @param delete 
+     * @param delete
      */
     private DynamicEntityType(Function<DataSection, Entity> resume, BiConsumer<DataSection, Entity> store, Consumer<Entity> delete)
     {
@@ -77,9 +76,10 @@ public enum DynamicEntityType
         this.store = store;
         this.delete = delete;
     }
-
+    
     /**
      * Resumes entity from data section
+     * 
      * @param section
      * @return entity
      */
@@ -90,6 +90,7 @@ public enum DynamicEntityType
     
     /**
      * Stores data to data section
+     * 
      * @param section
      * @param entity
      */
@@ -100,6 +101,7 @@ public enum DynamicEntityType
     
     /**
      * Deletion of entity
+     * 
      * @param entity
      */
     public void onDelete(Entity entity)
@@ -115,6 +117,7 @@ public enum DynamicEntityType
         
         /**
          * Resumes entity from data section
+         * 
          * @param section
          * @return entity
          */
@@ -130,6 +133,7 @@ public enum DynamicEntityType
         
         /**
          * Stores data to data section
+         * 
          * @param section
          * @param entity
          */
@@ -138,11 +142,12 @@ public enum DynamicEntityType
             final Location loc = entity.getLocation();
             final LocationData locdf = new LocationData(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), loc.getWorld().getName());
             section.set("location", locdf); //$NON-NLS-1$
-            section.set("profession", ((Villager)entity).getProfession()); //$NON-NLS-1$
+            section.set("profession", ((Villager) entity).getProfession()); //$NON-NLS-1$
         }
         
         /**
          * Delete function
+         * 
          * @param entity
          */
         static void onDelete(Entity entity)
@@ -161,6 +166,7 @@ public enum DynamicEntityType
         
         /**
          * Resumes entity from data section
+         * 
          * @param section
          * @return entity
          */
@@ -174,12 +180,13 @@ public enum DynamicEntityType
             
             final EntityHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class);
             final HumanEntity bukkitEntity = helper.spawnDummyHuman(loc, name, skin);
-            ((Player)bukkitEntity).setDisplayName(displayName);
+            ((Player) bukkitEntity).setDisplayName(displayName);
             return bukkitEntity;
         }
         
         /**
          * Stores data to data section
+         * 
          * @param section
          * @param entity
          */
@@ -200,6 +207,7 @@ public enum DynamicEntityType
         
         /**
          * Delete function
+         * 
          * @param entity
          */
         static void onDelete(Entity entity)

@@ -52,7 +52,7 @@ public class FloatConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,35 +64,38 @@ public class FloatConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final float num = this.calculate(contextProvider, this.getValue()::getFloat);
         player.nestAnvilGui(new QueryText(
-                String.valueOf(num),
-                null,
-                s -> {
-                    try
+            String.valueOf(num),
+            null,
+            s ->
+            {
+                try
+                {
+                    final float newVal = Float.parseFloat(s);
+                    this.run(contextProvider, () ->
                     {
-                        final float newVal = Float.parseFloat(s);
-                        this.run(contextProvider, () -> {
-                            this.getValue().setFloat(newVal);
-                            this.getValue().saveConfig();
-                        });
-                        onChange.run();
-                    }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                this.getValue().getComment()));
+                        this.getValue().setFloat(newVal);
+                        this.getValue().saveConfig();
+                    });
+                    onChange.run();
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            this.getValue().getComment()));
     }
     
 }

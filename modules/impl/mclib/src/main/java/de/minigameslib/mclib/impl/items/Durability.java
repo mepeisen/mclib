@@ -34,12 +34,14 @@ interface Durability
     
     /**
      * Returns the item durability
+     * 
      * @return item durability
      */
     short getItemStackDurability();
     
     /**
      * Retrurns the string durability for model files
+     * 
      * @return string durability
      */
     String getModelDurability();

@@ -52,43 +52,47 @@ public class CharacterConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
         final char str = this.calculate(contextProvider, this.getValue()::getCharacter);
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Text);
         ItemServiceInterface.instance().setDescription(stack, this.getValue().getComment());
-        return new ClickGuiItem(stack, AbstractConfigOption.Messages.ConfigNameWithStringValue, (p, s, g) -> this.select(p, s, g, onChange, contextProvider), this.getValue().path(), String.valueOf(str));
+        return new ClickGuiItem(stack, AbstractConfigOption.Messages.ConfigNameWithStringValue, (p, s, g) -> this.select(p, s, g, onChange, contextProvider), this.getValue().path(),
+            String.valueOf(str));
     }
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final char str = this.calculate(contextProvider, this.getValue()::getCharacter);
         player.nestAnvilGui(new QueryText(
-                String.valueOf(str),
-                null,
-                s -> {
-                    if (s.length() != 1)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.TextNotACharacter);
-                    }
-                    this.run(contextProvider, () -> {
-                        this.getValue().setCharacter(s.charAt(0));
-                        this.getValue().saveConfig();
-                    });
-                    onChange.run();
-                },
-                this.getValue().getComment()));
+            String.valueOf(str),
+            null,
+            s ->
+            {
+                if (s.length() != 1)
+                {
+                    throw new McException(AbstractConfigOption.Messages.TextNotACharacter);
+                }
+                this.run(contextProvider, () ->
+                {
+                    this.getValue().setCharacter(s.charAt(0));
+                    this.getValue().saveConfig();
+                });
+                onChange.run();
+            },
+            this.getValue().getComment()));
     }
     
 }

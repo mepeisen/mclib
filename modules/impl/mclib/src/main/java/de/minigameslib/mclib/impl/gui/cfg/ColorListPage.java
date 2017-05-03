@@ -42,16 +42,16 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
  */
 public class ColorListPage extends AbstractListPage<ConfigColorData>
 {
-
+    
     /** save function */
     private McConsumer<List<ConfigColorData>> onSave;
-
+    
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param save   
+     * @param save
      */
     public ColorListPage(Serializable title, ConfigColorData[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<ConfigColorData>> save)
     {
@@ -89,12 +89,12 @@ public class ColorListPage extends AbstractListPage<ConfigColorData>
     {
         final ConfigColorData value = this.lines.get(realLine);
         player.nestClickGui(new ColorEditor(
-                value,
-                c -> {
-                    this.lines.set(realLine, c);
-                    this.onSave.accept(this.lines);
-                }
-                ));
+            value,
+            c ->
+            {
+                this.lines.set(realLine, c);
+                this.onSave.accept(this.lines);
+            }));
     }
     
 }

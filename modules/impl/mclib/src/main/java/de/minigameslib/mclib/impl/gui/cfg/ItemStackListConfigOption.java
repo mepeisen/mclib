@@ -53,7 +53,7 @@ public class ItemStackListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,33 +64,38 @@ public class ItemStackListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final ConfigItemStackData[] arr = this.calculate(contextProvider, this.getValue()::getItemStackList);
         player.nestClickGui(new ItemStackListPage(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setItemStackList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setItemStackList(a.toArray(new ConfigItemStackData[a.size()]));
-                    });
-                    onChange.run();
-                }));
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setItemStackList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setItemStackList(a.toArray(new ConfigItemStackData[a.size()]));
+                });
+                onChange.run();
+            }));
     }
     
 }

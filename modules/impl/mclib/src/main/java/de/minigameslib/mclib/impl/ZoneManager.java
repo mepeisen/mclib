@@ -51,20 +51,21 @@ abstract class ZoneManager
     /**
      * the current zone the player is within
      */
-    private ZoneId primaryZone;
+    private ZoneId      primaryZone;
     
     /**
      * The previous location (blocks)
      */
-    private Location oldLocation = null;
+    private Location    oldLocation = null;
     
     /**
      * The current zones the entity is within.
      */
-    private Set<ZoneId> zones = new HashSet<>();
+    private Set<ZoneId> zones       = new HashSet<>();
     
     /**
      * Registers entity movement
+     * 
      * @param target
      */
     void registerMovement(Location target)
@@ -116,7 +117,7 @@ abstract class ZoneManager
      * @param oldZones
      */
     protected abstract void fireZonesLeft(Set<ZoneId> oldZones);
-
+    
     /**
      * @param loc
      * @return zone id sets
@@ -126,15 +127,13 @@ abstract class ZoneManager
         final ObjectServiceInterface osi = ObjectServiceInterface.instance();
         return osi.findZones(loc).stream().map(z -> (ZoneId) z.getZoneId()).collect(Collectors.toSet());
     }
-
+    
     /**
      * Returns the zone this player is currently in.
      * 
      * <p>
-     * This will always be the last zone the player entered if the player is within multiple zones.
-     * If the players leaves this zones the framework will check if he is still inside another zone
-     * and will return that zone. If the player is still inside multiple zones when leaving the
-     * returned zone will be random.
+     * This will always be the last zone the player entered if the player is within multiple zones. If the players leaves this zones the framework will check if he is still inside another zone and
+     * will return that zone. If the player is still inside multiple zones when leaving the returned zone will be random.
      * </p>
      * 
      * @return zone or {@code null} if this player is currently not within any zone.
@@ -146,6 +145,7 @@ abstract class ZoneManager
     
     /**
      * Checks if the player is within given zone.
+     * 
      * @param zone
      * @return {@code true} if player is inside given zone.
      */
@@ -156,6 +156,7 @@ abstract class ZoneManager
     
     /**
      * Checks if the player is inside at least one of the given zones.
+     * 
      * @param zone
      * @return {@code true} if player is at least inside one of the given zones.
      */
@@ -173,6 +174,7 @@ abstract class ZoneManager
     
     /**
      * Checks if the player is inside every of the given zones.
+     * 
      * @param zone
      * @return {@code true} if player is inside of the given zones.
      */
@@ -192,8 +194,7 @@ abstract class ZoneManager
      * Returns a zone the player is within and that is of given type.
      * 
      * <p>
-     * This method returns the "primary zone". If the zones are overlapping this may be
-     * a random  
+     * This method returns the "primary zone". If the zones are overlapping this may be a random
      * </p>
      * 
      * @param type
@@ -217,6 +218,7 @@ abstract class ZoneManager
     
     /**
      * Checks if the player is inside at least one of the given zones of given type.
+     * 
      * @param type
      * @return {@code true} if player is at least inside one of the given zones.
      */
@@ -227,6 +229,7 @@ abstract class ZoneManager
     
     /**
      * Returns the zone the player is within.
+     * 
      * @return zone list
      */
     Collection<ZoneInterface> getZones()
@@ -237,6 +240,7 @@ abstract class ZoneManager
     
     /**
      * Returns the zone of given types the player is within
+     * 
      * @param type
      * @return zone list
      */

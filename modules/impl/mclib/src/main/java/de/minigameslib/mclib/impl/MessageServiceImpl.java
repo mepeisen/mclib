@@ -42,13 +42,13 @@ class MessageServiceImpl implements MessageServiceInterface
 {
     
     /** enum service helper. */
-    private final EnumServiceImpl                                        enumService;
+    private final EnumServiceImpl                      enumService;
     
     /**
      * messages configuration per plugin.
      */
-    private final Map<Plugin, MessagesConfigInterface>                   messages                       = new HashMap<>();
-
+    private final Map<Plugin, MessagesConfigInterface> messages = new HashMap<>();
+    
     /**
      * @param enumService
      */
@@ -56,7 +56,7 @@ class MessageServiceImpl implements MessageServiceInterface
     {
         this.enumService = enumService;
     }
-
+    
     @Override
     public MessagesConfigInterface getMessagesFromMsg(LocalizedMessageInterface item)
     {

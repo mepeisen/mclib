@@ -46,19 +46,19 @@ public abstract class AbstractComponent
     private final ComponentRegistry registry;
     
     /** the current world chunks this component is located in. */
-    private final Set<WorldChunk> currentChunks = new HashSet<>();
+    private final Set<WorldChunk>   currentChunks = new HashSet<>();
     
     /** the file config. */
-    protected YmlFile config;
+    protected YmlFile               config;
     
     /** the config file. */
-    protected File configFile;
+    protected File                  configFile;
     
     /** deleted flag. */
-    protected boolean deleted;
+    protected boolean               deleted;
     
     /** the component owner. */
-    protected ComponentOwner owner;
+    protected ComponentOwner        owner;
     
     /**
      * Constructor to create the component.
@@ -67,8 +67,9 @@ public abstract class AbstractComponent
      *            the owning registry.
      * @param config
      *            the file config.
-     *            @param owner the owning component
-     * @throws McException 
+     * @param owner
+     *            the owning component
+     * @throws McException
      */
     public AbstractComponent(ComponentRegistry registry, File config, ComponentOwner owner) throws McException
     {
@@ -97,11 +98,13 @@ public abstract class AbstractComponent
     
     /**
      * Sets/Changes the world chunks this component is located in.
+     * 
      * @param chunks
      */
     protected void setWorldChunks(Set<WorldChunk> chunks)
     {
-        if (this.registry == null) return;
+        if (this.registry == null)
+            return;
         final Set<WorldChunk> removed = new HashSet<>(this.currentChunks);
         removed.removeAll(chunks);
         final Set<WorldChunk> added = new HashSet<>(chunks);
@@ -120,6 +123,7 @@ public abstract class AbstractComponent
     
     /**
      * Deletes this component.
+     * 
      * @throws McException
      */
     public void delete() throws McException

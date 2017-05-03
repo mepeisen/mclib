@@ -47,10 +47,10 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
  */
 public abstract class AbstractConfigOption
 {
-
+    
     /** the enum value */
     private final ConfigurationValueInterface value;
-
+    
     /**
      * @param value
      */
@@ -59,24 +59,26 @@ public abstract class AbstractConfigOption
         this.value = value;
     }
     
-    /** 
+    /**
      * returns the click gui item
+     * 
      * @param onChange
-     * @param contextProvider 
+     * @param contextProvider
      * @return click gui item
-     * @throws McException 
+     * @throws McException
      */
     public abstract ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException;
-
+    
     /**
      * The option name
+     * 
      * @return option name
      */
     public String name()
     {
         return this.value.name();
     }
-
+    
     /**
      * @return the value
      */
@@ -84,9 +86,10 @@ public abstract class AbstractConfigOption
     {
         return this.value;
     }
-   
+    
     /**
      * Calculate function by providing a context
+     * 
      * @param contextProvider
      * @param supplier
      * @return result
@@ -96,16 +99,18 @@ public abstract class AbstractConfigOption
     {
         if (contextProvider != null)
         {
-            return McLibInterface.instance().calculateInNewContext(() -> {
+            return McLibInterface.instance().calculateInNewContext(() ->
+            {
                 contextProvider.run();
                 return supplier.get();
             });
         }
         return supplier.get();
     }
-   
+    
     /**
      * Run function by providing a context
+     * 
      * @param contextProvider
      * @param runnable
      * @throws McException
@@ -118,7 +123,8 @@ public abstract class AbstractConfigOption
         }
         else
         {
-            McLibInterface.instance().runInNewContext(() -> {
+            McLibInterface.instance().runInNewContext(() ->
+            {
                 contextProvider.run();
                 runnable.run();
             });
@@ -127,6 +133,7 @@ public abstract class AbstractConfigOption
     
     /**
      * Creates config value option for given value
+     * 
      * @param value
      * @return config value option
      */
@@ -212,16 +219,16 @@ public abstract class AbstractConfigOption
         {
             return new LongListConfigOption(value);
         }
-//        if (value.isObject())
-//        {
-//      // TODO support object editor
-//            return new ObjectConfigOption(value);
-//        }
-//        if (value.isObjectList())
-//        {
-//      // TODO support object editor
-//            return new ObjectListConfigOption(value);
-//        }
+        // if (value.isObject())
+        // {
+        // // TODO support object editor
+        // return new ObjectConfigOption(value);
+        // }
+        // if (value.isObjectList())
+        // {
+        // // TODO support object editor
+        // return new ObjectListConfigOption(value);
+        // }
         if (value.isPlayer())
         {
             return new PlayerConfigOption(value);
@@ -230,10 +237,10 @@ public abstract class AbstractConfigOption
         {
             return new PlayerListConfigOption(value);
         }
-//        if (value.isSection())
-//        {
-//            // TODO support section editor
-//        }
+        // if (value.isSection())
+        // {
+        // // TODO support section editor
+        // }
         if (value.isShort())
         {
             return new ShortConfigOption(value);
@@ -270,7 +277,6 @@ public abstract class AbstractConfigOption
         };
     }
     
-
     /**
      * Common messages within gui
      * 
@@ -282,72 +288,80 @@ public abstract class AbstractConfigOption
         ClickGuis.class,
         AbstractListPage.Messages.class,
         ColorEditor.Messages.class,
-        EnumEditor.Messages.class})
+        EnumEditor.Messages.class })
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
          * gui config name
          * 
-         * <p>No Arguments</p>
+         * <p>
+         * No Arguments
+         * </p>
          */
         @LocalizedMessage(defaultMessage = "%1$s")
-        @MessageComment(value = {"gui config name"}, args = {@MessageComment.Argument("gui config path")})
+        @MessageComment(value = { "gui config name" }, args = { @MessageComment.Argument("gui config path") })
         ConfigName,
         
         /**
          * gui config name
          * 
-         * <p>No Arguments</p>
+         * <p>
+         * No Arguments
+         * </p>
          */
         @LocalizedMessage(defaultMessage = "%1$s - value: %2$d")
-        @MessageComment(value = {"gui config name"}, args = {@MessageComment.Argument("gui config path"), @MessageComment.Argument("numeric value")})
+        @MessageComment(value = { "gui config name" }, args = { @MessageComment.Argument("gui config path"), @MessageComment.Argument("numeric value") })
         ConfigNameWithDecimalValue,
         
         /**
          * gui config name
          * 
-         * <p>No Arguments</p>
+         * <p>
+         * No Arguments
+         * </p>
          */
         @LocalizedMessage(defaultMessage = "%1$s - value: %2$s")
-        @MessageComment(value = {"gui config name"}, args = {@MessageComment.Argument("gui config path"), @MessageComment.Argument("string value")})
+        @MessageComment(value = { "gui config name" }, args = { @MessageComment.Argument("gui config path"), @MessageComment.Argument("string value") })
         ConfigNameWithStringValue,
         
         /**
          * gui config name
          * 
-         * <p>No Arguments</p>
+         * <p>
+         * No Arguments
+         * </p>
          */
         @LocalizedMessage(defaultMessage = "%1$s - value: %2$f")
-        @MessageComment(value = {"gui config name"}, args = {@MessageComment.Argument("gui config path"), @MessageComment.Argument("float value")})
+        @MessageComment(value = { "gui config name" }, args = { @MessageComment.Argument("gui config path"), @MessageComment.Argument("float value") })
         ConfigNameWithFloatValue,
         
         /**
          * invalid numeric format
          */
         @LocalizedMessage(defaultMessage = "The text you entered is not a valid number", severity = MessageSeverityType.Error)
-        @MessageComment(value = {"invalid numeric format"})
+        @MessageComment(value = { "invalid numeric format" })
         InvalidNumericFormat,
         
         /**
          * number out of range
          */
         @LocalizedMessage(defaultMessage = "The number you entered is out of range (min %1$d, max %2$d)", severity = MessageSeverityType.Error)
-        @MessageComment(value = {"number out of range"}, args = {@MessageComment.Argument("min value"), @MessageComment.Argument("max value")})
+        @MessageComment(value = { "number out of range" }, args = { @MessageComment.Argument("min value"), @MessageComment.Argument("max value") })
         NumberOutOfRange,
         
         /**
          * text not a character
          */
         @LocalizedMessage(defaultMessage = "The text you entered is not a single character", severity = MessageSeverityType.Error)
-        @MessageComment(value = {"text not a character"})
+        @MessageComment(value = { "text not a character" })
         TextNotACharacter,
         
         /**
          * not implemented
          */
         @LocalizedMessage(defaultMessage = "Editor not implemented", severity = MessageSeverityType.Error)
-        @MessageComment(value = {"not implemented"})
+        @MessageComment(value = { "not implemented" })
         NotImplemented,
     }
     

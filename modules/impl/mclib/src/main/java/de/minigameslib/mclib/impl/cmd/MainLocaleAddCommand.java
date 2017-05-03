@@ -51,14 +51,14 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     {
         return command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
     }
-
+    
     @Override
     public void handle(CommandInterface command) throws McException
     {
         command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
         final String locale = command.fetchString(Messages.MissingLocale);
         command.checkMaxArgCount(0);
-            
+        
         final Locale loc = new Locale(locale);
         if (McLibInterface.instance().getMainLocales().contains(loc))
         {
@@ -70,7 +70,7 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
             displaySuccess(command, loc);
         }
     }
-
+    
     /**
      * @param command
      * @param loc
@@ -79,7 +79,7 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     {
         command.send(Messages.Added, loc.toString());
     }
-
+    
     /**
      * @param command
      * @param loc
@@ -88,19 +88,19 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     {
         command.send(Messages.Duplicate, loc.toString());
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {
         return Collections.emptyList();
     }
-
+    
     @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return Messages.ShortDescription;
     }
-
+    
     @Override
     public LocalizedMessageInterface getDescription(CommandInterface command)
     {

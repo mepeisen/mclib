@@ -36,8 +36,9 @@ public interface ComponentOwner
     
     /**
      * Notify about deletion of a component.
+     * 
      * @param component
-     * @throws McException 
+     * @throws McException
      */
     void onDelete(AbstractComponent component) throws McException;
     

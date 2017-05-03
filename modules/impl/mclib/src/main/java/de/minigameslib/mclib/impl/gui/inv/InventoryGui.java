@@ -49,7 +49,7 @@ public class InventoryGui implements ClickGuiInterface
     {
         this.inventory = inventory;
     }
-
+    
     @Override
     public ClickGuiId getUniqueId()
     {

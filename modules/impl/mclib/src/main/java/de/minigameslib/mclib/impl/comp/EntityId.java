@@ -40,8 +40,8 @@ public class EntityId implements EntityIdInterface
     private String pluginName;
     
     /** the uuid. */
-    private UUID uuid;
-
+    private UUID   uuid;
+    
     /** component type name. */
     private String type;
     
@@ -55,7 +55,7 @@ public class EntityId implements EntityIdInterface
     
     /**
      * @param pluginName
-     * @param type 
+     * @param type
      * @param uuid
      */
     public EntityId(String pluginName, String type, UUID uuid)
@@ -64,7 +64,7 @@ public class EntityId implements EntityIdInterface
         this.uuid = uuid;
         this.type = type;
     }
-
+    
     @Override
     public void read(DataSection section)
     {
@@ -80,16 +80,16 @@ public class EntityId implements EntityIdInterface
         section.set("type", this.type); //$NON-NLS-1$
         section.set("uuid", this.uuid.toString()); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
         return section.isString("plugin") //$NON-NLS-1$
-                && section.isString("type") //$NON-NLS-1$
-                && section.isString("uuid") //$NON-NLS-1$
-                && isUUID(section.getString("uuid")); //$NON-NLS-1$
+            && section.isString("type") //$NON-NLS-1$
+            && section.isString("uuid") //$NON-NLS-1$
+            && isUUID(section.getString("uuid")); //$NON-NLS-1$
     }
-
+    
     /**
      * @param str
      * @return true if this is a uuid
@@ -98,7 +98,8 @@ public class EntityId implements EntityIdInterface
     {
         try
         {
-            if (str == null) return false;
+            if (str == null)
+                return false;
             UUID.fromString(str);
             return true;
         }
@@ -107,7 +108,7 @@ public class EntityId implements EntityIdInterface
             return false;
         }
     }
-
+    
     /**
      * @return the pluginName
      */
@@ -115,7 +116,7 @@ public class EntityId implements EntityIdInterface
     {
         return this.pluginName;
     }
-
+    
     /**
      * @return the uuid
      */
@@ -123,7 +124,7 @@ public class EntityId implements EntityIdInterface
     {
         return this.uuid;
     }
-
+    
     /**
      * @return the type
      */
@@ -131,7 +132,7 @@ public class EntityId implements EntityIdInterface
     {
         return this.type;
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -142,7 +143,7 @@ public class EntityId implements EntityIdInterface
         result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -176,7 +177,7 @@ public class EntityId implements EntityIdInterface
             return false;
         return true;
     }
-
+    
     @Override
     public String toString()
     {

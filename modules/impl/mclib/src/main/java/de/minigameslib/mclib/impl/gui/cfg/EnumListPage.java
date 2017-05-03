@@ -43,20 +43,20 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  */
 public class EnumListPage extends AbstractListPage<EnumerationValue>
 {
-
+    
     /** save function */
-    private McConsumer<List<EnumerationValue>> onSave;
+    private McConsumer<List<EnumerationValue>>      onSave;
     
     /** enum class */
     private final Class<? extends EnumerationValue> clazz;
-
+    
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param save   
-     * @param clazz 
+     * @param save
+     * @param clazz
      */
     public EnumListPage(Serializable title, EnumerationValue[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<EnumerationValue>> save, Class<? extends EnumerationValue> clazz)
     {
@@ -95,13 +95,13 @@ public class EnumListPage extends AbstractListPage<EnumerationValue>
     {
         final EnumerationValue value = this.lines.get(realLine);
         player.nestClickGui(new EnumEditor(
-                this.clazz,
-                value,
-                c -> {
-                    this.lines.set(realLine, c);
-                    this.onSave.accept(this.lines);
-                }
-                ));
+            this.clazz,
+            value,
+            c ->
+            {
+                this.lines.set(realLine, c);
+                this.onSave.accept(this.lines);
+            }));
     }
     
 }

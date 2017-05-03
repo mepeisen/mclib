@@ -187,7 +187,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     
     /**
      * Returns the client locales to be used for resource set names.
-     * @param serverLocale server locale.
+     * 
+     * @param serverLocale
+     *            server locale.
      * @return client locales
      */
     private Set<Locale> getClientLocales(Locale serverLocale)
@@ -604,7 +606,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final ItemHelperInterface helper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
         
         // parse items from plugins
-        final List<ItemId> enumValues = stream.sorted((a, b) -> {
+        final List<ItemId> enumValues = stream.sorted((a, b) ->
+        {
             int result = a.getPluginName().compareTo(b.getPluginName());
             if (result == 0)
             {
@@ -710,12 +713,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 if (custom.getNumId() > 0)
                 {
                     this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
-                            .add(() -> helper.installFurnaceRecipe(custom.getNumId(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+                        .add(() -> helper.installFurnaceRecipe(custom.getNumId(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
                 }
                 else
                 {
                     this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>()).add(() -> helper.installFurnaceRecipe(custom.getCustomType().getMaterial(),
-                            custom.getCustomDurability().getItemStackDurability(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
+                        custom.getCustomDurability().getItemStackDurability(), furnaceRecipe.getReceipe(item, null, null), furnaceRecipe.getExperience(item, null, null)));
                 }
             }
             
@@ -739,12 +742,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 for (final CraftingShapedRecipe shaped : crafting.shaped())
                 {
                     this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
-                            .add(() -> helper.installShapedRecipe(createItem(item), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                        .add(() -> helper.installShapedRecipe(createItem(item), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
                 }
                 for (final CraftingShapelessRecipe shapeless : crafting.shapeless())
                 {
                     this.lazyPluginInit.computeIfAbsent(item.getPluginName(), k -> new ArrayList<>())
-                            .add(() -> helper.installShapelessRecipe(createItem(item), shapeless.amount(), toShapelessItems(shapeless.items())));
+                        .add(() -> helper.installShapelessRecipe(createItem(item), shapeless.amount(), toShapelessItems(shapeless.items())));
                 }
             }
             
@@ -804,12 +807,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initSword(custom.getNumId(), sword.durability(), sword.damageVsEntity(), sword.damage(), sword.getItemEnchantability(), sword.speed(),
-                    new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+                new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
         }
         else
         {
             helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.durability(), sword.damageVsEntity(), sword.damage(),
-                    sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
+                sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
         }
     }
     
@@ -826,12 +829,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initShovel(custom.getNumId(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(), shovel.speed(),
-                    new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+                new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
         }
         else
         {
             helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(),
-                    shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
+                shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
         }
     }
     
@@ -848,12 +851,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initPickaxe(custom.getNumId(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(), pickaxe.speed(),
-                    new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+                new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
         }
         else
         {
             helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(),
-                    pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
+                pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
         }
     }
     
@@ -870,12 +873,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initHoe(custom.getNumId(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
-                    new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+                new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
         }
         else
         {
             helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
-                    new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
+                new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
         }
     }
     
@@ -892,12 +895,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initAxe(custom.getNumId(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
-                    new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+                new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
         }
         else
         {
             helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
-                    new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
+                new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
         }
     }
     
@@ -914,12 +917,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         if (custom.getNumId() > 0)
         {
             helper.initArmor(custom.getNumId(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(), armor.toughness(), armor.slot(),
-                    new NmsItemRule(null, armor.repairRule().newInstance(), null));
+                new NmsItemRule(null, armor.repairRule().newInstance(), null));
         }
         else
         {
             helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(),
-                    armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
+                armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
         }
     }
     
@@ -990,7 +993,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         final Stack<CustomBlock> newBlocks = new Stack<>();
         
         // parse blocks from plugins
-        final List<BlockId> enumValues = stream.sorted((a, b) -> {
+        final List<BlockId> enumValues = stream.sorted((a, b) ->
+        {
             int result = a.getPluginName().compareTo(b.getPluginName());
             if (result == 0)
             {
@@ -1071,12 +1075,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 if (variantFurnace != null)
                 {
                     this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                            .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), variantFurnace.getReceipe(null, block, variant), variantFurnace.getExperience(null, block, variant)));
+                        .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), variantFurnace.getReceipe(null, block, variant), variantFurnace.getExperience(null, block, variant)));
                 }
                 else if (furnaceRecipe != null)
                 {
                     this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                            .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant)));
+                        .add(() -> helper.installFurnaceRecipe(blockId, variant.ordinal(), furnaceRecipe.getReceipe(null, block, variant), furnaceRecipe.getExperience(null, block, variant)));
                 }
                 
                 // crafting
@@ -1086,12 +1090,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     for (final CraftingShapedRecipe shaped : variantRecipes.shaped())
                     {
                         this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                                .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                            .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
                     }
                     for (final CraftingShapelessRecipe shapeless : variantRecipes.shapeless())
                     {
                         this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                                .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
+                            .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
                     }
                 }
                 if (blockRecipes != null)
@@ -1099,12 +1103,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     for (final CraftingShapedRecipe shaped : blockRecipes.shaped())
                     {
                         this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                                .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
+                            .add(() -> helper.installShapedRecipe(blockId, variant.ordinal(), shaped.amount(), shaped.shape(), toShapedItems(shaped.items())));
                     }
                     for (final CraftingShapelessRecipe shapeless : blockRecipes.shapeless())
                     {
                         this.lazyPluginInit.computeIfAbsent(block.getPluginName(), k -> new ArrayList<>())
-                                .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
+                            .add(() -> helper.installShapelessRecipe(blockId, variant.ordinal(), shapeless.amount(), toShapelessItems(shapeless.items())));
                     }
                 }
                 
@@ -1377,7 +1381,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 if (item == null)
                     continue;
                 buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()) //$NON-NLS-1$ //$NON-NLS-2$
-                        .append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$
+                    .append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$
             }
             buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
             buffer.append("]}"); //$NON-NLS-1$
@@ -1590,7 +1594,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     langFile.setTime(System.currentTimeMillis());
                     jar.putNextEntry(langFile);
                     final StringBuilder buffer = new StringBuilder();
-                    this.blockNumIdMap.forEach((numId, block) -> {
+                    this.blockNumIdMap.forEach((numId, block) ->
+                    {
                         for (final BlockVariantId variant : block.getBlockId().variants())
                         {
                             NameProvider provider = variant.nameProvider();
@@ -1608,7 +1613,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                             }
                         }
                     });
-                    this.itemNumIdMap.forEach((numId, item) -> {
+                    this.itemNumIdMap.forEach((numId, item) ->
+                    {
                         final NameProvider provider = item.getNameProvider();
                         if (provider != null)
                         {
@@ -1779,7 +1785,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     @Override
     public ToolBuilderInterface prepareTool(ItemStack stack, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
     {
-        return new ToolBuilderImpl(player, () -> {
+        return new ToolBuilderImpl(player, () ->
+        {
             this.setDisplayName(stack, player, title, titleArgs);
             return stack;
         });
@@ -1946,7 +1953,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         {
                             final ItemStack invitem = inventory.getItem(i);
                             if (id.equals(helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID))
-                                    && helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
+                                && helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_MARKER) != null)
                             {
                                 inventory.setItem(i, new ItemStack(Material.AIR));
                                 evt.getPlayer().getBukkitPlayer().updateInventory();
@@ -2160,7 +2167,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ItemStack createItem(BlockId id, BlockVariantId variant, String name)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(),
-                name == null ? "" : name); //$NON-NLS-1$
+            name == null ? "" : name); //$NON-NLS-1$
     }
     
     @Override

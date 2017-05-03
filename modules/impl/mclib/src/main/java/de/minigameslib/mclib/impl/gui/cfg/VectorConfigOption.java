@@ -53,7 +53,7 @@ public class VectorConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,12 +64,13 @@ public class VectorConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
      * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {

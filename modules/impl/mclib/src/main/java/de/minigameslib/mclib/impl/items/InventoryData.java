@@ -46,37 +46,37 @@ public class InventoryData extends AnnotatedDataFragment
      * inventory type id
      */
     @PersistentField
-    protected InventoryTypeId typeId;
+    protected InventoryTypeId           typeId;
     
     /**
      * inventory identifier
      */
     @PersistentField
-    protected String identifier;
+    protected String                    identifier;
     
     /**
      * initial size
      */
     @PersistentField
-    protected int initialSize;
+    protected int                       initialSize;
     
     /**
      * fixed flag
      */
     @PersistentField
-    protected boolean fixed;
+    protected boolean                   fixed;
     
     /**
      * shared flag
      */
     @PersistentField
-    protected boolean shared;
+    protected boolean                   shared;
     
     /**
      * the id of this inventory.
      */
     @PersistentField
-    protected InventoryId id;
+    protected InventoryId               id;
     
     /**
      * Locations of this inventory.
@@ -88,16 +88,17 @@ public class InventoryData extends AnnotatedDataFragment
      * players
      */
     @PersistentField
-    protected Set<UUID> players = new HashSet<>();
-
+    protected Set<UUID>                 players   = new HashSet<>();
+    
     /**
      * Constructor to create new data
+     * 
      * @param typeId
      * @param identifier
      * @param initialSize
      * @param fixed
      * @param shared
-     * @param id 
+     * @param id
      */
     public InventoryData(InventoryTypeId typeId, String identifier, int initialSize, boolean fixed, boolean shared, InventoryId id)
     {
@@ -116,7 +117,7 @@ public class InventoryData extends AnnotatedDataFragment
     {
         // empty
     }
-
+    
     /**
      * @return the locations
      */
@@ -124,7 +125,7 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.locations;
     }
-
+    
     /**
      * @return the players
      */
@@ -132,7 +133,7 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.players;
     }
-
+    
     /**
      * @return the id
      */
@@ -140,15 +141,16 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.id;
     }
-
+    
     /**
-     * @param id the id to set
+     * @param id
+     *            the id to set
      */
     public void setId(InventoryId id)
     {
         this.id = id;
     }
-
+    
     /**
      * @return the typeId
      */
@@ -156,15 +158,16 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.typeId;
     }
-
+    
     /**
-     * @param typeId the typeId to set
+     * @param typeId
+     *            the typeId to set
      */
     public void setTypeId(InventoryTypeId typeId)
     {
         this.typeId = typeId;
     }
-
+    
     /**
      * @return the identifier
      */
@@ -172,15 +175,16 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.identifier;
     }
-
+    
     /**
-     * @param identifier the identifier to set
+     * @param identifier
+     *            the identifier to set
      */
     public void setIdentifier(String identifier)
     {
         this.identifier = identifier;
     }
-
+    
     /**
      * @return the initialSize
      */
@@ -188,15 +192,16 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.initialSize;
     }
-
+    
     /**
-     * @param initialSize the initialSize to set
+     * @param initialSize
+     *            the initialSize to set
      */
     public void setInitialSize(int initialSize)
     {
         this.initialSize = initialSize;
     }
-
+    
     /**
      * @return the fixed
      */
@@ -204,15 +209,16 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.fixed;
     }
-
+    
     /**
-     * @param fixed the fixed to set
+     * @param fixed
+     *            the fixed to set
      */
     public void setFixed(boolean fixed)
     {
         this.fixed = fixed;
     }
-
+    
     /**
      * @return the shared
      */
@@ -220,9 +226,10 @@ public class InventoryData extends AnnotatedDataFragment
     {
         return this.shared;
     }
-
+    
     /**
-     * @param shared the shared to set
+     * @param shared
+     *            the shared to set
      */
     public void setShared(boolean shared)
     {

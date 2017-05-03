@@ -52,7 +52,8 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
  * An abstract list page being able to insert and remove list elements
  * 
  * @author mepeisen
- * @param <T> element type
+ * @param <T>
+ *            element type
  */
 public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> implements ClickGuiInterface
 {
@@ -64,29 +65,29 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     protected ClickGuiItem.GuiItemHandler onDelete;
     
     /** title */
-    protected Serializable title;
-
+    protected Serializable                title;
+    
     /** the lines. */
-    protected List<T> lines;
+    protected List<T>                     lines;
     
     /** converter for output. */
-    protected Function<T, String> toString;
+    protected Function<T, String>         toString;
     
     /** string marker */
-    private static final String DELETE_MARKER = "$DELETE$"; //$NON-NLS-1$
+    private static final String           DELETE_MARKER        = "$DELETE$";        //$NON-NLS-1$
     
     /** string marker */
-    private static final String CREATE_BEFORE_MARKER = "$CREATE-BEFORE$"; //$NON-NLS-1$
+    private static final String           CREATE_BEFORE_MARKER = "$CREATE-BEFORE$"; //$NON-NLS-1$
     
     /** string marker */
-    private static final String CREATE_AFTER_MARKER = "$CREATE-AFTER"; //$NON-NLS-1$
+    private static final String           CREATE_AFTER_MARKER  = "$CREATE-AFTER";   //$NON-NLS-1$
     
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param toString 
+     * @param toString
      */
     public AbstractListPage(Serializable title, T[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, Function<T, String> toString)
     {
@@ -96,13 +97,13 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         this.onDelete = onDelete;
         this.toString = toString;
     }
-
+    
     @Override
     protected int count()
     {
         return this.lines.size() * ITEMS_PER_LINE;
     }
-
+    
     @Override
     protected List<String> getElements(int start, int limit)
     {
@@ -121,6 +122,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     
     /**
      * prev page icon
+     * 
      * @return prev page icon
      */
     public ClickGuiItem itemPrevPage()
@@ -130,13 +132,14 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     
     /**
      * next page icon
+     * 
      * @return next page icon
      */
     public ClickGuiItem itemNextPage()
     {
         return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
     }
-
+    
     @Override
     protected ClickGuiItem map(int line, int col, int index, String elm)
     {
@@ -159,23 +162,23 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         }
         return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), Messages.IconEdit, (p, s, g) -> onEdit(p, s, g, realLine), realLine);
     }
-
+    
     @Override
     protected ClickGuiItem[] firstLine()
     {
-        return new ClickGuiItem[]{
-                null,
-                null,
-                this.itemPrevPage(),
-                this.itemNextPage(),
-                new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back), Messages.IconBack, this.onPrev),
-                null,
-                new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteAll, this.onDelete),
-                null,
-                null
+        return new ClickGuiItem[] {
+            null,
+            null,
+            this.itemPrevPage(),
+            this.itemNextPage(),
+            new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back), Messages.IconBack, this.onPrev),
+            null,
+            new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteAll, this.onDelete),
+            null,
+            null
         };
     }
-
+    
     @Override
     public Serializable getPageName()
     {
@@ -184,31 +187,34 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     
     /**
      * insert before
+     * 
      * @param player
      * @param session
      * @param gui
      * @param realLine
-     * @throws McException 
+     * @throws McException
      */
     protected abstract void onCreateBefore(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException;
     
     /**
      * insert after
+     * 
      * @param player
      * @param session
      * @param gui
      * @param realLine
-     * @throws McException 
+     * @throws McException
      */
     protected abstract void onCreateAfter(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException;
     
     /**
      * delete line
+     * 
      * @param player
      * @param session
      * @param gui
      * @param realLine
-     * @throws McException 
+     * @throws McException
      */
     protected void onDeleteLine(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException
     {
@@ -218,14 +224,15 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     
     /**
      * edit line
+     * 
      * @param player
      * @param session
      * @param gui
      * @param realLine
-     * @throws McException 
+     * @throws McException
      */
     protected abstract void onEdit(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException;
-
+    
     /**
      * Editor to create strings.
      * 
@@ -241,77 +248,77 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         @LocalizedMessage(defaultMessage = "Back")
         @MessageComment("back icon")
         IconBack,
-
+        
         /**
          * prev page icon
          */
         @LocalizedMessage(defaultMessage = "Previous page")
         @MessageComment(value = "prev page icon")
         IconPreviousPage,
-
+        
         /**
          * next page icon
          */
         @LocalizedMessage(defaultMessage = "Next page")
         @MessageComment(value = "next page icon")
         IconNextPage,
-
+        
         /**
          * Create icon
          */
         @LocalizedMessage(defaultMessage = "Create new line before #%1$d")
-        @MessageComment(value = "Create before icon", args=@MessageComment.Argument("line number"))
+        @MessageComment(value = "Create before icon", args = @MessageComment.Argument("line number"))
         IconCreateBefore,
-
+        
         /**
          * Create icon
          */
         @LocalizedMessage(defaultMessage = "Create new line after #%1$d")
-        @MessageComment(value = "Create after icon", args=@MessageComment.Argument("line number"))
+        @MessageComment(value = "Create after icon", args = @MessageComment.Argument("line number"))
         IconCreateAfter,
-
+        
         /**
          * Delete icon
          */
         @LocalizedMessage(defaultMessage = "Delete line #%1$d")
-        @MessageComment(value = "Delete line", args=@MessageComment.Argument("line number"))
+        @MessageComment(value = "Delete line", args = @MessageComment.Argument("line number"))
         IconDeleteLine,
-
+        
         /**
          * Delete all
          */
         @LocalizedMessage(defaultMessage = "Delete all")
         @MessageComment(value = "Delete all")
         IconDeleteAll,
-
+        
         /**
          * Edit icon
          */
         @LocalizedMessage(defaultMessage = "Edit line #%1$d")
-        @MessageComment(value = "Edit icon", args=@MessageComment.Argument("line number"))
+        @MessageComment(value = "Edit icon", args = @MessageComment.Argument("line number"))
         IconEdit,
         
         /**
          * Edit existing: text description
          */
-        @LocalizedMessageList({"Edit line for %1$s - %2$d."})
-        @MessageComment(value = "Edit existing: text description", args = {@MessageComment.Argument("title"), @MessageComment.Argument("line number")})
+        @LocalizedMessageList({ "Edit line for %1$s - %2$d." })
+        @MessageComment(value = "Edit existing: text description", args = { @MessageComment.Argument("title"), @MessageComment.Argument("line number") })
         EditTextDescription,
         
     }
-
+    
     @Override
     public ClickGuiId getUniqueId()
     {
         return ClickGuis.List;
     }
-
+    
     @Override
     public ClickGuiPageInterface getInitialPage()
     {
         return this;
     }
-
+    
     @Override
     public int getLineCount()
     {

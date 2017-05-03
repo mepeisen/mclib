@@ -49,22 +49,22 @@ public class NmsInventoryHandler implements NmsInventoryHandlerInterface
 {
     
     /** the initial size */
-    private int initialSize;
+    private int                     initialSize;
     
     /** block id */
-    private BlockId blockId;
+    private BlockId                 blockId;
     /** block variant id */
-    private BlockVariantId variantId;
-
+    private BlockVariantId          variantId;
+    
     /** fixed inventory size */
-    private boolean fixed;
-
+    private boolean                 fixed;
+    
     /** shared inventory */
-    private boolean shared;
+    private boolean                 shared;
     
     /** helper interface */
     private BlockInventoryInterface helper;
-
+    
     /**
      * @param blockId
      * @param variantId
@@ -86,13 +86,13 @@ public class NmsInventoryHandler implements NmsInventoryHandlerInterface
             throw new IllegalStateException("Unable to create block inventory helper", e); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void onPlace(Location location)
     {
         // do nothing for the moment, everything is done in postPlace
     }
-
+    
     @Override
     public void onPostPlace(Location location, ItemStack stack, Player player)
     {
@@ -108,13 +108,13 @@ public class NmsInventoryHandler implements NmsInventoryHandlerInterface
         }
         
     }
-
+    
     @Override
     public void onBreak(Location location)
     {
         this.helper.onBreak(this.blockId, this.variantId, location);
     }
-
+    
     @Override
     public boolean onInteract(Location location, HumanEntity bukkitEntity, boolean mainHand, BlockFace blockFace, float hitX, float hitY, float hitZ)
     {

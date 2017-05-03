@@ -177,9 +177,9 @@ public class YmlFile extends YmlCommentableSection
                     {
                         throw new YAMLException("Comments on 2steps-construction not yet supported."); //$NON-NLS-1$
                     }
-                    if (((MyCommentMap)mapping).keyComments == null)
+                    if (((MyCommentMap) mapping).keyComments == null)
                     {
-                        ((MyCommentMap)mapping).keyComments = new HashMap<>();
+                        ((MyCommentMap) mapping).keyComments = new HashMap<>();
                     }
                     ((MyCommentMap) mapping).keyComments.put(key, keyNode.getPreComments().toArray(new String[keyNode.getPreComments().size()]));
                 }
@@ -233,6 +233,7 @@ public class YmlFile extends YmlCommentableSection
     
     /**
      * Representer to build yaml with comments.
+     * 
      * @author mepeisen
      */
     private static final class MyRepresenter extends Representer

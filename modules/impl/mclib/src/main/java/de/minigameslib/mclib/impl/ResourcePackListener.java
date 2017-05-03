@@ -48,8 +48,7 @@ class ResourcePackListener extends AbstractResourcePackListener implements Liste
     {
         super(players, itemService);
     }
-
-
+    
     /**
      * Resource pack event
      * 

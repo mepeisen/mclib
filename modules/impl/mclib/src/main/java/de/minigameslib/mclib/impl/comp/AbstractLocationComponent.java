@@ -59,8 +59,8 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * @param config
      *            the config file
      * @param owner
-     *            the component owner 
-     * @throws McException 
+     *            the component owner
+     * @throws McException
      */
     public AbstractLocationComponent(ComponentRegistry registry, Location location, File config, ComponentOwner owner) throws McException
     {

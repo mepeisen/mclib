@@ -52,7 +52,7 @@ public class InventoryRegistryData extends AnnotatedDataFragment
      */
     @PersistentField
     protected String enumName;
-
+    
     /**
      * Constructor for reading from file
      */
@@ -60,9 +60,10 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     {
         super();
     }
-
+    
     /**
      * Constructor for new data
+     * 
      * @param pluginName
      * @param uuid
      * @param enumName
@@ -73,7 +74,7 @@ public class InventoryRegistryData extends AnnotatedDataFragment
         this.uuid = uuid;
         this.enumName = enumName;
     }
-
+    
     /**
      * @return the pluginName
      */
@@ -81,15 +82,16 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     {
         return this.pluginName;
     }
-
+    
     /**
-     * @param pluginName the pluginName to set
+     * @param pluginName
+     *            the pluginName to set
      */
     public void setPluginName(String pluginName)
     {
         this.pluginName = pluginName;
     }
-
+    
     /**
      * @return the uuid
      */
@@ -97,15 +99,16 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     {
         return this.uuid;
     }
-
+    
     /**
-     * @param uuid the uuid to set
+     * @param uuid
+     *            the uuid to set
      */
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
     }
-
+    
     /**
      * @return the enumName
      */
@@ -113,15 +116,16 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     {
         return this.enumName;
     }
-
+    
     /**
-     * @param enumName the enumName to set
+     * @param enumName
+     *            the enumName to set
      */
     public void setEnumName(String enumName)
     {
         this.enumName = enumName;
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -132,7 +136,7 @@ public class InventoryRegistryData extends AnnotatedDataFragment
         result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

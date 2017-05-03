@@ -49,8 +49,8 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     /**
      * The comments on map level.
      */
-    private String[] mapComments;
-
+    private String[]              mapComments;
+    
     /**
      * Constructor
      */
@@ -58,9 +58,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     {
         super();
     }
-
+    
     /**
      * Constructor.
+     * 
      * @param path
      * @param name
      * @param parent
@@ -69,7 +70,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     {
         super(path, name, parent);
     }
-
+    
     @Override
     protected MemoryDataSection createSection(String path2, String name2, MemoryDataSection parent2)
     {
@@ -86,13 +87,15 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     
     /**
      * Loads data from given comment map
+     * 
      * @param map
      */
     protected void load(MyCommentMap map)
     {
         this.clearAll();
         // null mp --> empty file
-        if (map == null) return;
+        if (map == null)
+            return;
         boolean isFirst = true;
         boolean isFirstCommentSet = false;
         String firstKey = null;
@@ -102,7 +105,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
             final String strKey = entry.getKey().toString();
             if (entry.getValue() instanceof MyCommentMap)
             {
-                ((YmlCommentableSection)this.createSection(strKey)).load((MyCommentMap) entry.getValue());
+                ((YmlCommentableSection) this.createSection(strKey)).load((MyCommentMap) entry.getValue());
             }
             else if (entry.getValue() instanceof List<?>)
             {
@@ -143,7 +146,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
             return null;
         }
         final String[] dest = new String[strings.length];
-        for (int i = dest.length -1; i >= 0; i--)
+        for (int i = dest.length - 1; i >= 0; i--)
         {
             final String src = strings[i];
             if (src.startsWith("# ")) //$NON-NLS-1$
@@ -161,9 +164,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
         }
         return dest;
     }
-
+    
     /**
      * Stores data to given comment map
+     * 
      * @param map
      */
     protected void store(MyCommentMap map)
@@ -204,7 +208,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
             return null;
         }
         final String[] dest = new String[strings.length];
-        for (int i = dest.length -1; i >= 0; i--)
+        for (int i = dest.length - 1; i >= 0; i--)
         {
             final String src = strings[i];
             if (src.startsWith("# ")) //$NON-NLS-1$
@@ -225,6 +229,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     
     /**
      * Returns the comment for given key.
+     * 
      * @param key
      * @return comment lines or {@code null} if no comment was set.
      */
@@ -246,8 +251,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     
     /**
      * Sets the comment lines.
+     * 
      * @param key
-     * @param newValue new comment lines or {@code null} to clear the comment.
+     * @param newValue
+     *            new comment lines or {@code null} to clear the comment.
      */
     public void setComment(String key, String[] newValue)
     {
@@ -293,19 +300,19 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
         }
         ((YmlCommentableSection) this.createSection(key.substring(0, indexof))).doSetComment(key.substring(indexof + 1), value);
     }
-
+    
     @Override
     public String[] getSectionComments()
     {
         return this.mapComments;
     }
-
+    
     @Override
     public void setSectionComments(String[] commentLines)
     {
         this.mapComments = commentLines;
     }
-
+    
     @Override
     public String[] getValueComments(String key)
     {
@@ -315,7 +322,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
         }
         return this.comments.get(key);
     }
-
+    
     @Override
     public void setValueComments(String key, String[] commentLines)
     {

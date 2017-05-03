@@ -53,7 +53,7 @@ public class EnumConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,28 +64,30 @@ public class EnumConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final Class<? extends EnumerationValue> clazz = this.getValue().getEnumClass();
         final EnumerationValue value = this.calculate(contextProvider, () -> this.getValue().getEnum(clazz));
         player.nestClickGui(new EnumEditor(
-                clazz,
-                value,
-                v -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setEnum(v);
-                        getValue().saveConfig();
-                    });
-                    onChange.run();
-                }
-                ));
+            clazz,
+            value,
+            v ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setEnum(v);
+                    getValue().saveConfig();
+                });
+                onChange.run();
+            }));
     }
     
 }

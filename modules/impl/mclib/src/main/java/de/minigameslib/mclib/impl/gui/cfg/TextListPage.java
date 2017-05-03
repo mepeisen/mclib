@@ -40,7 +40,8 @@ import de.minigameslib.mclib.api.util.function.McFunction;
  * An abstract list page being able to insert and remove list elements
  * 
  * @author mepeisen
- * @param <T> element type
+ * @param <T>
+ *            element type
  */
 public class TextListPage<T> extends AbstractListPage<T>
 {
@@ -49,22 +50,23 @@ public class TextListPage<T> extends AbstractListPage<T>
     private McFunction<String, T> fromString;
     
     /** initial value for new elements */
-    private T initialValue;
-
+    private T                     initialValue;
+    
     /** save function */
-    private McConsumer<List<T>> onSave;
-
+    private McConsumer<List<T>>   onSave;
+    
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param save 
-     * @param fromString 
-     * @param toString 
-     * @param initialValue 
+     * @param save
+     * @param fromString
+     * @param toString
+     * @param initialValue
      */
-    public TextListPage(Serializable title, T[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<T>> save, McFunction<String, T> fromString, Function<T, String> toString, T initialValue)
+    public TextListPage(Serializable title, T[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<T>> save, McFunction<String, T> fromString, Function<T, String> toString,
+        T initialValue)
     {
         super(title, lines, onPrev, onDelete, toString);
         this.onSave = save;
@@ -99,22 +101,23 @@ public class TextListPage<T> extends AbstractListPage<T>
     protected void onEdit(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException
     {
         final String text = this.toString.apply(this.lines.get(realLine));
-
+        
         player.nestAnvilGui(new QueryText(
-                text,
-                null,
-                (s) -> this.onEdit(player, session, gui, realLine, s),
-                player.encodeMessage(Messages.EditTextDescription, this.title, realLine)));
+            text,
+            null,
+            (s) -> this.onEdit(player, session, gui, realLine, s),
+            player.encodeMessage(Messages.EditTextDescription, this.title, realLine)));
     }
     
     /**
      * edit line
+     * 
      * @param player
      * @param session
      * @param gui
      * @param realLine
      * @param content
-     * @throws McException 
+     * @throws McException
      */
     private void onEdit(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine, String content) throws McException
     {

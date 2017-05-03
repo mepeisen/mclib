@@ -60,10 +60,10 @@ public class SkinServiceImpl implements SkinServiceInterface
 {
     
     /** the executor service. */
-    private ExecutorService     executor;
+    private ExecutorService executor;
     
     /** logger */
-    static final Logger LOGGER = Logger.getLogger(SkinServiceImpl.class.getName());
+    static final Logger     LOGGER = Logger.getLogger(SkinServiceImpl.class.getName());
     
     /**
      * Constructor
@@ -155,7 +155,8 @@ public class SkinServiceImpl implements SkinServiceInterface
         final HumanEntity human = (HumanEntity) entity.getBukkitEntity();
         if (skin instanceof SkinFromPlayer)
         {
-            this.getSkinSnapshot(skin, s -> {
+            this.getSkinSnapshot(skin, s ->
+            {
                 Bukkit.getServicesManager().load(NmsFactory.class).create(EntityHelperInterface.class).setSkin(human, ((SkinFromTextures) s).getTextures());
             });
         }

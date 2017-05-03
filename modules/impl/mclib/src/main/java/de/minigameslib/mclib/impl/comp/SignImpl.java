@@ -63,26 +63,26 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
 {
     
     /** the bukkit sign. */
-    private Sign sign;
+    private Sign                       sign;
     
     /** the sign id. */
-    private final SignId id;
+    private final SignId               id;
     
     /** the sign handler. */
     private final SignHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
-     * @param plugin 
+     * @param plugin
      * @param registry
-     * @param sign 
-     * @param id 
-     * @param handler 
-     * @param config 
-     * @param owner 
-     * @throws McException 
+     * @param sign
+     * @param id
+     * @param handler
+     * @param config
+     * @param owner
+     * @throws McException
      */
     public SignImpl(Plugin plugin, ComponentRegistry registry, Sign sign, SignId id, SignHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -95,13 +95,13 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             this.eventBus.registerHandlers(plugin, (McListener) this.handler);
         }
     }
-
+    
     @Override
     public SignIdInterface getSignId()
     {
         return this.id;
     }
-
+    
     @Override
     public void delete() throws McException
     {
@@ -109,7 +109,8 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(SignInterface.class, this);
             this.handler.canDelete();
         });
@@ -120,22 +121,23 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         {
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
-
+        
         delete0();
     }
-
+    
     /**
      * @throws McException
      */
     public void delete0() throws McException
     {
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(SignInterface.class, this);
             super.delete();
             this.handler.onDelete();
         });
         this.eventBus.clear();
-
+        
         final SignDeletedEvent deletedEvent = new SignDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
@@ -147,36 +149,37 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         // the id is already read from registry.yml
         this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
-
+    
     @Override
     protected void saveData(DataSection coreSection)
     {
         this.id.write(coreSection.createSection("id")); //$NON-NLS-1$
         this.handler.write(coreSection.createSection("handler")); //$NON-NLS-1$
     }
-
+    
     @Override
     public SignHandlerInterface getHandler()
     {
         return this.handler;
     }
-
+    
     /**
      * Sets the sign
+     * 
      * @param block
      */
     public void setSign(Sign block)
     {
         this.sign = block;
     }
-
+    
     @Override
     public Sign getBukkitSign()
     {
         // return the current state
         return (Sign) this.sign.getBlock().getState();
     }
-
+    
     @Override
     public void setLocation(Location loc) throws McException
     {
@@ -184,7 +187,8 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         if (block instanceof Sign)
         {
             final Location old = this.location;
-            McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().runInCopiedContext(() ->
+            {
                 McLibInterface.instance().setContext(SignInterface.class, this);
                 this.handler.canChangeLocation(loc);
             });
@@ -196,8 +200,9 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             }
             
             this.sign = (Sign) block;
-
-            McLibInterface.instance().runInCopiedContext(() -> {
+            
+            McLibInterface.instance().runInCopiedContext(() ->
+            {
                 McLibInterface.instance().setContext(SignInterface.class, this);
                 this.handler.onLocationChange(loc);
             });
@@ -211,7 +216,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
             throw new McException(CommonMessages.SignNotFoundError);
         }
     }
-
+    
     /**
      * Clears all event registrations
      */
@@ -252,19 +257,20 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public SignTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getSignId());
     }
-
+    
     @Override
     public void setLine(int index, String content)
     {
@@ -272,7 +278,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         s.setLine(index, content);
         s.update();
     }
-
+    
     @Override
     public void setLine(int index, LocalizedMessageInterface content, Serializable... args)
     {

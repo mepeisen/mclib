@@ -47,10 +47,10 @@ import de.minigameslib.mclib.impl.gui.cfg.AbstractListPage.Messages;
  */
 public class InventoryPage extends PagableClickGuiPage<ItemStack>
 {
-
+    
     /** the inventory. */
     private Inventory inventory;
-
+    
     /**
      * @param inventory
      */
@@ -58,25 +58,25 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     {
         this.inventory = inventory;
     }
-
+    
     @Override
     public Serializable getPageName()
     {
         return this.inventory.getTitle();
     }
-
+    
     @Override
     protected int count()
     {
         return this.inventory.getSize();
     }
-
+    
     @Override
     protected List<ItemStack> getElements(int start, int limit)
     {
         return Arrays.stream(this.inventory.getStorageContents()).skip(start).limit(limit).collect(Collectors.toList());
     }
-
+    
     @Override
     public ClickGuiItem[][] getItems()
     {
@@ -90,7 +90,7 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
             items[5]
         };
     }
-
+    
     @Override
     protected ClickGuiItem map(int line, int col, int index, ItemStack elm)
     {
@@ -99,6 +99,7 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     
     /**
      * prev page icon.
+     * 
      * @return prev page icon
      */
     public ClickGuiItem itemPrevPage()
@@ -108,26 +109,27 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     
     /**
      * next page icon.
+     * 
      * @return next page icon
      */
     public ClickGuiItem itemNextPage()
     {
         return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
     }
-
+    
     @Override
     protected ClickGuiItem[] firstLine()
     {
-        return new ClickGuiItem[]{
-                null,
-                itemPrevPage(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                itemNextPage(),
-                null
+        return new ClickGuiItem[] {
+            null,
+            itemPrevPage(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            itemNextPage(),
+            null
         };
     }
     

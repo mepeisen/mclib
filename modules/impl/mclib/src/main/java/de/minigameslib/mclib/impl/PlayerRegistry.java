@@ -54,38 +54,37 @@ public class PlayerRegistry
     private final LoadingCache<UUID, McPlayerImpl> players;
     
     /** players work dir. */
-    File workDir;
+    File                                           workDir;
     
     /**
      * Constructor.
+     * 
      * @param workDir
      */
     public PlayerRegistry(File workDir)
     {
-        this.players = CacheBuilder.newBuilder().
-                maximumSize(McCoreConfig.PlayerRegistrySize.getInt()).
-                expireAfterAccess(McCoreConfig.PlayerRegistryAccessMinutes.getInt(), TimeUnit.MINUTES).
-                build(new CacheLoader<UUID, McPlayerImpl>(){
-                    @Override
-                    public McPlayerImpl load(UUID key) throws Exception
-                    {
-                        return new McPlayerImpl(key, new File(PlayerRegistry.this.workDir, key.toString() + ".yml")); //$NON-NLS-1$
-                    }
-                });
+        this.players = CacheBuilder.newBuilder().maximumSize(McCoreConfig.PlayerRegistrySize.getInt()).expireAfterAccess(McCoreConfig.PlayerRegistryAccessMinutes.getInt(), TimeUnit.MINUTES)
+            .build(new CacheLoader<UUID, McPlayerImpl>() {
+                @Override
+                public McPlayerImpl load(UUID key) throws Exception
+                {
+                    return new McPlayerImpl(key, new File(PlayerRegistry.this.workDir, key.toString() + ".yml")); //$NON-NLS-1$
+                }
+            });
         if (!workDir.exists())
         {
             workDir.mkdirs();
         }
         this.workDir = workDir;
     }
-
+    
     /**
      * @param player
      * @param fragment
      */
     void parsePong(McPlayerInterface player, PongData fragment)
     {
-        ((McPlayerImpl)player).parsePong(fragment);
+        ((McPlayerImpl) player).parsePong(fragment);
     }
     
     /**
@@ -143,9 +142,10 @@ public class PlayerRegistry
             throw new IllegalStateException(e);
         }
     }
-
+    
     /**
      * Player join event
+     * 
      * @param evt
      */
     public void onPlayerJoin(PlayerJoinEvent evt)
@@ -159,9 +159,10 @@ public class PlayerRegistry
             }
         }
     }
-
+    
     /**
      * Player quit event.
+     * 
      * @param evt
      */
     public void onPlayerQuit(PlayerQuitEvent evt)
@@ -175,9 +176,10 @@ public class PlayerRegistry
             }
         }
     }
-
+    
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)

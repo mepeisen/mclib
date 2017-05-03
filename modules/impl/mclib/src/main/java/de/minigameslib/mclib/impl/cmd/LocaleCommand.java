@@ -52,7 +52,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
     {
         return command.isOnline() && command.checkOpPermission(MclibCommand.CommandPermissions.Locale);
     }
-
+    
     @Override
     public void handle(CommandInterface command) throws McException
     {
@@ -76,7 +76,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
             displaySuccess(command, loc);
         }
     }
-
+    
     /**
      * @param command
      * @param loc
@@ -85,7 +85,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
     {
         command.send(Messages.Changed, loc.toString());
     }
-
+    
     /**
      * @param command
      * @param loc
@@ -94,7 +94,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
     {
         command.send(Messages.LocaleWarning, loc.toString());
     }
-
+    
     /**
      * @param command
      */
@@ -102,7 +102,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
     {
         command.send(Messages.DisplayLocale, command.getPlayer().getPreferredLocale().toString());
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {
@@ -112,13 +112,13 @@ public class LocaleCommand implements SubCommandHandlerInterface
         }
         return Collections.emptyList();
     }
-
+    
     @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return Messages.ShortDescription;
     }
-
+    
     @Override
     public LocalizedMessageInterface getDescription(CommandInterface command)
     {

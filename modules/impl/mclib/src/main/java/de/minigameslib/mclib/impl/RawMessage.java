@@ -54,15 +54,16 @@ public class RawMessage implements RawMessageInterface
     /**
      * The underlying string builder.
      */
-    private List<Function<McPlayerInterface, String>> buffer = new ArrayList<>();
+    private List<Function<McPlayerInterface, String>> buffer  = new ArrayList<>();
     
     /**
      * Raw actions
      */
-    protected Map<UUID, RawAction> actions = new HashMap<>();
+    protected Map<UUID, RawAction>                    actions = new HashMap<>();
     
     /**
      * Converts this message to raw json text.
+     * 
      * @param player
      * @return json
      */
@@ -91,28 +92,30 @@ public class RawMessage implements RawMessageInterface
         this.buffer.add(p -> toJson(p.encodeMessage(message, args)));
         return this;
     }
-
+    
     @Override
     public RawMessageInterface addHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable... hoverArgs)
     {
-        this.buffer.add(p -> {
+        this.buffer.add(p ->
+        {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
             final String hoverText = this.toJson(p.encodeMessage(hover, hoverArgs));
             return "{ \"text\": \"\", \"hoverEvent\":{ \"action\":\"show_text\", \"value\": [ " + hoverText + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         });
         return this;
     }
-
+    
     @Override
     public RawMessageInterface addCommand(LocalizedMessageInterface message, Serializable[] messageArgs, String command, boolean execute)
     {
-        this.buffer.add(p -> {
+        this.buffer.add(p ->
+        {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
             return "{ \"text\": \"\", \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") + "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
         });
         return this;
     }
-
+    
     @Override
     public RawMessageInterface addHandler(LocalizedMessageInterface message, Serializable[] messageArgs, McRunnable handler, LocalDateTime expires)
     {
@@ -120,38 +123,41 @@ public class RawMessage implements RawMessageInterface
         this.actions.put(uuid, new RawAction(expires, handler));
         return this.addCommand(message, messageArgs, "/mclib rawcommand " + uuid.toString(), true); //$NON-NLS-1$
     }
-
+    
     @Override
     public RawMessageInterface addClickableHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable[] hoverArgs, String command,
-            boolean execute)
+        boolean execute)
     {
-        this.buffer.add(p -> {
+        this.buffer.add(p ->
+        {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
             final String hoverText = this.toJson(p.encodeMessage(hover, hoverArgs));
-            return "{ \"text\": \"\", \"hoverEvent\":{ \"action\":\"show_text\", \"value\": [ " + hoverText + " ] }, \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") + "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+            return "{ \"text\": \"\", \"hoverEvent\":{ \"action\":\"show_text\", \"value\": [ " + hoverText + " ] }, \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         });
         return this;
     }
-
+    
     @Override
     public RawMessageInterface addClickableHover(LocalizedMessageInterface message, Serializable[] messageArgs, LocalizedMessageInterface hover, Serializable[] hoverArgs, McRunnable handler,
-            LocalDateTime expires)
+        LocalDateTime expires)
     {
         final UUID uuid = UUID.randomUUID();
         this.actions.put(uuid, new RawAction(expires, handler));
         return this.addClickableHover(message, messageArgs, hover, hoverArgs, "/mclib rawcommand " + uuid.toString(), true); //$NON-NLS-1$
     }
-
+    
     @Override
     public RawMessageInterface addUrl(LocalizedMessageInterface message, Serializable[] messageArgs, String url)
     {
-        this.buffer.add(p -> {
+        this.buffer.add(p ->
+        {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
             return "{ \"text\": \"\", \"clickEvent\":{ \"action\":\"open_url\", \"value\": \"" + url + "\" }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         });
         return this;
     }
-
+    
     @Override
     public RawMessageInterface add(String rawJson)
     {
@@ -161,6 +167,7 @@ public class RawMessage implements RawMessageInterface
     
     /**
      * A helper class for raw actions.
+     * 
      * @author mepeisen
      */
     protected static final class RawAction
@@ -168,7 +175,8 @@ public class RawMessage implements RawMessageInterface
         /** expiration timestamp. */
         private final LocalDateTime expires;
         /** the handler code. */
-        private final McRunnable handler;
+        private final McRunnable    handler;
+        
         /**
          * @param expires
          * @param handler
@@ -178,6 +186,7 @@ public class RawMessage implements RawMessageInterface
             this.expires = expires;
             this.handler = handler;
         }
+        
         /**
          * @return the expires
          */
@@ -185,6 +194,7 @@ public class RawMessage implements RawMessageInterface
         {
             return this.expires;
         }
+        
         /**
          * @return the handler
          */

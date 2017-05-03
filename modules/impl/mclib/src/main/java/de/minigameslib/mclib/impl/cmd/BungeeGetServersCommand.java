@@ -48,26 +48,26 @@ public class BungeeGetServersCommand implements SubCommandHandlerInterface
     {
         return command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
     }
-
+    
     @Override
     public void handle(CommandInterface command) throws McException
     {
         command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
         // TODO
     }
-
+    
     @Override
     public List<String> onTabComplete(CommandInterface command, String lastArg) throws McException
     {
         return Collections.emptyList();
     }
-
+    
     @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return Messages.ShortDescription;
     }
-
+    
     @Override
     public LocalizedMessageInterface getDescription(CommandInterface command)
     {

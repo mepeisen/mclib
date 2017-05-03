@@ -36,17 +36,17 @@ enum CustomItemTypes
      * Diamond Axe items
      */
     DiamondAxe(Material.DIAMOND_AXE, "models/item/diamond_axe.json", "item/handheld", "item/diamond_axe", "items/diamond_axe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
+    
     /**
      * Diamond Hoe items
      */
     DiamondHoe(Material.DIAMOND_HOE, "models/item/diamond_hoe.json", "item/handheld", "item/diamond_hoe", "items/diamond_hoe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
+    
     /**
      * Diamond Pickaxe items
      */
     DiamondPickaxe(Material.DIAMOND_PICKAXE, "models/item/diamond_pickaxe.json", "item/handheld", "item/diamond_pickaxe", "items/diamond_pickaxe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
+    
     /**
      * Diamond Shovel items
      */
@@ -54,25 +54,25 @@ enum CustomItemTypes
     ;
     
     /** models filename */
-    private final String modelsFilename;
+    private final String       modelsFilename;
     
     /** parent */
-    private final String parent;
+    private final String       parent;
     
     /** default model */
-    private final String defaultModel;
+    private final String       defaultModel;
     
     /** default texture */
-    private final String defaultTexture;
+    private final String       defaultTexture;
     
     /** durability */
     private final Durability[] durabilities;
     
     /** the material. */
-    private final Material material;
-
+    private final Material     material;
+    
     /**
-     * @param material 
+     * @param material
      * @param modelsFilename
      * @param parent
      * @param defaultModel
@@ -88,7 +88,7 @@ enum CustomItemTypes
         this.durabilities = durabilities;
         this.material = material;
     }
-
+    
     /**
      * @return models file name
      */
@@ -96,7 +96,7 @@ enum CustomItemTypes
     {
         return this.modelsFilename;
     }
-
+    
     /**
      * @return parent
      */
@@ -104,7 +104,7 @@ enum CustomItemTypes
     {
         return this.parent;
     }
-
+    
     /**
      * @return default model
      */
@@ -112,7 +112,7 @@ enum CustomItemTypes
     {
         return this.defaultModel;
     }
-
+    
     /**
      * @return default texture
      */
@@ -120,7 +120,7 @@ enum CustomItemTypes
     {
         return this.defaultTexture;
     }
-
+    
     /**
      * @return durabilities
      */
@@ -128,7 +128,7 @@ enum CustomItemTypes
     {
         return this.durabilities;
     }
-
+    
     /**
      * @return the material
      */

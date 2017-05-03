@@ -43,18 +43,18 @@ public class CustomBlock extends AnnotatedDataFragment
     
     /** the plugin name. */
     @PersistentField
-    protected String pluginName;
+    protected String                           pluginName;
     
     /** the enum name. */
     @PersistentField
-    protected String enumName;
+    protected String                           enumName;
     
     /** the numeric block id. */
     @PersistentField
-    protected int numId;
+    protected int                              numId;
     
     /** the block id. */
-    private BlockId blockId;
+    private BlockId                            blockId;
     
     /**
      * the block variants.
@@ -62,15 +62,15 @@ public class CustomBlock extends AnnotatedDataFragment
     private final Map<Integer, BlockVariantId> variants = new HashMap<>();
     
     /** the name provider. */
-    private NameProvider nameProvider;
-
+    private NameProvider                       nameProvider;
+    
     /**
      */
     public CustomBlock()
     {
         // empty
     }
-
+    
     /**
      * @param pluginName
      * @param enumName
@@ -80,7 +80,7 @@ public class CustomBlock extends AnnotatedDataFragment
         this.pluginName = pluginName;
         this.enumName = enumName;
     }
-
+    
     /**
      * @param pluginName
      * @param enumName
@@ -92,9 +92,10 @@ public class CustomBlock extends AnnotatedDataFragment
         this.enumName = enumName;
         this.setBlockId(blockId);
     }
-
+    
     /**
-     * @param blockId the blockId to set
+     * @param blockId
+     *            the blockId to set
      */
     public void setBlockId(BlockId blockId)
     {
@@ -113,7 +114,7 @@ public class CustomBlock extends AnnotatedDataFragment
             this.nameProvider = blockId.nameProvider();
         }
     }
-
+    
     /**
      * @return the nameProvider
      */
@@ -121,7 +122,7 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.nameProvider;
     }
-
+    
     /**
      * @return the pluginName
      */
@@ -129,7 +130,7 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.pluginName;
     }
-
+    
     /**
      * @return the enumName
      */
@@ -137,7 +138,7 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.enumName;
     }
-
+    
     /**
      * @return the numId
      */
@@ -145,15 +146,16 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.numId;
     }
-
+    
     /**
-     * @param numId the numId to set
+     * @param numId
+     *            the numId to set
      */
     public void setNumId(int numId)
     {
         this.numId = numId;
     }
-
+    
     /**
      * @return the blockId
      */
@@ -161,7 +163,7 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.blockId;
     }
-
+    
     /**
      * @param variantId
      * @return custom variant
@@ -170,7 +172,7 @@ public class CustomBlock extends AnnotatedDataFragment
     {
         return this.variants.get(variantId);
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -180,7 +182,7 @@ public class CustomBlock extends AnnotatedDataFragment
         result = prime * result + ((this.pluginName == null) ? 0 : this.pluginName.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

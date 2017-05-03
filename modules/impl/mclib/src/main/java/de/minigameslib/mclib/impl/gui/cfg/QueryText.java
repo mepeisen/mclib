@@ -47,23 +47,24 @@ public class QueryText implements AnvilGuiInterface
 {
     
     /** cancel func */
-    private McRunnable onCancel;
+    private McRunnable         onCancel;
     
     /** input func */
     private McConsumer<String> onInput;
     
     /** source text. */
-    private String src;
+    private String             src;
     
     /** description */
-    private String[] description;
-
+    private String[]           description;
+    
     /**
      * Constructor
+     * 
      * @param src
      * @param onCancel
      * @param onInput
-     * @param description  
+     * @param description
      */
     public QueryText(String src, McRunnable onCancel, McConsumer<String> onInput, String[] description)
     {
@@ -72,7 +73,7 @@ public class QueryText implements AnvilGuiInterface
         this.onInput = onInput;
         this.description = description;
     }
-
+    
     @Override
     public ItemStack getItem()
     {
@@ -82,13 +83,13 @@ public class QueryText implements AnvilGuiInterface
         stack.setItemMeta(meta);
         return stack;
     }
-
+    
     @Override
     public AnvilGuiId getUniqueId()
     {
         return AnvilGuis.QueryText;
     }
-
+    
     @Override
     public void onCancel()
     {
@@ -104,7 +105,7 @@ public class QueryText implements AnvilGuiInterface
             // TODO logging
         }
     }
-
+    
     @Override
     public void onInput(String arg0) throws McException
     {

@@ -52,7 +52,7 @@ public class StringListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -63,37 +63,42 @@ public class StringListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final String[] arr = this.calculate(contextProvider, this.getValue()::getStringList);
         
         player.nestClickGui(new TextListPage<>(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setStringList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setStringList(a.toArray(new String[a.size()]));
-                    });
-                    onChange.run();
-                },
-                str -> str,
-                b -> b,
-                "")); //$NON-NLS-1$
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setStringList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setStringList(a.toArray(new String[a.size()]));
+                });
+                onChange.run();
+            },
+            str -> str,
+            b -> b,
+            "")); //$NON-NLS-1$
     }
     
 }

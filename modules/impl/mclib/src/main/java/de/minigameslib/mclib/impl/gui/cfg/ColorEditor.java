@@ -56,20 +56,20 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
  */
 public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
 {
-
+    
     /** color */
-    private int red;
+    private int                         red;
     /** color */
-    private int blue;
+    private int                         blue;
     /** color */
-    private int green;
+    private int                         green;
     
     /** save function */
     private McConsumer<ConfigColorData> onSave;
     
     /**
      * @param color
-     * @param onSave 
+     * @param onSave
      */
     public ColorEditor(ConfigColorData color, McConsumer<ConfigColorData> onSave)
     {
@@ -78,7 +78,7 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
         this.green = color.getGreen();
         this.onSave = onSave;
     }
-
+    
     @Override
     public Serializable getPageName()
     {
@@ -89,7 +89,7 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     @Override
     public ClickGuiItem[][] getItems()
     {
-        return new ClickGuiItem[][]{
+        return new ClickGuiItem[][] {
             {
                 new ClickGuiItem(new ItemStack(Material.WOOL, 1, DyeColor.RED.getWoolData()), Messages.IconRed, this::onRed),
                 new ClickGuiItem(new ItemStack(Material.WOOL, 1, DyeColor.GREEN.getWoolData()), Messages.IconGreen, this::onGreen),
@@ -104,106 +104,113 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     
     /**
      * edit red
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @throws McException 
+     * @throws McException
      */
     private void onRed(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
         final String src = String.valueOf(this.red);
         
         player.nestAnvilGui(new QueryText(
-                src,
-                null,
-                s -> {
-                    try
+            src,
+            null,
+            s ->
+            {
+                try
+                {
+                    final int val = Integer.parseInt(s);
+                    if (val < 0 || val > 255)
                     {
-                        final int val = Integer.parseInt(s);
-                        if (val < 0 || val > 255)
-                        {
-                            throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
-                        }
-                        this.red = val;
+                        throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                player.encodeMessage(Messages.DecriptionRed)));
+                    this.red = val;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            player.encodeMessage(Messages.DecriptionRed)));
     }
     
     /**
      * edit green
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @throws McException 
+     * @throws McException
      */
     private void onGreen(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
         final String src = String.valueOf(this.green);
         
         player.nestAnvilGui(new QueryText(
-                src,
-                null,
-                s -> {
-                    try
+            src,
+            null,
+            s ->
+            {
+                try
+                {
+                    final int val = Integer.parseInt(s);
+                    if (val < 0 || val > 255)
                     {
-                        final int val = Integer.parseInt(s);
-                        if (val < 0 || val > 255)
-                        {
-                            throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
-                        }
-                        this.green = val;
+                        throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                player.encodeMessage(Messages.DecriptionGreen)));
+                    this.green = val;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            player.encodeMessage(Messages.DecriptionGreen)));
     }
     
     /**
      * edit blue
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @throws McException 
+     * @throws McException
      */
     private void onBlue(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
         final String src = String.valueOf(this.blue);
         
         player.nestAnvilGui(new QueryText(
-                src,
-                null,
-                s -> {
-                    try
+            src,
+            null,
+            s ->
+            {
+                try
+                {
+                    final int val = Integer.parseInt(s);
+                    if (val < 0 || val > 255)
                     {
-                        final int val = Integer.parseInt(s);
-                        if (val < 0 || val > 255)
-                        {
-                            throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
-                        }
-                        this.blue = val;
+                        throw new McException(AbstractConfigOption.Messages.NumberOutOfRange, 0, 255);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                player.encodeMessage(Messages.DecriptionBlue)));
+                    this.blue = val;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            player.encodeMessage(Messages.DecriptionBlue)));
     }
     
     /**
      * accept
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @throws McException 
+     * @throws McException
      */
     private void onYes(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
@@ -213,6 +220,7 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     
     /**
      * abort
+     * 
      * @param player
      * @param session
      * @param guiInterface
@@ -239,7 +247,7 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     {
         return 1;
     }
-
+    
     /**
      * Editor to create colors.
      * 
@@ -290,7 +298,7 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
         @LocalizedMessage(defaultMessage = "blue")
         @MessageComment("blue icon")
         IconBlue,
-
+        
         /**
          * red component
          */

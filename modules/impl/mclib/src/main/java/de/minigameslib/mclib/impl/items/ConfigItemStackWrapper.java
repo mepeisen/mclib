@@ -42,13 +42,13 @@ public class ConfigItemStackWrapper implements ConfigItemStackData
      * underlying delegate.
      */
     private ConfigItemStackData delegate;
-
+    
     @Override
     public void read(DataSection section)
     {
         this.delegate = ItemServiceInterface.instance().fromConfigData(section);
     }
-
+    
     @Override
     public void write(DataSection section)
     {
@@ -57,13 +57,13 @@ public class ConfigItemStackWrapper implements ConfigItemStackData
             this.delegate.write(section);
         }
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
         return true;
     }
-
+    
     @Override
     public ItemStack toBukkit()
     {

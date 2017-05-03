@@ -56,7 +56,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
         // TODO this.subCommands.put("translate", new TranslateCommand()); //$NON-NLS-1$
         this.subCommands.put("bungee", new BungeeCommand()); //$NON-NLS-1$
     }
-
+    
     @Override
     protected void sendUsage(CommandInterface command)
     {

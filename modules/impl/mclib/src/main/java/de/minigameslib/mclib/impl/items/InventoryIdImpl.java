@@ -41,7 +41,7 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
      */
     @PersistentField
     protected String uuid;
-
+    
     /**
      * Constructor for rading from config
      */
@@ -49,7 +49,7 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     {
         // empty
     }
-
+    
     /**
      * @param uuid
      */
@@ -57,7 +57,7 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     {
         this.uuid = uuid.toString();
     }
-
+    
     /**
      * @return the uuid
      */
@@ -65,15 +65,16 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     {
         return UUID.fromString(this.uuid);
     }
-
+    
     /**
-     * @param uuid the uuid to set
+     * @param uuid
+     *            the uuid to set
      */
     public void setUuid(UUID uuid)
     {
         this.uuid = uuid.toString();
     }
-
+    
     @Override
     public int hashCode()
     {
@@ -82,7 +83,7 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
         result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

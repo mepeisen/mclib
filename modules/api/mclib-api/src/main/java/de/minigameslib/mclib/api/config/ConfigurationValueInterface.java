@@ -2740,12 +2740,12 @@ public interface ConfigurationValueInterface extends EnumerationValue
     /**
      * Rollback changes/ re-read config from file.
      */
-    default void flushConfig()
+    default void rollbackConfig()
     {
         final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
         final ConfigServiceInterface lib = ConfigServiceInterface.instance();
         final ConfigInterface minigame = lib.getConfigFromCfg(this);
-        minigame.flushConfig(configs.file());
+        minigame.rollbackConfig(configs.file());
     }
     
     /**

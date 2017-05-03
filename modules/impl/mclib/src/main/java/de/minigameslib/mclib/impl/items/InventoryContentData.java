@@ -43,32 +43,32 @@ public class InventoryContentData extends AnnotatedDataFragment
 {
     
     /** empty stack (air) */
-    public static ConfigItemStackData AIR = ConfigItemStackData.fromBukkit(new ItemStack(Material.AIR));
+    public static ConfigItemStackData   AIR   = ConfigItemStackData.fromBukkit(new ItemStack(Material.AIR));
     
     /**
      * Number of slots in this repository
      */
     @PersistentField
-    protected int slotSize;
+    protected int                       slotSize;
     
     /**
      * The max stack size
      */
     @PersistentField
-    protected int maxStackSize;
-
+    protected int                       maxStackSize;
+    
     /**
      * Inventory name
      */
     @PersistentField
-    protected String name;
+    protected String                    name;
     
     /**
      * Item stacks
      */
     @PersistentField
     protected List<ConfigItemStackData> slots = new ArrayList<>();
-
+    
     /**
      * Constructor for reading object
      */
@@ -76,12 +76,13 @@ public class InventoryContentData extends AnnotatedDataFragment
     {
         // empty
     }
-
+    
     /**
      * Constructor for initializing inventory
+     * 
      * @param slotSize
      * @param maxStackSize
-     * @param name 
+     * @param name
      */
     public InventoryContentData(int slotSize, int maxStackSize, String name)
     {
@@ -93,7 +94,7 @@ public class InventoryContentData extends AnnotatedDataFragment
             this.slots.add(AIR);
         }
     }
-
+    
     /**
      * @return the slots
      */
@@ -101,7 +102,7 @@ public class InventoryContentData extends AnnotatedDataFragment
     {
         return this.slots;
     }
-
+    
     /**
      * @return the slotSize
      */
@@ -109,15 +110,16 @@ public class InventoryContentData extends AnnotatedDataFragment
     {
         return this.slotSize;
     }
-
+    
     /**
-     * @param slotSize the slotSize to set
+     * @param slotSize
+     *            the slotSize to set
      */
     public void setSlotSize(int slotSize)
     {
         this.slotSize = slotSize;
     }
-
+    
     /**
      * @return the maxStackSize
      */
@@ -125,15 +127,16 @@ public class InventoryContentData extends AnnotatedDataFragment
     {
         return this.maxStackSize;
     }
-
+    
     /**
-     * @param maxStackSize the maxStackSize to set
+     * @param maxStackSize
+     *            the maxStackSize to set
      */
     public void setMaxStackSize(int maxStackSize)
     {
         this.maxStackSize = maxStackSize;
     }
-
+    
     /**
      * @return the name
      */
@@ -141,15 +144,14 @@ public class InventoryContentData extends AnnotatedDataFragment
     {
         return this.name;
     }
-
+    
     /**
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name)
     {
         this.name = name;
     }
-    
-    
     
 }

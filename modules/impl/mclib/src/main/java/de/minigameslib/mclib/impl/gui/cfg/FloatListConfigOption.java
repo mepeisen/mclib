@@ -52,7 +52,7 @@ public class FloatListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -63,12 +63,13 @@ public class FloatListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -80,40 +81,45 @@ public class FloatListConfigOption extends AbstractConfigOption
         }
         
         player.nestClickGui(new TextListPage<>(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setFloatList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        final float[] res = new float[a.size()];
-                        for (int i = 0; i < res.length; i++)
-                        {
-                            res[i] = a.get(i);
-                        }
-                        getValue().setFloatList(res);
-                    });
-                    onChange.run();
-                },
-                str -> {
-                    try
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setFloatList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    final float[] res = new float[a.size()];
+                    for (int i = 0; i < res.length; i++)
                     {
-                        final float newVal = Float.parseFloat(str);
-                        return (Float) newVal;
+                        res[i] = a.get(i);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                b -> String.valueOf(b),
-                Float.valueOf(0)));
+                    getValue().setFloatList(res);
+                });
+                onChange.run();
+            },
+            str ->
+            {
+                try
+                {
+                    final float newVal = Float.parseFloat(str);
+                    return (Float) newVal;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            b -> String.valueOf(b),
+            Float.valueOf(0)));
     }
     
 }

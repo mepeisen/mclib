@@ -186,7 +186,8 @@ class MessagesConfigImpl implements MessagesConfigInterface
     
     /**
      * Reloads the configuration file.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     void reloadConfig() throws IOException
     {

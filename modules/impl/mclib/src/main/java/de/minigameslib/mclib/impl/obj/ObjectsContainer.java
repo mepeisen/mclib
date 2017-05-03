@@ -43,22 +43,22 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
  * @author mepeisen
- * @param <IdInterface> 
- * @param <Id> 
- * @param <Comp> 
- * @param <TypeId> 
- * @param <Handler> 
+ * @param <IdInterface>
+ * @param <Id>
+ * @param <Comp>
+ * @param <TypeId>
+ * @param <Handler>
  *
  */
 public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInterface, Comp, TypeId, Handler>
 {
     
     /** the components. */
-    private final Map<Id, Comp> components = new HashMap<>();
+    private final Map<Id, Comp>                 components         = new HashMap<>();
     
     /** registered components per plugin name. */
-    private final Map<String, Map<Id, Boolean>>                           componentsByPlugin      = new HashMap<>();
-
+    private final Map<String, Map<Id, Boolean>> componentsByPlugin = new HashMap<>();
+    
     /**
      * @param pluginName
      * @param id
@@ -70,22 +70,22 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
         this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, persist);
         this.components.put(id, impl);
     }
-
-    /** 
+    
+    /**
      * @param id
-     * @return value 
+     * @return value
      */
     public Comp remove(Id id)
     {
         return this.components.remove(id);
     }
-
+    
     /**
-     * @param pluginName 
+     * @param pluginName
      * @param id
      * @param folder
      * @return value
-     * @throws McException 
+     * @throws McException
      */
     public Comp remove(String pluginName, Id id, File folder) throws McException
     {
@@ -110,7 +110,7 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
         final Map<Id, Boolean> cmap = this.componentsByPlugin.remove(pluginName);
         return cmap == null ? Collections.emptyMap() : cmap;
     }
-
+    
     /**
      * @param id
      * @return value
@@ -122,13 +122,14 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     
     /**
      * For each component
+     * 
      * @param consumer
      */
     public void forEach(Consumer<Comp> consumer)
     {
         this.components.values().forEach(consumer);
     }
-
+    
     /**
      * @param pluginName
      * @return boolean
@@ -149,6 +150,7 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     
     /**
      * Load registry
+     * 
      * @param factory
      * @param folder
      * @throws McException
@@ -188,7 +190,8 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     public void saveIdList(File folder) throws McException
     {
         final YmlFile fileConfig = new YmlFile();
-        this.componentsByPlugin.forEach((k, v) -> {
+        this.componentsByPlugin.forEach((k, v) ->
+        {
             final DataSection section = fileConfig.createSection(k);
             int i = 0;
             for (final Map.Entry<Id, Boolean> data : v.entrySet())
@@ -212,6 +215,7 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     
     /**
      * resume objects
+     * 
      * @param pluginName
      * @param typesByPlugin
      * @param mapIdToType
@@ -219,7 +223,8 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
      * @param creator
      * @param brokenComponents
      */
-    public void resumeObjects(String pluginName, Map<String, Map<String, TypeId>> typesByPlugin, Function<Id, String> mapIdToType, McBiFunction<String, TypeId, Handler> safeCreateHandler, McBiFunction<Id, Handler, Comp> creator, Map<IdInterface, McException> brokenComponents)
+    public void resumeObjects(String pluginName, Map<String, Map<String, TypeId>> typesByPlugin, Function<Id, String> mapIdToType, McBiFunction<String, TypeId, Handler> safeCreateHandler,
+        McBiFunction<Id, Handler, Comp> creator, Map<IdInterface, McException> brokenComponents)
     {
         if (this.containsPluginName(pluginName))
         {
@@ -254,5 +259,5 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
             }
         }
     }
-
+    
 }

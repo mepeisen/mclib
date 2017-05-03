@@ -110,7 +110,7 @@ public class WorldChunk
     {
         return this.serverName;
     }
-
+    
     /**
      * @return the worldName
      */
@@ -118,7 +118,7 @@ public class WorldChunk
     {
         return this.worldName;
     }
-
+    
     /**
      * @return the x
      */
@@ -126,7 +126,7 @@ public class WorldChunk
     {
         return this.x;
     }
-
+    
     /**
      * @return the z
      */
@@ -134,7 +134,7 @@ public class WorldChunk
     {
         return this.z;
     }
-
+    
     @Override
     public boolean equals(Object obj)
     {

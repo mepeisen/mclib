@@ -54,7 +54,7 @@ public class ItemStackConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -65,26 +65,27 @@ public class ItemStackConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
-//        final ConfigItemStackData stack = this.calculate(contextProvider, this.getValue()::getItemStack);
-//        player.nestClickGui(new ItemStackEditor(
-//                stack,
-//                s -> {
-//                    this.run(contextProvider, () -> {
-//                        getValue().setItemStack(s);
-//                        getValue().saveConfig();
-//                    });
-//                    onChange.run();
-//                }
-//                ));
+        // final ConfigItemStackData stack = this.calculate(contextProvider, this.getValue()::getItemStack);
+        // player.nestClickGui(new ItemStackEditor(
+        // stack,
+        // s -> {
+        // this.run(contextProvider, () -> {
+        // getValue().setItemStack(s);
+        // getValue().saveConfig();
+        // });
+        // onChange.run();
+        // }
+        // ));
         // TODO implement editor
         player.sendMessage(AbstractConfigOption.Messages.NotImplemented);
     }

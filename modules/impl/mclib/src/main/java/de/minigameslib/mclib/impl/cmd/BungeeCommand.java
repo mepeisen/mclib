@@ -51,25 +51,25 @@ public class BungeeCommand extends AbstractCompositeCommandHandler implements Su
         this.subCommands.put("list", new BungeeListCommand()); //$NON-NLS-1$
         // TODO this.subCommands.put("getservers", new BungeeGetServersCommand()); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean visible(CommandInterface command)
     {
         return command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
     }
-
+    
     @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return Messages.ShortDescription;
     }
-
+    
     @Override
     public LocalizedMessageInterface getDescription(CommandInterface command)
     {
         return Messages.Description;
     }
-
+    
     @Override
     protected void sendUsage(CommandInterface command)
     {

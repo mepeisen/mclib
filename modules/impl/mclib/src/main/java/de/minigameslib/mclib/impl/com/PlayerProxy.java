@@ -56,6 +56,7 @@ import de.minigameslib.mclib.shared.api.com.PlayerData;
 
 /**
  * A proxy helper for players.
+ * 
  * @author mepeisen
  */
 public class PlayerProxy extends PlayerData implements McPlayerInterface
@@ -70,14 +71,14 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
         super.read(section);
         this.target = ObjectServiceInterface.instance().getPlayer(this.getPlayerUUID());
     }
-
+    
     @Override
     public String getDisplayName()
     {
         final Player player = this.getBukkitPlayer();
         return player == null ? super.getDisplayName() : player.getDisplayName();
     }
-
+    
     @Override
     public Player getBukkitPlayer()
     {
@@ -191,91 +192,91 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     {
         this.target.sendToClient(endpoint, data);
     }
-
+    
     @Override
     public void sendRaw(RawMessageInterface raw) throws McException
     {
         this.target.sendRaw(raw);
     }
-
+    
     @Override
     public boolean isInsideZone(ZoneInterface zone)
     {
         return this.target.isInsideZone(zone);
     }
-
+    
     @Override
     public boolean isInsideRandomZone(ZoneInterface... zone)
     {
         return this.target.isInsideRandomZone(zone);
     }
-
+    
     @Override
     public boolean isInsideAllZones(ZoneInterface... zone)
     {
         return this.target.isInsideAllZones(zone);
     }
-
+    
     @Override
     public ZoneInterface getZone(ZoneTypeId... type)
     {
         return this.target.getZone(type);
     }
-
+    
     @Override
     public boolean isInsideRandomZone(ZoneTypeId... type)
     {
         return this.target.isInsideRandomZone(type);
     }
-
+    
     @Override
     public Collection<ZoneInterface> getZones()
     {
         return this.target.getZones();
     }
-
+    
     @Override
     public Collection<ZoneInterface> getZones(ZoneTypeId... type)
     {
         return this.target.getZones();
     }
-
+    
     @Override
     public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
     {
         this.target.registerHandler(plugin, clazz, handler);
     }
-
+    
     @Override
     public void registerHandlers(Plugin plugin, McListener listener)
     {
         this.target.registerHandlers(plugin, listener);
     }
-
+    
     @Override
     public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
     {
         this.target.unregisterHandler(plugin, clazz, handler);
     }
-
+    
     @Override
     public void unregisterHandlers(Plugin plugin, McListener listener)
     {
         this.target.unregisterHandlers(plugin, listener);
     }
-
+    
     @Override
     public ClientInterface getClient()
     {
         return this.target.getClient();
     }
-
+    
     @Override
     public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
     {
         return this.target.nestClickGui(gui);
     }
-
+    
     @Override
     public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
     {

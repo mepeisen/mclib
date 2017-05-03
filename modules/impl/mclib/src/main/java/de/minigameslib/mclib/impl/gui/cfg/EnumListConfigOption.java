@@ -53,7 +53,7 @@ public class EnumListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,35 +64,40 @@ public class EnumListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final Class<? extends EnumerationValue> clazz = this.getValue().getEnumClass();
         final EnumerationValue[] arr = this.calculate(contextProvider, () -> this.getValue().getEnumList(clazz));
         player.nestClickGui(new EnumListPage(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setEnumList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setEnumList(a.toArray(new EnumerationValue[a.size()]));
-                    });
-                    onChange.run();
-                },
-                clazz));
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setEnumList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setEnumList(a.toArray(new EnumerationValue[a.size()]));
+                });
+                onChange.run();
+            },
+            clazz));
     }
     
 }

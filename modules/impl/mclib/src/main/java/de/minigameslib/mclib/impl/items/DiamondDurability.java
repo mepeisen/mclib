@@ -28,6 +28,7 @@ import java.util.Locale;
 
 /**
  * The diamond durability values.
+ * 
  * @author mepeisen
  */
 class DiamondDurability implements Durability
@@ -43,18 +44,18 @@ class DiamondDurability implements Durability
         for (int i = 0; i < count - 1; i++)
         {
             final short svalue = (short) (i + 1);
-            final double dvalue = ((double)svalue) / ((double)count);
+            final double dvalue = ((double) svalue) / ((double) count);
             final String strvalue = String.format(Locale.ENGLISH, "%20.19f", dvalue); //$NON-NLS-1$
             VALUES[i] = new DiamondDurability(svalue, strvalue);
         }
     }
-
+    
     /** the short value. */
-    private final short shortValue;
+    private final short  shortValue;
     
     /** the string value. */
     private final String stringValue;
-
+    
     /**
      * @param shortValue
      * @param stringValue
@@ -64,13 +65,13 @@ class DiamondDurability implements Durability
         this.shortValue = shortValue;
         this.stringValue = stringValue;
     }
-
+    
     @Override
     public short getItemStackDurability()
     {
         return this.shortValue;
     }
-
+    
     @Override
     public String getModelDurability()
     {

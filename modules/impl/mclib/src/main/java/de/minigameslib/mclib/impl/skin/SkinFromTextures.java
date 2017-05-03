@@ -41,7 +41,7 @@ public class SkinFromTextures extends AnnotatedDataFragment implements SkinInter
      */
     @PersistentField
     protected String textures;
-
+    
     /**
      * 
      */
@@ -49,7 +49,7 @@ public class SkinFromTextures extends AnnotatedDataFragment implements SkinInter
     {
         // empty
     }
-
+    
     /**
      * @param textures
      */
@@ -57,7 +57,7 @@ public class SkinFromTextures extends AnnotatedDataFragment implements SkinInter
     {
         this.textures = textures;
     }
-
+    
     /**
      * @return the textures
      */

@@ -104,7 +104,9 @@ public class ConfigImpl implements ConfigInterface
      * Constructor.
      * 
      * @param plugin
+     *            plugin owning the config
      * @param enumService
+     *            the enumeration service for creating enums
      */
     public ConfigImpl(Plugin plugin, EnumServiceImpl enumService)
     {
@@ -120,7 +122,9 @@ public class ConfigImpl implements ConfigInterface
      * Constructor.
      * 
      * @param dataFolder
+     *            The data folder
      * @param enumService
+     *            the enumeration service for creating enums
      */
     public ConfigImpl(File dataFolder, EnumServiceImpl enumService)
     {
@@ -139,6 +143,7 @@ public class ConfigImpl implements ConfigInterface
      * Returns the file configuration for given file.
      * 
      * @param file
+     *            target file name
      * @return file config
      */
     YmlFile getConfigEx(String file)
@@ -152,7 +157,8 @@ public class ConfigImpl implements ConfigInterface
             throw new IllegalArgumentException("Invalid file name."); //$NON-NLS-1$
         }
         
-        return this.configurations.computeIfAbsent(file, (f) -> {
+        return this.configurations.computeIfAbsent(file, (f) ->
+        {
             YmlFile fileConfig = null;
             final File fobj = new File(this.dataFolder, file);
             try
@@ -318,11 +324,14 @@ public class ConfigImpl implements ConfigInterface
     }
     
     /**
-     * Applys a configuration comment for given file config and path name
+     * Applys a configuration comment for given file config and path name.
      * 
      * @param fileConfig
+     *            yml commentable section
      * @param path
+     *            file path
      * @param annotation
+     *            annotation with comment
      */
     private void applyConfigComment(YmlCommentableSection fileConfig, String path, ConfigComment annotation)
     {
@@ -359,16 +368,22 @@ public class ConfigImpl implements ConfigInterface
             LOGGER.log(Level.WARNING, "Problems saving config to file " + fobj, e); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void verifyConfig(String file) throws McException
     {
-        // TODO Auto-generated method stub
-        
+        final List<ConfigurationValueInterface> list = this.defaultConfigs.get(file);
+        if (list != null)
+        {
+            for (final ConfigurationValueInterface cvi : list)
+            {
+                cvi.validate();
+            }
+        }
     }
-
+    
     @Override
-    public void flushConfig(String file)
+    public void rollbackConfig(String file)
     {
         // next invocation will re-read file from disk
         this.configurations.remove(file);

@@ -56,27 +56,29 @@ class McContextImpl implements McContext
 {
     
     /** the registered context handlers. */
-    private final Map<Class<?>, List<ContextHandlerInterface<?>>> handlers = new HashMap<>();
+    private final Map<Class<?>, List<ContextHandlerInterface<?>>>              handlers        = new HashMap<>();
     
     /** the thread local storage. */
-    final ThreadLocal<TLD> tls = ThreadLocal.withInitial(() -> new TLD());
+    final ThreadLocal<TLD>                                                     tls             = ThreadLocal.withInitial(() -> new TLD());
     
     /** context resolve helper. */
-    private final List<ContextResolverInterface> resolvers = new ArrayList<>();
+    private final List<ContextResolverInterface>                               resolvers       = new ArrayList<>();
     
     /** resolvers per plugin. */
-    private final Map<Plugin, List<ContextResolverInterface>> pluginResolvers = new HashMap<>();
+    private final Map<Plugin, List<ContextResolverInterface>>                  pluginResolvers = new HashMap<>();
     
     /** handlers per plugin. */
-    private final Map<Plugin, Map<Class<?>, List<ContextHandlerInterface<?>>>> pluginHandlers = new HashMap<>();
+    private final Map<Plugin, Map<Class<?>, List<ContextHandlerInterface<?>>>> pluginHandlers  = new HashMap<>();
     
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getContext(Class<T> clazz)
     {
         final TLD data = this.tls.get();
-        if (clazz == Event.class) return clazz.cast(data.event);
-        if (clazz == CommandInterface.class) return clazz.cast(data.command);
+        if (clazz == Event.class)
+            return clazz.cast(data.event);
+        if (clazz == CommandInterface.class)
+            return clazz.cast(data.command);
         if (data.containsKey(clazz))
         {
             return (T) data.get(clazz);
@@ -138,10 +140,12 @@ class McContextImpl implements McContext
     @Override
     public String resolveContextVar(String src)
     {
-        if (!src.contains("$")) return src; //$NON-NLS-1$
+        if (!src.contains("$")) //$NON-NLS-1$
+            return src;
         final StringBuilder builder = new StringBuilder();
         int start = src.indexOf('$');
-        if (start > 0) builder.append(src, 0, start);
+        if (start > 0)
+            builder.append(src, 0, start);
         int end = src.indexOf('$', start + 1);
         final String varWithArgs = src.substring(start + 1, end - 1);
         final String[] splitted = varWithArgs.split(":"); //$NON-NLS-1$
@@ -149,9 +153,10 @@ class McContextImpl implements McContext
         builder.append(this.resolveContextVar(src.substring(end + 1)));
         return builder.toString();
     }
-
+    
     /**
      * Resolve context var
+     * 
      * @param splitted
      * @return resolved var
      */
@@ -162,11 +167,12 @@ class McContextImpl implements McContext
         for (final ContextResolverInterface resolver : this.resolvers)
         {
             final String result = resolver.resolve(varName, args, this);
-            if (result != null) return result;
+            if (result != null)
+                return result;
         }
         return "?"; //$NON-NLS-1$
     }
-
+    
     @Override
     public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
     {
@@ -178,9 +184,12 @@ class McContextImpl implements McContext
             tld.clear();
             tld.command = command;
             tld.event = event;
-            if (player != null) tld.put(McPlayerInterface.class, player);
-            if (zone != null) tld.put(ZoneInterface.class, zone);
-            if (component != null) tld.put(ComponentInterface.class, component);
+            if (player != null)
+                tld.put(McPlayerInterface.class, player);
+            if (zone != null)
+                tld.put(ZoneInterface.class, zone);
+            if (component != null)
+                tld.put(ComponentInterface.class, component);
             runnable.run();
         }
         finally
@@ -236,7 +245,7 @@ class McContextImpl implements McContext
             tld.event = null;
         }
     }
-
+    
     @Override
     public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
     {
@@ -248,9 +257,12 @@ class McContextImpl implements McContext
             tld.clear();
             tld.command = command;
             tld.event = event;
-            if (player != null) tld.put(McPlayerInterface.class, player);
-            if (zone != null) tld.put(ZoneInterface.class, zone);
-            if (component != null) tld.put(ComponentInterface.class, component);
+            if (player != null)
+                tld.put(McPlayerInterface.class, player);
+            if (zone != null)
+                tld.put(ZoneInterface.class, zone);
+            if (component != null)
+                tld.put(ComponentInterface.class, component);
             return runnable.get();
         }
         finally
@@ -306,21 +318,21 @@ class McContextImpl implements McContext
             tld.event = null;
         }
     }
-
+    
     @Override
     public <T> void registerContextHandler(Plugin plugin, Class<T> clazz, ContextHandlerInterface<T> handler) throws McException
     {
         this.handlers.computeIfAbsent(clazz, (key) -> new ArrayList<>()).add(handler);
         this.pluginHandlers.computeIfAbsent(plugin, (key) -> new HashMap<>()).computeIfAbsent(clazz, (key) -> new ArrayList<>()).add(handler);
     }
-
+    
     @Override
     public void registerContextResolver(Plugin plugin, ContextResolverInterface resolver)
     {
         this.resolvers.add(resolver);
         this.pluginResolvers.computeIfAbsent(plugin, (key) -> new ArrayList<>()).add(resolver);
     }
-
+    
     @Override
     public void unregisterContextHandlersAndResolvers(Plugin plugin)
     {
@@ -364,7 +376,7 @@ class McContextImpl implements McContext
         /**
          * 
          */
-        private final ContextRunnable task;
+        private final ContextRunnable             task;
         
         /**
          * @param result
@@ -413,7 +425,7 @@ class McContextImpl implements McContext
             }
         }
     }
-
+    
     /**
      * thread local data
      */
@@ -426,12 +438,12 @@ class McContextImpl implements McContext
         private static final long serialVersionUID = 3218652840066205979L;
         
         /** the underlying command being executed. */
-        public CommandInterface command;
+        public CommandInterface   command;
         /** the underlying event being executed. */
-        public Event event;
+        public Event              event;
         
         /** stack of computes to detect endless loops. */
-        public Set<Class<?>> computeStack = new HashSet<>();
+        public Set<Class<?>>      computeStack     = new HashSet<>();
         
         /**
          * Constructor.
@@ -441,7 +453,7 @@ class McContextImpl implements McContext
             // empty
         }
     }
-
+    
     @Override
     public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
@@ -451,7 +463,7 @@ class McContextImpl implements McContext
         result.set(runnable.runTask(plugin));
         return result.get();
     }
-
+    
     @Override
     public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
     {
@@ -461,7 +473,7 @@ class McContextImpl implements McContext
         result.set(runnable.runTaskAsynchronously(plugin));
         return result.get();
     }
-
+    
     @Override
     public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
@@ -471,7 +483,7 @@ class McContextImpl implements McContext
         result.set(runnable.runTaskLater(plugin, delay));
         return result.get();
     }
-
+    
     @Override
     public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
     {
@@ -481,7 +493,7 @@ class McContextImpl implements McContext
         result.set(runnable.runTaskLaterAsynchronously(plugin, delay));
         return result.get();
     }
-
+    
     @Override
     public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
     {
@@ -491,7 +503,7 @@ class McContextImpl implements McContext
         result.set(runnable.runTaskTimer(plugin, delay, period));
         return result.get();
     }
-
+    
     @Override
     public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
     {

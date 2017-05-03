@@ -209,7 +209,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     
     /** logger */
     private static final Logger                                                                                                  LOGGER                  = Logger
-            .getLogger(ObjectsManager.class.getName());
+        .getLogger(ObjectsManager.class.getName());
     
     /**
      * Constructor.
@@ -300,6 +300,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     
     /**
      * resume objects for given plugin
+     * 
      * @param plugin
      * @return resume report
      */
@@ -391,27 +392,32 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final Map<ComponentIdInterface, McException> brokenComponents = new HashMap<>();
         final Map<ObjectIdInterface, McException> brokenObjects = new HashMap<>();
         
-        this.objects.resumeObjects(pluginName, this.objectTypesByPlugin, ObjectId::getType, this::safeCreateHandler, (id, handler) -> {
+        this.objects.resumeObjects(pluginName, this.objectTypesByPlugin, ObjectId::getType, this::safeCreateHandler, (id, handler) ->
+        {
             final ObjectImpl impl = new ObjectImpl(plugin, id, handler, new File(this.objectsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             
-            this.runInContext(ObjectInterface.class, impl, () -> {
+            this.runInContext(ObjectInterface.class, impl, () ->
+            {
                 handler.onResume(impl);
             });
             return impl;
         }, brokenObjects);
         
-        this.zones.resumeObjects(pluginName, this.zoneTypesByPlugin, ZoneId::getType, this::safeCreateHandler, (id, handler) -> {
+        this.zones.resumeObjects(pluginName, this.zoneTypesByPlugin, ZoneId::getType, this::safeCreateHandler, (id, handler) ->
+        {
             final ZoneImpl impl = new ZoneImpl(plugin, this.registry, null, id, handler, new File(this.zonesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             
-            this.runInContext(ZoneInterface.class, impl, () -> {
+            this.runInContext(ZoneInterface.class, impl, () ->
+            {
                 handler.onResume(impl);
             });
             return impl;
         }, brokenZones);
         
-        this.signs.resumeObjects(pluginName, this.signTypesByPlugin, SignId::getType, this::safeCreateHandler, (id, handler) -> {
+        this.signs.resumeObjects(pluginName, this.signTypesByPlugin, SignId::getType, this::safeCreateHandler, (id, handler) ->
+        {
             final SignImpl impl = new SignImpl(plugin, this.registry, null, id, handler, new File(this.signsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             // research sign
@@ -420,7 +426,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             {
                 impl.setSign((Sign) block);
                 
-                this.runInContext(SignInterface.class, impl, () -> {
+                this.runInContext(SignInterface.class, impl, () ->
+                {
                     handler.onResume(impl);
                 });
                 return impl;
@@ -428,7 +435,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(CommonMessages.SignNotFoundError);
         }, brokenSigns);
         
-        this.entities.resumeObjects(pluginName, this.entityTypesByPlugin, EntityId::getType, this::safeCreateHandler, (id, handler) -> {
+        this.entities.resumeObjects(pluginName, this.entityTypesByPlugin, EntityId::getType, this::safeCreateHandler, (id, handler) ->
+        {
             final EntityImpl impl = new EntityImpl(plugin, null, id, handler, new File(this.entitiesFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             // research entity
@@ -457,7 +465,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 impl.setEntity(entity);
                 this.entitiesByUuid.computeIfAbsent(entity.getUniqueId(), k -> new HashSet<>()).add(id);
                 
-                this.runInContext(EntityInterface.class, impl, () -> {
+                this.runInContext(EntityInterface.class, impl, () ->
+                {
                     handler.onResume(impl);
                 });
                 return impl;
@@ -465,11 +474,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(CommonMessages.EntityNotFoundError);
         }, brokenEntities);
         
-        this.components.resumeObjects(pluginName, this.componentTypesByPlugin, ComponentId::getType, this::safeCreateHandler, (id, handler) -> {
+        this.components.resumeObjects(pluginName, this.componentTypesByPlugin, ComponentId::getType, this::safeCreateHandler, (id, handler) ->
+        {
             final ComponentImpl impl = new ComponentImpl(plugin, this.registry, null, id, handler, new File(this.componentsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
             impl.readConfig();
             
-            this.runInContext(ComponentInterface.class, impl, () -> {
+            this.runInContext(ComponentInterface.class, impl, () ->
+            {
                 handler.onResume(impl);
             });
             return impl;
@@ -576,11 +587,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             }
             
             // pause elements
-            this.components.removePlugin(pluginName).forEach((id, persistent) -> {
+            this.components.removePlugin(pluginName).forEach((id, persistent) ->
+            {
                 final ComponentImpl component = this.components.remove(id);
                 component.clearEventRegistrations();
                 
-                this.runInContext(ComponentInterface.class, component, () -> {
+                this.runInContext(ComponentInterface.class, component, () ->
+                {
                     component.getHandler().onPause(component);
                     if (persistent)
                     {
@@ -588,11 +601,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                     }
                 });
             });
-            this.entities.removePlugin(pluginName).forEach((id, persistent) -> {
+            this.entities.removePlugin(pluginName).forEach((id, persistent) ->
+            {
                 final EntityImpl entity = this.entities.remove(id);
                 entity.clearEventRegistrations();
                 
-                this.runInContext(EntityInterface.class, entity, () -> {
+                this.runInContext(EntityInterface.class, entity, () ->
+                {
                     entity.getHandler().onPause(entity);
                     if (persistent)
                     {
@@ -600,11 +615,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                     }
                 });
             });
-            this.signs.removePlugin(pluginName).forEach((id, persistent) -> {
+            this.signs.removePlugin(pluginName).forEach((id, persistent) ->
+            {
                 final SignImpl sign = this.signs.remove(id);
                 sign.clearEventRegistrations();
                 
-                this.runInContext(SignInterface.class, sign, () -> {
+                this.runInContext(SignInterface.class, sign, () ->
+                {
                     sign.getHandler().onPause(sign);
                     if (persistent)
                     {
@@ -612,11 +629,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                     }
                 });
             });
-            this.zones.removePlugin(pluginName).forEach((id, persistent) -> {
+            this.zones.removePlugin(pluginName).forEach((id, persistent) ->
+            {
                 final ZoneImpl zone = this.zones.remove(id);
                 zone.clearEventRegistrations();
                 
-                this.runInContext(ZoneInterface.class, zone, () -> {
+                this.runInContext(ZoneInterface.class, zone, () ->
+                {
                     zone.getHandler().onPause(zone);
                     if (persistent)
                     {
@@ -624,11 +643,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                     }
                 });
             });
-            this.objects.removePlugin(pluginName).forEach((id, persistent) -> {
+            this.objects.removePlugin(pluginName).forEach((id, persistent) ->
+            {
                 final ObjectImpl object = this.objects.remove(id);
                 object.clearEventRegistrations();
                 
-                this.runInContext(ObjectInterface.class, object, () -> {
+                this.runInContext(ObjectInterface.class, object, () ->
+                {
                     object.getHandler().onPause(object);
                     if (persistent)
                     {
@@ -637,28 +658,38 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 });
             });
             
-            this.components.forEach(c -> {
-                this.runInContext(ComponentInterface.class, c, () -> {
+            this.components.forEach(c ->
+            {
+                this.runInContext(ComponentInterface.class, c, () ->
+                {
                     c.onDisable(plugin);
                 });
             });
-            this.entities.forEach(c -> {
-                this.runInContext(EntityInterface.class, c, () -> {
+            this.entities.forEach(c ->
+            {
+                this.runInContext(EntityInterface.class, c, () ->
+                {
                     c.onDisable(plugin);
                 });
             });
-            this.signs.forEach(c -> {
-                this.runInContext(SignInterface.class, c, () -> {
+            this.signs.forEach(c ->
+            {
+                this.runInContext(SignInterface.class, c, () ->
+                {
                     c.onDisable(plugin);
                 });
             });
-            this.zones.forEach(c -> {
-                this.runInContext(ZoneInterface.class, c, () -> {
+            this.zones.forEach(c ->
+            {
+                this.runInContext(ZoneInterface.class, c, () ->
+                {
                     c.onDisable(plugin);
                 });
             });
-            this.objects.forEach(c -> {
-                this.runInContext(ObjectInterface.class, c, () -> {
+            this.objects.forEach(c ->
+            {
+                this.runInContext(ObjectInterface.class, c, () ->
+                {
                     c.onDisable(plugin);
                 });
             });
@@ -683,7 +714,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return null;
         final Optional<ComponentImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
-                .filter(c -> c.getLocation().equals(location)).findFirst();
+            .filter(c -> c.getLocation().equals(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -715,7 +746,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
         
-        this.runInContext(ComponentInterface.class, impl, () -> {
+        this.runInContext(ComponentInterface.class, impl, () ->
+        {
             handler2.onCreate(impl);
             
             // store data
@@ -842,7 +874,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
         
-        this.runInContext(EntityInterface.class, impl, () -> {
+        this.runInContext(EntityInterface.class, impl, () ->
+        {
             handler2.onCreate(impl);
             
             // store data
@@ -869,7 +902,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return null;
         final Optional<SignImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
-                .findFirst();
+            .findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -901,7 +934,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
         
-        this.runInContext(SignInterface.class, impl, () -> {
+        this.runInContext(SignInterface.class, impl, () ->
+        {
             handler2.onCreate(impl);
             
             // store data
@@ -992,7 +1026,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
         
-        this.runInContext(ZoneInterface.class, impl, () -> {
+        this.runInContext(ZoneInterface.class, impl, () ->
+        {
             handler2.onCreate(impl);
             
             // store data
@@ -1073,7 +1108,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYd(location))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1082,7 +1117,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
+            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1092,7 +1127,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutY(location))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1101,7 +1136,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
+            .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1111,7 +1146,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLoc(location))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1120,7 +1155,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return null;
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
+            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1220,7 +1255,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c).filter(c -> c.getLocation().equals(location))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1235,7 +1270,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         
         final List<ComponentInterface> result = new ArrayList<>();
-        perPlugin.forEach((plugin, ids) -> {
+        perPlugin.forEach((plugin, ids) ->
+        {
             this.components.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
         });
         
@@ -1266,7 +1302,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         {
             types.add(t);
         }
-        this.entitiesByUuid.values().forEach(s -> {
+        this.entitiesByUuid.values().forEach(s ->
+        {
             s.stream().map(this::findEntity).filter(e -> types.contains(e.getTypeId())).forEach(result::add);
         });
         return result;
@@ -1278,7 +1315,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (location == null)
             return Collections.emptyList();
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1293,7 +1330,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         
         final List<SignInterface> result = new ArrayList<>();
-        perPlugin.forEach((plugin, ids) -> {
+        perPlugin.forEach((plugin, ids) ->
+        {
             this.signs.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
         });
         
@@ -1366,8 +1404,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
-                .findFirst();
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+            .findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1382,8 +1420,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1408,8 +1446,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
         return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
-                .collect(Collectors.toList());
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+            .collect(Collectors.toList());
     }
     
     @Override
@@ -1423,8 +1461,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
     }
     
     @Override
@@ -1438,8 +1476,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1454,8 +1492,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
     }
     
     @Override
@@ -1469,8 +1507,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
@@ -1485,8 +1523,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
         }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-                .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-                .filter(c -> c.getCuboid().containsLocWithoutYd(location)).collect(Collectors.toList());
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).collect(Collectors.toList());
     }
     
     @Override
@@ -1501,7 +1539,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         
         final List<ZoneInterface> result = new ArrayList<>();
-        perPlugin.forEach((plugin, ids) -> {
+        perPlugin.forEach((plugin, ids) ->
+        {
             this.zones.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
         });
         
@@ -1621,7 +1660,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         
         final List<ObjectInterface> result = new ArrayList<>();
-        perPlugin.forEach((plugin, ids) -> {
+        perPlugin.forEach((plugin, ids) ->
+        {
             this.objects.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.objects::get).forEach(result::add);
         });
         
@@ -1650,7 +1690,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
         }
         
-        this.runInContext(ObjectInterface.class, impl, () -> {
+        this.runInContext(ObjectInterface.class, impl, () ->
+        {
             handler2.onCreate(impl);
             
             // store data
@@ -1680,7 +1721,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     {
         try
         {
-            McLibInterface.instance().runInCopiedContext(() -> {
+            McLibInterface.instance().runInCopiedContext(() ->
+            {
                 McLibInterface.instance().setContext(clazz, value);
                 run.run();
             });
@@ -1766,7 +1808,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (!this.initialized)
         {
             this.initialized = true;
-            this.lazyPluginLoading.entrySet().forEach(e -> {
+            this.lazyPluginLoading.entrySet().forEach(e ->
+            {
                 final ResumeReport report = this.resumeObjects(e.getKey());
                 if (e.getValue() != null)
                 {

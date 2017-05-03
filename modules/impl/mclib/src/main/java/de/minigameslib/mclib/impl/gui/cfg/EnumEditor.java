@@ -59,52 +59,52 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  */
 public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements ClickGuiInterface
 {
-
+    
     /** save function */
-    private McConsumer<EnumerationValue> onSave;
+    private McConsumer<EnumerationValue>            onSave;
     
     /** enum class */
     private final Class<? extends EnumerationValue> clazz;
     
     /** enumeration value. */
-    private EnumerationValue value;
-
+    private EnumerationValue                        value;
+    
     /** sorted list */
-    private List<? extends EnumerationValue> values;
-
+    private List<? extends EnumerationValue>        values;
+    
     /**
      * @param clazz
-     * @param value   
-     * @param save 
+     * @param value
+     * @param save
      */
     public EnumEditor(Class<? extends EnumerationValue> clazz, EnumerationValue value, McConsumer<EnumerationValue> save)
-    {   
+    {
         this.onSave = save;
         this.clazz = clazz;
         this.value = value;
         
         this.values = EnumServiceInterface.instance().getEnumValues(this.clazz).stream()
-                .sorted((a, b) -> a.name().compareTo(b.name())).collect(Collectors.toList());
+            .sorted((a, b) -> a.name().compareTo(b.name())).collect(Collectors.toList());
     }
-
+    
     @Override
     public Serializable getPageName()
     {
         return Messages.Title;
     }
-
+    
     @Override
     protected int count()
     {
         return this.values.size();
     }
-
+    
     @Override
     protected List<EnumerationValue> getElements(int start, int limit)
     {
         return this.values.stream().skip(start).limit(limit).collect(Collectors.toList());
     }
-
+    
     @Override
     protected ClickGuiItem map(int line, int col, int index, EnumerationValue elm)
     {
@@ -121,11 +121,12 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
     
     /**
      * Select handler
+     * 
      * @param player
      * @param session
      * @param guiInterface
      * @param elm
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, EnumerationValue elm) throws McException
     {
@@ -136,6 +137,7 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
     
     /**
      * prev page icon
+     * 
      * @return prev page icon
      */
     public ClickGuiItem itemPrevPage()
@@ -145,47 +147,48 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
     
     /**
      * next page icon
+     * 
      * @return next page icon
      */
     public ClickGuiItem itemNextPage()
     {
         return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
     }
-
+    
     @Override
     protected ClickGuiItem[] firstLine()
     {
-        return new ClickGuiItem[]{
-                null,
-                null,
-                this.itemPrevPage(),
-                this.itemNextPage(),
-                new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back), Messages.IconBack, (c, s, g) -> s.close()),
-                null,
-                null,
-                null,
-                null
+        return new ClickGuiItem[] {
+            null,
+            null,
+            this.itemPrevPage(),
+            this.itemNextPage(),
+            new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back), Messages.IconBack, (c, s, g) -> s.close()),
+            null,
+            null,
+            null,
+            null
         };
     }
-
+    
     @Override
     public ClickGuiId getUniqueId()
     {
         return ClickGuis.Enum;
     }
-
+    
     @Override
     public ClickGuiPageInterface getInitialPage()
     {
         return this;
     }
-
+    
     @Override
     public int getLineCount()
     {
         return 6;
     }
-
+    
     /**
      * Editor to create colors.
      * 
@@ -213,16 +216,16 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
          * enum value
          */
         @LocalizedMessage(defaultMessage = "%1$s")
-        @MessageComment(value = "enum value", args={@MessageComment.Argument("enum value name")})
+        @MessageComment(value = "enum value", args = { @MessageComment.Argument("enum value name") })
         EnumValue,
-
+        
         /**
          * prev page icon
          */
         @LocalizedMessage(defaultMessage = "Previous page")
         @MessageComment(value = "prev page icon")
         IconPreviousPage,
-
+        
         /**
          * next page icon
          */

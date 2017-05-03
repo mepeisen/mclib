@@ -54,8 +54,8 @@ class NetMessage
     private CommunicationEndpointId endpoint;
     
     /** the data section. */
-    private DataSection data;
-
+    private DataSection             data;
+    
     /**
      * 
      */
@@ -63,7 +63,7 @@ class NetMessage
     {
         // empty
     }
-
+    
     /**
      * @param endpoint
      * @param data
@@ -73,7 +73,7 @@ class NetMessage
         this.endpoint = endpoint;
         this.data = data;
     }
-
+    
     /**
      * @return the endpoint
      */
@@ -81,15 +81,16 @@ class NetMessage
     {
         return this.endpoint;
     }
-
+    
     /**
-     * @param endpoint the endpoint to set
+     * @param endpoint
+     *            the endpoint to set
      */
     public void setEndpoint(CommunicationEndpointId endpoint)
     {
         this.endpoint = endpoint;
     }
-
+    
     /**
      * @return the data
      */
@@ -97,19 +98,22 @@ class NetMessage
     {
         return this.data;
     }
-
+    
     /**
-     * @param data the data to set
+     * @param data
+     *            the data to set
      */
     public void setData(DataSection data)
     {
         this.data = data;
     }
-
+    
     /**
      * Reads message from given input
+     * 
      * @param buf
-     * @param endpointFactory a function to receive endpoints by string
+     * @param endpointFactory
+     *            a function to receive endpoints by string
      */
     public void fromBytes(ByteArrayDataInput buf, BiFunction<String, String, CommunicationEndpointId> endpointFactory)
     {
@@ -176,7 +180,7 @@ class NetMessage
             // TODO maybe we drop corrupt streams silently because EOF can be thrown by reading the keys or values.
             // should we add a "number of items" as first data?
             
-            if (! (ex.getCause() instanceof EOFException))
+            if (!(ex.getCause() instanceof EOFException))
             {
                 // rethrow unknown exception
                 throw ex;
@@ -185,30 +189,30 @@ class NetMessage
     }
     
     /** type num. */
-    private static final byte TYPE_STRING = 0;
+    private static final byte TYPE_STRING   = 0;
     /** type num. */
-    private static final byte TYPE_BYTE = 1;
+    private static final byte TYPE_BYTE     = 1;
     /** type num. */
-    private static final byte TYPE_SHORT = 2;
+    private static final byte TYPE_SHORT    = 2;
     /** type num. */
-    private static final byte TYPE_INT = 3;
+    private static final byte TYPE_INT      = 3;
     /** type num. */
-    private static final byte TYPE_LONG = 4;
+    private static final byte TYPE_LONG     = 4;
     /** type num. */
-    private static final byte TYPE_BOOL = 5;
+    private static final byte TYPE_BOOL     = 5;
     /** type num. */
-    private static final byte TYPE_CHAR = 6;
+    private static final byte TYPE_CHAR     = 6;
     /** type num. */
-    private static final byte TYPE_FLOAT = 7;
+    private static final byte TYPE_FLOAT    = 7;
     /** type num. */
-    private static final byte TYPE_DOUBLE = 8;
+    private static final byte TYPE_DOUBLE   = 8;
     /** type num. */
     private static final byte TYPE_DATETIME = 9;
     /** type num. */
-    private static final byte TYPE_DATE = 10;
+    private static final byte TYPE_DATE     = 10;
     /** type num. */
-    private static final byte TYPE_TIME = 11;
-
+    private static final byte TYPE_TIME     = 11;
+    
     /**
      * @param buf
      * @return utf8 string
@@ -216,13 +220,14 @@ class NetMessage
     private String readUtf8(ByteArrayDataInput buf)
     {
         int size = buf.readInt();
-        if (size > 150000) throw new IllegalStateException("string to big; max 150000"); //$NON-NLS-1$
+        if (size > 150000)
+            throw new IllegalStateException("string to big; max 150000"); //$NON-NLS-1$
         byte[] strbuf = new byte[size];
         buf.readFully(strbuf);
         final String result = new String(strbuf, Charsets.UTF_8);
         return result;
     }
-
+    
     /**
      * @param buf
      * @param value
@@ -233,9 +238,10 @@ class NetMessage
         buf.writeInt(bytes.length);
         buf.write(bytes);
     }
-
+    
     /**
      * Converts this message to byte stream.
+     * 
      * @param buf
      */
     public void toBytes(ByteArrayDataOutput buf)

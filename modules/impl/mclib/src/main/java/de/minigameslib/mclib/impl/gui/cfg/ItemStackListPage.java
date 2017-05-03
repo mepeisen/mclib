@@ -42,16 +42,16 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
  */
 public class ItemStackListPage extends AbstractListPage<ConfigItemStackData>
 {
-
+    
     /** save function */
     private McConsumer<List<ConfigItemStackData>> onSave;
-
+    
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param save   
+     * @param save
      */
     public ItemStackListPage(Serializable title, ConfigItemStackData[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<ConfigItemStackData>> save)
     {
@@ -63,10 +63,10 @@ public class ItemStackListPage extends AbstractListPage<ConfigItemStackData>
     @Override
     protected void onCreateBefore(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException
     {
-//        final ConfigItemStackData data = new ConfigItemStackData((byte) 0, (byte) 0, (byte) 0);
-//        this.lines.add(realLine, data);
-//        this.onSave.accept(this.lines);
-//        this.onEdit(player, session, gui, realLine);
+        // final ConfigItemStackData data = new ConfigItemStackData((byte) 0, (byte) 0, (byte) 0);
+        // this.lines.add(realLine, data);
+        // this.onSave.accept(this.lines);
+        // this.onEdit(player, session, gui, realLine);
         // TODO implement editor
         player.sendMessage(AbstractConfigOption.Messages.NotImplemented);
     }
@@ -74,10 +74,10 @@ public class ItemStackListPage extends AbstractListPage<ConfigItemStackData>
     @Override
     protected void onCreateAfter(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException
     {
-//        final ConfigItemStackData data = new ConfigItemStackData((byte) 0, (byte) 0, (byte) 0);
-//        this.lines.add(realLine, data);
-//        this.onSave.accept(this.lines);
-//        this.onEdit(player, session, gui, realLine + 1);
+        // final ConfigItemStackData data = new ConfigItemStackData((byte) 0, (byte) 0, (byte) 0);
+        // this.lines.add(realLine, data);
+        // this.onSave.accept(this.lines);
+        // this.onEdit(player, session, gui, realLine + 1);
         // TODO implement editor
         player.sendMessage(AbstractConfigOption.Messages.NotImplemented);
     }
@@ -92,14 +92,14 @@ public class ItemStackListPage extends AbstractListPage<ConfigItemStackData>
     @Override
     protected void onEdit(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui, int realLine) throws McException
     {
-//        final ConfigItemStackData value = this.lines.get(realLine);
-//        player.nestClickGui(new ItemStackEditor(
-//                value,
-//                c -> {
-//                    this.lines.set(realLine, c);
-//                    this.onSave.accept(this.lines);
-//                }
-//                ));
+        // final ConfigItemStackData value = this.lines.get(realLine);
+        // player.nestClickGui(new ItemStackEditor(
+        // value,
+        // c -> {
+        // this.lines.set(realLine, c);
+        // this.onSave.accept(this.lines);
+        // }
+        // ));
         // TODO implement editor
         player.sendMessage(AbstractConfigOption.Messages.NotImplemented);
     }

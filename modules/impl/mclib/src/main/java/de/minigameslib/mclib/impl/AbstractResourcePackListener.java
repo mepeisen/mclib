@@ -46,13 +46,12 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
 {
     
     /** the player registry. */
-    PlayerRegistry                                                       players;
+    PlayerRegistry  players;
     
     /**
      * the item service impl
      */
-    ItemServiceImpl                                                      itemService;
-
+    ItemServiceImpl itemService;
     
     /**
      * @param players
@@ -63,7 +62,7 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
         this.players = players;
         this.itemService = itemService;
     }
-
+    
     @Override
     public void accept(Player t, ResourcePackStatus u)
     {

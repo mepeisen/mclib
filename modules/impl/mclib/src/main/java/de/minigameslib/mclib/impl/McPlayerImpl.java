@@ -136,7 +136,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     /**
      * the client api version.
      */
-    private int                                 clientApi = -1;
+    private int                                 clientApi        = -1;
     
     /** the raw actions. */
     private final ExpiringMap<UUID, McRunnable> rawActions       = ExpiringMap.builder().variableExpiration().build();
@@ -147,21 +147,21 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     /**
      * the players zone manager
      */
-    private final ZoneManager                   zoneManager      = new ZoneManager(){
-
-        @Override
-        protected void fireZonesEntered(Set<ZoneId> newZones)
-        {
-            McPlayerImpl.this.fireZonesEntered(newZones);
-        }
-
-        @Override
-        protected void fireZonesLeft(Set<ZoneId> oldZones)
-        {
-            McPlayerImpl.this.fireZonesLeft(oldZones);
-        }
-        
-    };
+    private final ZoneManager                   zoneManager      = new ZoneManager() {
+                                                                     
+                                                                     @Override
+                                                                     protected void fireZonesEntered(Set<ZoneId> newZones)
+                                                                     {
+                                                                         McPlayerImpl.this.fireZonesEntered(newZones);
+                                                                     }
+                                                                     
+                                                                     @Override
+                                                                     protected void fireZonesLeft(Set<ZoneId> oldZones)
+                                                                     {
+                                                                         McPlayerImpl.this.fireZonesLeft(oldZones);
+                                                                     }
+                                                                     
+                                                                 };
     
     /**
      * Constructor
@@ -523,7 +523,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }
-
+    
     @Override
     public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
     {
@@ -531,7 +531,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
         if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
-            ((GuiSessionImpl)oldSession).pause();
+            ((GuiSessionImpl) oldSession).pause();
         }
         final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
         newSession.setPrevSession(oldSession);
@@ -552,7 +552,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         storage.set(GuiSessionInterface.class, newSession);
         return newSession;
     }
-
+    
     @Override
     public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
     {
@@ -560,7 +560,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         final GuiSessionInterface oldSession = storage.get(GuiSessionInterface.class);
         if (oldSession != null && oldSession.getCurrentType() != GuiType.None)
         {
-            ((GuiSessionImpl)oldSession).pause();
+            ((GuiSessionImpl) oldSession).pause();
         }
         final GuiSessionImpl newSession = new GuiSessionImpl(gui, this);
         newSession.setPrevSession(oldSession);
@@ -681,7 +681,8 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     {
         try
         {
-            McLibInterface.instance().runInNewContext(() -> {
+            McLibInterface.instance().runInNewContext(() ->
+            {
                 McLibInterface.instance().setContext(McPlayerInterface.class, this);
                 endpoint.send(data);
             });
@@ -800,7 +801,8 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         {
             try
             {
-                McLibInterface.instance().runInNewContext(() -> {
+                McLibInterface.instance().runInNewContext(() ->
+                {
                     McLibInterface.instance().setContext(McPlayerInterface.class, this);
                     runnable.run();
                 });
@@ -841,36 +843,37 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     {
         if (eventClass == McPlayerMoveEvent.class)
         {
-            this.zoneManager.registerMovement(((McPlayerMoveEvent)event).getBukkitEvent().getTo());
+            this.zoneManager.registerMovement(((McPlayerMoveEvent) event).getBukkitEvent().getTo());
         }
         else if (eventClass == McPlayerTeleportEvent.class)
         {
-            this.zoneManager.registerMovement(((McPlayerTeleportEvent)event).getBukkitEvent().getTo());
+            this.zoneManager.registerMovement(((McPlayerTeleportEvent) event).getBukkitEvent().getTo());
         }
         this.eventBus.handle(eventClass, event);
     }
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public McPlayerInterface getPlayer()
     {
         return this;
     }
-
+    
     @Override
     public int getApiVersion()
     {
         return this.clientApi;
     }
-
+    
     @Override
     public ClientInterface getClient()
     {

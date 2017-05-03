@@ -52,7 +52,7 @@ public class ByteListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -63,12 +63,13 @@ public class ByteListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -80,40 +81,45 @@ public class ByteListConfigOption extends AbstractConfigOption
         }
         
         player.nestClickGui(new TextListPage<>(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setByteList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        final byte[] res = new byte[a.size()];
-                        for (int i = 0; i < res.length; i++)
-                        {
-                            res[i] = a.get(i);
-                        }
-                        getValue().setByteList(res);
-                    });
-                    onChange.run();
-                },
-                str -> {
-                    try
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setByteList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    final byte[] res = new byte[a.size()];
+                    for (int i = 0; i < res.length; i++)
                     {
-                        final byte newVal = Byte.parseByte(str);
-                        return (Byte) newVal;
+                        res[i] = a.get(i);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                b -> String.valueOf(b),
-                Byte.valueOf((byte) 0)));
+                    getValue().setByteList(res);
+                });
+                onChange.run();
+            },
+            str ->
+            {
+                try
+                {
+                    final byte newVal = Byte.parseByte(str);
+                    return (Byte) newVal;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            b -> String.valueOf(b),
+            Byte.valueOf((byte) 0)));
     }
     
 }

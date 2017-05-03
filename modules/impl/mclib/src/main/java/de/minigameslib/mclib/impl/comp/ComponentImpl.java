@@ -59,13 +59,13 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
 {
     
     /** component id. */
-    private final ComponentId id;
+    private final ComponentId               id;
     
     /** component handler. */
     private final ComponentHandlerInterface handler;
     
     /** an event bus to handle events. */
-    private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus                  eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
      * @param plugin
@@ -74,8 +74,8 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
      * @param id
      * @param handler
      * @param config
-     * @param owner 
-     * @throws McException 
+     * @param owner
+     * @throws McException
      */
     public ComponentImpl(Plugin plugin, ComponentRegistry registry, Location location, ComponentId id, ComponentHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -87,7 +87,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             this.eventBus.registerHandlers(plugin, (McListener) this.handler);
         }
     }
-
+    
     @Override
     public ComponentIdInterface getComponentId()
     {
@@ -101,19 +101,20 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         // the id is already read from registry.yml
         this.handler.read(coreSection.getSection("handler")); //$NON-NLS-1$
     }
-
+    
     @Override
     protected void saveData(DataSection coreSection)
     {
         this.id.write(coreSection.createSection("id")); //$NON-NLS-1$
         this.handler.write(coreSection.createSection("handler")); //$NON-NLS-1$
     }
-
+    
     @Override
     public void setLocation(Location loc) throws McException
     {
         final Location old = this.location;
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ComponentInterface.class, this);
             this.handler.canChangeLocation(loc);
         });
@@ -124,7 +125,8 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             throw new McException(relocateEvent.getVetoReason(), relocateEvent.getVetoReasonArgs());
         }
         
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ComponentInterface.class, this);
             super.setLocation(loc);
             this.handler.onLocationChange(loc);
@@ -133,7 +135,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         final ComponentRelocatedEvent relocatedEvent = new ComponentRelocatedEvent(this, old, loc);
         Bukkit.getPluginManager().callEvent(relocatedEvent);
     }
-
+    
     @Override
     public void delete() throws McException
     {
@@ -141,7 +143,8 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         {
             throw new McException(CommonMessages.AlreadyDeletedError);
         }
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ComponentInterface.class, this);
             this.handler.canDelete();
         });
@@ -153,7 +156,8 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
             throw new McException(deleteEvent.getVetoReason(), deleteEvent.getVetoReasonArgs());
         }
         
-        McLibInterface.instance().runInCopiedContext(() -> {
+        McLibInterface.instance().runInCopiedContext(() ->
+        {
             McLibInterface.instance().setContext(ComponentInterface.class, this);
             super.delete();
             this.handler.onDelete();
@@ -163,7 +167,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
         final ComponentDeletedEvent deletedEvent = new ComponentDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
-
+    
     /**
      * Clears all event registrations
      */
@@ -171,7 +175,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     {
         this.eventBus.clear();
     }
-
+    
     @Override
     public ComponentHandlerInterface getHandler()
     {
@@ -210,13 +214,14 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)
     {
         this.eventBus.onDisable(plugin);
     }
-
+    
     @Override
     public ComponentTypeId getTypeId()
     {

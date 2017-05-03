@@ -31,6 +31,7 @@ import de.minigameslib.mclib.api.config.ConfigurationValues;
 
 /**
  * Core configuration values for inventories
+ * 
  * @author mepeisen
  */
 @ConfigurationValues(path = "inv", file = "inventories.yml")

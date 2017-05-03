@@ -68,6 +68,6 @@ public interface ConfigInterface
      * @param file
      *            configuration file name.
      */
-    void flushConfig(String file);
+    void rollbackConfig(String file);
     
 }

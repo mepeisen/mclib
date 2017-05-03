@@ -57,10 +57,10 @@ public class HumanBuilder implements HumanBuilderInterface
     /** type handler. */
     private EntityHandlerInterface handler;
     /** name. */
-    private String name;
+    private String                 name;
     
     /** skin player. */
-    private McPlayerInterface skinPlayer;
+    private McPlayerInterface      skinPlayer;
     
     @Override
     public HumanBuilderInterface skin(McPlayerInterface player)
@@ -68,7 +68,7 @@ public class HumanBuilder implements HumanBuilderInterface
         this.skinPlayer = player;
         return this;
     }
-
+    
     @Override
     public HumanBuilderInterface persistent()
     {
@@ -119,7 +119,8 @@ public class HumanBuilder implements HumanBuilderInterface
         final EntityImpl impl = (EntityImpl) ObjectServiceInterface.instance().createEntity(this.type, bukkitEntity, this.handler, this.persistent);
         if (this.skinPlayer != null)
         {
-            skins.getSkinSnapshot(this.skinPlayer, s -> {
+            skins.getSkinSnapshot(this.skinPlayer, s ->
+            {
                 skins.setToHuman(impl, s);
                 if (this.persistent)
                 {

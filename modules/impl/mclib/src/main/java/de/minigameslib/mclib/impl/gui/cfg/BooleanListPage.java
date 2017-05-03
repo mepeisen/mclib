@@ -41,16 +41,16 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
  */
 public class BooleanListPage extends AbstractListPage<Boolean>
 {
-
+    
     /** save function */
     private McConsumer<List<Boolean>> onSave;
-
+    
     /**
      * @param title
-     * @param lines 
+     * @param lines
      * @param onPrev
      * @param onDelete
-     * @param save   
+     * @param save
      */
     public BooleanListPage(Serializable title, Boolean[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<Boolean>> save)
     {

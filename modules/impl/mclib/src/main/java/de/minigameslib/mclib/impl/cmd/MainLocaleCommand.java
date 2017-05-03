@@ -50,25 +50,25 @@ public class MainLocaleCommand extends AbstractCompositeCommandHandler implement
         this.subCommands.put("remove", new MainLocaleRemoveCommand()); //$NON-NLS-1$
         this.subCommands.put("list", new MainLocaleListCommand()); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean visible(CommandInterface command)
     {
         return command.checkOpPermission(MclibCommand.CommandPermissions.MainLocale);
     }
-
+    
     @Override
     public LocalizedMessageInterface getShortDescription(CommandInterface command)
     {
         return Messages.ShortDescription;
     }
-
+    
     @Override
     public LocalizedMessageInterface getDescription(CommandInterface command)
     {
         return Messages.Description;
     }
-
+    
     @Override
     protected void sendUsage(CommandInterface command)
     {

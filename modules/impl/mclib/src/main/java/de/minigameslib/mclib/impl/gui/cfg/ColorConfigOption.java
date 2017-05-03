@@ -53,7 +53,7 @@ public class ColorConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,26 +64,28 @@ public class ColorConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final ConfigColorData color = this.calculate(contextProvider, this.getValue()::getColor);
         player.nestClickGui(new ColorEditor(
-                color,
-                c -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setColor(c);
-                        getValue().saveConfig();
-                    });
-                    onChange.run();
-                }
-                ));
+            color,
+            c ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setColor(c);
+                    getValue().saveConfig();
+                });
+                onChange.run();
+            }));
     }
     
 }

@@ -52,7 +52,7 @@ public class BooleanListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -63,12 +63,13 @@ public class BooleanListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -80,27 +81,31 @@ public class BooleanListConfigOption extends AbstractConfigOption
         }
         
         player.nestClickGui(new BooleanListPage(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setBooleanList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        final boolean[] res = new boolean[a.size()];
-                        for (int i = 0; i < res.length; i++)
-                        {
-                            res[i] = a.get(i);
-                        }
-                        getValue().setBooleanList(res);
-                    });
-                    onChange.run();
-                }));
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setBooleanList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    final boolean[] res = new boolean[a.size()];
+                    for (int i = 0; i < res.length; i++)
+                    {
+                        res[i] = a.get(i);
+                    }
+                    getValue().setBooleanList(res);
+                });
+                onChange.run();
+            }));
     }
     
 }

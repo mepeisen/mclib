@@ -35,7 +35,9 @@ public interface InventoryListener
     
     /**
      * Handle close event
-     * @param evt close event
+     * 
+     * @param evt
+     *            close event
      */
     void handle(InventoryCloseEvent evt);
     

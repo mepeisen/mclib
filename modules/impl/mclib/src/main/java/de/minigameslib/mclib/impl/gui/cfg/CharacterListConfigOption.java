@@ -52,7 +52,7 @@ public class CharacterListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -64,27 +64,30 @@ public class CharacterListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
         final char[] str = this.calculate(contextProvider, this.getValue()::getCharacterList);
         player.nestAnvilGui(new QueryText(
-                new String(str),
-                () -> session.refreshClickGui(),
-                s -> {
-                    this.run(contextProvider, () -> {
-                        this.getValue().setCharacterList(s.toCharArray());
-                        this.getValue().saveConfig();
-                    });
-                    onChange.run();
-                },
-                this.getValue().getComment()));
+            new String(str),
+            () -> session.refreshClickGui(),
+            s ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    this.getValue().setCharacterList(s.toCharArray());
+                    this.getValue().saveConfig();
+                });
+                onChange.run();
+            },
+            this.getValue().getComment()));
     }
     
 }

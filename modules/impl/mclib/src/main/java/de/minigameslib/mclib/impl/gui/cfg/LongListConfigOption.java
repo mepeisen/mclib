@@ -52,7 +52,7 @@ public class LongListConfigOption extends AbstractConfigOption
     {
         super(value);
     }
-
+    
     @Override
     public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -63,12 +63,13 @@ public class LongListConfigOption extends AbstractConfigOption
     
     /**
      * selector
+     * 
      * @param player
      * @param session
      * @param guiInterface
-     * @param onChange 
+     * @param onChange
      * @param contextProvider
-     * @throws McException 
+     * @throws McException
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {
@@ -80,40 +81,45 @@ public class LongListConfigOption extends AbstractConfigOption
         }
         
         player.nestClickGui(new TextListPage<>(
-                AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
-                arr,
-                (p, s, g) -> s.close(),
-                (p, s, g) -> {
-                    this.run(contextProvider, () -> {
-                        getValue().setLongList(null);
-                    });
-                    s.close();
-                    onChange.run();
-                },
-                a -> {
-                    this.run(contextProvider, () -> {
-                        final long[] res = new long[a.size()];
-                        for (int i = 0; i < res.length; i++)
-                        {
-                            res[i] = a.get(i);
-                        }
-                        getValue().setLongList(res);
-                    });
-                    onChange.run();
-                },
-                str -> {
-                    try
+            AbstractConfigOption.Messages.ConfigName.toArg(this.getValue().path()),
+            arr,
+            (p, s, g) -> s.close(),
+            (p, s, g) ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    getValue().setLongList(null);
+                });
+                s.close();
+                onChange.run();
+            },
+            a ->
+            {
+                this.run(contextProvider, () ->
+                {
+                    final long[] res = new long[a.size()];
+                    for (int i = 0; i < res.length; i++)
                     {
-                        final long newVal = Long.parseLong(str);
-                        return (Long) newVal;
+                        res[i] = a.get(i);
                     }
-                    catch (NumberFormatException ex)
-                    {
-                        throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
-                    }
-                },
-                b -> String.valueOf(b),
-                Long.valueOf(0)));
+                    getValue().setLongList(res);
+                });
+                onChange.run();
+            },
+            str ->
+            {
+                try
+                {
+                    final long newVal = Long.parseLong(str);
+                    return (Long) newVal;
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
+                }
+            },
+            b -> String.valueOf(b),
+            Long.valueOf(0)));
     }
     
 }

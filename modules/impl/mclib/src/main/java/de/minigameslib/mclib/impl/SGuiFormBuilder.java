@@ -73,23 +73,24 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
 {
     
     /** logging. */
-    private static final Logger LOGGER = Logger.getLogger(SGuiFormBuilder.class.getName());
-
+    private static final Logger     LOGGER = Logger.getLogger(SGuiFormBuilder.class.getName());
+    
     /** the smart gui. */
-    private SGuiHelper smartGui;
+    private SGuiHelper              smartGui;
     
     /** the display win data. */
-    private DisplayResizableWinData data = new DisplayResizableWinData();
+    private DisplayResizableWinData data   = new DisplayResizableWinData();
     
     /** the window. */
-    SGuiImpl window;
-
+    SGuiImpl                        window;
+    
     /**
      * Constructor
-     * @param closeAction 
-     * @param closable 
-     * @param titleArgs 
-     * @param title 
+     * 
+     * @param closeAction
+     * @param closable
+     * @param titleArgs
+     * @param title
      * @param smartGui
      */
     public SGuiFormBuilder(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable, McRunnable closeAction, SGuiHelper smartGui)
@@ -106,6 +107,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     
     /**
      * Encodes given message by using players locale
+     * 
      * @param msg
      * @param args
      * @return encoded message
@@ -114,7 +116,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     {
         return Arrays.asList(this.smartGui.encode(msg, args)).stream().collect(Collectors.joining("\n")); //$NON-NLS-1$
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addText(int span, LocalizedMessageInterface text, Serializable... args)
     {
@@ -129,6 +131,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     
     /**
      * Creates a new gui button.
+     * 
      * @param label
      * @param labelArgs
      * @param action
@@ -147,11 +150,14 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         }
         return null;
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
     {
-        final GuiButtonImpl guiButton = this.sguiCreateButton(label, labelArgs, (gui, formdata) -> { this.handleSubmit(action, gui, formdata); }, false);
+        final GuiButtonImpl guiButton = this.sguiCreateButton(label, labelArgs, (gui, formdata) ->
+        {
+            this.handleSubmit(action, gui, formdata);
+        }, false);
         this.window.registerAction(guiButton);
         final ButtonData submit = new ButtonData();
         submit.setActionId(guiButton.getActionId());
@@ -161,10 +167,10 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.getButtons().add(submit);
         return this;
     }
-
+    
     /**
      * @param action
-     * @param gui 
+     * @param gui
      * @param formdata
      */
     private void handleSubmit(McBiConsumer<SGuiInterface, DataSection> action, SGuiInterface gui, DataSection formdata)
@@ -186,11 +192,11 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             this.smartGui.getPlayer().sendToClient(MclibCommunication.ClientServerCore, section);
         }
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addCancelButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
     {
-
+        
         final GuiButtonImpl guiButton = this.sguiCreateButton(label, labelArgs, action, false);
         this.window.registerAction(guiButton);
         final ButtonData cancel = new ButtonData();
@@ -201,7 +207,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.getButtons().add(cancel);
         return this;
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addTextInput(LocalizedMessageInterface label, Serializable[] labelArgs, String formKey, String initialValue, boolean allowsEmpty)
     {
@@ -215,7 +221,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.getWidgets().add(widget);
         return this;
     }
-
+    
     @Override
     public SGuiInterface display()
     {
@@ -225,7 +231,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.smartGui.getPlayer().sendToClient(MclibCommunication.ClientServerCore, section);
         return this.window;
     }
-
+    
     @Override
     public SGuiListBuilderInterface addList(SGuiListSupplier supplier)
     {
@@ -239,10 +245,11 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     
     /**
      * Parses and performs a list request
+     * 
      * @param request
      * @param supplier
      * @return answer
-     * @throws McException 
+     * @throws McException
      */
     private QueryFormAnswerData parseListRequest(QueryFormRequestData request, SGuiListSupplier supplier) throws McException
     {
@@ -263,22 +270,24 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         lresp.write(answer.getData());
         return answer;
     }
-
+    
     /**
      * Helper to build a list control
+     * 
      * @author mepeisen
      */
     private static final class SGuiListBuilderImpl implements SGuiListBuilderInterface
     {
-
+        
         /** the list widget. */
-        private ListInput listInput;
+        private ListInput       listInput;
         
         /** the underlying formbuilder. */
         private SGuiFormBuilder form;
-
+        
         /**
          * Constructor to create a list control builder.
+         * 
          * @param form
          * @param listInput
          */
@@ -287,7 +296,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             this.listInput = listInput;
             this.form = form;
         }
-
+        
         @Override
         public SGuiListBuilderInterface addColumn(String dataKey, String formKey, LocalizedMessageInterface label, Serializable... args)
         {
@@ -299,7 +308,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             this.listInput.getColumns().add(column);
             return this;
         }
-
+        
         @Override
         public SGuiListBuilderInterface addColumn(String dataKey, String formKey)
         {
@@ -310,7 +319,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             this.listInput.getColumns().add(column);
             return this;
         }
-
+        
         @Override
         public SGuiListBuilderInterface addSubmitButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
         {
@@ -325,7 +334,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
             this.listInput.getButtons().add(button);
             return this;
         }
-
+        
         @Override
         public SGuiListBuilderInterface addButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action)
         {
@@ -342,10 +351,10 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         }
         
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
-            List<DataSection> values)
+        List<DataSection> values)
     {
         final ComboInput input = new ComboInput();
         input.setAllowsNewValues(false);
@@ -366,10 +375,10 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
         this.data.getWidgets().add(w);
         return this;
     }
-
+    
     @Override
     public SGuiFormBuilderInterface addCombo(LocalizedMessageInterface label, Serializable[] labelArgs, boolean allowsNull, String idKey, String labelKey, String formKey, String value,
-            List<DataSection> values, String newValueKey)
+        List<DataSection> values, String newValueKey)
     {
         final ComboInput input = new ComboInput();
         input.setAllowsNewValues(true);
