@@ -92,7 +92,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Implementation of a gui session
+ * Implementation of a gui session.
  * 
  * @author mepeisen
  */
