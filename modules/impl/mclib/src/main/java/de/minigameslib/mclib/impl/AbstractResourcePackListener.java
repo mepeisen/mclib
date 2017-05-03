@@ -49,7 +49,7 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
     PlayerRegistry  players;
     
     /**
-     * the item service impl
+     * the item service impl.
      */
     ItemServiceImpl itemService;
     
