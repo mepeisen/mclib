@@ -114,7 +114,8 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
                 case SUCCESSFULLY_LOADED:
                     if (marker.getSuccess() != null)
                     {
-                        new BukkitRunnable() {
+                        new BukkitRunnable()
+                        {
                             
                             @Override
                             public void run()
