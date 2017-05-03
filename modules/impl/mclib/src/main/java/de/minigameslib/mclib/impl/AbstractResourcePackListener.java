@@ -54,8 +54,12 @@ class AbstractResourcePackListener implements BiConsumer<Player, ResourcePackSta
     ItemServiceImpl itemService;
     
     /**
+     * Constructor.
+     * 
      * @param players
+     *            the player registry
      * @param itemService
+     *            the item service
      */
     public AbstractResourcePackListener(PlayerRegistry players, ItemServiceImpl itemService)
     {
