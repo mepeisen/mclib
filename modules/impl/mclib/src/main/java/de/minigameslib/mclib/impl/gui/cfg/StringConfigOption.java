@@ -83,7 +83,17 @@ public class StringConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     this.getValue().setString(s);
-                    this.getValue().saveConfig();
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },

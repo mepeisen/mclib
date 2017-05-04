@@ -83,7 +83,17 @@ public class CharacterListConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     this.getValue().setCharacterList(s.toCharArray());
-                    this.getValue().saveConfig();
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },

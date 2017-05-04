@@ -89,6 +89,17 @@ public class ByteListConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     getValue().setByteList(null);
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 s.close();
                 onChange.run();
@@ -103,6 +114,17 @@ public class ByteListConfigOption extends AbstractConfigOption
                         res[i] = a.get(i);
                     }
                     getValue().setByteList(res);
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },

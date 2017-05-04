@@ -78,7 +78,17 @@ public class BooleanConfigOption extends AbstractConfigOption
         this.run(contextProvider, () ->
         {
             this.getValue().setBoolean(!isset);
-            this.getValue().saveConfig();
+            try
+            {
+                this.getValue().validate();
+                this.getValue().saveConfig();
+            }
+            catch (McException ex)
+            {
+                // rollback
+                this.getValue().rollbackConfig();
+                throw ex;
+            }
         });
         session.refreshClickGui();
         onChange.run();

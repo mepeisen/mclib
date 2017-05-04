@@ -89,6 +89,17 @@ public class DoubleListConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     getValue().setDoubleList(null);
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 s.close();
                 onChange.run();
@@ -103,6 +114,17 @@ public class DoubleListConfigOption extends AbstractConfigOption
                         res[i] = a.get(i);
                     }
                     getValue().setDoubleList(res);
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },

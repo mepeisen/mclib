@@ -84,7 +84,17 @@ public class EnumConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     getValue().setEnum(v);
-                    getValue().saveConfig();
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             }));

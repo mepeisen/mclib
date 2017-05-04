@@ -85,6 +85,17 @@ public class EnumListConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     getValue().setEnumList(null);
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 s.close();
                 onChange.run();
@@ -94,6 +105,17 @@ public class EnumListConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     getValue().setEnumList(a.toArray(new EnumerationValue[a.size()]));
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },

@@ -88,7 +88,17 @@ public class CharacterConfigOption extends AbstractConfigOption
                 this.run(contextProvider, () ->
                 {
                     this.getValue().setCharacter(s.charAt(0));
-                    this.getValue().saveConfig();
+                    try
+                    {
+                        this.getValue().validate();
+                        this.getValue().saveConfig();
+                    }
+                    catch (McException ex)
+                    {
+                        // rollback
+                        this.getValue().rollbackConfig();
+                        throw ex;
+                    }
                 });
                 onChange.run();
             },
