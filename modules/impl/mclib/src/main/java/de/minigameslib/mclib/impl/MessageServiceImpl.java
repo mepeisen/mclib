@@ -50,7 +50,10 @@ class MessageServiceImpl implements MessageServiceInterface
     private final Map<Plugin, MessagesConfigInterface> messages = new HashMap<>();
     
     /**
+     * Constructor.
+     * 
      * @param enumService
+     *            the enum service
      */
     public MessageServiceImpl(EnumServiceImpl enumService)
     {

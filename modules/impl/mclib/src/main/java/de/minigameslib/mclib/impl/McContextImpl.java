@@ -59,7 +59,7 @@ class McContextImpl implements McContext
     private final Map<Class<?>, List<ContextHandlerInterface<?>>>              handlers        = new HashMap<>();
     
     /** the thread local storage. */
-    final ThreadLocal<TLD>                                                     tls             = ThreadLocal.withInitial(() -> new TLD());
+    final ThreadLocal<MyTls>                                                     tls             = ThreadLocal.withInitial(() -> new MyTls());
     
     /** context resolve helper. */
     private final List<ContextResolverInterface>                               resolvers       = new ArrayList<>();
@@ -74,11 +74,15 @@ class McContextImpl implements McContext
     @Override
     public <T> T getContext(Class<T> clazz)
     {
-        final TLD data = this.tls.get();
+        final MyTls data = this.tls.get();
         if (clazz == Event.class)
+        {
             return clazz.cast(data.event);
+        }
         if (clazz == CommandInterface.class)
+        {
             return clazz.cast(data.command);
+        }
         if (data.containsKey(clazz))
         {
             return (T) data.get(clazz);
@@ -122,7 +126,7 @@ class McContextImpl implements McContext
     @Override
     public <T> void setContext(Class<T> clazz, T value)
     {
-        final TLD data = this.tls.get();
+        final MyTls data = this.tls.get();
         if (clazz == Event.class)
         {
             data.event = (Event) value;
@@ -141,11 +145,15 @@ class McContextImpl implements McContext
     public String resolveContextVar(String src)
     {
         if (!src.contains("$")) //$NON-NLS-1$
+        {
             return src;
+        }
         final StringBuilder builder = new StringBuilder();
         int start = src.indexOf('$');
         if (start > 0)
+        {
             builder.append(src, 0, start);
+        }
         int end = src.indexOf('$', start + 1);
         final String varWithArgs = src.substring(start + 1, end - 1);
         final String[] splitted = varWithArgs.split(":"); //$NON-NLS-1$
@@ -155,9 +163,10 @@ class McContextImpl implements McContext
     }
     
     /**
-     * Resolve context var
+     * Resolve context var.
      * 
      * @param splitted
+     *            the splitted string
      * @return resolved var
      */
     private String resolve(String[] splitted)
@@ -168,7 +177,9 @@ class McContextImpl implements McContext
         {
             final String result = resolver.resolve(varName, args, this);
             if (result != null)
+            {
                 return result;
+            }
         }
         return "?"; //$NON-NLS-1$
     }
@@ -176,8 +187,8 @@ class McContextImpl implements McContext
     @Override
     public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -185,11 +196,17 @@ class McContextImpl implements McContext
             tld.command = command;
             tld.event = event;
             if (player != null)
+            {
                 tld.put(McPlayerInterface.class, player);
+            }
             if (zone != null)
+            {
                 tld.put(ZoneInterface.class, zone);
+            }
             if (component != null)
+            {
                 tld.put(ComponentInterface.class, component);
+            }
             runnable.run();
         }
         finally
@@ -204,8 +221,8 @@ class McContextImpl implements McContext
     @Override
     public void runInNewContext(McRunnable runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -226,8 +243,8 @@ class McContextImpl implements McContext
     @Override
     public void runInCopiedContext(McRunnable runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -249,8 +266,8 @@ class McContextImpl implements McContext
     @Override
     public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -258,11 +275,17 @@ class McContextImpl implements McContext
             tld.command = command;
             tld.event = event;
             if (player != null)
+            {
                 tld.put(McPlayerInterface.class, player);
+            }
             if (zone != null)
+            {
                 tld.put(ZoneInterface.class, zone);
+            }
             if (component != null)
+            {
                 tld.put(ComponentInterface.class, component);
+            }
             return runnable.get();
         }
         finally
@@ -277,8 +300,8 @@ class McContextImpl implements McContext
     @Override
     public <T> T calculateInNewContext(McSupplier<T> runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -299,8 +322,8 @@ class McContextImpl implements McContext
     @Override
     public <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException
     {
-        final TLD old = this.tls.get();
-        final TLD tld = new TLD();
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
         this.tls.set(tld);
         try
         {
@@ -360,28 +383,34 @@ class McContextImpl implements McContext
     }
     
     /**
+     * Bukkit runnable wrapper for context sensitive execution.
+     * 
      * @author mepeisen
-     *
      */
     private final class MyRunnable extends BukkitRunnable
     {
         /**
-         * 
+         * The underlying bukkit task.
          */
         private final AtomicReference<BukkitTask> result;
         /**
-         * 
+         * context data.
          */
         private final Map<Class<?>, Object>       data;
         /**
-         * 
+         * the task to be executed.
          */
         private final ContextRunnable             task;
         
         /**
+         * Constructor to create a runnable.
+         * 
          * @param result
+         *            the bukkit task (will be created in constructor and returned).
          * @param data
+         *            the context data to be used
          * @param task
+         *            he task to be executed
          */
         protected MyRunnable(AtomicReference<BukkitTask> result, Map<Class<?>, Object> data, ContextRunnable task)
         {
@@ -393,8 +422,8 @@ class McContextImpl implements McContext
         @Override
         public void run()
         {
-            final TLD old = McContextImpl.this.tls.get();
-            final TLD tld = new TLD();
+            final MyTls old = McContextImpl.this.tls.get();
+            final MyTls tld = new MyTls();
             McContextImpl.this.tls.set(tld);
             try
             {
@@ -427,9 +456,9 @@ class McContextImpl implements McContext
     }
     
     /**
-     * thread local data
+     * thread local data.
      */
-    private static final class TLD extends HashMap<Class<?>, Object>
+    private static final class MyTls extends HashMap<Class<?>, Object>
     {
         
         /**
@@ -448,7 +477,7 @@ class McContextImpl implements McContext
         /**
          * Constructor.
          */
-        public TLD()
+        public MyTls()
         {
             // empty
         }

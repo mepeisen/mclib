@@ -41,7 +41,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Helper class for network messages
+ * Helper class for network messages.
  * 
  * @author mepeisen
  */
@@ -57,7 +57,7 @@ class NetMessage
     private DataSection             data;
     
     /**
-     * 
+     * Constructor.
      */
     public NetMessage()
     {
@@ -65,8 +65,12 @@ class NetMessage
     }
     
     /**
+     * Constructor.
+     * 
      * @param endpoint
+     *            the endpoint to be used.
      * @param data
+     *            the data to be used
      */
     public NetMessage(CommunicationEndpointId endpoint, DataSection data)
     {
@@ -75,6 +79,8 @@ class NetMessage
     }
     
     /**
+     * Returns the endpoint.
+     * 
      * @return the endpoint
      */
     public CommunicationEndpointId getEndpoint()
@@ -83,6 +89,8 @@ class NetMessage
     }
     
     /**
+     * Sets the endpoint.
+     * 
      * @param endpoint
      *            the endpoint to set
      */
@@ -92,6 +100,8 @@ class NetMessage
     }
     
     /**
+     * Returns the data.
+     * 
      * @return the data
      */
     public DataSection getData()
@@ -100,6 +110,8 @@ class NetMessage
     }
     
     /**
+     * Sets the data.
+     * 
      * @param data
      *            the data to set
      */
@@ -109,9 +121,10 @@ class NetMessage
     }
     
     /**
-     * Reads message from given input
+     * Reads message from given input.
      * 
      * @param buf
+     *            byte buffer
      * @param endpointFactory
      *            a function to receive endpoints by string
      */
@@ -214,14 +227,19 @@ class NetMessage
     private static final byte TYPE_TIME     = 11;
     
     /**
+     * Reads utf8 string.
+     * 
      * @param buf
+     *            byte buffer
      * @return utf8 string
      */
     private String readUtf8(ByteArrayDataInput buf)
     {
         int size = buf.readInt();
         if (size > 150000)
+        {
             throw new IllegalStateException("string to big; max 150000"); //$NON-NLS-1$
+        }
         byte[] strbuf = new byte[size];
         buf.readFully(strbuf);
         final String result = new String(strbuf, Charsets.UTF_8);
@@ -229,8 +247,12 @@ class NetMessage
     }
     
     /**
+     * Writes utf8 string.
+     * 
      * @param buf
+     *            byte buffer
      * @param value
+     *            value to be written
      */
     private void writeUtf8(ByteArrayDataOutput buf, String value)
     {
@@ -242,7 +264,7 @@ class NetMessage
     /**
      * Converts this message to byte stream.
      * 
-     * @param buf
+     * @param buf byte buffer
      */
     public void toBytes(ByteArrayDataOutput buf)
     {

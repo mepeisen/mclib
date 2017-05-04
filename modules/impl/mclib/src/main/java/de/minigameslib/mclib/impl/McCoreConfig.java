@@ -42,7 +42,7 @@ public enum McCoreConfig implements ConfigurationValueInterface
 {
     
     /**
-     * Default locale of minigames library
+     * Default locale of minigames library.
      */
     @ConfigurationString(defaultValue = "en")
     @ConfigComment({
@@ -52,7 +52,7 @@ public enum McCoreConfig implements ConfigurationValueInterface
     DefaultLocale,
     
     /**
-     * The main locales
+     * The main locales.
      */
     @ConfigurationStringList(defaultValue = "en")
     @ConfigComment({
@@ -62,14 +62,14 @@ public enum McCoreConfig implements ConfigurationValueInterface
     MainLocales,
     
     /**
-     * Debugging flag of minigames library
+     * Debugging flag of minigames library.
      */
     @ConfigurationBool(defaultValue = false)
     @ConfigComment({ "Flag to activate/deactivate debugging output." })
     Debug,
     
     /**
-     * Name of this server within bungee cord networks
+     * Name of this server within bungee cord networks.
      */
     @ConfigurationString(defaultValue = "myself")
     @ConfigComment({ "Name of this server within bungeecord networks" })
@@ -97,14 +97,14 @@ public enum McCoreConfig implements ConfigurationValueInterface
     ResourcePackDownloadUrlV3,
     
     /**
-     * The auto download flag
+     * The auto download flag.
      */
     @ConfigurationBool(defaultValue = false)
     @ConfigComment({ "True to let the users automatically be notified about the resource pack on join" })
     ResourcePackAutoDownload,
     
     /**
-     * The auto download ticks
+     * The auto download ticks.
      */
     @ConfigurationInt(defaultValue = 40)
     @ConfigComment({
@@ -113,14 +113,14 @@ public enum McCoreConfig implements ConfigurationValueInterface
     ResourcePackAutoDownloadTicks,
     
     /**
-     * maximum size of player registry
+     * maximum size of player registry.
      */
     @ConfigurationInt(defaultValue = 10000)
     @ConfigComment({ "maximum size of player registry", "lower the value if you have memory problems" })
     PlayerRegistrySize,
     
     /**
-     * player registry cache timeout in minutes
+     * player registry cache timeout in minutes.
      */
     @ConfigurationInt(defaultValue = 30)
     @ConfigComment({ "player registry cache timeout in minutes", "lower the value if you have memory problems" })

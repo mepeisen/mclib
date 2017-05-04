@@ -127,7 +127,9 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     /** the persistent storage. */
     private PersistentStorageImpl               pstorage         = new PersistentStorageImpl();
     
-    /** {@code true} if the client mod is installed. */
+    /**
+     * {@code true} if the client mod is installed.
+     */
     private boolean                             hasForgeMod;
     
     /** list of client extensions that were reported by client mod. */
@@ -145,30 +147,17 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     private final EventBus                      eventBus         = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
-     * the players zone manager
+     * the players zone manager.
      */
-    private final ZoneManager                   zoneManager      = new ZoneManager() {
-                                                                     
-                                                                     @Override
-                                                                     protected void fireZonesEntered(Set<ZoneId> newZones)
-                                                                     {
-                                                                         McPlayerImpl.this.fireZonesEntered(newZones);
-                                                                     }
-                                                                     
-                                                                     @Override
-                                                                     protected void fireZonesLeft(Set<ZoneId> oldZones)
-                                                                     {
-                                                                         McPlayerImpl.this.fireZonesLeft(oldZones);
-                                                                     }
-                                                                     
-                                                                 };
+    private final ZoneManager                   zoneManager      = new PlayerZoneManager();
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param uuid
      *            players uuid
      * @param persistentStorage
+     *            the persistent storage file
      */
     public McPlayerImpl(UUID uuid, File persistentStorage)
     {
@@ -200,7 +189,10 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
+     * Fire bukkit event for entering new zones.
+     * 
      * @param newZones
+     *            the new zones
      */
     protected void fireZonesEntered(Set<ZoneId> newZones)
     {
@@ -213,7 +205,10 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
+     * Fire bukkit event for leaving zones.
+     * 
      * @param oldZones
+     *            the zones that were left
      */
     protected void fireZonesLeft(Set<ZoneId> oldZones)
     {
@@ -226,7 +221,10 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
+     * Parses the pong data from client.
+     * 
      * @param fragment
+     *            data fragment
      */
     void parsePong(PongData fragment)
     {
@@ -239,7 +237,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Saves the persistent storage
+     * Saves the persistent storage.
      */
     void saveStore()
     {
@@ -398,7 +396,36 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * The persistent storage impl
+     * The zone manager for players.
+     * 
+     * @author mepeisen
+     *
+     */
+    private final class PlayerZoneManager extends ZoneManager
+    {
+        /**
+         * Constructor.
+         */
+        public PlayerZoneManager()
+        {
+            // empty
+        }
+        
+        @Override
+        protected void fireZonesEntered(Set<ZoneId> newZones)
+        {
+            McPlayerImpl.this.fireZonesEntered(newZones);
+        }
+        
+        @Override
+        protected void fireZonesLeft(Set<ZoneId> oldZones)
+        {
+            McPlayerImpl.this.fireZonesLeft(oldZones);
+        }
+    }
+    
+    /**
+     * The persistent storage impl.
      * 
      * @author mepeisen
      */
@@ -452,12 +479,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     {
         
         /**
-         * serial version uid
+         * serial version uid.
          */
         private static final long serialVersionUID = 3803764167708189047L;
         
         /**
-         * Constructor
+         * Constructor.
          */
         public ContextStorage()
         {
@@ -569,7 +596,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Player quit event
+     * Player quit event.
      */
     public void onPlayerQuit()
     {
@@ -588,7 +615,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Player join event
+     * Player join event.
      */
     public void onPlayerJoin()
     {
@@ -637,10 +664,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Parse an action performed message
+     * Parse an action performed message.
      * 
      * @param fragment
+     *            data fragment
      * @throws McException
+     *             thrown from action handler.
      */
     void parseActionPerformed(ActionPerformedData fragment) throws McException
     {
@@ -651,10 +680,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Parse a win closed message
+     * Parse a win closed message.
      * 
      * @param fragment
+     *            data fragment
      * @throws McException
+     *             thrown from close handler.
      */
     void parseWinClosed(WinClosedData fragment) throws McException
     {
@@ -664,10 +695,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Parse a form request message
+     * Parse a form request message.
      * 
      * @param fragment
+     *            data fragment
      * @throws McException
+     *             thrown from data supplier.
      */
     void parseFormRequest(QueryFormRequestData fragment) throws McException
     {
@@ -728,6 +761,12 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     @Override
+    public ZoneInterface getZone(ZoneTypeId... type)
+    {
+        return this.zoneManager.getZone(type);
+    }
+    
+    @Override
     public boolean isInsideZone(ZoneInterface zone)
     {
         return this.zoneManager.isInsideZone(zone);
@@ -740,21 +779,15 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     @Override
-    public boolean isInsideAllZones(ZoneInterface... zone)
-    {
-        return this.zoneManager.isInsideAllZones(zone);
-    }
-    
-    @Override
-    public ZoneInterface getZone(ZoneTypeId... type)
-    {
-        return this.zoneManager.getZone(type);
-    }
-    
-    @Override
     public boolean isInsideRandomZone(ZoneTypeId... type)
     {
         return this.zoneManager.isInsideRandomZone(type);
+    }
+    
+    @Override
+    public boolean isInsideAllZones(ZoneInterface... zone)
+    {
+        return this.zoneManager.isInsideAllZones(zone);
     }
     
     @Override
@@ -786,9 +819,10 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Performs a raw command passed from mclib console command
+     * Performs a raw command passed from mclib console command.
      * 
      * @param commandUuid
+     *            the unique command uuid.
      */
     public void onRawCommand(UUID commandUuid)
     {
@@ -815,7 +849,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.eventBus.registerHandler(plugin, clazz, handler);
     }
@@ -827,7 +861,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.eventBus.unregisterHandler(plugin, clazz, handler);
     }
@@ -839,7 +873,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         if (eventClass == McPlayerMoveEvent.class)
         {
@@ -853,9 +887,10 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            the plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {

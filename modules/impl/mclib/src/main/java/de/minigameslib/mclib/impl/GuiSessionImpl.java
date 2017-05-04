@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -110,12 +109,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     /** anvil gui interface. */
     private AnvilGuiInterface     agui;
     /** the arena player. */
-    private McPlayerImpl          player;
+    McPlayerImpl                  player;
     /** the current inventory name. */
     private Serializable          currentName;
     /** the current items. */
     private ClickGuiItem[][]      currentItems;
-    /** the current clock gui page */
+    /** the current clock gui page. */
     private ClickGuiPageInterface currentPage;
     /** the line count. */
     private int                   lineCount;
@@ -132,14 +131,14 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     /** the session storage. */
     private StorageImpl           sessionStorage = new StorageImpl();
     
-    /** previous session */
+    /** previous session. */
     private GuiSessionInterface   prevSession;
     
-    /** pause flag */
+    /** pause flag; true if session was paused by invoking one of the nest methods. */
     private boolean               isPaused;
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param gui
      *            the gui to be used
@@ -162,11 +161,13 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Converts given serializable to string
+     * Converts given serializable to string.
      * 
      * @param p
+     *            player for locale and admin flag lookup
      * @param src
-     * @return string
+     *            source string
+     * @return translated string
      */
     private static String toName(McPlayerInterface p, Serializable src)
     {
@@ -178,7 +179,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param gui
      *            the gui to be used
@@ -199,7 +200,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Constructor for smart gui
+     * Constructor for smart gui.
      * 
      * @param player
      *            the arena player to be used
@@ -318,7 +319,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Pause this session
+     * Pause this session.
      */
     protected void pause()
     {
@@ -327,7 +328,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Resume this session
+     * Resume this session.
      */
     protected void resume()
     {
@@ -357,7 +358,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
+     * Sets the previous session (non-api); will be invoked from player impl upon session nesting.
+     * 
      * @param oldSession
+     *            the old or previous session to be resumed once this session is closed
      */
     public void setPrevSession(GuiSessionInterface oldSession)
     {
@@ -418,9 +422,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Translates a string from colored string to gui string
+     * Translates a string from colored string to gui string.
      * 
      * @param src
+     *            source string
      * @return editable gui string
      */
     private static String translateToAnvilGui(String src)
@@ -429,7 +434,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * Tranbslates a string from gui to represent colored strings
+     * Tranbslates a string from gui to represent colored strings.
      * 
      * @param src
      *            editable gui string
@@ -586,7 +591,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
+    public SGuiInterface sguiDisplayError(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton okButton)
         throws McException
     {
         checkForSmartGui();
@@ -626,6 +631,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      * Checks the player for haviong a smart gui.
      * 
      * @throws McException
+     *             thrown if player has no smart gui
      */
     private void checkForSmartGui() throws McException
     {
@@ -636,7 +642,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton okButton)
+    public SGuiInterface sguiDisplayInfo(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton okButton)
         throws McException
     {
         checkForSmartGui();
@@ -658,19 +664,19 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[]) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs) throws McException
     {
         return this.sguiCreateButton(label, labelArgs, null);
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action) throws McException
     {
         return this.sguiCreateButton(label, labelArgs, action, true);
     }
     
     @Override
-    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException
+    public GuiButton sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction) throws McException
     {
         checkForSmartGui();
         
@@ -690,7 +696,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
+    public SGuiInterface sguiDisplayYesNo(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton yesButton,
         GuiButton noButton) throws McException
     {
         checkForSmartGui();
@@ -714,7 +720,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     @Override
-    public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable titleArgs[], LocalizedMessageInterface message, Serializable messageArgs[], GuiButton yesButton,
+    public SGuiInterface sguiDisplayYesNoCancel(LocalizedMessageInterface title, Serializable[] titleArgs, LocalizedMessageInterface message, Serializable[] messageArgs, GuiButton yesButton,
         GuiButton noButton, GuiButton cancelButton) throws McException
     {
         checkForSmartGui();
@@ -748,7 +754,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * smart gui helper
+     * smart gui helper.
      * 
      * @author mepeisen
      */
@@ -761,9 +767,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         private final Map<String, SGuiImpl> impls = new HashMap<>();
         
         /**
-         * Creates a new SGUI Impl
+         * Creates a new SGUI Impl.
          * 
          * @param closeAction
+         *            the close action invoked on window close
          * @return SGUI Impl
          */
         SGuiImpl create(McRunnable closeAction)
@@ -800,6 +807,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
          * Returns the gui with associated key.
          * 
          * @param id
+         *            gui/ window id
          * @return gui
          */
         SGuiImpl get(String id)
@@ -808,9 +816,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
         /**
-         * Removes the gui with associated key
+         * Removes the gui with associated key.
          * 
          * @param id
+         *            gui/ window id
          * @return gui
          */
         SGuiImpl remove(String id)
@@ -839,10 +848,12 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             private final McRunnable                                                         closeAction;
             
             /**
-             * Constructor
+             * Constructor.
              * 
-             * @param closeAction
              * @param uuid
+             *            the uuid to identify this gui
+             * @param closeAction
+             *            the close action
              */
             public SGuiImpl(String uuid, McRunnable closeAction)
             {
@@ -851,6 +862,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             
             /**
+             * Returns the close action.
+             * 
              * @return the closeAction
              */
             public McRunnable getCloseAction()
@@ -859,7 +872,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             
             /**
+             * Registers a new action (button).
+             * 
              * @param button
+             *            gui button impl
              */
             public void registerAction(GuiButtonImpl button)
             {
@@ -880,6 +896,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
              * @param data
              *            from data
              * @throws McException
+             *             thrown from button action to be passed to the player.
              */
             public void performAction(String actionId, List<FormData> data) throws McException
             {
@@ -894,8 +911,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
              * Query data from data suppliers.
              * 
              * @param data
+             *            form request data.
              * @return data result.
              * @throws McException
+             *             thrown from data supplier to be passed to the player.
              */
             public QueryFormAnswerData queryData(QueryFormRequestData data) throws McException
             {
@@ -921,6 +940,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             
             /**
+             * The uuid to identify this gui.
+             * 
              * @return the uuid
              */
             public String getUuid()
@@ -929,7 +950,10 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             }
             
             /**
+             * Registers a new data supplier.
+             * 
              * @param dataSupplier
+             *            the handler to supply data for forms.
              * @return unique data supplier id.
              */
             public String registerDataSupplier(McFunction<QueryFormRequestData, QueryFormAnswerData> dataSupplier)
@@ -942,7 +966,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
         /**
-         * Returns the underlying player
+         * Returns the underlying player.
          * 
          * @return underlying player
          */
@@ -965,6 +989,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         private McBiConsumer<SGuiInterface, List<FormData>> action;
         
         /**
+         * Returns the button action.
+         * 
          * @return the action
          */
         public McBiConsumer<SGuiInterface, List<FormData>> getAction()
@@ -973,6 +999,8 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         }
         
         /**
+         * Sets the action for this button.
+         * 
          * @param action
          *            the action to set
          */
@@ -987,9 +1015,13 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      * Performs action.
      * 
      * @param winId
+     *            the window id
      * @param actionId
+     *            the action id
      * @param formData
+     *            the form data passed to the action handler
      * @throws McException
+     *             thrown from action handler to be passed to the player
      */
     void sguiActionPerformed(String winId, String actionId, List<FormData> formData) throws McException
     {
@@ -1007,7 +1039,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
      * Performs action.
      * 
      * @param winId
+     *            the window id
      * @throws McException
+     *             thrown from close handler to be passed to the player.
      */
     void sguiWinClosed(String winId) throws McException
     {
@@ -1016,21 +1050,18 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
             final SGuiImpl impl = this.smartGui.remove(winId);
             if (impl != null && impl.getCloseAction() != null)
             {
-                try
-                {
-                    impl.getCloseAction().run();
-                }
-                catch (McException ex)
-                {
-                    LOGGER.log(Level.WARNING, "Problems invoke close action", ex); //$NON-NLS-1$
-                }
+                impl.getCloseAction().run();
             }
         }
     }
     
     /**
+     * Handles a form request.
+     * 
      * @param fragment
+     *            data fragment
      * @throws McException
+     *             thrown from request handler to be passed to the player.
      */
     void sguiFormRequest(QueryFormRequestData fragment) throws McException
     {
@@ -1050,7 +1081,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     }
     
     /**
-     * sgui impl
+     * sgui marker impl.
      */
     private static final class SGuiMarker implements SGuiMarkerInterface
     {
@@ -1065,7 +1096,9 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
          * Constructor.
          * 
          * @param player
+         *            underlying player
          * @param markerId
+         *            the unique marker id.
          */
         public SGuiMarker(McPlayerInterface player, UUID markerId)
         {

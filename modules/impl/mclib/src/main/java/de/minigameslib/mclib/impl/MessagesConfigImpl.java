@@ -43,7 +43,7 @@ import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 
 /**
- * Implementation of messages config interface
+ * Implementation of messages config interface.
  * 
  * @author mepeisen
  */
@@ -71,7 +71,9 @@ class MessagesConfigImpl implements MessagesConfigInterface
      * Constructor.
      * 
      * @param plugin
+     *            plugin owning the messages
      * @param enumService
+     *            enum service
      */
     public MessagesConfigImpl(Plugin plugin, EnumServiceImpl enumService)
     {
@@ -188,6 +190,7 @@ class MessagesConfigImpl implements MessagesConfigInterface
      * Reloads the configuration file.
      * 
      * @throws IOException
+     *             thrown on errors loading the messages.
      */
     void reloadConfig() throws IOException
     {

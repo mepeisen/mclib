@@ -218,17 +218,17 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
 {
     
     /**
-     * plugin channel for messages between servers and clients
+     * plugin channel for messages between servers and clients.
      */
     private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
     
     /**
-     * plugin channel for messages between bungee servers
+     * plugin channel for messages between bungee servers.
      */
     private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
     
     /**
-     * plugin channel for BungeeCord
+     * plugin channel for BungeeCord.
      */
     private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
     
@@ -283,10 +283,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /** the known handlers. */
     private final Map<String, List<CommunicationEndpointId>>             bungeeEndpointPlugins          = new ConcurrentHashMap<>();
     
-    /** type of endpoints: true is a client endpoint, false a server endpoint */
+    /** type of endpoints: true is a client endpoint, false a server endpoint. */
     private final Map<CommunicationEndpointId, Boolean>                  endpointTypes                  = new HashMap<>();
     
-    /** the current bungee server (myself) */
+    /** the current bungee server (myself). */
     private final LocalBungeeServer                                      currentBungee                  = new LocalBungeeServer();
     
     /** the known other bungee servers from network. */
@@ -305,21 +305,21 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /** the event bus. */
     private EventBus                                                     eventBus;
     
-    /** mclib chat command */
+    /** mclib chat command. */
     private MclibCommand                                                 mclibCommand                   = new MclibCommand();
     
     /**
-     * plugin instance
+     * plugin instance.
      */
     private static MclibPlugin                                           instance;
     
     /**
-     * asynchronous thread pools
+     * asynchronous thread pools.
      */
     private final ExecutorService                                        executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
     
     /**
-     * the item service impl
+     * the item service impl.
      */
     ItemServiceImpl                                                      itemService;
     
@@ -405,11 +405,11 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             Bukkit.getPluginManager().registerEvents(new ResourcePackListener(this.players, this.itemService), this);
         }
-        MclibPlugin.this.itemService.init();
+        this.itemService.init();
     }
     
     /**
-     * 
+     * Initialize networking stuff.
      */
     private void initNetworking()
     {
@@ -438,7 +438,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Initialize the objects manager.
      */
     private void initObjectsManager()
     {
@@ -465,7 +465,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Initialize nms related classes.
      */
     private void initNms()
     {
@@ -481,7 +481,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Initialize mclib specific events.
      */
     private void registerMclibEvents()
     {
@@ -522,7 +522,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Initialize modded world support (custom blocks and items).
      */
     private void initItemsAndBlocksAndResources()
     {
@@ -538,9 +538,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             {
                 try
                 {
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v2.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_2); //$NON-NLS-1$
-                    MclibPlugin.this.itemService.createResourcePack(new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v3.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_3); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(
+                        new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v1.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_1); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(
+                        new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v2.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_2); //$NON-NLS-1$
+                    MclibPlugin.this.itemService.createResourcePack(
+                        new File(MclibPlugin.this.getDataFolder(), "mclib_core_resources_v3.zip"), ResourceServiceInterface.ResourceVersion.PACK_FORMAT_3); //$NON-NLS-1$
                 }
                 catch (IOException e)
                 {
@@ -551,7 +554,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Register some public services for mclib api support.
      */
     private void registerPublicServices()
     {
@@ -569,7 +572,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * 
+     * Detect spigot version and setup nms factory.
      */
     private void detectServerVersionAndInstallNms()
     {
@@ -666,6 +669,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
      * World loaded.
      * 
      * @param evt
+     *            event
      */
     @EventHandler
     public void onWorldLoaded(WorldLoadEvent evt)
@@ -780,6 +784,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
+    public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
+    {
+        this.context.runInNewContext(event, command, player, zone, component, runnable);
+    }
+    
+    @Override
     public void runInCopiedContext(McRunnable runnable) throws McException
     {
         this.context.runInCopiedContext(runnable);
@@ -792,9 +802,51 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
+    public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
+    {
+        return this.context.calculateInNewContext(event, command, player, zone, component, runnable);
+    }
+    
+    @Override
     public <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException
     {
         return this.context.calculateInCopiedContext(runnable);
+    }
+    
+    @Override
+    public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTask(plugin, task);
+    }
+    
+    @Override
+    public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskAsynchronously(plugin, task);
+    }
+    
+    @Override
+    public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLater(plugin, delay, task);
+    }
+    
+    @Override
+    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
+    }
+    
+    @Override
+    public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskTimer(plugin, delay, period, task);
+    }
+    
+    @Override
+    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
+    {
+        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
     }
     
     // messages
@@ -809,6 +861,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
      * Hook into message service.
      * 
      * @param func
+     *            handler for custom messaging service.
      */
     public void hookMessageService(Function<MessageServiceInterface, MessageServiceInterface> func)
     {
@@ -853,9 +906,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     // events
     
     /**
-     * Player join event
+     * Player join event.
      * 
      * @param evt
+     *            event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent evt)
@@ -863,7 +917,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         final Player player = evt.getPlayer();
         
         if (ObjectServiceInterface.instance().isHuman(player))
+        {
             return;
+        }
         
         while (!this.bungeeQueue.isEmpty())
         {
@@ -938,6 +994,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
      * Player quit event.
      * 
      * @param evt
+     *            event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent evt)
@@ -989,8 +1046,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         final String[] main = McCoreConfig.MainLocales.getStringList();
         for (final String l : main)
+        {
             if (l.equals(locale.toString()))
+            {
                 return;
+            }
+        }
         final String[] result = Arrays.copyOf(main, main.length + 1);
         result[main.length] = locale.toString();
         McCoreConfig.MainLocales.setStringList(result);
@@ -1018,9 +1079,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * event handler for plugin disable events
+     * event handler for plugin disable events.
      * 
      * @param evt
+     *            event
      */
     @EventHandler
     public void onPluginDisable(PluginDisableEvent evt)
@@ -1037,9 +1099,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * event handler for plugin enable events
+     * event handler for plugin enable events.
      * 
      * @param evt
+     *            event
      */
     @EventHandler
     public void onPluginEnable(PluginEnableEvent evt)
@@ -1132,10 +1195,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * Returns the endpoint for given class and element
+     * Returns the endpoint for given class and element.
      * 
      * @param clazz
+     *            enpoint class
      * @param name
+     *            enumeration name
      * @return endpoint or {@code null} if it does not exist.
      */
     private CommunicationEndpointId getPeerEndpoint(String clazz, String name)
@@ -1152,10 +1217,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * Returns the endpoint for given class and element
+     * Returns the endpoint for given class and element.
      * 
      * @param clazz
+     *            entpoint class
      * @param name
+     *            enumeration name
      * @return endpoint or {@code null} if it does not exist.
      */
     private CommunicationEndpointId getServerEndpoint(String clazz, String name)
@@ -1267,9 +1334,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * Sign delete event
+     * Sign delete event.
      * 
      * @param evt
+     *            event
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSignDelete(BlockBreakEvent evt)
@@ -1432,13 +1500,13 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * Communication handler for incoming network traffic-
+     * Communication handler for incoming network traffic.
      */
     private class MclibCoreHandler implements CommunicationPeerHandler
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public MclibCoreHandler()
         {
@@ -1450,7 +1518,9 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             // silently drop invalid messages.
             if (!section.contains("KEY")) //$NON-NLS-1$
+            {
                 return;
+            }
             
             try
             {
@@ -1516,7 +1586,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public LocalBungeeServer()
         {
@@ -1564,9 +1634,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         private String name;
         
         /**
-         * Constructor
+         * Constructor.
          * 
          * @param name
+         *            server name
          */
         public RemoteBungeeServer(String name)
         {
@@ -1637,55 +1708,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public BukkitTask runTask(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTask(plugin, task);
-    }
-    
-    @Override
-    public BukkitTask runTaskAsynchronously(Plugin plugin, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTaskAsynchronously(plugin, task);
-    }
-    
-    @Override
-    public BukkitTask runTaskLater(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTaskLater(plugin, delay, task);
-    }
-    
-    @Override
-    public BukkitTask runTaskLaterAsynchronously(Plugin plugin, long delay, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
-    }
-    
-    @Override
-    public BukkitTask runTaskTimer(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTaskTimer(plugin, delay, period, task);
-    }
-    
-    @Override
-    public BukkitTask runTaskTimerAsynchronously(Plugin plugin, long delay, long period, ContextRunnable task) throws IllegalArgumentException
-    {
-        return this.context.runTaskLaterAsynchronously(plugin, delay, task);
-    }
-    
-    @Override
-    public void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException
-    {
-        this.context.runInNewContext(event, command, player, zone, component, runnable);
-    }
-    
-    @Override
-    public <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException
-    {
-        return this.context.calculateInNewContext(event, command, player, zone, component, runnable);
-    }
-    
-    @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.eventBus.registerHandler(plugin, clazz, handler);
     }
@@ -1697,7 +1720,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.eventBus.unregisterHandler(plugin, clazz, handler);
     }
@@ -1709,7 +1732,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         this.eventBus.handle(eventClass, event);
     }
@@ -1742,11 +1765,16 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     /**
-     * enum value factory method
+     * enum value factory method.
      * 
+     * @param <T>
+     *            target class (interface)
      * @param plugin
+     *            plugin name
      * @param name
+     *            enumeration name
      * @param clazz
+     *            target class (interface)
      * @return enumeration value or {@code null} if it does not exist
      */
     private static <T extends UniqueEnumerationValue> T create(String plugin, String name, Class<T> clazz)
@@ -1755,7 +1783,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
+    public <EVT extends Event & MinecraftEvent<EVT, EVT>> void registerEvent(Plugin plugin, Class<EVT> clazz)
     {
         Bukkit.getServicesManager().load(EventSystemInterface.class).registerEvent(plugin, clazz);
     }
@@ -1775,7 +1803,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /**
      * handle inventory close event.
      * 
-     * @param evt
+     * @param evt event
      */
     @EventHandler
     public void onClose(InventoryCloseEvent evt)
