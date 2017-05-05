@@ -38,7 +38,7 @@ import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
 
 /**
- * Helper for managing zones of moveable entities
+ * Helper for managing zones of moveable entities.
  * 
  * @author mepeisen
  */
@@ -49,12 +49,12 @@ abstract class ZoneManager
     // TODO react on zone relocations
     
     /**
-     * the current zone the player is within
+     * the current zone the player is within.
      */
     private ZoneId      primaryZone;
     
     /**
-     * The previous location (blocks)
+     * The previous location (blocks).
      */
     private Location    oldLocation = null;
     
@@ -64,9 +64,10 @@ abstract class ZoneManager
     private Set<ZoneId> zones       = new HashSet<>();
     
     /**
-     * Registers entity movement
+     * Registers entity movement.
      * 
      * @param target
+     *            new location of the entity
      */
     void registerMovement(Location target)
     {
@@ -106,26 +107,68 @@ abstract class ZoneManager
             this.fireZonesLeft(leftZones);
             this.fireZonesEntered(enteredZones);
         }
+        
+        if (this.zones.size() == 0)
+        {
+            this.primaryZone = null;
+        }
+        else if (!this.zones.contains(this.primaryZone))
+        {
+            this.primaryZone = this.zones.iterator().next();
+        }
     }
     
     /**
+     * Method to be implemented for fireing zone entered events.
+     * 
      * @param newZones
+     *            the zones that were entered by entity
      */
     protected abstract void fireZonesEntered(Set<ZoneId> newZones);
     
     /**
+     * Method to be implemented for fireing zone left events.
+     * 
      * @param oldZones
+     *            the zones that were left by entity
      */
     protected abstract void fireZonesLeft(Set<ZoneId> oldZones);
     
     /**
+     * Returns the zones for given location.
+     * 
      * @param loc
+     *            location
      * @return zone id sets
      */
     private Set<ZoneId> getZones(Location loc)
     {
         final ObjectServiceInterface osi = ObjectServiceInterface.instance();
         return osi.findZones(loc).stream().map(z -> (ZoneId) z.getZoneId()).collect(Collectors.toSet());
+    }
+    
+    /**
+     * Returns the zone the player is within.
+     * 
+     * @return zone list
+     */
+    Collection<ZoneInterface> getZones()
+    {
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        return this.zones.stream().map(osi::findZone).collect(Collectors.toList());
+    }
+    
+    /**
+     * Returns the zone of given types the player is within.
+     * 
+     * @param type zone type array.
+     * @return zone list
+     */
+    Collection<ZoneInterface> getZones(ZoneTypeId... type)
+    {
+        final Set<ZoneTypeId> types = Arrays.stream(type).collect(Collectors.toSet());
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        return this.zones.stream().filter(z -> types.contains(osi.getType(z))).map(osi::findZone).collect(Collectors.toList());
     }
     
     /**
@@ -144,60 +187,13 @@ abstract class ZoneManager
     }
     
     /**
-     * Checks if the player is within given zone.
-     * 
-     * @param zone
-     * @return {@code true} if player is inside given zone.
-     */
-    boolean isInsideZone(ZoneInterface zone)
-    {
-        return this.zones.contains(zone.getZoneId());
-    }
-    
-    /**
-     * Checks if the player is inside at least one of the given zones.
-     * 
-     * @param zone
-     * @return {@code true} if player is at least inside one of the given zones.
-     */
-    boolean isInsideRandomZone(ZoneInterface... zone)
-    {
-        for (final ZoneInterface z : zone)
-        {
-            if (this.isInsideZone(z))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * Checks if the player is inside every of the given zones.
-     * 
-     * @param zone
-     * @return {@code true} if player is inside of the given zones.
-     */
-    boolean isInsideAllZones(ZoneInterface... zone)
-    {
-        for (final ZoneInterface z : zone)
-        {
-            if (!this.isInsideZone(z))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /**
      * Returns a zone the player is within and that is of given type.
      * 
      * <p>
      * This method returns the "primary zone". If the zones are overlapping this may be a random
      * </p>
      * 
-     * @param type
+     * @param type zone type array
      * @return the zone or {@code null} if no matching zone was found.
      */
     ZoneInterface getZone(ZoneTypeId... type)
@@ -217,9 +213,38 @@ abstract class ZoneManager
     }
     
     /**
+     * Checks if the player is within given zone.
+     * 
+     * @param zone zone to test
+     * @return {@code true} if player is inside given zone.
+     */
+    boolean isInsideZone(ZoneInterface zone)
+    {
+        return this.zones.contains(zone.getZoneId());
+    }
+    
+    /**
+     * Checks if the player is inside at least one of the given zones.
+     * 
+     * @param zone zone to test
+     * @return {@code true} if player is at least inside one of the given zones.
+     */
+    boolean isInsideRandomZone(ZoneInterface... zone)
+    {
+        for (final ZoneInterface z : zone)
+        {
+            if (this.isInsideZone(z))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Checks if the player is inside at least one of the given zones of given type.
      * 
-     * @param type
+     * @param type zone type array
      * @return {@code true} if player is at least inside one of the given zones.
      */
     boolean isInsideRandomZone(ZoneTypeId... type)
@@ -228,27 +253,21 @@ abstract class ZoneManager
     }
     
     /**
-     * Returns the zone the player is within.
+     * Checks if the player is inside every of the given zones.
      * 
-     * @return zone list
+     * @param zone zone to test
+     * @return {@code true} if player is inside of the given zones.
      */
-    Collection<ZoneInterface> getZones()
+    boolean isInsideAllZones(ZoneInterface... zone)
     {
-        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
-        return this.zones.stream().map(osi::findZone).collect(Collectors.toList());
-    }
-    
-    /**
-     * Returns the zone of given types the player is within
-     * 
-     * @param type
-     * @return zone list
-     */
-    Collection<ZoneInterface> getZones(ZoneTypeId... type)
-    {
-        final Set<ZoneTypeId> types = Arrays.stream(type).collect(Collectors.toSet());
-        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
-        return this.zones.stream().filter(z -> types.contains(osi.getType(z))).map(osi::findZone).collect(Collectors.toList());
+        for (final ZoneInterface z : zone)
+        {
+            if (!this.isInsideZone(z))
+            {
+                return false;
+            }
+        }
+        return true;
     }
     
 }

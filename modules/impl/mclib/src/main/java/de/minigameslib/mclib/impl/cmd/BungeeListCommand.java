@@ -39,6 +39,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 
 /**
+ * Bungee list command (/mclib bungee list).
+ * 
  * @author mepeisen
  *
  */
@@ -89,21 +91,21 @@ public class BungeeListCommand extends AbstractPagableCommandHandler implements 
     }
     
     /**
-     * Messages
+     * Messages for bungee list command.
      */
     @LocalizedMessages("cmd.mclib_bungee_list")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Display list of known bungee servers!")
         @MessageComment("Short description for /mclib bungee list")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display list of known bungee servers!",
@@ -114,7 +116,7 @@ public class BungeeListCommand extends AbstractPagableCommandHandler implements 
         Description,
         
         /**
-         * Page header
+         * Page header.
          */
         @LocalizedMessage(defaultMessage = "bungee servers")
         @MessageComment("Page header")

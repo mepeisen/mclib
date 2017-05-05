@@ -35,14 +35,22 @@ import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 /**
  * The listener for resource pack status.
  * 
+ * <p>
+ * Used by 1.8 R 3 and above.
+ * </p>
+ * 
  * @author mepeisen
  */
 class ResourcePackListener extends AbstractResourcePackListener implements Listener
 {
     
     /**
+     * Constructor.
+     * 
      * @param players
+     *            the players registry.
      * @param itemService
+     *            the item service.
      */
     public ResourcePackListener(PlayerRegistry players, ItemServiceImpl itemService)
     {
@@ -50,9 +58,10 @@ class ResourcePackListener extends AbstractResourcePackListener implements Liste
     }
     
     /**
-     * Resource pack event
+     * Resource pack event.
      * 
      * @param evt
+     *            event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onResourcePack(PlayerResourcePackStatusEvent evt)

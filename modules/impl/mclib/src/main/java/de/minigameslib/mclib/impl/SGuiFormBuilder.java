@@ -85,13 +85,18 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     SGuiImpl                        window;
     
     /**
-     * Constructor
+     * Constructor.
      * 
-     * @param closeAction
-     * @param closable
-     * @param titleArgs
      * @param title
+     *            the localized title text
+     * @param titleArgs
+     *            the arguments to build the title.
+     * @param closeAction
+     *            the close action listening for form close events.
+     * @param closable
+     *            {@code true} if the form can be closed by X button in the above right corner.
      * @param smartGui
+     *            the smart gui helper.
      */
     public SGuiFormBuilder(LocalizedMessageInterface title, Serializable[] titleArgs, boolean closable, McRunnable closeAction, SGuiHelper smartGui)
     {
@@ -106,10 +111,12 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
     
     /**
-     * Encodes given message by using players locale
+     * Encodes given message by using players locale.
      * 
      * @param msg
+     *            localized message text.
      * @param args
+     *            arguments to build the message.
      * @return encoded message
      */
     String encode(LocalizedMessageInterface msg, Serializable[] args)
@@ -133,12 +140,16 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
      * Creates a new gui button.
      * 
      * @param label
+     *            button label
      * @param labelArgs
+     *            arguments to build the button label
      * @param action
+     *            button click handler
      * @param closeAction
+     *            {@code true} if button automatically closes the form
      * @return gui button
      */
-    GuiButtonImpl sguiCreateButton(LocalizedMessageInterface label, Serializable labelArgs[], McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction)
+    GuiButtonImpl sguiCreateButton(LocalizedMessageInterface label, Serializable[] labelArgs, McBiConsumer<SGuiInterface, DataSection> action, boolean closeAction)
     {
         try
         {
@@ -169,9 +180,14 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
     
     /**
+     * Handles form submit action.
+     * 
      * @param action
+     *            the action handler.
      * @param gui
+     *            the smart gui interface
      * @param formdata
+     *            the form data
      */
     private void handleSubmit(McBiConsumer<SGuiInterface, DataSection> action, SGuiInterface gui, DataSection formdata)
     {
@@ -244,12 +260,15 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
     
     /**
-     * Parses and performs a list request
+     * Parses and performs a list request.
      * 
      * @param request
+     *            the list request data
      * @param supplier
+     *            the supplier to return the list responde data
      * @return answer
      * @throws McException
+     *             thrown on problems in supplier, f.e. sql exceptions
      */
     private QueryFormAnswerData parseListRequest(QueryFormRequestData request, SGuiListSupplier supplier) throws McException
     {
@@ -272,7 +291,7 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
     }
     
     /**
-     * Helper to build a list control
+     * Helper to build a list control.
      * 
      * @author mepeisen
      */
@@ -289,7 +308,9 @@ public class SGuiFormBuilder implements SGuiFormBuilderInterface
          * Constructor to create a list control builder.
          * 
          * @param form
+         *            sgui form builder
          * @param listInput
+         *            the list input
          */
         public SGuiListBuilderImpl(SGuiFormBuilder form, ListInput listInput)
         {

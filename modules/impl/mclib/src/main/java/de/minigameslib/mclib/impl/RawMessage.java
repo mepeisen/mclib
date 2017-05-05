@@ -57,7 +57,7 @@ public class RawMessage implements RawMessageInterface
     private List<Function<McPlayerInterface, String>> buffer  = new ArrayList<>();
     
     /**
-     * Raw actions
+     * Raw actions.
      */
     protected Map<UUID, RawAction>                    actions = new HashMap<>();
     
@@ -65,6 +65,7 @@ public class RawMessage implements RawMessageInterface
      * Converts this message to raw json text.
      * 
      * @param player
+     *            target player for translating localized messages
      * @return json
      */
     public String toJson(McPlayerInterface player)
@@ -73,7 +74,10 @@ public class RawMessage implements RawMessageInterface
     }
     
     /**
+     * converts a multi line message to json.
+     * 
      * @param encodedMessage
+     *            encoded multi line message
      * @return json
      */
     private String toJson(String[] encodedMessage)
@@ -111,7 +115,9 @@ public class RawMessage implements RawMessageInterface
         this.buffer.add(p ->
         {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
-            return "{ \"text\": \"\", \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") + "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+            return "{ \"text\": \"\", \"clickEvent\":{ \"action\":\"" + //$NON-NLS-1$
+                (execute ? "run_command" : "suggest_command") + //$NON-NLS-1$ //$NON-NLS-2$
+                "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         });
         return this;
     }
@@ -132,7 +138,8 @@ public class RawMessage implements RawMessageInterface
         {
             final String text = this.toJson(p.encodeMessage(message, messageArgs));
             final String hoverText = this.toJson(p.encodeMessage(hover, hoverArgs));
-            return "{ \"text\": \"\", \"hoverEvent\":{ \"action\":\"show_text\", \"value\": [ " + hoverText + " ] }, \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            return "{ \"text\": \"\", \"hoverEvent\":{ \"action\":\"show_text\", \"value\": [ " + //$NON-NLS-1$
+                hoverText + " ] }, \"clickEvent\":{ \"action\":\"" + (execute ? "run_command" : "suggest_command") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\", \"value\": [ " + command + " ] }, extra: [ " + text + " ] }"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         });
         return this;
@@ -178,8 +185,12 @@ public class RawMessage implements RawMessageInterface
         private final McRunnable    handler;
         
         /**
+         * Constructor to create a raw action.
+         * 
          * @param expires
+         *            date/time the action expires.
          * @param handler
+         *            the action handler to invoke.
          */
         public RawAction(LocalDateTime expires, McRunnable handler)
         {
@@ -188,6 +199,8 @@ public class RawMessage implements RawMessageInterface
         }
         
         /**
+         * Returns the expires timestamp.
+         * 
          * @return the expires
          */
         public LocalDateTime getExpires()
@@ -196,6 +209,8 @@ public class RawMessage implements RawMessageInterface
         }
         
         /**
+         * Returns the action/click handler.
+         * 
          * @return the handler
          */
         public McRunnable getHandler()

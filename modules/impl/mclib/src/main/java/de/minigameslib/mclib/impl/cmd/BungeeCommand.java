@@ -36,6 +36,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 
 /**
+ * Bungee chat command (/mclib bungee).
+ * 
  * @author mepeisen
  *
  */
@@ -43,7 +45,7 @@ public class BungeeCommand extends AbstractCompositeCommandHandler implements Su
 {
     
     /**
-     * Constructor
+     * Constructor.
      */
     public BungeeCommand()
     {
@@ -77,7 +79,7 @@ public class BungeeCommand extends AbstractCompositeCommandHandler implements Su
     }
     
     /**
-     * Messages
+     * Messages for bungee chat command.
      */
     @LocalizedMessages("cmd.mclib_bungee")
     @ChildEnum({
@@ -87,21 +89,21 @@ public class BungeeCommand extends AbstractCompositeCommandHandler implements Su
     public enum Messages implements LocalizedMessageInterface
     {
         /**
-         * Command usage
+         * Command usage.
          */
         @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Enter " + LocalizedMessage.BLUE + "/mclib bungee help " + LocalizedMessage.GRAY + "for detailed help!")
         @MessageComment("Command usage for /mclib bungee")
         Usage,
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Information on bungee network!")
         @MessageComment("Short description for /mclib bungee")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display or manipulate your bungee network!",

@@ -60,6 +60,7 @@ public class PlayerRegistry
      * Constructor.
      * 
      * @param workDir
+     *            the work dir to save player data
      */
     public PlayerRegistry(File workDir)
     {
@@ -79,8 +80,12 @@ public class PlayerRegistry
     }
     
     /**
+     * Parses pong data from client mod.
+     * 
      * @param player
+     *            the target player.
      * @param fragment
+     *            the data fragment.
      */
     void parsePong(McPlayerInterface player, PongData fragment)
     {
@@ -91,7 +96,8 @@ public class PlayerRegistry
      * Returns the player for given bukkit player.
      * 
      * @param player
-     * @return arena player.
+     *            bukkit player
+     * @return mclib player.
      */
     public McPlayerImpl getPlayer(Player player)
     {
@@ -110,7 +116,8 @@ public class PlayerRegistry
      * Returns the player for given bukkit player.
      * 
      * @param player
-     * @return arena player.
+     *            bukkit offline player
+     * @return mclib player.
      */
     public McPlayerImpl getPlayer(OfflinePlayer player)
     {
@@ -129,7 +136,8 @@ public class PlayerRegistry
      * Returns the player for given bukkit player uuid.
      * 
      * @param uuid
-     * @return arena player.
+     *            player uuid
+     * @return mclib player.
      */
     public McPlayerImpl getPlayer(UUID uuid)
     {
@@ -144,9 +152,10 @@ public class PlayerRegistry
     }
     
     /**
-     * Player join event
+     * Player join event.
      * 
      * @param evt
+     *            event
      */
     public void onPlayerJoin(PlayerJoinEvent evt)
     {
@@ -164,6 +173,7 @@ public class PlayerRegistry
      * Player quit event.
      * 
      * @param evt
+     *            event
      */
     public void onPlayerQuit(PlayerQuitEvent evt)
     {
@@ -178,9 +188,10 @@ public class PlayerRegistry
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {

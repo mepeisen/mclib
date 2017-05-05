@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -97,9 +96,6 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  */
 public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, AnvilListener
 {
-    
-    /** logger. */
-    private static final Logger   LOGGER         = Logger.getLogger(GuiSessionImpl.class.getName());
     
     /** the current gui type. */
     private GuiType               type           = GuiType.None;

@@ -41,6 +41,8 @@ import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
+ * The locale command (/mclib locale).
+ * 
  * @author mepeisen
  *
  */
@@ -78,8 +80,12 @@ public class LocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display success (changes user locale).
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            new locale
      */
     private void displaySuccess(CommandInterface command, Locale loc)
     {
@@ -87,8 +93,12 @@ public class LocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Displays locale warning.
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            new locale
      */
     private void displayLocaleWarning(CommandInterface command, Locale loc)
     {
@@ -96,7 +106,10 @@ public class LocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Displays current locale.
+     * 
      * @param command
+     *            command interface
      */
     private void displayLocale(CommandInterface command)
     {
@@ -126,21 +139,21 @@ public class LocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
-     * Messages
+     * Messages for /mclib locale.
      */
     @LocalizedMessages("cmd.mclib_locale")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Display or change your preferred locale!")
         @MessageComment("Short description for /mclib locale")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display or change your preferred locale!",
@@ -152,7 +165,7 @@ public class LocaleCommand implements SubCommandHandlerInterface
         Description,
         
         /**
-         * Locale warning
+         * Locale warning.
          */
         @LocalizedMessageList(value = {
             "Your locale " + LocalizedMessage.CODE_COLOR + "%1$s " + LocalizedMessage.WARNING_COLOR + " may not be supported on this server.",
@@ -162,14 +175,14 @@ public class LocaleCommand implements SubCommandHandlerInterface
         LocaleWarning,
         
         /**
-         * Display locale
+         * Display locale.
          */
         @LocalizedMessage(defaultMessage = "Your current locale: " + LocalizedMessage.CODE_COLOR + "%1$s")
         @MessageComment(value = "Displays users current locale", args = @MessageComment.Argument("users current locale"))
         DisplayLocale,
         
         /**
-         * Locale changed
+         * Locale changed.
          */
         @LocalizedMessage(defaultMessage = "Your new locale: " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Success)
         @MessageComment(value = "Locale was changed", args = @MessageComment.Argument("users current locale"))

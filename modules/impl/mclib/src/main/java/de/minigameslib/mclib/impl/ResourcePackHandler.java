@@ -29,14 +29,22 @@ import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 /**
  * The listener for resource pack status.
  * 
+ * <p>
+ * Used by 1.8 R1 and R2.
+ * </p>
+ * 
  * @author mepeisen
  */
 class ResourcePackHandler extends AbstractResourcePackListener
 {
     
     /**
+     * Constructor.
+     * 
      * @param players
+     *            the players registry.
      * @param itemService
+     *            the item service.
      */
     public ResourcePackHandler(PlayerRegistry players, ItemServiceImpl itemService)
     {

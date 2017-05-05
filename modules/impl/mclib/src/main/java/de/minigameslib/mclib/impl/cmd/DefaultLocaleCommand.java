@@ -41,6 +41,8 @@ import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
+ * Default locale command (/mclib defaultlocale).
+ * 
  * @author mepeisen
  *
  */
@@ -77,8 +79,12 @@ public class DefaultLocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display success message.
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            new locale
      */
     private void displaySuccess(CommandInterface command, Locale loc)
     {
@@ -86,8 +92,12 @@ public class DefaultLocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display locale warning.
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            new locale
      */
     private void displayLocaleWarning(CommandInterface command, Locale loc)
     {
@@ -95,7 +105,10 @@ public class DefaultLocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display current locale.
+     * 
      * @param command
+     *            command interface
      */
     private void displayLocale(CommandInterface command)
     {
@@ -125,21 +138,21 @@ public class DefaultLocaleCommand implements SubCommandHandlerInterface
     }
     
     /**
-     * Messages
+     * Messages for /mclib defaultlocale.
      */
     @LocalizedMessages("cmd.mclib_defaultlocale")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Display or change server default locale!")
         @MessageComment("Short description for /mclib defaultlocale")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display or change server default locale!",
@@ -151,25 +164,25 @@ public class DefaultLocaleCommand implements SubCommandHandlerInterface
         Description,
         
         /**
-         * Locale warning
+         * Locale warning.
          */
         @LocalizedMessageList(value = {
             "Server default locale " + LocalizedMessage.CODE_COLOR + "%1$s " + LocalizedMessage.WARNING_COLOR + " may not be supported on this server.",
             "This is only a warning. You should add the locale with " + LocalizedMessage.CODE_COLOR + "/mclib mainlocale add %1$s",
             "You should check if all messages are translated with " + LocalizedMessage.CODE_COLOR + "/mclib translate check %1$s",
         }, severity = MessageSeverityType.Warning)
-        @MessageComment(value = "Chosen locale is not in default list", args = @MessageComment.Argument("server default locale"))
+        @MessageComment(value = "Chosen locale is not in main list", args = @MessageComment.Argument("server default locale"))
         LocaleWarning,
         
         /**
-         * Display locale
+         * Display locale.
          */
         @LocalizedMessage(defaultMessage = "Server default locale: " + LocalizedMessage.CODE_COLOR + "%1$s")
         @MessageComment(value = "Displays server default locale", args = @MessageComment.Argument("server default locale"))
         DisplayLocale,
         
         /**
-         * Locale changed
+         * Locale changed.
          */
         @LocalizedMessage(defaultMessage = "New server default locale : " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Success)
         @MessageComment(value = "Locale was changed", args = @MessageComment.Argument("server default locale"))

@@ -37,7 +37,7 @@ import de.minigameslib.mclib.api.perms.Permissions;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 
 /**
- * Helper for command "/mclib"
+ * Helper for command "/mclib".
  * 
  * @author mepeisen
  */
@@ -45,7 +45,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
 {
     
     /**
-     * Constructor
+     * Constructor.
      */
     public MclibCommand()
     {
@@ -64,7 +64,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
     }
     
     /**
-     * Messages
+     * Messages for mclib command.
      */
     @LocalizedMessages("cmd.mclib")
     @ChildEnum({
@@ -76,7 +76,7 @@ public class MclibCommand extends AbstractCompositeCommandHandler
     public enum Messages implements LocalizedMessageInterface
     {
         /**
-         * Command usage
+         * Command usage.
          */
         @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Enter " + LocalizedMessage.BLUE + "/mclib help " + LocalizedMessage.GRAY + "for detailed help!")
         @MessageComment("Command usage for /mclib")
@@ -84,37 +84,37 @@ public class MclibCommand extends AbstractCompositeCommandHandler
     }
     
     /**
-     * Permissions
+     * Permissions.
      */
     @Permissions("mclib.command")
     public enum CommandPermissions implements PermissionsInterface
     {
         /**
-         * Locale command
+         * Locale command.
          */
         @Permission
         Locale,
         
         /**
-         * DefaultLocale command
+         * DefaultLocale command.
          */
         @Permission
         DefaultLocale,
         
         /**
-         * MainLocale command
+         * MainLocale command.
          */
         @Permission
         MainLocale,
         
         /**
-         * Translate command
+         * Translate command.
          */
         @Permission
         Translate,
         
         /**
-         * Bungee command
+         * Bungee command.
          */
         @Permission
         Bungee,

@@ -37,6 +37,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 
 /**
+ * Query for bungee servers (/mclib bungee getservers).
+ * 
  * @author mepeisen
  *
  */
@@ -53,7 +55,7 @@ public class BungeeGetServersCommand implements SubCommandHandlerInterface
     public void handle(CommandInterface command) throws McException
     {
         command.checkOpPermission(MclibCommand.CommandPermissions.Bungee);
-        // TODO
+        // TODO implement /mclib bungee getservers
     }
     
     @Override
@@ -75,21 +77,21 @@ public class BungeeGetServersCommand implements SubCommandHandlerInterface
     }
     
     /**
-     * Messages
+     * Messages for /mclib bungee getservers.
      */
     @LocalizedMessages("cmd.mclib_bungee_getservers")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Query bungee servers!")
         @MessageComment("Short description for /mclib bungee getservers")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Query bungee servers live!"
