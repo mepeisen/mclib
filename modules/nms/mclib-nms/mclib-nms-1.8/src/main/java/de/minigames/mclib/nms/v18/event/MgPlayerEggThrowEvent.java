@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerEggThrowEvent extends AbstractMinigameEvent<PlayerEggThrowEvent, McPlayerEggThrowEvent> implements McPlayerEggThrowEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerEggThrowEvent(PlayerEggThrowEvent event)

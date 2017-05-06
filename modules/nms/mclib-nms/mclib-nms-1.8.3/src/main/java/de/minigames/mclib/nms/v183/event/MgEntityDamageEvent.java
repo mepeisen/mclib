@@ -42,16 +42,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityDamageEvent extends AbstractMinigameEvent<EntityDamageEvent, McEntityDamageEvent> implements McEntityDamageEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityDamageEvent(EntityDamageEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -65,13 +66,13 @@ public class MgEntityDamageEvent extends AbstractMinigameEvent<EntityDamageEvent
         }
         return null;
     }
-
+    
     @Override
     public EntityInterface getEntity()
     {
         return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getEntity());
     }
-
+    
     /**
      * @param event
      * @return arena

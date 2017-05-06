@@ -72,14 +72,17 @@ public interface InventoryManagerInterface extends Listener
          *            the raw slot number
          * @param slot
          *            the slot number in given inventory
-         * @return {@code true} to cancel event 
+         * @return {@code true} to cancel event
          */
         boolean onClick(ItemStack item, int rawSlot, int slot);
-
+        
         /**
          * Sets an item to given slot.
-         * @param index slot index
-         * @param item new item for this slot.
+         * 
+         * @param index
+         *            slot index
+         * @param item
+         *            new item for this slot.
          */
         void setItem(int index, ItemStack item);
     }
@@ -114,8 +117,11 @@ public interface InventoryManagerInterface extends Listener
     
     /**
      * Returns a colored string that hides data from users view.
-     * @param name item name
-     * @param hiddenString the hidden string
+     * 
+     * @param name
+     *            item name
+     * @param hiddenString
+     *            the hidden string
      * @return colored hidden text
      */
     static String toColorsString(String name, String hiddenString)
@@ -137,6 +143,7 @@ public interface InventoryManagerInterface extends Listener
     
     /**
      * Strips the string that was originally encoded by toColorsString
+     * 
      * @param src
      * @return hiddenString
      */
@@ -144,9 +151,9 @@ public interface InventoryManagerInterface extends Listener
     {
         int index = src.lastIndexOf(' ');
         final StringBuilder hex = new StringBuilder();
-        for (int i = index + 1; i < src.length(); i+=2)
+        for (int i = index + 1; i < src.length(); i += 2)
         {
-            hex.append(src.substring(i + 1,  i + 2));
+            hex.append(src.substring(i + 1, i + 2));
         }
         return fromHexString(hex.toString());
     }

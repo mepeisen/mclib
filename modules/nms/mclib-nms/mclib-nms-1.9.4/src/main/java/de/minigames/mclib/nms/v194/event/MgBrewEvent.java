@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBrewEvent extends AbstractMinigameEvent<BrewEvent, McBrewEvent> implements McBrewEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBrewEvent(BrewEvent event)

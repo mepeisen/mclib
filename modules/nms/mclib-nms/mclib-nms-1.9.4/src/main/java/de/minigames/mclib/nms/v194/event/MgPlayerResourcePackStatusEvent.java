@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerResourcePackStatusEvent extends AbstractMinigameEvent<PlayerResourcePackStatusEvent, McPlayerResourcePackStatusEvent> implements McPlayerResourcePackStatusEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerResourcePackStatusEvent(PlayerResourcePackStatusEvent event)

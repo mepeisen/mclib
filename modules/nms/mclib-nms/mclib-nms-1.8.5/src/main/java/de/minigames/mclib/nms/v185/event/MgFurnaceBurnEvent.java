@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgFurnaceBurnEvent extends AbstractMinigameEvent<FurnaceBurnEvent, McFurnaceBurnEvent> implements McFurnaceBurnEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgFurnaceBurnEvent(FurnaceBurnEvent event)

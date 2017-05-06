@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityToggleGlideEvent extends AbstractMinigameEvent<EntityToggleGlideEvent, McEntityToggleGlideEvent> implements McEntityToggleGlideEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityToggleGlideEvent(EntityToggleGlideEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityToggleGlideEvent extends AbstractMinigameEvent<EntityToggle
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

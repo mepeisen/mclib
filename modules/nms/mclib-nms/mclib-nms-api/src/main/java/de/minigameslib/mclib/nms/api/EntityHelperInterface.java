@@ -42,6 +42,7 @@ public interface EntityHelperInterface
     
     /**
      * Spawns a dummy villager, not being able to move around
+     * 
      * @param loc
      * @param profession
      * @return villager
@@ -50,6 +51,7 @@ public interface EntityHelperInterface
     
     /**
      * checks if given villager was created by method {@link #spawnDummyVillager(Location, Profession)}
+     * 
      * @param villager
      * @return {@code true} for dummy villager
      */
@@ -57,6 +59,7 @@ public interface EntityHelperInterface
     
     /**
      * Spawns a dummy human, not being able to move around
+     * 
      * @param loc
      * @param name
      * @param skinTexture
@@ -66,11 +69,12 @@ public interface EntityHelperInterface
     
     /**
      * checks if given human was created by method {@link #spawnDummyHuman(Location, String, String)}
+     * 
      * @param human
      * @return {@code true} for dummy human
      */
     boolean isDummyHuman(HumanEntity human);
-
+    
     /**
      * @param entity
      * @return string texture
@@ -79,6 +83,7 @@ public interface EntityHelperInterface
     
     /**
      * Loads skin from players
+     * 
      * @param player
      * @return skin textures
      * @throws ExecutionException
@@ -87,6 +92,7 @@ public interface EntityHelperInterface
     
     /**
      * Sets skin
+     * 
      * @param entity
      * @param texture
      */
@@ -94,6 +100,7 @@ public interface EntityHelperInterface
     
     /**
      * Sets profile in skull meta data with given textures.
+     * 
      * @param meta
      * @param textures
      */
@@ -101,28 +108,31 @@ public interface EntityHelperInterface
     
     /**
      * Updates visibility list for given player; hides dummy humans
+     * 
      * @param player
      */
     void playerOnline(Player player);
     
     /**
      * Updates visibility list for given player; hides dummy humans
+     * 
      * @param player
      */
     void playerOffline(Player player);
-
+    
     /**
      * @param entity
      */
     void delete(Villager entity);
-
+    
     /**
      * @param entity
      */
     void delete(HumanEntity entity);
-
+    
     /**
      * Clears skin cache for given player
+     * 
      * @param player
      */
     void clearSkinCache(Player player);

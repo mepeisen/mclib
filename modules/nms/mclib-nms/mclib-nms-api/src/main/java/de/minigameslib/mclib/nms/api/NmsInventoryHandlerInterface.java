@@ -36,29 +36,33 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface NmsInventoryHandlerInterface
 {
-
+    
     /**
      * place handler
+     * 
      * @param location
      */
     void onPlace(Location location);
-
+    
     /**
      * post place handler
+     * 
      * @param location
      * @param stack
      * @param player
      */
     void onPostPlace(Location location, ItemStack stack, Player player);
-
+    
     /**
      * break handler
+     * 
      * @param location
      */
     void onBreak(Location location);
-
+    
     /**
      * right click handler
+     * 
      * @param location
      * @param bukkitEntity
      * @param mainHand

@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerBedEnterEvent extends AbstractMinigameEvent<PlayerBedEnterEvent, McPlayerBedEnterEvent> implements McPlayerBedEnterEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerBedEnterEvent(PlayerBedEnterEvent event)

@@ -59,7 +59,7 @@ public class NetworkManager1_8
     /**
      * reflection nms field
      */
-    static Field enumField;
+    static Field         enumField;
     
     static
     {
@@ -135,9 +135,9 @@ public class NetworkManager1_8
         };
         
         pipe.addAfter(
-                "decoder", //$NON-NLS-1$
-                "mclib", //$NON-NLS-1$
-                handler);
+            "decoder", //$NON-NLS-1$
+            "mclib", //$NON-NLS-1$
+            handler);
     }
     
 }

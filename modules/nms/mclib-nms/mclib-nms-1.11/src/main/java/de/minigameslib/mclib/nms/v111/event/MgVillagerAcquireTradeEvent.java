@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVillagerAcquireTradeEvent extends AbstractMinigameEvent<VillagerAcquireTradeEvent, McVillagerAcquireTradeEvent> implements McVillagerAcquireTradeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVillagerAcquireTradeEvent(VillagerAcquireTradeEvent event)

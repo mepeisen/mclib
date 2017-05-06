@@ -48,12 +48,14 @@ public interface EventSystemInterface extends Listener
     
     /**
      * Adds a new event listener.
+     * 
      * @param listener
      */
     void addEventListener(MgEventListener listener);
     
     /**
      * Registers a new event class for event system
+     * 
      * @param plugin
      * @param clazz
      */
@@ -61,6 +63,7 @@ public interface EventSystemInterface extends Listener
     
     /**
      * Creates a new event bus.
+     * 
      * @return event bus implementation
      */
     EventBus createEventBus();

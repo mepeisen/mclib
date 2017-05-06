@@ -60,20 +60,20 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     /**
      * The common event handlers per event class.
      */
-    private final Map<Class<? extends Event>, MinecraftEventHandler<?, ?>> eventHandlers = new HashMap<>();
+    private final Map<Class<? extends Event>, MinecraftEventHandler<?, ?>>           eventHandlers = new HashMap<>();
     
     /** common event listeners. */
-    public final List<MgEventListener>                                     listeners     = new ArrayList<>();
+    public final List<MgEventListener>                                               listeners     = new ArrayList<>();
     
     /**
      * the event executors.
      */
-    private final Map<Class<? extends Event>, EventExecutor>               executors     = new ConcurrentHashMap<>();
+    private final Map<Class<? extends Event>, EventExecutor>                         executors     = new ConcurrentHashMap<>();
     
     /**
      * mapping from mclib event classes to bukkit event classes
      */
-    private final Map<Class<? extends MinecraftEvent<?, ?>>, Class<? extends Event>> classMap = new HashMap<>();
+    private final Map<Class<? extends MinecraftEvent<?, ?>>, Class<? extends Event>> classMap      = new HashMap<>();
     
     /**
      * Constructor.
@@ -97,6 +97,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     
     /**
      * Register class mapping
+     * 
      * @param src
      * @param target
      */
@@ -104,9 +105,10 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     {
         this.classMap.put(src, target);
     }
-
+    
     /**
      * Register an event class
+     * 
      * @param clazz
      */
     <Evt extends MinecraftEvent<?, Evt>> void registerEventClass(Class<Evt> clazz)
@@ -116,13 +118,15 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     
     /**
      * Registers an event class for listening
+     * 
      * @param clazz
      */
     void registerEventClassEx(Class<? extends Event> clazz)
     {
-        this.executors.computeIfAbsent(clazz, c -> {
-            final EventExecutor executor = new EventExecutor(){
-
+        this.executors.computeIfAbsent(clazz, c ->
+        {
+            final EventExecutor executor = new EventExecutor() {
+                
                 @Override
                 public void execute(Listener listener, Event event) throws EventException
                 {
@@ -188,14 +192,14 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     @Override
     public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
     {
-//        Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
-//            
-//            @Override
-//            public void execute(Listener paramListener, Event paramEvent) throws EventException
-//            {
-//                getHandler(clazz).handle(clazz.cast(paramEvent));
-//            }
-//        }, plugin);
+        // Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
+        //
+        // @Override
+        // public void execute(Listener paramListener, Event paramEvent) throws EventException
+        // {
+        // getHandler(clazz).handle(clazz.cast(paramEvent));
+        // }
+        // }, plugin);
         this.registerHandler(clazz, clazz, evt -> evt);
     }
     
@@ -248,7 +252,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
             {
                 try
                 {
-                    mclib.runInNewContext(() -> {
+                    mclib.runInNewContext(() ->
+                    {
                         mclib.setContext(Event.class, evt);
                         listener.handle(this.mgcls, mgevt);
                     });
@@ -265,7 +270,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, player);
                             mclib.setContext(ZoneInterface.class, mgevt.getZone());
@@ -289,7 +295,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
                             mclib.setContext(ZoneInterface.class, arena);
@@ -313,7 +320,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
                             mclib.setContext(ZoneInterface.class, mgevt.getZone());
@@ -337,7 +345,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
                             mclib.setContext(ZoneInterface.class, mgevt.getZone());
@@ -361,7 +370,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
                             mclib.setContext(ZoneInterface.class, mgevt.getZone());
@@ -385,7 +395,8 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 {
                     try
                     {
-                        mclib.runInNewContext(() -> {
+                        mclib.runInNewContext(() ->
+                        {
                             mclib.setContext(Event.class, evt);
                             mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
                             mclib.setContext(ZoneInterface.class, mgevt.getZone());

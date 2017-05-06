@@ -348,5 +348,5 @@ public class EventSystem1_11 extends AbstractEventSystem
         this.registerHandler(VillagerAcquireTradeEvent.class, McVillagerAcquireTradeEvent.class, (evt) -> new MgVillagerAcquireTradeEvent(evt));
         this.registerHandler(VillagerReplenishTradeEvent.class, McVillagerReplenishTradeEvent.class, (evt) -> new MgVillagerReplenishTradeEvent(evt));
     }
-
+    
 }

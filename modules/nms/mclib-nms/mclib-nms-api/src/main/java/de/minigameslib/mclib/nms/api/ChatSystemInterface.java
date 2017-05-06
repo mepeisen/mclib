@@ -36,6 +36,7 @@ public interface ChatSystemInterface
     
     /**
      * Formats the given source message to json text including formatting.
+     * 
      * @param src
      * @return json text
      */
@@ -43,6 +44,7 @@ public interface ChatSystemInterface
     
     /**
      * Sends raw message to client
+     * 
      * @param player
      * @param json
      */

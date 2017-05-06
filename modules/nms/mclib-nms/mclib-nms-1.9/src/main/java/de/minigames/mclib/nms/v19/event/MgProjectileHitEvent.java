@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgProjectileHitEvent extends AbstractMinigameEvent<ProjectileHitEvent, McProjectileHitEvent> implements McProjectileHitEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgProjectileHitEvent(ProjectileHitEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgProjectileHitEvent extends AbstractMinigameEvent<ProjectileHitEve
         final ProjectileSource source = event.getEntity().getShooter();
         return source instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) source) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

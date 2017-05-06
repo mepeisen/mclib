@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgNotePlayEvent extends AbstractMinigameEvent<NotePlayEvent, McNotePlayEvent> implements McNotePlayEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgNotePlayEvent(NotePlayEvent event)

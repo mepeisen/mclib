@@ -33,35 +33,39 @@ import java.util.Random;
  */
 public interface NmsDropRuleInterface
 {
-
+    
     /**
      * returns the type id for drops
-     * @param variant 
+     * 
+     * @param variant
      * @param random
      * @param fortune
      * @return type id
      */
     int getDropType(int variant, Random random, int fortune);
-
+    
     /**
-     * Returns the amount of drops 
+     * Returns the amount of drops
+     * 
      * @param random
      * @param fortune
      * @return amount
      */
     int getDropCount(Random random, int fortune);
-
+    
     /**
      * Returns the experience for drops
-     * @param variant 
+     * 
+     * @param variant
      * @param random
      * @param enchantmentLevel
      * @return experience
      */
     int getExpDrop(int variant, Random random, int enchantmentLevel);
-
+    
     /**
      * Returns the variants for drops
+     * 
      * @param variant
      * @return variants
      */

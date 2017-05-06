@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerVelocityEvent extends AbstractMinigameEvent<PlayerVelocityEvent, McPlayerVelocityEvent> implements McPlayerVelocityEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerVelocityEvent(PlayerVelocityEvent event)

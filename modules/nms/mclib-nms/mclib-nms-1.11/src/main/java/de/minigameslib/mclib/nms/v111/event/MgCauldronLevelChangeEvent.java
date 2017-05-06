@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgCauldronLevelChangeEvent extends AbstractMinigameEvent<CauldronLevelChangeEvent, McCauldronLevelChangeEvent> implements McCauldronLevelChangeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgCauldronLevelChangeEvent(CauldronLevelChangeEvent event)

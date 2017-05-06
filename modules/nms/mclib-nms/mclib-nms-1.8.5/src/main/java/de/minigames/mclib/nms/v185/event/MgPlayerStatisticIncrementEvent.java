@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerStatisticIncrementEvent extends AbstractMinigameEvent<PlayerStatisticIncrementEvent, McPlayerStatisticIncrementEvent> implements McPlayerStatisticIncrementEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event)

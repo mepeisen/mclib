@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerArmorStandManipulateEvent extends AbstractMinigameEvent<PlayerArmorStandManipulateEvent, McPlayerArmorStandManipulateEvent> implements McPlayerArmorStandManipulateEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerArmorStandManipulateEvent(PlayerArmorStandManipulateEvent event)

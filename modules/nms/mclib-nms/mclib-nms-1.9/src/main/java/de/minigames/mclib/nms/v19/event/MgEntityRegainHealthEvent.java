@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityRegainHealthEvent extends AbstractMinigameEvent<EntityRegainHealthEvent, McEntityRegainHealthEvent> implements McEntityRegainHealthEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityRegainHealthEvent(EntityRegainHealthEvent event)

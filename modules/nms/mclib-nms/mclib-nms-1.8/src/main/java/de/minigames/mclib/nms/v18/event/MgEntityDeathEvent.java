@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityDeathEvent extends AbstractMinigameEvent<EntityDeathEvent, McEntityDeathEvent> implements McEntityDeathEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityDeathEvent(EntityDeathEvent event)

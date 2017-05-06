@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEnchantItemEvent extends AbstractMinigameEvent<EnchantItemEvent, McEnchantItemEvent> implements McEnchantItemEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEnchantItemEvent(EnchantItemEvent event)

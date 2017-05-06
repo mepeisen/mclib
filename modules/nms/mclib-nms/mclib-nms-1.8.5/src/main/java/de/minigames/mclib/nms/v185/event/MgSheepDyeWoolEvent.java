@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgSheepDyeWoolEvent extends AbstractMinigameEvent<SheepDyeWoolEvent, McSheepDyeWoolEvent> implements McSheepDyeWoolEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgSheepDyeWoolEvent(SheepDyeWoolEvent event)

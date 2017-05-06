@@ -65,7 +65,7 @@ public class AnvilManager1_11 implements AnvilManagerInterface
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         final Helper helper = new Helper(entity, stack, listener);
         int c = entity.nextContainerCounter();
-        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("FOO", new Object[]{}), 0));
+        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("FOO", new Object[] {}), 0));
         entity.activeContainer = helper;
         helper.windowId = c;
         entity.activeContainer.addSlotListener(entity);
@@ -107,8 +107,9 @@ public class AnvilManager1_11 implements AnvilManagerInterface
             {
                 final ItemStack stack = evt.getCurrentItem();
                 String name = new ItemHelper1_11().getDisplayName(stack);
-                if (name == null) name = ""; //$NON-NLS-1$
-                
+                if (name == null)
+                    name = ""; //$NON-NLS-1$
+                    
                 if (this.playerInventories.get(uuid).listener.onCommit(name))
                 {
                     // clear item before closing
@@ -186,8 +187,7 @@ public class AnvilManager1_11 implements AnvilManagerInterface
             // reachable
             return true;
         }
-
-
+        
         @Override
         public void close()
         {

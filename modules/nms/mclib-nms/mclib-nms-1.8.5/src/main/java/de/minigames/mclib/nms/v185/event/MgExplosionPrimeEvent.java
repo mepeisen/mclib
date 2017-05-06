@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgExplosionPrimeEvent extends AbstractMinigameEvent<ExplosionPrimeEvent, McExplosionPrimeEvent> implements McExplosionPrimeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgExplosionPrimeEvent(ExplosionPrimeEvent event)

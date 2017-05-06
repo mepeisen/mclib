@@ -58,25 +58,25 @@ public class ConfigItemStackDataImpl extends AnnotatedDataFragment implements Co
      * minecraft id
      */
     @PersistentField
-    protected String mcid;
+    protected String            mcid;
     
     /**
      * stack amount
      */
     @PersistentField
-    protected int amount;
+    protected int               amount;
     
     /**
      * damage/data value
      */
     @PersistentField
-    protected int damage;
-
+    protected int               damage;
+    
     /**
      * base64 encoded tag data
      */
     @PersistentField
-    protected String tagdata;
+    protected String            tagdata;
     
     /** logger */
     private static final Logger LOGGER = Logger.getLogger(ConfigItemStackDataImpl.class.getName());
@@ -91,6 +91,7 @@ public class ConfigItemStackDataImpl extends AnnotatedDataFragment implements Co
     
     /**
      * constructor for reading from bukkit item stack
+     * 
      * @param stack
      */
     public ConfigItemStackDataImpl(ItemStack stack)
@@ -125,9 +126,9 @@ public class ConfigItemStackDataImpl extends AnnotatedDataFragment implements Co
     public ItemStack toBukkit()
     {
         final net.minecraft.server.v1_10_R1.ItemStack stack = new net.minecraft.server.v1_10_R1.ItemStack(
-                Item.d(this.mcid),
-                this.amount,
-                this.damage);
+            Item.d(this.mcid),
+            this.amount,
+            this.damage);
         if (this.tagdata != null)
         {
             final NBTTagCompound tag = new NBTTagCompound();

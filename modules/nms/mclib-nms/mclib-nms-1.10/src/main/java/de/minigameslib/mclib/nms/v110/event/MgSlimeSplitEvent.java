@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgSlimeSplitEvent extends AbstractMinigameEvent<SlimeSplitEvent, McSlimeSplitEvent> implements McSlimeSplitEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgSlimeSplitEvent(SlimeSplitEvent event)

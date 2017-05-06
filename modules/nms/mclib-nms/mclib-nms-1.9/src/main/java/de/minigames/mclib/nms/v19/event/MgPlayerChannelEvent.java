@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerChannelEvent extends AbstractMinigameEvent<PlayerChannelEvent, McPlayerChannelEvent> implements McPlayerChannelEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerChannelEvent(PlayerChannelEvent event)

@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityBreakDoorEvent extends AbstractMinigameEvent<EntityBreakDoorEvent, McEntityBreakDoorEvent> implements McEntityBreakDoorEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityBreakDoorEvent(EntityBreakDoorEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityBreakDoorEvent extends AbstractMinigameEvent<EntityBreakDoo
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

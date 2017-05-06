@@ -148,7 +148,7 @@ public class CustomShovel extends ItemSpade
             final Block localBlock = paramIBlockData.getBlock();
             final Location loc = new Location(paramWorld.getWorld(), paramBlockPosition.getX(), paramBlockPosition.getY(), paramBlockPosition.getZ());
             paramItemStack.damage(this.itemRule.getDamageByBlock(CraftItemStack.asCraftMirror(paramItemStack), Block.getId(localBlock), localBlock.toLegacyData(paramIBlockData), loc,
-                    paramEntityLiving instanceof EntityPlayer ? ((EntityPlayer) paramEntityLiving).getBukkitEntity() : null), paramEntityLiving);
+                paramEntityLiving instanceof EntityPlayer ? ((EntityPlayer) paramEntityLiving).getBukkitEntity() : null), paramEntityLiving);
         }
         return true;
     }
@@ -156,7 +156,8 @@ public class CustomShovel extends ItemSpade
     @Override
     public boolean a(ItemStack paramItemStack, EntityLiving paramEntityLiving1, EntityLiving paramEntityLiving2)
     {
-        paramItemStack.damage(this.itemRule.getDamageByEntity(CraftItemStack.asCraftMirror(paramItemStack), paramEntityLiving1.getBukkitEntity(), paramEntityLiving2 instanceof EntityPlayer ? ((EntityPlayer) paramEntityLiving2).getBukkitEntity() : null), paramEntityLiving2);
+        paramItemStack.damage(this.itemRule.getDamageByEntity(CraftItemStack.asCraftMirror(paramItemStack), paramEntityLiving1.getBukkitEntity(),
+            paramEntityLiving2 instanceof EntityPlayer ? ((EntityPlayer) paramEntityLiving2).getBukkitEntity() : null), paramEntityLiving2);
         return true;
     }
     

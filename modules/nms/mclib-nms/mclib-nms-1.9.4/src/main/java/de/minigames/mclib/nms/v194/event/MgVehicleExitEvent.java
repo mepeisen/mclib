@@ -38,9 +38,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVehicleExitEvent extends AbstractMinigameEvent<VehicleExitEvent, McVehicleExitEvent> implements McVehicleExitEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVehicleExitEvent(VehicleExitEvent event)

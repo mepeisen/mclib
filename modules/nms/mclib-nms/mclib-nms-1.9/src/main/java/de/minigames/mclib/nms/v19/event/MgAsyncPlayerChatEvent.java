@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgAsyncPlayerChatEvent extends AbstractMinigameEvent<AsyncPlayerChatEvent, McAsyncPlayerChatEvent> implements McAsyncPlayerChatEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgAsyncPlayerChatEvent(AsyncPlayerChatEvent event)

@@ -38,9 +38,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityTameEvent extends AbstractMinigameEvent<EntityTameEvent, McEntityTameEvent> implements McEntityTameEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityTameEvent(EntityTameEvent event)

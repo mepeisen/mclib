@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerAnimationEvent extends AbstractMinigameEvent<PlayerAnimationEvent, McPlayerAnimationEvent> implements McPlayerAnimationEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerAnimationEvent(PlayerAnimationEvent event)

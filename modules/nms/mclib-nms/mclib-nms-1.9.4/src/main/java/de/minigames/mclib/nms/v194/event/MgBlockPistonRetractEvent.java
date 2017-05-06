@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockPistonRetractEvent extends AbstractMinigameEvent<BlockPistonRetractEvent, McBlockPistonRetractEvent> implements McBlockPistonRetractEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockPistonRetractEvent(BlockPistonRetractEvent event)

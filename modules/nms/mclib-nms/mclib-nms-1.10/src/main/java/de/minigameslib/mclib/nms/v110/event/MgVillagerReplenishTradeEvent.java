@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVillagerReplenishTradeEvent extends AbstractMinigameEvent<VillagerReplenishTradeEvent, McVillagerReplenishTradeEvent> implements McVillagerReplenishTradeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVillagerReplenishTradeEvent(VillagerReplenishTradeEvent event)

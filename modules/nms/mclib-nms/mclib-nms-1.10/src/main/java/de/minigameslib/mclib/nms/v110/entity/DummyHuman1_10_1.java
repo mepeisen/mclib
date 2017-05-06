@@ -81,20 +81,20 @@ public class DummyHuman1_10_1 extends EntityPlayer
     private BukkitRunnable updateTask;
     
     /** tracked players. */
-    Set<UUID> trackedPlayers = new HashSet<>();
+    Set<UUID>              trackedPlayers = new HashSet<>();
     
     /** players in range. */
-    Map<UUID, Boolean> inRange = new HashMap<>();
-
+    Map<UUID, Boolean>     inRange        = new HashMap<>();
+    
     /** respawn flag */
-    boolean respawn;
-
+    boolean                respawn;
+    
     /**
      * @param minecraftserver
      * @param worldserver
      * @param gameprofile
      * @param playerinteractmanager
-     * @param loc 
+     * @param loc
      */
     public DummyHuman1_10_1(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, Location loc)
     {
@@ -111,7 +111,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
         this.spawnIn(this.world);
         this.playerInteractManager.a((WorldServer) this.world);
         this.playerInteractManager.b(this.world.getWorldData().getGameType());
-        ((CraftServer)Bukkit.getServer()).getHandle().a(conn, this);
+        ((CraftServer) Bukkit.getServer()).getHandle().a(conn, this);
         
         this.updateTask = new BukkitRunnable() {
             
@@ -123,8 +123,8 @@ public class DummyHuman1_10_1 extends EntityPlayer
                     final Player player = Bukkit.getPlayer(uuid);
                     if (player != null)
                     {
-                        final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
-                        boolean newInRange = getDistanceSquared(player) < 64*64;
+                        final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
+                        boolean newInRange = getDistanceSquared(player) < 64 * 64;
                         
                         if (DummyHuman1_10_1.this.respawn)
                         {
@@ -137,7 +137,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
                             // override inrange to false so that players still in range will be forced to get a clean respawn
                             DummyHuman1_10_1.this.inRange.put(uuid, Boolean.FALSE);
                         }
-
+                        
                         boolean oldInRange = DummyHuman1_10_1.this.inRange.get(uuid);
                         if (newInRange != oldInRange)
                         {
@@ -145,17 +145,18 @@ public class DummyHuman1_10_1 extends EntityPlayer
                             {
                                 final byte encodedyaw = toAngle(DummyHuman1_10_1.this.yaw);
                                 float body = DummyHuman1_10_1.this.yaw + 45;
-                                if (body >= 180) body -= 360;
+                                if (body >= 180)
+                                    body -= 360;
                                 final byte encodedbody = toAngle(body);
                                 sendPackages(con, 1,
-                                        new PacketPlayOutEntityDestroy(DummyHuman1_10_1.this.getId()),
-                                        new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_10_1.this),
-                                        new PacketPlayOutNamedEntitySpawn(DummyHuman1_10_1.this));
+                                    new PacketPlayOutEntityDestroy(DummyHuman1_10_1.this.getId()),
+                                    new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_10_1.this),
+                                    new PacketPlayOutNamedEntitySpawn(DummyHuman1_10_1.this));
                                 sendPackages(con, 2,
-                                        new PacketPlayOutEntityHeadRotation(DummyHuman1_10_1.this, encodedyaw),
-                                        new PacketPlayOutEntity.PacketPlayOutEntityLook(DummyHuman1_10_1.this.getId(), encodedbody, toAngle(DummyHuman1_10_1.this.pitch), true));
+                                    new PacketPlayOutEntityHeadRotation(DummyHuman1_10_1.this, encodedyaw),
+                                    new PacketPlayOutEntity.PacketPlayOutEntityLook(DummyHuman1_10_1.this.getId(), encodedbody, toAngle(DummyHuman1_10_1.this.pitch), true));
                                 sendPackages(con, 4,
-                                        new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_10_1.this));
+                                    new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_10_1.this));
                             }
                             DummyHuman1_10_1.this.inRange.put(uuid, newInRange);
                         }
@@ -169,6 +170,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     
     /**
      * Sends packets to given connection with given delay
+     * 
      * @param con
      * @param delay
      * @param packets
@@ -190,6 +192,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     
     /**
      * Converts yaw/pitch value to byte degrees
+     * 
      * @param value
      * @return degrees
      */
@@ -203,7 +206,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     {
         return null;
     }
-
+    
     /**
      * Marks all players to respawn the entity
      */
@@ -214,6 +217,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     
     /**
      * Returns the suawred distance between this human and players
+     * 
      * @param player
      * @return squared distance
      */
@@ -228,6 +232,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     
     /**
      * untrack given player
+     * 
      * @param player
      */
     public void untrack(Player player)
@@ -245,6 +250,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     
     /**
      * track given player
+     * 
      * @param player
      */
     public void track(Player player)
@@ -256,7 +262,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
             {
                 DummyHuman1_10_1.this.trackedPlayers.add(player.getUniqueId());
                 DummyHuman1_10_1.this.inRange.put(player.getUniqueId(), Boolean.FALSE);
-                final PlayerConnection con = ((CraftPlayer)player).getHandle().playerConnection;
+                final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
                 con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_10_1.this));
             }
         }.runTaskLater((Plugin) McLibInterface.instance(), 1);
@@ -277,39 +283,39 @@ public class DummyHuman1_10_1 extends EntityPlayer
     {
         // do nothing (falling)
     }
-
+    
     @Override
     public boolean d(NBTTagCompound save)
     {
         // check if entity will be saved.
         return false;
     }
-
+    
     @Override
     public void e(float f1, float f2)
     {
         // do nothing (jump)
     }
-
+    
     @Override
     public void g(double x, double y, double z)
     {
         // do nothing (move)
     }
-
+    
     @Override
     public void g(float f1, float f2)
     {
         // do nothing (flying)
     }
-
+    
     @Override
     public boolean m_()
     {
         // do nothing (ladder)
         return false;
     }
-
+    
     @Override
     public CraftPlayer getBukkitEntity()
     {
@@ -319,7 +325,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
         }
         return super.getBukkitEntity();
     }
-
+    
     /**
      * @param loc
      */
@@ -327,7 +333,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     {
         this.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
     }
-
+    
     @Override
     public void setPosition(double d0, double d1, double d2)
     {
@@ -346,6 +352,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
         
         /**
          * Constructor.
+         * 
          * @param handle
          */
         public HumanNPC(DummyHuman1_10_1 handle)
@@ -353,25 +360,25 @@ public class DummyHuman1_10_1 extends EntityPlayer
             super((CraftServer) Bukkit.getServer(), handle);
             this.spigot = (CraftServer) Bukkit.getServer();
         }
-
+        
         @Override
         public List<MetadataValue> getMetadata(String metadataKey)
         {
             return this.spigot.getEntityMetadata().getMetadata(this, metadataKey);
         }
-
+        
         @Override
         public boolean hasMetadata(String metadataKey)
         {
             return this.spigot.getEntityMetadata().hasMetadata(this, metadataKey);
         }
-
+        
         @Override
         public void removeMetadata(String metadataKey, Plugin owningPlugin)
         {
             this.spigot.getEntityMetadata().removeMetadata(this, metadataKey, owningPlugin);
         }
-
+        
         @Override
         public void setMetadata(String metadataKey, MetadataValue newMetadataValue)
         {
@@ -387,6 +394,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
     {
         /**
          * Constructor
+         * 
          * @param minecraftServer
          * @param networkManager
          * @param entityPlayer

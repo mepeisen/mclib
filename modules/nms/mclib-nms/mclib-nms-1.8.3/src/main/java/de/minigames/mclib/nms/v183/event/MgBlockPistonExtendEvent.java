@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockPistonExtendEvent extends AbstractMinigameEvent<BlockPistonExtendEvent, McBlockPistonExtendEvent> implements McBlockPistonExtendEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockPistonExtendEvent(BlockPistonExtendEvent event)

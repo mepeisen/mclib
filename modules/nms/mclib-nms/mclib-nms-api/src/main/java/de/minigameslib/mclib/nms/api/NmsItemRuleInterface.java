@@ -39,6 +39,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Returns the harvest speed modified
+     * 
      * @param stack
      * @param blockId
      * @param variantId
@@ -48,6 +49,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Returns the damage by harvesting a block
+     * 
      * @param stack
      * @param blockId
      * @param variantId
@@ -59,6 +61,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Checks if block can be harvested
+     * 
      * @param material
      * @return true for harvest block
      */
@@ -66,6 +69,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Checks if block can be harvested
+     * 
      * @param block
      * @param variant
      * @return true for harvest block
@@ -74,6 +78,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Returns the amount of damage for damaging an entity
+     * 
      * @param stack
      * @param target
      * @param player
@@ -83,6 +88,7 @@ public interface NmsItemRuleInterface
     
     /**
      * Checks if item is repairable
+     * 
      * @param toRepair
      * @param repair
      * @return {@code true} if repairable

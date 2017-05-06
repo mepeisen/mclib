@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerCommandPreprocessEvent extends AbstractMinigameEvent<PlayerCommandPreprocessEvent, McPlayerCommandPreprocessEvent> implements McPlayerCommandPreprocessEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event)

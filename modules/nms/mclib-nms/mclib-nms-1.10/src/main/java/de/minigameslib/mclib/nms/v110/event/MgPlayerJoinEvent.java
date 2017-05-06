@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerJoinEvent extends AbstractMinigameEvent<PlayerJoinEvent, McPlayerJoinEvent> implements McPlayerJoinEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerJoinEvent(PlayerJoinEvent event)

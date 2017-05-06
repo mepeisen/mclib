@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityCombustByBlockEvent extends AbstractMinigameEvent<EntityCombustByBlockEvent, McEntityCombustByBlockEvent> implements McEntityCombustByBlockEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityCombustByBlockEvent(EntityCombustByBlockEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityCombustByBlockEvent extends AbstractMinigameEvent<EntityCom
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

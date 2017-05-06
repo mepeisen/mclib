@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockFadeEvent extends AbstractMinigameEvent<BlockFadeEvent, McBlockFadeEvent> implements McBlockFadeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockFadeEvent(BlockFadeEvent event)

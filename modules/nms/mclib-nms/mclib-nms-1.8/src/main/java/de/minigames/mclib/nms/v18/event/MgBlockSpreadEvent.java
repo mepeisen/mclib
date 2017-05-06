@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockSpreadEvent extends AbstractMinigameEvent<BlockSpreadEvent, McBlockSpreadEvent> implements McBlockSpreadEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockSpreadEvent(BlockSpreadEvent event)

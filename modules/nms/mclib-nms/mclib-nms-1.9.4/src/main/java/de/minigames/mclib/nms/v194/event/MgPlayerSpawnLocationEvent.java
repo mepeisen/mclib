@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerSpawnLocationEvent extends AbstractMinigameEvent<PlayerSpawnLocationEvent, McPlayerSpawnLocationEvent> implements McPlayerSpawnLocationEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event)

@@ -55,6 +55,7 @@ public enum CustomEntityType1_11
     
     /**
      * Constructor
+     * 
      * @param name
      * @param id
      * @param entityType
@@ -126,42 +127,42 @@ public enum CustomEntityType1_11
     {
         register(this.getCustomClass(), this.getName(), this.getID());
         
-//        // BiomeBase#biomes became private.
-//        BiomeBase[] biomes;
-//        try
-//        {
-//            biomes = (BiomeBase[]) getPrivateStatic(BiomeBase.class, "biomes");
-//        }
-//        catch (Exception exc)
-//        {
-//            // Unable to fetch.
-//            return;
-//        }
-//        for (BiomeBase biomeBase : biomes)
-//        {
-//            if (biomeBase == null)
-//                break;
-//            
-//            // This changed names from J, K, L and M.
-//            for (String field : new String[] { "as", "at", "au", "av" })
-//                try
-//                {
-//                    Field list = BiomeBase.class.getDeclaredField(field);
-//                    list.setAccessible(true);
-//                    @SuppressWarnings("unchecked")
-//                    List<BiomeMeta> mobList = (List<BiomeMeta>) list.get(biomeBase);
-//                    
-//                    // Write in our custom class.
-//                    for (BiomeMeta meta : mobList)
-//                        for (CustomEntityType1_10_1 entity : values())
-//                            if (entity.getNMSClass().equals(meta.b))
-//                                meta.b = entity.getCustomClass();
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//        }
+        // // BiomeBase#biomes became private.
+        // BiomeBase[] biomes;
+        // try
+        // {
+        // biomes = (BiomeBase[]) getPrivateStatic(BiomeBase.class, "biomes");
+        // }
+        // catch (Exception exc)
+        // {
+        // // Unable to fetch.
+        // return;
+        // }
+        // for (BiomeBase biomeBase : biomes)
+        // {
+        // if (biomeBase == null)
+        // break;
+        //
+        // // This changed names from J, K, L and M.
+        // for (String field : new String[] { "as", "at", "au", "av" })
+        // try
+        // {
+        // Field list = BiomeBase.class.getDeclaredField(field);
+        // list.setAccessible(true);
+        // @SuppressWarnings("unchecked")
+        // List<BiomeMeta> mobList = (List<BiomeMeta>) list.get(biomeBase);
+        //
+        // // Write in our custom class.
+        // for (BiomeMeta meta : mobList)
+        // for (CustomEntityType1_10_1 entity : values())
+        // if (entity.getNMSClass().equals(meta.b))
+        // meta.b = entity.getCustomClass();
+        // }
+        // catch (Exception e)
+        // {
+        // e.printStackTrace();
+        // }
+        // }
     }
     
     /**
@@ -188,42 +189,42 @@ public enum CustomEntityType1_11
             e.printStackTrace();
         }
         
-//        // Biomes#biomes was made private so use reflection to get it.
-//        BiomeBase[] biomes;
-//        try
-//        {
-//            biomes = (BiomeBase[]) getPrivateStatic(BiomeBase.class, "biomes");
-//        }
-//        catch (Exception exc)
-//        {
-//            // Unable to fetch.
-//            return;
-//        }
-//        for (BiomeBase biomeBase : biomes)
-//        {
-//            if (biomeBase == null)
-//                break;
-//            
-//            // The list fields changed names but update the meta regardless.
-//            for (String field : new String[] { "as", "at", "au", "av" })
-//                try
-//                {
-//                    Field list = BiomeBase.class.getDeclaredField(field);
-//                    list.setAccessible(true);
-//                    @SuppressWarnings("unchecked")
-//                    List<BiomeMeta> mobList = (List<BiomeMeta>) list.get(biomeBase);
-//                    
-//                    // Make sure the NMS class is written back over our custom class.
-//                    for (BiomeMeta meta : mobList)
-//                        for (CustomEntityType1_10_1 entity : values())
-//                            if (entity.getCustomClass().equals(meta.b))
-//                                meta.b = entity.getNMSClass();
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//        }
+        // // Biomes#biomes was made private so use reflection to get it.
+        // BiomeBase[] biomes;
+        // try
+        // {
+        // biomes = (BiomeBase[]) getPrivateStatic(BiomeBase.class, "biomes");
+        // }
+        // catch (Exception exc)
+        // {
+        // // Unable to fetch.
+        // return;
+        // }
+        // for (BiomeBase biomeBase : biomes)
+        // {
+        // if (biomeBase == null)
+        // break;
+        //
+        // // The list fields changed names but update the meta regardless.
+        // for (String field : new String[] { "as", "at", "au", "av" })
+        // try
+        // {
+        // Field list = BiomeBase.class.getDeclaredField(field);
+        // list.setAccessible(true);
+        // @SuppressWarnings("unchecked")
+        // List<BiomeMeta> mobList = (List<BiomeMeta>) list.get(biomeBase);
+        //
+        // // Make sure the NMS class is written back over our custom class.
+        // for (BiomeMeta meta : mobList)
+        // for (CustomEntityType1_10_1 entity : values())
+        // if (entity.getCustomClass().equals(meta.b))
+        // meta.b = entity.getNMSClass();
+        // }
+        // catch (Exception e)
+        // {
+        // e.printStackTrace();
+        // }
+        // }
     }
     
     /**

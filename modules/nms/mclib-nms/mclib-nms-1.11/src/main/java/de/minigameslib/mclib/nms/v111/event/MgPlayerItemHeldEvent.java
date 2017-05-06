@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerItemHeldEvent extends AbstractMinigameEvent<PlayerItemHeldEvent, McPlayerItemHeldEvent> implements McPlayerItemHeldEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerItemHeldEvent(PlayerItemHeldEvent event)

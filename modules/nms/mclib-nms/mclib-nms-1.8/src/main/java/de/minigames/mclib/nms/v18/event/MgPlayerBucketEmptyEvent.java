@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerBucketEmptyEvent extends AbstractMinigameEvent<PlayerBucketEmptyEvent, McPlayerBucketEmptyEvent> implements McPlayerBucketEmptyEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerBucketEmptyEvent(PlayerBucketEmptyEvent event)

@@ -38,9 +38,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPrepareItemCraftEvent extends AbstractMinigameEvent<PrepareItemCraftEvent, McPrepareItemCraftEvent> implements McPrepareItemCraftEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPrepareItemCraftEvent(PrepareItemCraftEvent event)

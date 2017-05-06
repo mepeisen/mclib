@@ -83,6 +83,7 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
     
     /**
      * Sets contents; safe way for blocks that are unknown by bukkit
+     * 
      * @param inventory
      * @param items
      */
@@ -96,6 +97,7 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
     
     /**
      * Sets contents; safe way for blocks that are unknown by bukkit
+     * 
      * @param inventory
      * @param item
      * @param index
@@ -112,7 +114,7 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
             inventory.setItem(index, item);
         }
     }
-
+    
     /**
      * @param item
      * @return nms
@@ -120,10 +122,11 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
     public static net.minecraft.server.v1_9_R2.ItemStack convertToNms(ItemStack item)
     {
         final net.minecraft.server.v1_9_R2.ItemStack nms = new net.minecraft.server.v1_9_R2.ItemStack(
-                Item.getById(item.getTypeId()),
-                item.getAmount(),
-                item.getDurability());
-        if (item.hasItemMeta()) {
+            Item.getById(item.getTypeId()),
+            item.getAmount(),
+            item.getDurability());
+        if (item.hasItemMeta())
+        {
             final net.minecraft.server.v1_9_R2.ItemStack temp = new net.minecraft.server.v1_9_R2.ItemStack(Items.APPLE);
             CraftItemStack.setItemMeta(temp, item.getItemMeta());
             nms.setTag(temp.getTag());
@@ -171,14 +174,16 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
      */
     private ItemStack getCurrentItem(InventoryClickEvent evt)
     {
-        if (evt.getSlotType() == InventoryType.SlotType.OUTSIDE) {
+        if (evt.getSlotType() == InventoryType.SlotType.OUTSIDE)
+        {
             return evt.getCurrentItem();
         }
         final int rawSlot = evt.getRawSlot();
-        if (rawSlot >= evt.getView().getTopInventory().getSize()) {
+        if (rawSlot >= evt.getView().getTopInventory().getSize())
+        {
             return null;
         }
-        final net.minecraft.server.v1_9_R2.ItemStack stack = ((CraftInventory)evt.getView().getTopInventory()).getInventory().getItem(rawSlot);
+        final net.minecraft.server.v1_9_R2.ItemStack stack = ((CraftInventory) evt.getView().getTopInventory()).getInventory().getItem(rawSlot);
         if (stack == null)
         {
             return null;
@@ -191,7 +196,7 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
         }
         return CraftItemStack.asCraftMirror(stack);
     }
-
+    
     /**
      * Inventory drag event
      * 
@@ -240,7 +245,7 @@ public class InventoryManager1_9_4 implements InventoryManagerInterface
         /**
          * @param entity
          * @param inventory
-         * @param listener 
+         * @param listener
          */
         public Helper(EntityPlayer entity, Inventory inventory, InventoryListener listener)
         {

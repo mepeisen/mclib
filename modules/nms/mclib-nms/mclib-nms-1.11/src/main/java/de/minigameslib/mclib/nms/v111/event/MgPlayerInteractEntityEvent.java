@@ -38,22 +38,21 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerInteractEntityEvent extends AbstractMinigameEvent<PlayerInteractEntityEvent, McPlayerInteractEntityEvent> implements McPlayerInteractEntityEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerInteractEntityEvent(PlayerInteractEntityEvent event)
     {
         super(event, ObjectServiceInterface.instance().getPlayer(event.getPlayer()));
     }
-
+    
     @Override
     public EntityInterface getEntity()
     {
         return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getRightClicked());
     }
-    
-    
     
 }

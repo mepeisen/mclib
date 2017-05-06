@@ -326,5 +326,5 @@ public class EventSystem1_8_5 extends AbstractEventSystem
         this.registerHandler(VehicleMoveEvent.class, McVehicleMoveEvent.class, (evt) -> new MgVehicleMoveEvent(evt));
         this.registerHandler(VehicleUpdateEvent.class, McVehicleUpdateEvent.class, (evt) -> new MgVehicleUpdateEvent(evt));
     }
-
+    
 }

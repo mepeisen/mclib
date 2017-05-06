@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerAchievementAwardedEvent extends AbstractMinigameEvent<PlayerAchievementAwardedEvent, McPlayerAchievementAwardedEvent> implements McPlayerAchievementAwardedEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event)

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityChangeBlockEvent extends AbstractMinigameEvent<EntityChangeBlockEvent, McEntityChangeBlockEvent> implements McEntityChangeBlockEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityChangeBlockEvent(EntityChangeBlockEvent event)

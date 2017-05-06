@@ -38,6 +38,7 @@ public interface MgEventListener
     
     /**
      * Handles given event.
+     * 
      * @param eventClass
      * @param event
      */

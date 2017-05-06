@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityPortalEnterEvent extends AbstractMinigameEvent<EntityPortalEnterEvent, McEntityPortalEnterEvent> implements McEntityPortalEnterEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityPortalEnterEvent(EntityPortalEnterEvent event)

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEnderDragonChangePhaseEvent extends AbstractMinigameEvent<EnderDragonChangePhaseEvent, McEnderDragonChangePhaseEvent> implements McEnderDragonChangePhaseEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEnderDragonChangePhaseEvent(EnderDragonChangePhaseEvent event)

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockPhysicsEvent extends AbstractMinigameEvent<BlockPhysicsEvent, McBlockPhysicsEvent> implements McBlockPhysicsEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockPhysicsEvent(BlockPhysicsEvent event)

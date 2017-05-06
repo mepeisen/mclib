@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerChatEvent extends AbstractMinigameEvent<PlayerChatEvent, McPlayerChatEvent> implements McPlayerChatEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerChatEvent(PlayerChatEvent event)

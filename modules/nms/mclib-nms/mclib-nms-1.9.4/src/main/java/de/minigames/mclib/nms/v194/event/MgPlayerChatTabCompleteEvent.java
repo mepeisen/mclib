@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerChatTabCompleteEvent extends AbstractMinigameEvent<PlayerChatTabCompleteEvent, McPlayerChatTabCompleteEvent> implements McPlayerChatTabCompleteEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerChatTabCompleteEvent(PlayerChatTabCompleteEvent event)

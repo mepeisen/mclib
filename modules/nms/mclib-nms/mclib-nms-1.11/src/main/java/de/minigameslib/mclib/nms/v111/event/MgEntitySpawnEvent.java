@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntitySpawnEvent extends AbstractMinigameEvent<EntitySpawnEvent, McEntitySpawnEvent> implements McEntitySpawnEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntitySpawnEvent(EntitySpawnEvent event)

@@ -48,29 +48,31 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
  * @author mepeisen
  */
 public class EventBus
-{ 
+{
     
     /** event handlers per plugin. */
-    private final Map<String, Set<EventHandler<?>>>          eventHandlersPerPlugin = new HashMap<>();
+    private final Map<String, Set<EventHandler<?>>>             eventHandlersPerPlugin = new HashMap<>();
     
     /** event handlers per class. */
-    private final Map<Class<?>, Set<EventHandler<?>>>        eventHandlersPerClass  = new HashMap<>();
+    private final Map<Class<?>, Set<EventHandler<?>>>           eventHandlersPerClass  = new HashMap<>();
     
     /** the event descriptors per class. */
     private static final Map<Class<?>, Set<EventDescriptor<?>>> eventDescriptors       = new HashMap<>();
     
     /** the abstract event system owning this event bus */
-    private final AbstractEventSystem eventSystem;
+    private final AbstractEventSystem                           eventSystem;
     
     /**
      * Secured constructor
-     * @param eventSystem the abstract event system
+     * 
+     * @param eventSystem
+     *            the abstract event system
      */
     EventBus(AbstractEventSystem eventSystem)
     {
         this.eventSystem = eventSystem;
     }
-
+    
     /**
      * Clears tegistered handlers.
      */
@@ -82,6 +84,7 @@ public class EventBus
     
     /**
      * Registers handler
+     * 
      * @param plugin
      * @param clazz
      * @param handler
@@ -96,6 +99,7 @@ public class EventBus
     
     /**
      * Calculates the descriptors
+     * 
      * @param clazz
      * @return descriptors
      */
@@ -148,6 +152,7 @@ public class EventBus
     
     /**
      * registers with given listener
+     * 
      * @param plugin
      * @param desc
      * @param listener
@@ -162,6 +167,7 @@ public class EventBus
     
     /**
      * Registers handler
+     * 
      * @param plugin
      * @param listener
      */
@@ -175,6 +181,7 @@ public class EventBus
     
     /**
      * Unregisters handler
+     * 
      * @param plugin
      * @param clazz
      * @param handler
@@ -189,6 +196,7 @@ public class EventBus
     
     /**
      * Unregisters handler
+     * 
      * @param plugin
      * @param listener
      */
@@ -209,6 +217,7 @@ public class EventBus
     
     /**
      * Handles event
+     * 
      * @param eventClass
      * @param event
      */
@@ -222,7 +231,7 @@ public class EventBus
             {
                 try
                 {
-                    ((McConsumer<Evt>)handler.handler).accept(event);
+                    ((McConsumer<Evt>) handler.handler).accept(event);
                 }
                 catch (McException e)
                 {
@@ -234,15 +243,16 @@ public class EventBus
     
     /**
      * event descriptor helper.
+     * 
      * @author mepeisen
      * @param <Evt>
      */
     private static final class EventDescriptor<Evt extends MinecraftEvent<?, Evt>>
     {
         /** the event class. */
-        public final Class<Evt>      eventClass;
+        public final Class<Evt> eventClass;
         /** java reflection method. */
-        public final Method          method;
+        public final Method     method;
         
         /**
          * @param eventClass
@@ -256,6 +266,7 @@ public class EventBus
         
         /**
          * Handles given event.
+         * 
          * @param listener
          * @param event
          */
@@ -349,9 +360,10 @@ public class EventBus
             return true;
         }
     }
-
+    
     /**
      * Plugin disable
+     * 
      * @param plugin
      */
     public void onDisable(Plugin plugin)

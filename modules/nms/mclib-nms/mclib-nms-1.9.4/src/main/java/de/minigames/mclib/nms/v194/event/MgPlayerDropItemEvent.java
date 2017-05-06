@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerDropItemEvent extends AbstractMinigameEvent<PlayerDropItemEvent, McPlayerDropItemEvent> implements McPlayerDropItemEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerDropItemEvent(PlayerDropItemEvent event)

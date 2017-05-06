@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityCreatePortalEvent extends AbstractMinigameEvent<EntityCreatePortalEvent, McEntityCreatePortalEvent> implements McEntityCreatePortalEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityCreatePortalEvent(EntityCreatePortalEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityCreatePortalEvent extends AbstractMinigameEvent<EntityCreat
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

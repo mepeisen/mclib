@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockExpEvent extends AbstractMinigameEvent<BlockExpEvent, McBlockExpEvent> implements McBlockExpEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockExpEvent(BlockExpEvent event)

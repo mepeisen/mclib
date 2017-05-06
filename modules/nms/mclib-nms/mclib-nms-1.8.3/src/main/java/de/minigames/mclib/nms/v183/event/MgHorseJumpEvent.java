@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgHorseJumpEvent extends AbstractMinigameEvent<HorseJumpEvent, McHorseJumpEvent> implements McHorseJumpEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgHorseJumpEvent(HorseJumpEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgHorseJumpEvent extends AbstractMinigameEvent<HorseJumpEvent, McHo
         final Entity passenger = event.getEntity().getPassenger();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgSheepRegrowWoolEvent extends AbstractMinigameEvent<SheepRegrowWoolEvent, McSheepRegrowWoolEvent> implements McSheepRegrowWoolEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgSheepRegrowWoolEvent(SheepRegrowWoolEvent event)

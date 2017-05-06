@@ -56,8 +56,9 @@ public class CustomBlock extends Block
 {
     // the block variant
     public static final BlockStateEnum<EnumCustomVariant> VARIANT = BlockStateEnum.of("variant", EnumCustomVariant.class); //$NON-NLS-1$
-
-    public CustomBlock() {
+    
+    public CustomBlock()
+    {
         super(Material.STONE);
         w(this.blockStateList.getBlockData().set(VARIANT, EnumCustomVariant.VARIANT_0));
         a(CreativeModeTab.b);
@@ -65,8 +66,7 @@ public class CustomBlock extends Block
     }
     
     /** the nms drop rule. */
-    private NmsDropRuleInterface dropRule;
-
+    private NmsDropRuleInterface                       dropRule;
     
     private Map<Integer, NmsInventoryHandlerInterface> inventoryHandler = new HashMap<>();
     
@@ -88,20 +88,21 @@ public class CustomBlock extends Block
     
     @Override
     public void postPlace(World world, BlockPosition blockposition, IBlockData iblockdata,
-            net.minecraft.server.v1_9_R1.EntityLiving entityliving, net.minecraft.server.v1_9_R1.ItemStack itemstack)
+        net.minecraft.server.v1_9_R1.EntityLiving entityliving, net.minecraft.server.v1_9_R1.ItemStack itemstack)
     {
         final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(iblockdata));
         if (handler != null)
         {
             handler.onPostPlace(new Location(world.getWorld(), blockposition.getX(), blockposition.getY(), blockposition.getZ()),
-                    CraftItemStack.asCraftMirror(itemstack),
-                    entityliving instanceof EntityPlayer ? ((EntityPlayer)entityliving).getBukkitEntity() : null);
+                CraftItemStack.asCraftMirror(itemstack),
+                entityliving instanceof EntityPlayer ? ((EntityPlayer) entityliving).getBukkitEntity() : null);
         }
         super.postPlace(world, blockposition, iblockdata, entityliving, itemstack);
     }
     
     @Override
-    public void remove(World paramWorld, BlockPosition paramBlockPosition, IBlockData paramIBlockData) {
+    public void remove(World paramWorld, BlockPosition paramBlockPosition, IBlockData paramIBlockData)
+    {
         // break block
         super.remove(paramWorld, paramBlockPosition, paramIBlockData);
         final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(paramIBlockData));
@@ -113,19 +114,21 @@ public class CustomBlock extends Block
     
     @Override
     public boolean interact(World paramWorld, BlockPosition paramBlockPosition, IBlockData paramIBlockData,
-            net.minecraft.server.v1_9_R1.EntityHuman paramEntityHuman, net.minecraft.server.v1_9_R1.EnumHand paramEnumHand, ItemStack itemStack, net.minecraft.server.v1_9_R1.EnumDirection paramEnumDirection, float paramFloat1,
-            float paramFloat2, float paramFloat3) {
-
+        net.minecraft.server.v1_9_R1.EntityHuman paramEntityHuman, net.minecraft.server.v1_9_R1.EnumHand paramEnumHand, ItemStack itemStack,
+        net.minecraft.server.v1_9_R1.EnumDirection paramEnumDirection, float paramFloat1,
+        float paramFloat2, float paramFloat3)
+    {
+        
         final NmsInventoryHandlerInterface handler = this.inventoryHandler.get(this.toLegacyData(paramIBlockData));
         if (handler != null)
         {
             return handler.onInteract(new Location(paramWorld.getWorld(), paramBlockPosition.getX(), paramBlockPosition.getY(), paramBlockPosition.getZ()),
-                    paramEntityHuman.getBukkitEntity(),
-                    paramEnumHand == net.minecraft.server.v1_9_R1.EnumHand.MAIN_HAND,
-                    toBlockFace(paramEnumDirection),
-                    paramFloat1,
-                    paramFloat2,
-                    paramFloat3);
+                paramEntityHuman.getBukkitEntity(),
+                paramEnumHand == net.minecraft.server.v1_9_R1.EnumHand.MAIN_HAND,
+                toBlockFace(paramEnumDirection),
+                paramFloat1,
+                paramFloat2,
+                paramFloat3);
         }
         return super.interact(paramWorld, paramBlockPosition, paramIBlockData, paramEntityHuman, paramEnumHand, itemStack, paramEnumDirection, paramFloat1, paramFloat2, paramFloat3);
     }
@@ -154,61 +157,74 @@ public class CustomBlock extends Block
                 return null;
         }
     }
+    
     public void setMeta(float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
         this.c(hardness);
         this.b(resistence);
         this.dropRule = dropRule;
     }
-
+    
     @Override
-    public net.minecraft.server.v1_9_R1.Item getDropType(IBlockData iblockdata, Random random, int i) {
+    public net.minecraft.server.v1_9_R1.Item getDropType(IBlockData iblockdata, Random random, int i)
+    {
         return this.dropRule == null ? super.getDropType(iblockdata, random, i) : net.minecraft.server.v1_9_R1.Item.getById(this.dropRule.getDropType(this.toLegacyData(iblockdata), random, i));
     }
-
+    
     @Override
-    public int getDropCount(int i, Random random) {
+    public int getDropCount(int i, Random random)
+    {
         return this.dropRule == null ? super.getDropCount(i, random) : this.dropRule.getDropCount(random, i);
     }
-
+    
     @Override
-    public int getExpDrop(net.minecraft.server.v1_9_R1.World world, IBlockData data, int i) {
+    public int getExpDrop(net.minecraft.server.v1_9_R1.World world, IBlockData data, int i)
+    {
         return this.dropRule == null ? super.getExpDrop(world, data, i) : this.dropRule.getExpDrop(this.toLegacyData(data), world.random, i);
     }
-
+    
     @Override
-    public int getDropData(IBlockData paramIBlockData) {
+    public int getDropData(IBlockData paramIBlockData)
+    {
         return this.dropRule == null ? super.getDropData(paramIBlockData) : this.dropRule.getDropVariant(this.toLegacyData(paramIBlockData));
     }
-
-    public IBlockData fromLegacyData(int paramInt) {
+    
+    public IBlockData fromLegacyData(int paramInt)
+    {
         return getBlockData().set(VARIANT, EnumCustomVariant.values()[paramInt]);
     }
-
-    public int toLegacyData(IBlockData paramIBlockData) {
+    
+    public int toLegacyData(IBlockData paramIBlockData)
+    {
         return ((EnumCustomVariant) paramIBlockData.get(VARIANT)).ordinal();
     }
-
-    protected BlockStateList getStateList() {
+    
+    protected BlockStateList getStateList()
+    {
         return new BlockStateList(this, new IBlockState[] { VARIANT });
     }
     
-    public enum EnumCustomVariant implements INamable {
+    public enum EnumCustomVariant implements INamable
+    {
         VARIANT_0, VARIANT_1, VARIANT_2, VARIANT_3, VARIANT_4, VARIANT_5, VARIANT_6, VARIANT_7, VARIANT_8, VARIANT_9, VARIANT_10, VARIANT_11, VARIANT_12, VARIANT_13, VARIANT_14, VARIANT_15;
-
-        public int a() {
+        
+        public int a()
+        {
             return this.ordinal();
         }
-
-        public String toString() {
+        
+        public String toString()
+        {
             return this.name().toLowerCase();
         }
-
-        public String getName() {
+        
+        public String getName()
+        {
             return this.toString();
         }
-
-        public String c() {
+        
+        public String c()
+        {
             return this.toString();
         }
     }

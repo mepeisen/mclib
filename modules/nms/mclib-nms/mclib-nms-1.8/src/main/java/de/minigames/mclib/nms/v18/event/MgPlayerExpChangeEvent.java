@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerExpChangeEvent extends AbstractMinigameEvent<PlayerExpChangeEvent, McPlayerExpChangeEvent> implements McPlayerExpChangeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerExpChangeEvent(PlayerExpChangeEvent event)

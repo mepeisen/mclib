@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerToggleFlightEvent extends AbstractMinigameEvent<PlayerToggleFlightEvent, McPlayerToggleFlightEvent> implements McPlayerToggleFlightEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerToggleFlightEvent(PlayerToggleFlightEvent event)

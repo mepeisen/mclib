@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerItemBreakEvent extends AbstractMinigameEvent<PlayerItemBreakEvent, McPlayerItemBreakEvent> implements McPlayerItemBreakEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerItemBreakEvent(PlayerItemBreakEvent event)

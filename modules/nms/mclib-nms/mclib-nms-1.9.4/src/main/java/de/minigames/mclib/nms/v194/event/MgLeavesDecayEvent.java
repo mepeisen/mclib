@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgLeavesDecayEvent extends AbstractMinigameEvent<LeavesDecayEvent, McLeavesDecayEvent> implements McLeavesDecayEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgLeavesDecayEvent(LeavesDecayEvent event)

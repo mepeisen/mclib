@@ -44,14 +44,14 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
  */
 public class ChatSystem1_8_5 implements ChatSystemInterface
 {
-
+    
     @Override
     public String toJson(String src)
     {
         final IChatBaseComponent[] components = CraftChatMessage.fromString(src, true);
         return Arrays.asList(components).stream().map(c -> ChatSerializer.a(c)).collect(Collectors.joining(", ", "{ \"text\": \"\", \"extra\":[ ", " ] }")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
-
+    
     @Override
     public void sendMessage(Player player, String json)
     {

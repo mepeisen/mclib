@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockRedstoneEvent extends AbstractMinigameEvent<BlockRedstoneEvent, McBlockRedstoneEvent> implements McBlockRedstoneEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockRedstoneEvent(BlockRedstoneEvent event)

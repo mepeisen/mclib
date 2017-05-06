@@ -38,9 +38,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgInventoryCreativeEvent extends AbstractMinigameEvent<InventoryCreativeEvent, McInventoryCreativeEvent> implements McInventoryCreativeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgInventoryCreativeEvent(InventoryCreativeEvent event)

@@ -38,9 +38,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPrepareAnvilEvent extends AbstractMinigameEvent<PrepareAnvilEvent, McPrepareAnvilEvent> implements McPrepareAnvilEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPrepareAnvilEvent(PrepareAnvilEvent event)

@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerShearEntityEvent extends AbstractMinigameEvent<PlayerShearEntityEvent, McPlayerShearEntityEvent> implements McPlayerShearEntityEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerShearEntityEvent(PlayerShearEntityEvent event)

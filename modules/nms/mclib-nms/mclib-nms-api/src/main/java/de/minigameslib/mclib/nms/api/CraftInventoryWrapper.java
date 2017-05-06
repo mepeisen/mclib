@@ -44,7 +44,7 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class CraftInventoryWrapper implements Inventory
 {
-
+    
     /**
      * craft inventory mirror.
      */
@@ -52,20 +52,28 @@ public abstract class CraftInventoryWrapper implements Inventory
     
     /**
      * Constructor to create inventory.
-     * @param size size of the inventory.
-     * @param maxStackSize the max stack size.
-     * @param slots the initial slots
+     * 
+     * @param size
+     *            size of the inventory.
+     * @param maxStackSize
+     *            the max stack size.
+     * @param slots
+     *            the initial slots
      */
     public CraftInventoryWrapper(int size, int maxStackSize, ItemStack[] slots)
     {
         this.createMirror(size, maxStackSize, slots);
     }
-
+    
     /**
      * Creates bukkit mirror.
-     * @param size size of the inventory.
-     * @param maxStackSize the max stack size.
-     * @param slots the initial slots
+     * 
+     * @param size
+     *            size of the inventory.
+     * @param maxStackSize
+     *            the max stack size.
+     * @param slots
+     *            the initial slots
      */
     private void createMirror(int size, int maxStackSize, ItemStack[] slots)
     {
@@ -77,7 +85,7 @@ public abstract class CraftInventoryWrapper implements Inventory
             this.craftInventory.setItem(i, stack == null || stack.getType() == Material.AIR ? null : stack);
         }
     }
-
+    
     /**
      * Mirror.
      */
@@ -85,70 +93,77 @@ public abstract class CraftInventoryWrapper implements Inventory
     {
         this.createMirror(this.getPersistentSlots().length, this.getPersistentMaxStackSize(), this.getPersistentSlots());
     }
-
+    
     /**
      * Returns the max stack size from config.
+     * 
      * @return mas stack size.
      */
     protected abstract int getPersistentMaxStackSize();
-
+    
     /**
      * Returns the persistent slots.
+     * 
      * @return persistent slots.
      */
     protected abstract ItemStack[] getPersistentSlots();
-
+    
     /**
      * Saves max stack size.
-     * @param size2 new max stack size.
+     * 
+     * @param size2
+     *            new max stack size.
      */
     protected abstract void saveMaxStackSize(int size2);
-
+    
     /**
      * Saves item on given index.
-     * @param index index
-     * @param item new item
+     * 
+     * @param index
+     *            index
+     * @param item
+     *            new item
      */
     protected abstract void saveItem(int index, ItemStack item);
-
+    
     @Override
     public int getSize()
     {
         return this.craftInventory.getSize();
     }
-
+    
     @Override
     public int getMaxStackSize()
     {
         return this.craftInventory.getMaxStackSize();
     }
-
+    
     @Override
     public void setMaxStackSize(int size)
     {
         this.craftInventory.setMaxStackSize(size);
         this.saveMaxStackSize(size);
     }
-
+    
     @Override
     public String getName()
     {
         return this.craftInventory.getName();
     }
-
+    
     @Override
     public ItemStack getItem(int index)
     {
         return this.craftInventory.getItem(index);
     }
-
+    
     @Override
     public void setItem(int index, ItemStack item)
     {
         this.craftInventory.setItem(index, item);
         this.saveItem(index, item);
     }
-
+    
     @Override
     public HashMap<Integer, ItemStack> addItem(ItemStack... items) throws IllegalArgumentException
     {
@@ -157,11 +172,14 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.saveItems(old, this.craftInventory.getContents());
         return result;
     }
-
+    
     /**
-     * Calls save items by comparing old and new item array. 
-     * @param old old items
-     * @param contents new items
+     * Calls save items by comparing old and new item array.
+     * 
+     * @param old
+     *            old items
+     * @param contents
+     *            new items
      */
     protected void saveItems(ItemStack[] old, ItemStack[] contents)
     {
@@ -188,7 +206,7 @@ public abstract class CraftInventoryWrapper implements Inventory
             }
         }
     }
-
+    
     @Override
     public HashMap<Integer, ItemStack> removeItem(ItemStack... items) throws IllegalArgumentException
     {
@@ -197,13 +215,13 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.saveItems(old, this.craftInventory.getContents());
         return result;
     }
-
+    
     @Override
     public ItemStack[] getContents()
     {
         return this.craftInventory.getContents();
     }
-
+    
     @Override
     public void setContents(ItemStack[] items) throws IllegalArgumentException
     {
@@ -211,13 +229,13 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.setContents(items);
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @Override
     public ItemStack[] getStorageContents()
     {
         return this.craftInventory.getStorageContents();
     }
-
+    
     @Override
     public void setStorageContents(ItemStack[] items) throws IllegalArgumentException
     {
@@ -225,95 +243,95 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.setStorageContents(items);
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean contains(int materialId)
     {
         return this.craftInventory.contains(materialId);
     }
-
+    
     @Override
     public boolean contains(Material material) throws IllegalArgumentException
     {
         return this.craftInventory.contains(material);
     }
-
+    
     @Override
     public boolean contains(ItemStack item)
     {
         return this.craftInventory.contains(item);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean contains(int materialId, int amount)
     {
         return this.craftInventory.contains(materialId, amount);
     }
-
+    
     @Override
     public boolean contains(Material material, int amount) throws IllegalArgumentException
     {
         return this.craftInventory.contains(material, amount);
     }
-
+    
     @Override
     public boolean contains(ItemStack item, int amount)
     {
         return this.craftInventory.contains(item, amount);
     }
-
+    
     @Override
     public boolean containsAtLeast(ItemStack item, int amount)
     {
         return this.craftInventory.containsAtLeast(item, amount);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public HashMap<Integer, ? extends ItemStack> all(int materialId)
     {
         return this.craftInventory.all(materialId);
     }
-
+    
     @Override
     public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException
     {
         return this.craftInventory.all(material);
     }
-
+    
     @Override
     public HashMap<Integer, ? extends ItemStack> all(ItemStack item)
     {
         return this.craftInventory.all(item);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public int first(int materialId)
     {
         return this.craftInventory.first(materialId);
     }
-
+    
     @Override
     public int first(Material material) throws IllegalArgumentException
     {
         return this.craftInventory.first(material);
     }
-
+    
     @Override
     public int first(ItemStack item)
     {
         return this.craftInventory.first(item);
     }
-
+    
     @Override
     public int firstEmpty()
     {
         return this.craftInventory.firstEmpty();
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public void remove(int materialId)
@@ -322,7 +340,7 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.remove(materialId);
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @Override
     public void remove(Material material) throws IllegalArgumentException
     {
@@ -330,7 +348,7 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.remove(material);
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @Override
     public void remove(ItemStack item)
     {
@@ -338,14 +356,14 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.remove(item);
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @Override
     public void clear(int index)
     {
         this.craftInventory.clear(index);
         this.saveItem(index, null);
     }
-
+    
     @Override
     public void clear()
     {
@@ -353,43 +371,43 @@ public abstract class CraftInventoryWrapper implements Inventory
         this.craftInventory.clear();
         this.saveItems(old, this.craftInventory.getContents());
     }
-
+    
     @Override
     public List<HumanEntity> getViewers()
     {
         return this.craftInventory.getViewers();
     }
-
+    
     @Override
     public String getTitle()
     {
         return this.craftInventory.getTitle();
     }
-
+    
     @Override
     public InventoryType getType()
     {
         return this.craftInventory.getType();
     }
-
+    
     @Override
     public InventoryHolder getHolder()
     {
         return this.craftInventory.getHolder();
     }
-
+    
     @Override
     public ListIterator<ItemStack> iterator()
     {
         return new IteratorWrapper(this.craftInventory.iterator());
     }
-
+    
     @Override
     public ListIterator<ItemStack> iterator(int index)
     {
         return new IteratorWrapper(this.craftInventory.iterator(index));
     }
-
+    
     @Override
     public Location getLocation()
     {
@@ -411,7 +429,9 @@ public abstract class CraftInventoryWrapper implements Inventory
         
         /**
          * Constructor.
-         * @param delegate the delegate list iterator
+         * 
+         * @param delegate
+         *            the delegate list iterator
          */
         IteratorWrapper(ListIterator<ItemStack> delegate)
         {

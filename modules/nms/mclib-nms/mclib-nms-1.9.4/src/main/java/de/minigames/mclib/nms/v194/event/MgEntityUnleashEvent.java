@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityUnleashEvent extends AbstractMinigameEvent<EntityUnleashEvent, McEntityUnleashEvent> implements McEntityUnleashEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityUnleashEvent(EntityUnleashEvent event)

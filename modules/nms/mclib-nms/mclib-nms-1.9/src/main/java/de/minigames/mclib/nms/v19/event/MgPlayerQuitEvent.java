@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerQuitEvent extends AbstractMinigameEvent<PlayerQuitEvent, McPlayerQuitEvent> implements McPlayerQuitEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerQuitEvent(PlayerQuitEvent event)

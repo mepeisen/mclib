@@ -47,6 +47,7 @@ public interface ItemHelperInterface
     
     /**
      * Adds custom data to given item stack
+     * 
      * @param stack
      * @param plugin
      * @param key
@@ -56,6 +57,7 @@ public interface ItemHelperInterface
     
     /**
      * Receives custom data from given item stack
+     * 
      * @param stack
      * @param plugin
      * @param key
@@ -65,6 +67,7 @@ public interface ItemHelperInterface
     
     /**
      * Returns the variant for given block
+     * 
      * @param block
      * @return numeric variant
      */
@@ -72,6 +75,7 @@ public interface ItemHelperInterface
     
     /**
      * Returns the variant for given item stack
+     * 
      * @param stack
      * @return variant
      */
@@ -89,6 +93,7 @@ public interface ItemHelperInterface
     
     /**
      * Sets the block custom type and variant
+     * 
      * @param block
      * @param type
      * @param variant
@@ -97,15 +102,17 @@ public interface ItemHelperInterface
     
     /**
      * Creates a custom item stack for given block type and variant
+     * 
      * @param type
      * @param variant
-     * @param displayName 
+     * @param displayName
      * @return item stack
      */
     ItemStack createItemStackForBlock(int type, int variant, String displayName);
     
     /**
      * Sets the display name
+     * 
      * @param stack
      * @param displayName
      */
@@ -113,6 +120,7 @@ public interface ItemHelperInterface
     
     /**
      * Sets description
+     * 
      * @param stack
      * @param description
      */
@@ -120,6 +128,7 @@ public interface ItemHelperInterface
     
     /**
      * Returns the display name
+     * 
      * @param stack
      * @return display name
      */
@@ -127,11 +136,12 @@ public interface ItemHelperInterface
     
     /**
      * Returns the description
+     * 
      * @param stack
      * @return description
      */
     String[] getDescription(ItemStack stack);
-
+    
     /**
      * @param random
      * @param location
@@ -143,6 +153,7 @@ public interface ItemHelperInterface
     
     /**
      * Adds given item to inventory
+     * 
      * @param inventory
      * @param stack
      * @return left over items; {@code null} if item could be added completly
@@ -151,13 +162,14 @@ public interface ItemHelperInterface
     
     /**
      * Sets block meta values
+     * 
      * @param blockId
      * @param hardness
      * @param resistence
      * @param dropRule
      */
     void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule);
-
+    
     /**
      * @param blockId
      * @param variant
@@ -165,7 +177,7 @@ public interface ItemHelperInterface
      * @param experience
      */
     void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience);
-
+    
     /**
      * @param material
      * @param itemStackDurability
@@ -173,33 +185,34 @@ public interface ItemHelperInterface
      * @param experience
      */
     void installFurnaceRecipe(Material material, short itemStackDurability, ItemStack receipe, float experience);
-
+    
     /**
      * @param itemId
      * @param receipe
      * @param experience
      */
     void installFurnaceRecipe(int itemId, ItemStack receipe, float experience);
-
+    
     /**
      * Initializes the given item material and hack the item class
+     * 
      * @param material
      */
     void initNmsItem(Material material);
-
+    
     /**
      * @param material
      * @param itemStackDurability
      * @param stackSize
      */
     void setStackSize(Material material, short itemStackDurability, int stackSize);
-
+    
     /**
      * @param blockOrItemId
      * @param stackSize
      */
     void setStackSize(int blockOrItemId, int stackSize);
-
+    
     /**
      * @param item
      * @param amount
@@ -207,7 +220,7 @@ public interface ItemHelperInterface
      * @param shapedItems
      */
     void installShapedRecipe(ItemStack item, int amount, String[] shape, Map<Character, ItemStack> shapedItems);
-
+    
     /**
      * @param blockId
      * @param variant
@@ -216,14 +229,14 @@ public interface ItemHelperInterface
      * @param shapedItems
      */
     void installShapedRecipe(int blockId, int variant, int amount, String[] shape, Map<Character, ItemStack> shapedItems);
-
+    
     /**
      * @param item
      * @param amount
      * @param shapelessItems
      */
     void installShapelessRecipe(ItemStack item, int amount, ItemStack[] shapelessItems);
-
+    
     /**
      * @param blockId
      * @param variant
@@ -231,14 +244,14 @@ public interface ItemHelperInterface
      * @param shapelessItems
      */
     void installShapelessRecipe(int blockId, int variant, int amount, ItemStack[] shapelessItems);
-
+    
     /**
      * @param numId
      * @param name
      * @return item stack
      */
     ItemStack createItemStackForItem(int numId, String name);
-
+    
     /**
      * @param numId
      * @param dmgReduceAmount
@@ -249,7 +262,7 @@ public interface ItemHelperInterface
      * @param nmsItemRule
      */
     void initArmor(int numId, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
@@ -261,94 +274,94 @@ public interface ItemHelperInterface
      * @param nmsItemRule
      */
     void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param numId
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initAxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initAxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param numId
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initPickaxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initPickaxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param numId
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initHoe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initHoe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param numId
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initShovel(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability 
+     * @param durability
      * @param damage
      * @param itemEnchantability
      * @param speed
      * @param nmsItemRule
      */
     void initShovel(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param numId
-     * @param durability 
+     * @param durability
      * @param damageVsEntity
      * @param damage
      * @param itemEnchantability
@@ -356,11 +369,11 @@ public interface ItemHelperInterface
      * @param nmsItemRule
      */
     void initSword(int numId, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule);
-
+    
     /**
      * @param material
      * @param itemStackDurability
-     * @param durability 
+     * @param durability
      * @param damageVsEntity
      * @param damage
      * @param itemEnchantability
@@ -373,6 +386,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for plant
+     * 
      * @param material
      * @return {@code true} if given material is PLANT
      */
@@ -380,6 +394,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for plant
+     * 
      * @param block
      * @return {@code true} if given material is PLANT
      */
@@ -387,6 +402,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for gourd
+     * 
      * @param material
      * @return {@code true} if given material is GOURD
      */
@@ -394,6 +410,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for gourd
+     * 
      * @param block
      * @return {@code true} if given material is GOURD
      */
@@ -401,6 +418,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for coral
+     * 
      * @param material
      * @return {@code true} if given material is coral
      */
@@ -408,6 +426,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for coral
+     * 
      * @param block
      * @return {@code true} if given material is coral
      */
@@ -415,6 +434,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for grass
+     * 
      * @param material
      * @return {@code true} if given material is GRASS
      */
@@ -422,6 +442,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for grass
+     * 
      * @param block
      * @return {@code true} if given material is GRASS
      */
@@ -429,6 +450,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for wood
+     * 
      * @param material
      * @return {@code true} if given material is WOOD
      */
@@ -436,6 +458,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for wood
+     * 
      * @param block
      * @return {@code true} if given material is WOOD
      */
@@ -443,6 +466,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for rock
+     * 
      * @param material
      * @return {@code true} if given material is ROCK (forge) / STONE (spigot)
      */
@@ -450,6 +474,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for rock
+     * 
      * @param block
      * @return {@code true} if given material is ROCK (forge) / STONE (spigot)
      */
@@ -457,6 +482,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for iron/ ore
+     * 
      * @param material
      * @return {@code true} if given material is IRON (forge)/ ORE (spigot)
      */
@@ -464,6 +490,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for iron/ ore
+     * 
      * @param block
      * @return {@code true} if given material is IRON (forge)/ ORE (spigot)
      */
@@ -471,6 +498,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for anvil/ heavy
+     * 
      * @param material
      * @return {@code true} if given material is ANVIL (forge)/ HEAVY (spigot)
      */
@@ -478,6 +506,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for anvil/ heavy
+     * 
      * @param block
      * @return {@code true} if given material is ANVIL (forge)/ HEAVY (spigot)
      */
@@ -485,6 +514,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for water
+     * 
      * @param material
      * @return {@code true} if given material is WATER
      */
@@ -492,6 +522,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for water
+     * 
      * @param block
      * @return {@code true} if given material is WATER
      */
@@ -499,6 +530,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for lava
+     * 
      * @param material
      * @return {@code true} if given material is LAVA
      */
@@ -506,6 +538,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for lava
+     * 
      * @param block
      * @return {@code true} if given material is LAVA
      */
@@ -513,6 +546,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for leaves
+     * 
      * @param material
      * @return {@code true} if given material is LEAVES
      */
@@ -520,6 +554,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for leaves
+     * 
      * @param block
      * @return {@code true} if given material is LEAVES
      */
@@ -527,6 +562,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for vine
+     * 
      * @param material
      * @return {@code true} if given material is VINE
      */
@@ -534,6 +570,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for vine
+     * 
      * @param block
      * @return {@code true} if given material is VINE
      */
@@ -541,6 +578,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for sponge
+     * 
      * @param material
      * @return {@code true} if given material is SPONGE
      */
@@ -548,6 +586,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for sponge
+     * 
      * @param block
      * @return {@code true} if given material is SPONGE
      */
@@ -555,6 +594,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cloth
+     * 
      * @param material
      * @return {@code true} if given material is CLOTH
      */
@@ -562,6 +602,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cloth
+     * 
      * @param block
      * @return {@code true} if given material is CLOTH
      */
@@ -569,6 +610,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for fire
+     * 
      * @param material
      * @return {@code true} if given material is FIRE
      */
@@ -576,6 +618,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for fire
+     * 
      * @param block
      * @return {@code true} if given material is FIRE
      */
@@ -583,6 +626,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for sand
+     * 
      * @param material
      * @return {@code true} if given material is SAND
      */
@@ -590,6 +634,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for sand
+     * 
      * @param block
      * @return {@code true} if given material is SAND
      */
@@ -597,6 +642,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for circuits
+     * 
      * @param material
      * @return {@code true} if given material is CIRCUITS
      */
@@ -604,6 +650,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for circuits
+     * 
      * @param block
      * @return {@code true} if given material is CIRCUITS
      */
@@ -611,6 +658,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for carpet
+     * 
      * @param material
      * @return {@code true} if given material is CARPET
      */
@@ -618,6 +666,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for carpet
+     * 
      * @param block
      * @return {@code true} if given material is CARPET
      */
@@ -625,6 +674,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for glass
+     * 
      * @param material
      * @return {@code true} if given material is GLASS
      */
@@ -632,6 +682,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for glass
+     * 
      * @param block
      * @return {@code true} if given material is GLASS
      */
@@ -639,6 +690,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for redstone light
+     * 
      * @param material
      * @return {@code true} if given material is REDSTONE_LIGHT
      */
@@ -646,6 +698,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for redstone light
+     * 
      * @param block
      * @return {@code true} if given material is REDSTONE_LIGHT
      */
@@ -653,6 +706,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for tnt
+     * 
      * @param material
      * @return {@code true} if given material is TNT
      */
@@ -660,6 +714,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for tnt
+     * 
      * @param block
      * @return {@code true} if given material is TNT
      */
@@ -667,6 +722,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for ice
+     * 
      * @param material
      * @return {@code true} if given material is ICE
      */
@@ -674,6 +730,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for ice
+     * 
      * @param block
      * @return {@code true} if given material is ICE
      */
@@ -681,6 +738,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for packed ice
+     * 
      * @param material
      * @return {@code true} if given material is PACKED_ICE
      */
@@ -688,6 +746,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for packed ice
+     * 
      * @param block
      * @return {@code true} if given material is PACKED_ICE
      */
@@ -695,6 +754,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for snow
+     * 
      * @param material
      * @return {@code true} if given material is SNOW
      */
@@ -702,6 +762,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for snow
+     * 
      * @param block
      * @return {@code true} if given material is SNOW
      */
@@ -709,6 +770,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for crafted snow
+     * 
      * @param material
      * @return {@code true} if given material is CRAFTED_SNOW
      */
@@ -716,6 +778,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for crafted snow
+     * 
      * @param block
      * @return {@code true} if given material is CRAFTED_SNOW
      */
@@ -723,6 +786,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cactus
+     * 
      * @param material
      * @return {@code true} if given material is CACTUS
      */
@@ -730,6 +794,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cactus
+     * 
      * @param block
      * @return {@code true} if given material is CACTUS
      */
@@ -737,6 +802,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for clay
+     * 
      * @param material
      * @return {@code true} if given material is CLAY
      */
@@ -744,6 +810,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for clay
+     * 
      * @param block
      * @return {@code true} if given material is CLAY
      */
@@ -751,6 +818,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for dragon egg
+     * 
      * @param material
      * @return {@code true} if given material is DRAGON_EGG
      */
@@ -758,6 +826,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for dragon egg
+     * 
      * @param block
      * @return {@code true} if given material is DRAGON_EGG
      */
@@ -765,6 +834,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for portal
+     * 
      * @param material
      * @return {@code true} if given material is PORTAL
      */
@@ -772,6 +842,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for portal
+     * 
      * @param block
      * @return {@code true} if given material is PORTAL
      */
@@ -779,6 +850,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cake
+     * 
      * @param material
      * @return {@code true} if given material is CAKE
      */
@@ -786,6 +858,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for cake
+     * 
      * @param block
      * @return {@code true} if given material is CAKE
      */
@@ -793,6 +866,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for web
+     * 
      * @param material
      * @return {@code true} if given material is WEB
      */
@@ -800,6 +874,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for web
+     * 
      * @param block
      * @return {@code true} if given material is WEB
      */
@@ -807,6 +882,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for piston
+     * 
      * @param material
      * @return {@code true} if given material is PISTON
      */
@@ -814,6 +890,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for piston
+     * 
      * @param block
      * @return {@code true} if given material is PISTON
      */
@@ -821,6 +898,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for Barrier
+     * 
      * @param material
      * @return {@code true} if given material is BARRIER
      */
@@ -828,6 +906,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for barrier
+     * 
      * @param block
      * @return {@code true} if given material is BARRIER
      */
@@ -835,6 +914,7 @@ public interface ItemHelperInterface
     
     /**
      * Checks for structure void
+     * 
      * @param material
      * @return {@code true} if given material is STRUCTURE_VOID
      */
@@ -842,27 +922,30 @@ public interface ItemHelperInterface
     
     /**
      * Checks for structure void
+     * 
      * @param block
      * @return {@code true} if given material is STRCTURE_VOID
      */
     boolean isStructureVoid(int block);
-
+    
     /**
      * @param blockId
      * @param variant
      * @param nmsInventoryHandler
      */
     void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler);
-
+    
     /**
      * Converts bukkit item stack to saveable config data
+     * 
      * @param stack
      * @return config item stack
      */
     ConfigItemStackData toConfigData(ItemStack stack);
-
+    
     /**
      * Converts data section to saveable config data
+     * 
      * @param section
      * @return config item stack
      */

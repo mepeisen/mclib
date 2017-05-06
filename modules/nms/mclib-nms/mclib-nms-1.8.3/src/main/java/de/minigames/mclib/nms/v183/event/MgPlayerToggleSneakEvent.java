@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerToggleSneakEvent extends AbstractMinigameEvent<PlayerToggleSneakEvent, McPlayerToggleSneakEvent> implements McPlayerToggleSneakEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerToggleSneakEvent(PlayerToggleSneakEvent event)

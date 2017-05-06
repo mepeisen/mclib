@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityBreedEvent extends AbstractMinigameEvent<EntityBreedEvent, McEntityBreedEvent> implements McEntityBreedEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityBreedEvent(EntityBreedEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityBreedEvent extends AbstractMinigameEvent<EntityBreedEvent, 
         final Entity passenger = event.getBreeder();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

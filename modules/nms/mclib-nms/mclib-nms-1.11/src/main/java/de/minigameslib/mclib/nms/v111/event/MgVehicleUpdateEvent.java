@@ -38,14 +38,16 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVehicleUpdateEvent extends AbstractMinigameEvent<VehicleUpdateEvent, McVehicleUpdateEvent> implements McVehicleUpdateEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVehicleUpdateEvent(VehicleUpdateEvent event)
     {
-        super(event, (event.getVehicle().getPassenger() instanceof Player) ? ObjectServiceInterface.instance().getPlayer((Player) event.getVehicle().getPassenger()) : null, event.getVehicle().getLocation());
+        super(event, (event.getVehicle().getPassenger() instanceof Player) ? ObjectServiceInterface.instance().getPlayer((Player) event.getVehicle().getPassenger()) : null,
+            event.getVehicle().getLocation());
     }
     
 }

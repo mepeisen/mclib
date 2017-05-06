@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgExpBottleEvent extends AbstractMinigameEvent<ExpBottleEvent, McExpBottleEvent> implements McExpBottleEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgExpBottleEvent(ExpBottleEvent event)

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgCreeperPowerEvent extends AbstractMinigameEvent<CreeperPowerEvent, McCreeperPowerEvent> implements McCreeperPowerEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgCreeperPowerEvent(CreeperPowerEvent event)

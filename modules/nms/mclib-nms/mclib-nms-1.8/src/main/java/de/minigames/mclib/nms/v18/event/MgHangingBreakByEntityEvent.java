@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgHangingBreakByEntityEvent extends AbstractMinigameEvent<HangingBreakByEntityEvent, McHangingBreakByEntityEvent> implements McHangingBreakByEntityEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgHangingBreakByEntityEvent(HangingBreakByEntityEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgHangingBreakByEntityEvent extends AbstractMinigameEvent<HangingBr
         final Entity passenger = event.getRemover();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

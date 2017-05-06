@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerChangedMainHandEvent extends AbstractMinigameEvent<PlayerChangedMainHandEvent, McPlayerChangedMainHandEvent> implements McPlayerChangedMainHandEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerChangedMainHandEvent(PlayerChangedMainHandEvent event)

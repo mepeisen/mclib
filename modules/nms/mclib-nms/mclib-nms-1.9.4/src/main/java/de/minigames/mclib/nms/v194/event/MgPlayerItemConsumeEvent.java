@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerItemConsumeEvent extends AbstractMinigameEvent<PlayerItemConsumeEvent, McPlayerItemConsumeEvent> implements McPlayerItemConsumeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerItemConsumeEvent(PlayerItemConsumeEvent event)

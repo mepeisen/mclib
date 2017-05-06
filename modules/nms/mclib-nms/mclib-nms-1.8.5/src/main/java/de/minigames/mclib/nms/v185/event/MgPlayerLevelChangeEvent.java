@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerLevelChangeEvent extends AbstractMinigameEvent<PlayerLevelChangeEvent, McPlayerLevelChangeEvent> implements McPlayerLevelChangeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerLevelChangeEvent(PlayerLevelChangeEvent event)

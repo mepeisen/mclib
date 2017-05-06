@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityDamageByBlockEvent extends AbstractMinigameEvent<EntityDamageByBlockEvent, McEntityDamageByBlockEvent> implements McEntityDamageByBlockEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityDamageByBlockEvent(EntityDamageByBlockEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgEntityDamageByBlockEvent extends AbstractMinigameEvent<EntityDama
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

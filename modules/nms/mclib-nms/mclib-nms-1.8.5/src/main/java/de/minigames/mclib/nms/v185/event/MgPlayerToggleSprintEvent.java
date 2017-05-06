@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerToggleSprintEvent extends AbstractMinigameEvent<PlayerToggleSprintEvent, McPlayerToggleSprintEvent> implements McPlayerToggleSprintEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerToggleSprintEvent(PlayerToggleSprintEvent event)

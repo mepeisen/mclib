@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerRespawnEvent extends AbstractMinigameEvent<PlayerRespawnEvent, McPlayerRespawnEvent> implements McPlayerRespawnEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerRespawnEvent(PlayerRespawnEvent event)

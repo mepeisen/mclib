@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgAreaEffectCloudApplyEvent extends AbstractMinigameEvent<AreaEffectCloudApplyEvent, McAreaEffectCloudApplyEvent> implements McAreaEffectCloudApplyEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgAreaEffectCloudApplyEvent(AreaEffectCloudApplyEvent event)

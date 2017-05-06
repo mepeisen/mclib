@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerUnregisterChannelEvent extends AbstractMinigameEvent<PlayerUnregisterChannelEvent, McPlayerUnregisterChannelEvent> implements McPlayerUnregisterChannelEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerUnregisterChannelEvent(PlayerUnregisterChannelEvent event)

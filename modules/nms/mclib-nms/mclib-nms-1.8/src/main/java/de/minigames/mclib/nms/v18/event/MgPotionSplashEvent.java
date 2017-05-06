@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPotionSplashEvent extends AbstractMinigameEvent<PotionSplashEvent, McPotionSplashEvent> implements McPotionSplashEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPotionSplashEvent(PotionSplashEvent event)

@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerChangedWorldEvent extends AbstractMinigameEvent<PlayerChangedWorldEvent, McPlayerChangedWorldEvent> implements McPlayerChangedWorldEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerChangedWorldEvent(PlayerChangedWorldEvent event)

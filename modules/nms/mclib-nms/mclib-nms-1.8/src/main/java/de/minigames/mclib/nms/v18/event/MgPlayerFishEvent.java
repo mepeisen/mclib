@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerFishEvent extends AbstractMinigameEvent<PlayerFishEvent, McPlayerFishEvent> implements McPlayerFishEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerFishEvent(PlayerFishEvent event)

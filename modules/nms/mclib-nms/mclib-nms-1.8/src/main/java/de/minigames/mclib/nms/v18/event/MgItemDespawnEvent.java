@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgItemDespawnEvent extends AbstractMinigameEvent<ItemDespawnEvent, McItemDespawnEvent> implements McItemDespawnEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgItemDespawnEvent(ItemDespawnEvent event)

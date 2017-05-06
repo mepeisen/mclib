@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgItemMergeEvent extends AbstractMinigameEvent<ItemMergeEvent, McItemMergeEvent> implements McItemMergeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgItemMergeEvent(ItemMergeEvent event)

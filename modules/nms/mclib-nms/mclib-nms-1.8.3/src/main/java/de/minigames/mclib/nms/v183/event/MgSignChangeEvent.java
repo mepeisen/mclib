@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgSignChangeEvent extends AbstractMinigameEvent<SignChangeEvent, McSignChangeEvent> implements McSignChangeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgSignChangeEvent(SignChangeEvent event)

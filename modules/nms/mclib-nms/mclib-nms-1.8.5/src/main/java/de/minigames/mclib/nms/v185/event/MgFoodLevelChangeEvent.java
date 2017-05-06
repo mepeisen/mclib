@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgFoodLevelChangeEvent extends AbstractMinigameEvent<FoodLevelChangeEvent, McFoodLevelChangeEvent> implements McFoodLevelChangeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgFoodLevelChangeEvent(FoodLevelChangeEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
@@ -60,7 +61,7 @@ public class MgFoodLevelChangeEvent extends AbstractMinigameEvent<FoodLevelChang
         final Entity passenger = event.getEntity();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena

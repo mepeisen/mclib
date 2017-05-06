@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPigZapEvent extends AbstractMinigameEvent<PigZapEvent, McPigZapEvent> implements McPigZapEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPigZapEvent(PigZapEvent event)

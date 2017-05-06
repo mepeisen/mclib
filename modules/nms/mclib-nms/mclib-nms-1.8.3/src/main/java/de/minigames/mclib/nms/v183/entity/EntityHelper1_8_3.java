@@ -75,20 +75,17 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
 {
     
     /** dummy humans. */
-    private static final Set<DummyHuman1_8_3> HUMANS = new HashSet<>();
+    private static final Set<DummyHuman1_8_3>            HUMANS     = new HashSet<>();
     
     /** properties cache. */
-    private static final LoadingCache<UUID, PropertyMap> PROPERTIES = CacheBuilder.newBuilder().
-            maximumSize(10000).
-            expireAfterAccess(20, TimeUnit.MINUTES).
-            build(new CacheLoader<UUID, PropertyMap>(){
-                @Override
-                public PropertyMap load(UUID key) throws Exception
-                {
-                    final Player player = Bukkit.getPlayer(key);
-                    return EntityHelper1_8_3.getRemoteProfile(player);
-                }
-            });
+    private static final LoadingCache<UUID, PropertyMap> PROPERTIES = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(20, TimeUnit.MINUTES).build(new CacheLoader<UUID, PropertyMap>() {
+                                                                        @Override
+                                                                        public PropertyMap load(UUID key) throws Exception
+                                                                        {
+                                                                            final Player player = Bukkit.getPlayer(key);
+                                                                            return EntityHelper1_8_3.getRemoteProfile(player);
+                                                                        }
+                                                                    });
     
     @Override
     public Villager spawnDummyVillager(Location loc, Profession profession)
@@ -96,10 +93,10 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
         try
         {
             CustomEntityType1_8_3.DUMMY_VILLAGER.registerEntity();
-            final DummyVillager1_8_3 villager = new DummyVillager1_8_3(((CraftWorld)loc.getWorld()).getHandle());
+            final DummyVillager1_8_3 villager = new DummyVillager1_8_3(((CraftWorld) loc.getWorld()).getHandle());
             villager.setPosition(loc);
             villager.setProfession(profession.getId());
-            ((CraftWorld)loc.getWorld()).getHandle().addEntity(villager, SpawnReason.CUSTOM);
+            ((CraftWorld) loc.getWorld()).getHandle().addEntity(villager, SpawnReason.CUSTOM);
             return (CraftVillager) villager.getBukkitEntity();
         }
         finally
@@ -107,7 +104,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
             CustomEntityType1_8_3.DUMMY_VILLAGER.unregisterEntity();
         }
     }
-
+    
     @Override
     public HumanEntity spawnDummyHuman(Location loc, String name, String skinTexture)
     {
@@ -131,11 +128,11 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
         }, 10);
         return result.getBukkitEntity();
     }
-
+    
     @Override
     public String getSkin(HumanEntity entity)
     {
-        final DummyHuman1_8_3 human = (DummyHuman1_8_3) ((CraftPlayer)entity).getHandle();
+        final DummyHuman1_8_3 human = (DummyHuman1_8_3) ((CraftPlayer) entity).getHandle();
         final Collection<Property> props = human.getProfile().getProperties().get("textures"); //$NON-NLS-1$
         if (props.isEmpty())
         {
@@ -161,13 +158,14 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
     @Override
     public void setSkin(HumanEntity entity, String texture)
     {
-        final DummyHuman1_8_3 human = (DummyHuman1_8_3) ((CraftPlayer)entity).getHandle();
+        final DummyHuman1_8_3 human = (DummyHuman1_8_3) ((CraftPlayer) entity).getHandle();
         setSkinToProfile(human.getProfile(), texture);
         human.respawnAll();
     }
     
-    /** 
+    /**
      * Setting skin to profiles
+     * 
      * @param profile
      * @param texture
      */
@@ -176,7 +174,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
         final String[] splitted = texture.split(":"); //$NON-NLS-1$
         profile.getProperties().put("textures", new Property("textures", splitted[0], splitted[1])); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
+    
     @Override
     public void playerOnline(Player player)
     {
@@ -185,7 +183,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
             human.track(player);
         }
     }
-
+    
     @Override
     public void playerOffline(Player player)
     {
@@ -194,7 +192,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
             human.untrack(player);
         }
     }
-
+    
     @Override
     public void setProfileWithSkull(SkullMeta meta, String textures)
     {
@@ -214,6 +212,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
     
     /**
      * get remote profile properties
+     * 
      * @param player
      * @return profile properties
      * @throws Exception
@@ -222,21 +221,21 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
     {
         final MinecraftSessionService sessionService = ((CraftServer) Bukkit.getServer()).getServer().aC();
         boolean requireSecure = true;
-        final GameProfile profile = ((CraftPlayer)player).getProfile();
+        final GameProfile profile = ((CraftPlayer) player).getProfile();
         final YggdrasilAuthenticationService auth = ((YggdrasilMinecraftSessionService) sessionService).getAuthenticationService();
         
         URL url = HttpAuthenticationService.constantURL(new StringBuilder()
-                .append("https://sessionserver.mojang.com/session/minecraft/profile/") //$NON-NLS-1$
-                .append(UUIDTypeAdapter.fromUUID(profile.getId())).toString());
+            .append("https://sessionserver.mojang.com/session/minecraft/profile/") //$NON-NLS-1$
+            .append(UUIDTypeAdapter.fromUUID(profile.getId())).toString());
         url = HttpAuthenticationService.concatenateURL(url,
-                new StringBuilder().append("unsigned=").append(!requireSecure).toString()); //$NON-NLS-1$
+            new StringBuilder().append("unsigned=").append(!requireSecure).toString()); //$NON-NLS-1$
         
         final Method MAKE_REQUEST = YggdrasilAuthenticationService.class.getDeclaredMethod(
-                "makeRequest", URL.class, Object.class, Class.class); //$NON-NLS-1$
+            "makeRequest", URL.class, Object.class, Class.class); //$NON-NLS-1$
         MAKE_REQUEST.setAccessible(true);
         
         final MinecraftProfilePropertiesResponse response = (MinecraftProfilePropertiesResponse) MAKE_REQUEST.invoke(
-                auth, url, null, MinecraftProfilePropertiesResponse.class);
+            auth, url, null, MinecraftProfilePropertiesResponse.class);
         if (response == null)
         {
             return profile.getProperties();
@@ -244,13 +243,13 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
         
         return response.getProperties();
     }
-
+    
     @Override
     public void delete(Villager entity)
     {
         entity.remove();
     }
-
+    
     @Override
     public void delete(HumanEntity entity)
     {
@@ -259,19 +258,19 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
         HUMANS.remove(human);
         human.delete();
     }
-
+    
     @Override
     public void clearSkinCache(Player player)
     {
         PROPERTIES.invalidate(player.getUniqueId());
     }
-
+    
     @Override
     public boolean isDummyVillager(Villager villager)
     {
         return villager instanceof DummyVillager1_8_3.VillagerNPC;
     }
-
+    
     @Override
     public boolean isDummyHuman(HumanEntity human)
     {

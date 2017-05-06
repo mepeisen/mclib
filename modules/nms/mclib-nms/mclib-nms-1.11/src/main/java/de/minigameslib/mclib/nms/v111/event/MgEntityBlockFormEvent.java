@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityBlockFormEvent extends AbstractMinigameEvent<EntityBlockFormEvent, McEntityBlockFormEvent> implements McEntityBlockFormEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityBlockFormEvent(EntityBlockFormEvent event)

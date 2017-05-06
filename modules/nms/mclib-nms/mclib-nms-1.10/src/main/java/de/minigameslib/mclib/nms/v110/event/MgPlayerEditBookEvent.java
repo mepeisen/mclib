@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerEditBookEvent extends AbstractMinigameEvent<PlayerEditBookEvent, McPlayerEditBookEvent> implements McPlayerEditBookEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerEditBookEvent(PlayerEditBookEvent event)

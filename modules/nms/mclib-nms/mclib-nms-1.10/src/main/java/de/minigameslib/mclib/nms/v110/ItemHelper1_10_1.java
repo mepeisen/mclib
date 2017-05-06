@@ -108,7 +108,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
                     tag = new NBTTagCompound();
                     nms.setTag(tag);
                 }
-                tag.setString("mclib:customdata:" + plugin + ":" + key, value);  //$NON-NLS-1$//$NON-NLS-2$
+                tag.setString("mclib:customdata:" + plugin + ":" + key, value); //$NON-NLS-1$//$NON-NLS-2$
             }
             catch (Exception ex)
             {
@@ -130,7 +130,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
                 NBTTagCompound tag = nms.getTag();
                 if (tag != null)
                 {
-                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key);  //$NON-NLS-1$//$NON-NLS-2$
+                    final String value = tag.getString("mclib:customdata:" + plugin + ":" + key); //$NON-NLS-1$//$NON-NLS-2$
                     if (value != null && value.length() > 0)
                     {
                         return value;
@@ -144,36 +144,37 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         }
         return null;
     }
-
+    
     @Override
     public int getVariant(Block block)
     {
         final BlockPosition pos = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        return ((CraftWorld)block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT).ordinal();
+        return ((CraftWorld) block.getWorld()).getHandle().getType(pos).get(CustomBlock.VARIANT).ordinal();
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public int getVariant(ItemStack stack)
     {
         return stack.getData().getData();
     }
-
+    
     @Override
     public void setBlockVariant(Block block, int type, int variant)
     {
         final BlockPosition position = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        ((CraftWorld)block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_10_R1.Blocks.AIR.getBlockData(), 0);
+        ((CraftWorld) block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_10_R1.Blocks.AIR.getBlockData(), 0);
         final IBlockData blockData = net.minecraft.server.v1_10_R1.Block.getById(type).getBlockData();
         blockData.set(CustomBlock.VARIANT, CustomBlock.EnumCustomVariant.values()[variant]);
         // final IBlockData blockData = Blocks.FURNACE.getBlockData();
-        IBlockData old = ((CraftChunk)block.getChunk()).getHandle().getBlockData(position);
-        boolean success = ((CraftChunk)block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
-        if (success) {
-            ((CraftChunk)block.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
+        IBlockData old = ((CraftChunk) block.getChunk()).getHandle().getBlockData(position);
+        boolean success = ((CraftChunk) block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
+        if (success)
+        {
+            ((CraftChunk) block.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
         }
     }
-
+    
     @Override
     public ItemStack createItemStackForBlock(int type, int variant, String displayName)
     {
@@ -184,7 +185,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         setMeta(stack, meta);
         return stack;
     }
-
+    
     @Override
     public ItemStack createItemStackForItem(int numId, String name)
     {
@@ -195,7 +196,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         setMeta(stack, meta);
         return stack;
     }
-
+    
     /**
      * @param stack
      * @param meta
@@ -213,7 +214,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             throw new IllegalStateException(ex);
         }
     }
-
+    
     @Override
     public void setDisplayName(ItemStack stack, String displayName)
     {
@@ -225,7 +226,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         }
         meta.setDisplayName(displayName);
     }
-
+    
     @Override
     public void setDescription(ItemStack stack, String[] description)
     {
@@ -237,7 +238,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         }
         meta.setLore(Arrays.asList(description));
     }
-
+    
     /**
      * @param stack
      * @return meta
@@ -250,7 +251,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             {
                 return stack.getItemMeta();
             }
-
+            
             final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             return (ItemMeta) field.get(stack);
@@ -263,6 +264,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     
     /**
      * Creates a local bukkit material.
+     * 
      * @param materials
      * @param byName
      * @param id
@@ -274,13 +276,14 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
      */
     private Material createBukkitMaterial(Material[] materials, Map<String, Material> byName, int id, String name, Constructor<? extends MaterialData> ctor, int maxStack, short durability)
     {
-        final Material result = EnumFactory.addEnum(Material.class, name, new Class<?>[]{int.class, int.class, int.class}, new Object[]{id, maxStack, durability});
+        final Material result = EnumFactory.addEnum(Material.class, name, new Class<?>[] { int.class, int.class, int.class }, new Object[] { id, maxStack, durability });
         setPrivateField(result, "ctor", ctor); //$NON-NLS-1$
         return result;
     }
     
     /**
      * Sets a private field
+     * 
      * @param target
      * @param name
      * @param value
@@ -298,7 +301,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void initItems()
     {
@@ -321,10 +324,10 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             
             for (int i = MclibConstants.MIN_ITEM_ID; i <= MclibConstants.MAX_ITEM_ID; i++)
             {
-                materials[i] = createBukkitMaterial(materials, names, i, "custom_"+i, ctor, 64, (short) 0); //$NON-NLS-1$
+                materials[i] = createBukkitMaterial(materials, names, i, "custom_" + i, ctor, 64, (short) 0); //$NON-NLS-1$
                 
                 final CustomItem myItem = new CustomItem();
-                itemMth.invoke(null, i, "custom_"+i, myItem.c("mclib:custom_" + i)); //$NON-NLS-1$ //$NON-NLS-2$
+                itemMth.invoke(null, i, "custom_" + i, myItem.c("mclib:custom_" + i)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         catch (Exception ex)
@@ -332,7 +335,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void initBlocks()
     {
@@ -355,12 +358,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             
             for (int i = MclibConstants.MIN_BLOCK_ID; i <= MclibConstants.MAX_BLOCK_ID; i++)
             {
-                materials[i] = createBukkitMaterial(materials, names, i, "custom_"+i, ctor, 64, (short) 0); //$NON-NLS-1$
+                materials[i] = createBukkitMaterial(materials, names, i, "custom_" + i, ctor, 64, (short) 0); //$NON-NLS-1$
                 
                 final CustomBlock myBlock = new CustomBlock();
                 net.minecraft.server.v1_10_R1.Block.REGISTRY.a(i, new MinecraftKey("mclib:custom_" + i), myBlock); //$NON-NLS-1$
                 Iterator<IBlockData> iterator2 = myBlock.t().a().iterator();
-                while (iterator2.hasNext()) {
+                while (iterator2.hasNext())
+                {
                     IBlockData iblockdata = iterator2.next();
                     int k = net.minecraft.server.v1_10_R1.Block.REGISTRY.a(myBlock) << 4 | myBlock.toLegacyData(iblockdata);
                     net.minecraft.server.v1_10_R1.Block.REGISTRY_ID.a(iblockdata, k);
@@ -383,21 +387,21 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             LOGGER.log(Level.SEVERE, "Problems initializing modded blocks", ex); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public String getDisplayName(ItemStack stack)
     {
         final ItemMeta meta = ItemHelper1_10_1.getMeta(stack);
         return meta == null ? null : meta.getDisplayName();
     }
-
+    
     @Override
     public String[] getDescription(ItemStack stack)
     {
         final ItemMeta meta = ItemHelper1_10_1.getMeta(stack);
         return meta == null ? null : meta.getLore().toArray(new String[0]);
     }
-
+    
     @Override
     public void createMinable(Random random, Location location, int blockId, int meta, int size)
     {
@@ -406,7 +410,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         @SuppressWarnings("deprecation")
         final IBlockData data = block.fromLegacyData(meta);
         final WorldGenMinable minable = new WorldGenMinable(data, size);
-        minable.generate(((CraftWorld)location.getWorld()).getHandle(), random, pos);
+        minable.generate(((CraftWorld) location.getWorld()).getHandle(), random, pos);
     }
     
     @Override
@@ -459,6 +463,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     
     /**
      * Returns the first partial
+     * 
      * @param inv
      * @param typeId
      * @param meta
@@ -478,31 +483,31 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         }
         return -1;
     }
-
+    
     @Override
     public void setBlockMeta(int blockId, float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
-        ((CustomBlock)net.minecraft.server.v1_10_R1.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
+        ((CustomBlock) net.minecraft.server.v1_10_R1.Block.getById(blockId)).setMeta(hardness, resistence, dropRule);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public void installFurnaceRecipe(int blockId, int variant, ItemStack stack, float experience)
     {
         RecipesFurnace.getInstance().a(
-                InventoryManager1_10_1.convertToNms(new ItemStack(blockId, 1, (short) variant)),
-                InventoryManager1_10_1.convertToNms(stack),
-                experience);
+            InventoryManager1_10_1.convertToNms(new ItemStack(blockId, 1, (short) variant)),
+            InventoryManager1_10_1.convertToNms(stack),
+            experience);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public void installFurnaceRecipe(int itemId, ItemStack receipe, float experience)
     {
         RecipesFurnace.getInstance().a(
-                InventoryManager1_10_1.convertToNms(new ItemStack(itemId, 1)),
-                InventoryManager1_10_1.convertToNms(receipe),
-                experience);
+            InventoryManager1_10_1.convertToNms(new ItemStack(itemId, 1)),
+            InventoryManager1_10_1.convertToNms(receipe),
+            experience);
     }
     
     @Override
@@ -597,7 +602,8 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        {
             @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
             short dmg = mdata.getDurability();
@@ -615,7 +621,8 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems) {
+        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        {
             @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
             short dmg = mdata.getDurability();
@@ -629,6 +636,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     
     /**
      * Replaces a custom item with given modded (=special) item
+     * 
      * @param itemId
      * @param newItem
      */
@@ -654,7 +662,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
         }
     }
-
+    
     /**
      * @param slot
      * @return item slot
@@ -675,7 +683,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
                 return null;
         }
     }
-
+    
     @Override
     public void initArmor(int numId, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
     {
@@ -700,13 +708,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
             LOGGER.log(Level.SEVERE, "Problems initializing modded items", ex); //$NON-NLS-1$
         }
     }
-
+    
     @Override
     public void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void initAxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
@@ -717,13 +725,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         axe.setItemRules(nmsItemRule);
         this.replaceModdedItem(numId, axe);
     }
-
+    
     @Override
     public void initAxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void initPickaxe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
@@ -734,13 +742,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         pickaxe.setItemRules(nmsItemRule);
         this.replaceModdedItem(numId, pickaxe);
     }
-
+    
     @Override
     public void initPickaxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void initHoe(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
@@ -751,13 +759,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         hoe.setItemRules(nmsItemRule);
         this.replaceModdedItem(numId, hoe);
     }
-
+    
     @Override
     public void initHoe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void initShovel(int numId, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
@@ -768,13 +776,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         shovel.setItemRules(nmsItemRule);
         this.replaceModdedItem(numId, shovel);
     }
-
+    
     @Override
     public void initShovel(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void initSword(int numId, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
@@ -786,13 +794,13 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         sword.setItemRules(nmsItemRule);
         this.replaceModdedItem(numId, sword);
     }
-
+    
     @Override
     public void initSword(Material material, short itemStackDurability, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPlant(Material material)
@@ -800,7 +808,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PLANT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPlant(int block)
@@ -808,7 +816,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PLANT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGourd(Material material)
@@ -816,7 +824,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PUMPKIN;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGourd(int block)
@@ -824,7 +832,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PUMPKIN;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCoral(Material material)
@@ -832,7 +840,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CORAL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCoral(int block)
@@ -840,7 +848,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CORAL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGrass(Material material)
@@ -848,7 +856,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.GRASS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGrass(int block)
@@ -856,7 +864,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.GRASS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWood(Material material)
@@ -864,7 +872,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WOOD;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWood(int block)
@@ -872,7 +880,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WOOD;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isRock(Material material)
@@ -880,7 +888,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.STONE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isRock(int block)
@@ -888,7 +896,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.STONE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isOre(Material material)
@@ -896,7 +904,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ORE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isOre(int block)
@@ -904,7 +912,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ORE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isHeavy(Material material)
@@ -912,7 +920,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.HEAVY;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isHeavy(int block)
@@ -920,7 +928,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.HEAVY;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWater(Material material)
@@ -928,7 +936,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WATER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWater(int block)
@@ -936,7 +944,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WATER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isLava(Material material)
@@ -944,7 +952,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.LAVA;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isLava(int block)
@@ -952,7 +960,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.LAVA;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isLeaves(Material material)
@@ -960,7 +968,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.LEAVES;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isLeaves(int block)
@@ -968,7 +976,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.LEAVES;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isVine(Material material)
@@ -976,7 +984,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.REPLACEABLE_PLANT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isVine(int block)
@@ -984,7 +992,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.REPLACEABLE_PLANT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSponge(Material material)
@@ -992,7 +1000,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SPONGE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSponge(int block)
@@ -1000,7 +1008,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SPONGE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCloth(Material material)
@@ -1008,7 +1016,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CLOTH;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCloth(int block)
@@ -1016,7 +1024,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CLOTH;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isFire(Material material)
@@ -1024,7 +1032,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.FIRE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isFire(int block)
@@ -1032,7 +1040,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.FIRE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSand(Material material)
@@ -1040,7 +1048,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SAND;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSand(int block)
@@ -1048,7 +1056,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SAND;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCircuits(Material material)
@@ -1056,7 +1064,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ORIENTABLE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCircuits(int block)
@@ -1064,7 +1072,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ORIENTABLE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCarpet(Material material)
@@ -1072,7 +1080,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WOOL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCarpet(int block)
@@ -1080,7 +1088,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WOOL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGlass(Material material)
@@ -1088,7 +1096,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SHATTERABLE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isGlass(int block)
@@ -1096,7 +1104,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SHATTERABLE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isRedstoneLight(Material material)
@@ -1104,7 +1112,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.BUILDABLE_GLASS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isRedstoneLight(int block)
@@ -1112,7 +1120,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.BUILDABLE_GLASS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isTnt(Material material)
@@ -1120,7 +1128,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.TNT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isTnt(int block)
@@ -1128,7 +1136,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.TNT;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isIce(Material material)
@@ -1136,7 +1144,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ICE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isIce(int block)
@@ -1144,7 +1152,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.ICE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPackedIce(Material material)
@@ -1152,7 +1160,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PACKED_ICE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPackedIce(int block)
@@ -1160,7 +1168,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PACKED_ICE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSnow(Material material)
@@ -1168,7 +1176,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SNOW_LAYER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isSnow(int block)
@@ -1176,7 +1184,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SNOW_LAYER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCraftedSnow(Material material)
@@ -1184,7 +1192,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SNOW_BLOCK;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCraftedSnow(int block)
@@ -1192,7 +1200,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.SNOW_BLOCK;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCactus(Material material)
@@ -1200,7 +1208,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CACTUS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCactus(int block)
@@ -1208,7 +1216,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CACTUS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isClay(Material material)
@@ -1216,7 +1224,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CLAY;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isClay(int block)
@@ -1224,7 +1232,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CLAY;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isDragonEgg(Material material)
@@ -1232,7 +1240,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.DRAGON_EGG;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isDragonEgg(int block)
@@ -1240,7 +1248,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.DRAGON_EGG;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPortal(Material material)
@@ -1248,7 +1256,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PORTAL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPortal(int block)
@@ -1256,7 +1264,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PORTAL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCake(Material material)
@@ -1264,7 +1272,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CAKE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isCake(int block)
@@ -1272,7 +1280,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.CAKE;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWeb(Material material)
@@ -1280,7 +1288,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WEB;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isWeb(int block)
@@ -1288,7 +1296,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.WEB;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPiston(Material material)
@@ -1296,7 +1304,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PISTON;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isPiston(int block)
@@ -1304,7 +1312,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.PISTON;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isBarrier(Material material)
@@ -1312,7 +1320,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.BANNER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isBarrier(int block)
@@ -1320,7 +1328,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.BANNER;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isStructureVoid(Material material)
@@ -1328,7 +1336,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block block = net.minecraft.server.v1_10_R1.Block.getById(material.getId());
         return block.q(block.getBlockData()) == net.minecraft.server.v1_10_R1.Material.J;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean isStructureVoid(int block)
@@ -1336,21 +1344,20 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(block);
         return nms.q(nms.getBlockData()) == net.minecraft.server.v1_10_R1.Material.J;
     }
-
+    
     @Override
     public void initInventory(int blockId, int variant, NmsInventoryHandlerInterface nmsInventoryHandler)
     {
         final CustomBlock block = (CustomBlock) net.minecraft.server.v1_10_R1.Block.getById(blockId);
         block.setInventoryHandler(variant, nmsInventoryHandler);
     }
-
-
+    
     @Override
     public ConfigItemStackData toConfigData(ItemStack stack)
     {
         return new ConfigItemStackDataImpl(stack);
     }
-
+    
     @Override
     public ConfigItemStackData fromConfigData(DataSection section)
     {

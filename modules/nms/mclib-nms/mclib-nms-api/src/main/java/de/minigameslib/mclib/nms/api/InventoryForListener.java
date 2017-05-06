@@ -40,16 +40,20 @@ public class InventoryForListener extends CraftInventoryWrapper
     InventoryListener listener;
     
     /** true forcalling listener. */
-    boolean callListener = false;
-
+    boolean           callListener = false;
+    
     /** the inventory title. */
-    private String title;
-
+    private String    title;
+    
     /**
      * Coonstructor.
-     * @param listener the listener
-     * @param size initial size.
-     * @param title the title.
+     * 
+     * @param listener
+     *            the listener
+     * @param size
+     *            initial size.
+     * @param title
+     *            the title.
      */
     public InventoryForListener(InventoryListener listener, int size, String title)
     {
@@ -65,19 +69,19 @@ public class InventoryForListener extends CraftInventoryWrapper
     {
         this.callListener = true;
     }
-
+    
     @Override
     protected int getPersistentMaxStackSize()
     {
         return 64;
     }
-
+    
     @Override
     protected org.bukkit.inventory.ItemStack[] getPersistentSlots()
     {
         return new org.bukkit.inventory.ItemStack[this.getSize()];
     }
-
+    
     @Override
     protected void saveMaxStackSize(int size2)
     {
@@ -89,7 +93,7 @@ public class InventoryForListener extends CraftInventoryWrapper
     {
         return this.title;
     }
-
+    
     @Override
     protected void saveItem(int index, org.bukkit.inventory.ItemStack item)
     {

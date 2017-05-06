@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerLoginEvent extends AbstractMinigameEvent<PlayerLoginEvent, McPlayerLoginEvent> implements McPlayerLoginEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerLoginEvent(PlayerLoginEvent event)

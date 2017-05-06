@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgFireworkExplodeEvent extends AbstractMinigameEvent<FireworkExplodeEvent, McFireworkExplodeEvent> implements McFireworkExplodeEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgFireworkExplodeEvent(FireworkExplodeEvent event)

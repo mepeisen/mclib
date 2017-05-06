@@ -39,16 +39,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgHangingPlaceEvent extends AbstractMinigameEvent<HangingPlaceEvent, McHangingPlaceEvent> implements McHangingPlaceEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgHangingPlaceEvent(HangingPlaceEvent event)
     {
         super(event, player(event));
     }
-
+    
     /**
      * @param event
      * @return player

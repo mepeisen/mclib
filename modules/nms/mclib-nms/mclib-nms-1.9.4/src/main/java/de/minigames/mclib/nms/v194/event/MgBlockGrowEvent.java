@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgBlockGrowEvent extends AbstractMinigameEvent<BlockGrowEvent, McBlockGrowEvent> implements McBlockGrowEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgBlockGrowEvent(BlockGrowEvent event)

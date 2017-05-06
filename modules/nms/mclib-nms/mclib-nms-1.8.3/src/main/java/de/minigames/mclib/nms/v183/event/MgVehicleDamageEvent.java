@@ -41,16 +41,17 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVehicleDamageEvent extends AbstractMinigameEvent<VehicleDamageEvent, McVehicleDamageEvent> implements McVehicleDamageEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVehicleDamageEvent(VehicleDamageEvent event)
     {
         super(event, passenger(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return passanger
@@ -60,7 +61,7 @@ public class MgVehicleDamageEvent extends AbstractMinigameEvent<VehicleDamageEve
         final Entity passenger = event.getVehicle().getPassenger();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return passanger

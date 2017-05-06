@@ -77,6 +77,7 @@ public class DummyVillager1_11 extends EntityVillager
     
     /**
      * Clear goals of given selector
+     * 
      * @param selector
      */
     private void clearGoals(PathfinderGoalSelector selector)
@@ -104,38 +105,38 @@ public class DummyVillager1_11 extends EntityVillager
         // do nothing (trades)
         return false;
     }
-
+    
     @Override
     public boolean d(NBTTagCompound save)
     {
         // check if entity will be saved.
         return false;
     }
-
+    
     @Override
     protected void L()
     {
         // do nothing (world despawn)
     }
-
+    
     @Override
     public void e(float f, float f1)
     {
         // do nothing (jump)
     }
-
+    
     @Override
     public void f(double x, double y, double z)
     {
         // do nothing (move)
     }
-
+    
     @Override
     public void g(float f, float f1)
     {
         // do nothing (flying)
     }
-
+    
     @Override
     public CraftEntity getBukkitEntity()
     {
@@ -145,7 +146,7 @@ public class DummyVillager1_11 extends EntityVillager
         }
         return super.getBukkitEntity();
     }
-
+    
     @Override
     public boolean m_()
     {
@@ -160,6 +161,7 @@ public class DummyVillager1_11 extends EntityVillager
     {
         /**
          * Constructor.
+         * 
          * @param handle
          */
         public VillagerNPC(DummyVillager1_11 handle)
@@ -167,7 +169,7 @@ public class DummyVillager1_11 extends EntityVillager
             super((CraftServer) Bukkit.getServer(), handle);
         }
     }
-
+    
     /**
      * @param loc
      */

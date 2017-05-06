@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgFurnaceSmeltEvent extends AbstractMinigameEvent<FurnaceSmeltEvent, McFurnaceSmeltEvent> implements McFurnaceSmeltEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgFurnaceSmeltEvent(FurnaceSmeltEvent event)

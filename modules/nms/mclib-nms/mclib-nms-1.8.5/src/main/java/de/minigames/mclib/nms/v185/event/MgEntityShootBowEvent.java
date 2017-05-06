@@ -42,33 +42,34 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgEntityShootBowEvent extends AbstractMinigameEvent<EntityShootBowEvent, McEntityShootBowEvent> implements McEntityShootBowEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgEntityShootBowEvent(EntityShootBowEvent event)
     {
         super(event, player(event), location(event));
     }
-
+    
     /**
      * @param event
      * @return player
      */
     private static McPlayerInterface player(EntityShootBowEvent event)
     {
-        final ProjectileSource passenger = ((Projectile)event.getProjectile()).getShooter();
+        final ProjectileSource passenger = ((Projectile) event.getProjectile()).getShooter();
         return passenger instanceof Player ? ObjectServiceInterface.instance().getPlayer((Player) passenger) : null;
     }
-
+    
     /**
      * @param event
      * @return arena
      */
     private static ZoneInterface location(EntityShootBowEvent event)
     {
-        final ProjectileSource passenger = ((Projectile)event.getProjectile()).getShooter();
+        final ProjectileSource passenger = ((Projectile) event.getProjectile()).getShooter();
         if (passenger instanceof Player)
         {
             return null; // will force to calculate from player

@@ -36,9 +36,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgHangingBreakEvent extends AbstractMinigameEvent<HangingBreakEvent, McHangingBreakEvent> implements McHangingBreakEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgHangingBreakEvent(HangingBreakEvent event)

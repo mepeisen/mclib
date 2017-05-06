@@ -38,14 +38,16 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgVehicleEntityCollisionEvent extends AbstractMinigameEvent<VehicleEntityCollisionEvent, McVehicleEntityCollisionEvent> implements McVehicleEntityCollisionEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgVehicleEntityCollisionEvent(VehicleEntityCollisionEvent event)
     {
-        super(event, (event.getVehicle().getPassenger() instanceof Player) ? ObjectServiceInterface.instance().getPlayer((Player) event.getVehicle().getPassenger()) : null, event.getVehicle().getLocation());
+        super(event, (event.getVehicle().getPassenger() instanceof Player) ? ObjectServiceInterface.instance().getPlayer((Player) event.getVehicle().getPassenger()) : null,
+            event.getVehicle().getLocation());
     }
     
 }

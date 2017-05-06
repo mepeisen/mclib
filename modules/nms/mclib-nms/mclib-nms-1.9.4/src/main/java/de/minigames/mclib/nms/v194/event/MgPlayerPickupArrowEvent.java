@@ -37,9 +37,10 @@ import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
  */
 public class MgPlayerPickupArrowEvent extends AbstractMinigameEvent<PlayerPickupArrowEvent, McPlayerPickupArrowEvent> implements McPlayerPickupArrowEvent
 {
-
+    
     /**
      * Constructor
+     * 
      * @param event
      */
     public MgPlayerPickupArrowEvent(PlayerPickupArrowEvent event)

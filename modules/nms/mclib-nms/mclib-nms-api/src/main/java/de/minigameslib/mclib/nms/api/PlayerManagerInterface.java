@@ -36,6 +36,7 @@ public interface PlayerManagerInterface
     
     /**
      * Registers a channel without need of sending REGISTER packages.
+     * 
      * @param player
      * @param channel
      */

@@ -48,13 +48,13 @@ public class MgPlayerInteractAtEntityEvent extends AbstractMinigameEvent<PlayerI
     {
         super(event, ObjectServiceInterface.instance().getPlayer(event.getPlayer()));
     }
-
+    
     @Override
     public EntityInterface getEntity()
     {
         return ObjectServiceInterface.instance().findEntity(this.getBukkitEvent().getRightClicked());
     }
-
+    
     @Override
     public boolean isOffhand()
     {
