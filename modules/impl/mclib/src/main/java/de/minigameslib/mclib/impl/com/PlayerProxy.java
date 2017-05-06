@@ -182,6 +182,12 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     }
     
     @Override
+    public ZoneInterface getZone(ZoneTypeId... type)
+    {
+        return this.target.getZone(type);
+    }
+    
+    @Override
     public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
     {
         return this.target.when(test);
@@ -212,21 +218,15 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     }
     
     @Override
-    public boolean isInsideAllZones(ZoneInterface... zone)
-    {
-        return this.target.isInsideAllZones(zone);
-    }
-    
-    @Override
-    public ZoneInterface getZone(ZoneTypeId... type)
-    {
-        return this.target.getZone(type);
-    }
-    
-    @Override
     public boolean isInsideRandomZone(ZoneTypeId... type)
     {
         return this.target.isInsideRandomZone(type);
+    }
+    
+    @Override
+    public boolean isInsideAllZones(ZoneInterface... zone)
+    {
+        return this.target.isInsideAllZones(zone);
     }
     
     @Override
@@ -242,7 +242,7 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.target.registerHandler(plugin, clazz, handler);
     }
@@ -254,7 +254,7 @@ public class PlayerProxy extends PlayerData implements McPlayerInterface
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         this.target.unregisterHandler(plugin, clazz, handler);
     }

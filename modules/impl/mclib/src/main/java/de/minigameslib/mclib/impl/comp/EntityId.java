@@ -30,6 +30,8 @@ import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of entity id.
+ * 
  * @author mepeisen
  *
  */
@@ -46,7 +48,7 @@ public class EntityId implements EntityIdInterface
     private String type;
     
     /**
-     * Constructor.
+     * Constructor to read from file.
      */
     public EntityId()
     {
@@ -54,9 +56,14 @@ public class EntityId implements EntityIdInterface
     }
     
     /**
+     * Constructor for new data.
+     * 
      * @param pluginName
+     *            name of the plugin
      * @param type
+     *            type/ enumeration name
      * @param uuid
+     *            unique id
      */
     public EntityId(String pluginName, String type, UUID uuid)
     {
@@ -87,19 +94,24 @@ public class EntityId implements EntityIdInterface
         return section.isString("plugin") //$NON-NLS-1$
             && section.isString("type") //$NON-NLS-1$
             && section.isString("uuid") //$NON-NLS-1$
-            && isUUID(section.getString("uuid")); //$NON-NLS-1$
+            && isUuid(section.getString("uuid")); //$NON-NLS-1$
     }
     
     /**
+     * Checks string for valid uuid.
+     * 
      * @param str
+     *            string to be checked.
      * @return true if this is a uuid
      */
-    private boolean isUUID(String str)
+    private boolean isUuid(String str)
     {
         try
         {
             if (str == null)
+            {
                 return false;
+            }
             UUID.fromString(str);
             return true;
         }
@@ -110,6 +122,8 @@ public class EntityId implements EntityIdInterface
     }
     
     /**
+     * Returns the plugin name.
+     * 
      * @return the pluginName
      */
     public String getPluginName()
@@ -118,6 +132,8 @@ public class EntityId implements EntityIdInterface
     }
     
     /**
+     * Returns the uuid.
+     * 
      * @return the uuid
      */
     public UUID getUuid()
@@ -126,6 +142,8 @@ public class EntityId implements EntityIdInterface
     }
     
     /**
+     * Returns the type name.
+     * 
      * @return the type
      */
     public String getType()
@@ -148,33 +166,51 @@ public class EntityId implements EntityIdInterface
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         EntityId other = (EntityId) obj;
         if (this.pluginName == null)
         {
             if (other.pluginName != null)
+            {
                 return false;
+            }
         }
         else if (!this.pluginName.equals(other.pluginName))
+        {
             return false;
+        }
         if (this.type == null)
         {
             if (other.type != null)
+            {
                 return false;
+            }
         }
         else if (!this.type.equals(other.type))
+        {
             return false;
+        }
         if (this.uuid == null)
         {
             if (other.uuid != null)
+            {
                 return false;
+            }
         }
         else if (!this.uuid.equals(other.uuid))
+        {
             return false;
+        }
         return true;
     }
     

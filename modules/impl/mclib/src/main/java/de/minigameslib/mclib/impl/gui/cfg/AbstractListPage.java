@@ -120,26 +120,6 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         return result;
     }
     
-    /**
-     * prev page icon
-     * 
-     * @return prev page icon
-     */
-    public ClickGuiItem itemPrevPage()
-    {
-        return this.page() > 1 ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Previous), Messages.IconPreviousPage, this::onPrevPage) : null;
-    }
-    
-    /**
-     * next page icon
-     * 
-     * @return next page icon
-     */
-    public ClickGuiItem itemNextPage()
-    {
-        return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
-    }
-    
     @Override
     protected ClickGuiItem map(int line, int col, int index, String elm)
     {
@@ -248,20 +228,6 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         @LocalizedMessage(defaultMessage = "Back")
         @MessageComment("back icon")
         IconBack,
-        
-        /**
-         * prev page icon
-         */
-        @LocalizedMessage(defaultMessage = "Previous page")
-        @MessageComment(value = "prev page icon")
-        IconPreviousPage,
-        
-        /**
-         * next page icon
-         */
-        @LocalizedMessage(defaultMessage = "Next page")
-        @MessageComment(value = "next page icon")
-        IconNextPage,
         
         /**
          * Create icon

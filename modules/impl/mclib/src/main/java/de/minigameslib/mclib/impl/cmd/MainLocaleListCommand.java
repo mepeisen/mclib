@@ -39,6 +39,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 
 /**
+ * Command implementation for "/mclib mainlocale list".
+ * 
  * @author mepeisen
  *
  */
@@ -89,21 +91,21 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
     }
     
     /**
-     * Messages
+     * Messages for /mclib mainlocale list.
      */
     @LocalizedMessages("cmd.mclib_mainlocale_list")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Display list of main locales!")
         @MessageComment("Short description for /mclib mainlocale")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display list of main locales!"
@@ -112,7 +114,7 @@ public class MainLocaleListCommand extends AbstractPagableCommandHandler impleme
         Description,
         
         /**
-         * Page header
+         * Page header.
          */
         @LocalizedMessage(defaultMessage = "main locales")
         @MessageComment("Page header")

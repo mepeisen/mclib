@@ -52,6 +52,8 @@ import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of entities.
+ * 
  * @author mepeisen
  *
  */
@@ -78,18 +80,27 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     private UUID                         entityUuid;
     
     /**
-     * Dyncmic entity type
+     * Dyncmic entity type.
      */
     private DynamicEntityType            dynamic;
     
     /**
+     * Constructor.
+     * 
      * @param plugin
+     *            the owning plugin.
      * @param entity
+     *            the entity.
      * @param id
+     *            the id
      * @param handler
+     *            the handler managing the component
      * @param config
+     *            the config file
      * @param owner
+     *            thw owning service
      * @throws McException
+     *             thrown on config errors
      */
     public EntityImpl(Plugin plugin, Entity entity, EntityId id, EntityHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -154,6 +165,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
      * reads the file config.
      * 
      * @throws McException
+     *             thrown on config errors.
      */
     public void readConfig() throws McException
     {
@@ -209,7 +221,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
-     * Clears all event registrations
+     * Clears all event registrations.
      */
     public void clearEventRegistrations()
     {
@@ -217,7 +229,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.registerHandler(plugin, clazz, h);
     }
@@ -229,7 +241,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.unregisterHandler(plugin, clazz, h);
     }
@@ -241,15 +253,16 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         this.eventBus.handle(eventClass, event);
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            Plugin that was disabled
      */
     public void onDisable(Plugin plugin)
     {
@@ -269,7 +282,10 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
+     * Sets the bukkit entity.
+     * 
      * @param entity2
+     *            bukkit entity
      */
     public void setEntity(Entity entity2)
     {
@@ -281,7 +297,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
-     * @return entity uuid
+     * @return entity uuid.
      */
     public UUID getEntityUuid()
     {
@@ -289,7 +305,10 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
+     * Sets the dynamic type for auto-creation of entites during server restart.
+     * 
      * @param t
+     *            dynamic type
      */
     public void setDynamicType(DynamicEntityType t)
     {
@@ -297,6 +316,8 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
+     * Returns the dynamic type of this entity.
+     * 
      * @return the dynamic entity type
      */
     public DynamicEntityType getDynamicType()
@@ -305,6 +326,8 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     /**
+     * Returns the config for dynamic entites.
+     * 
      * @return the dynamiic section data config
      */
     public DataSection getDynamicConfig()

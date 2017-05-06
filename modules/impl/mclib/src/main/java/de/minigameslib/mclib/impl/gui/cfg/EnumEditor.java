@@ -135,26 +135,6 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
         session.refreshClickGui();
     }
     
-    /**
-     * prev page icon
-     * 
-     * @return prev page icon
-     */
-    public ClickGuiItem itemPrevPage()
-    {
-        return this.page() > 1 ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Previous), Messages.IconPreviousPage, this::onPrevPage) : null;
-    }
-    
-    /**
-     * next page icon
-     * 
-     * @return next page icon
-     */
-    public ClickGuiItem itemNextPage()
-    {
-        return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), Messages.IconNextPage, this::onNextPage) : null;
-    }
-    
     @Override
     protected ClickGuiItem[] firstLine()
     {
@@ -218,20 +198,6 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
         @LocalizedMessage(defaultMessage = "%1$s")
         @MessageComment(value = "enum value", args = { @MessageComment.Argument("enum value name") })
         EnumValue,
-        
-        /**
-         * prev page icon
-         */
-        @LocalizedMessage(defaultMessage = "Previous page")
-        @MessageComment(value = "prev page icon")
-        IconPreviousPage,
-        
-        /**
-         * next page icon
-         */
-        @LocalizedMessage(defaultMessage = "Next page")
-        @MessageComment(value = "next page icon")
-        IconNextPage,
         
     }
     

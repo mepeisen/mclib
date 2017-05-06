@@ -53,6 +53,8 @@ import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of zones.
+ * 
  * @author mepeisen
  */
 public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, MgEventListener
@@ -68,14 +70,24 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
+     * Constructor.
+     * 
      * @param plugin
+     *            the owning plugin.
      * @param registry
+     *            the registry.
      * @param cuboid
+     *            the zones cuboid
      * @param id
+     *            the id
      * @param handler
+     *            the handler managing the component
      * @param config
+     *            the config file
      * @param owner
+     *            thw owning service
      * @throws McException
+     *             thrown on config errors
      */
     public ZoneImpl(Plugin plugin, ComponentRegistry registry, Cuboid cuboid, ZoneId id, ZoneHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -223,7 +235,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     }
     
     /**
-     * Clears all event registrations
+     * Clears all event registrations.
      */
     public void clearEventRegistrations()
     {
@@ -231,7 +243,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.registerHandler(plugin, clazz, h);
     }
@@ -243,7 +255,7 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.unregisterHandler(plugin, clazz, h);
     }
@@ -255,15 +267,16 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         this.eventBus.handle(eventClass, event);
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            Plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {

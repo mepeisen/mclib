@@ -41,6 +41,8 @@ import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
+ * Command implementation for /mclib mainlocale remove.
+ * 
  * @author mepeisen
  *
  */
@@ -73,8 +75,12 @@ public class MainLocaleRemoveCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display success (mainlocale removed).
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            locale that was removed
      */
     private void displaySuccess(CommandInterface command, Locale loc)
     {
@@ -82,8 +88,12 @@ public class MainLocaleRemoveCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display error (locale not found).
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            locale that was not found.
      */
     private void displayNotFound(CommandInterface command, Locale loc)
     {
@@ -113,21 +123,21 @@ public class MainLocaleRemoveCommand implements SubCommandHandlerInterface
     }
     
     /**
-     * Messages
+     * Messages for /mclib mainlocale remove.
      */
     @LocalizedMessages("cmd.mclib_defaultlocale_remove")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Remove a server main locale!")
         @MessageComment("Short description for /mclib mainlocale remove")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Remove a server main locale!",
@@ -138,21 +148,21 @@ public class MainLocaleRemoveCommand implements SubCommandHandlerInterface
         Description,
         
         /**
-         * Locale argument missing
+         * Locale argument missing.
          */
         @LocalizedMessage(defaultMessage = "Locale argument missing", severity = MessageSeverityType.Error)
         @MessageComment("Locale argument missing")
         MissingLocale,
         
         /**
-         * Locale not found in list
+         * Locale not found in list.
          */
         @LocalizedMessage(defaultMessage = "Locale not found in list: " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Error)
         @MessageComment(value = "Locale not found in list", args = @MessageComment.Argument("locale"))
         NotFound,
         
         /**
-         * Locale removed
+         * Locale removed.
          */
         @LocalizedMessage(defaultMessage = "Removed main locale: " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Success)
         @MessageComment(value = "Locale was removed", args = @MessageComment.Argument("locale"))

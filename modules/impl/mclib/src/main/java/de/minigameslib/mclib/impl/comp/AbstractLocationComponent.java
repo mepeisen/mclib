@@ -61,6 +61,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * @param owner
      *            the component owner
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public AbstractLocationComponent(ComponentRegistry registry, Location location, File config, ComponentOwner owner) throws McException
     {
@@ -73,6 +74,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * reads the file config.
      * 
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public void readConfig() throws McException
     {
@@ -95,6 +97,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * Saves the file config.
      * 
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public void saveConfig() throws McException
     {
@@ -121,6 +124,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * Stores core data into config.
      * 
      * @param coreSection
+     *            data section to save to
      */
     protected abstract void saveData(DataSection coreSection);
     
@@ -128,6 +132,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * Reads core data from config.
      * 
      * @param coreSection
+     *            data section to read from
      */
     protected abstract void readData(DataSection coreSection);
     
@@ -164,6 +169,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
      * @param loc
      *            location of the component.
      * @throws McException
+     *             thrown on io errors/ corrupt config; thrown if component is already deleted
      */
     public void setLocation(Location loc) throws McException
     {

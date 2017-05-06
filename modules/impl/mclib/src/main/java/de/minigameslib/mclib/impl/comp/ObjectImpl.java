@@ -49,6 +49,8 @@ import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of sbatract objects.
+ * 
  * @author mepeisen
  *
  */
@@ -65,12 +67,20 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     private final EventBus               eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
+     * Constructor.
+     * 
      * @param plugin
+     *            plugin owning this object
      * @param id
+     *            id of this object
      * @param handler
+     *            handler managing the object
      * @param config
+     *            configuration file
      * @param owner
+     *            owning service
      * @throws McException
+     *             thrown on config errors
      */
     public ObjectImpl(Plugin plugin, ObjectId id, ObjectHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -125,6 +135,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
      * reads the file config.
      * 
      * @throws McException
+     *             thrown on config errors
      */
     public void readConfig() throws McException
     {
@@ -155,7 +166,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     }
     
     /**
-     * Clears all event registrations
+     * Clears all event registrations.
      */
     public void clearEventRegistrations()
     {
@@ -163,7 +174,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.registerHandler(plugin, clazz, h);
     }
@@ -175,7 +186,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.unregisterHandler(plugin, clazz, h);
     }
@@ -187,15 +198,15 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         this.eventBus.handle(eventClass, event);
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
-     * @param plugin
+     * @param plugin Plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {

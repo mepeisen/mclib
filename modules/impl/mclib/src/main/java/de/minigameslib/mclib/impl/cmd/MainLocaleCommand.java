@@ -35,6 +35,8 @@ import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 
 /**
+ * Command impl for "/mclib mainlocale".
+ * 
  * @author mepeisen
  *
  */
@@ -42,7 +44,7 @@ public class MainLocaleCommand extends AbstractCompositeCommandHandler implement
 {
     
     /**
-     * Constructor
+     * Constructor.
      */
     public MainLocaleCommand()
     {
@@ -76,7 +78,7 @@ public class MainLocaleCommand extends AbstractCompositeCommandHandler implement
     }
     
     /**
-     * Messages
+     * Messages for "/mclib mainlocale".
      */
     @LocalizedMessages("cmd.mclib_mainlocale")
     @ChildEnum({
@@ -87,21 +89,21 @@ public class MainLocaleCommand extends AbstractCompositeCommandHandler implement
     public enum Messages implements LocalizedMessageInterface
     {
         /**
-         * Command usage
+         * Command usage.
          */
         @LocalizedMessage(defaultMessage = LocalizedMessage.GRAY + "Enter " + LocalizedMessage.BLUE + "/mclib mainlocale help " + LocalizedMessage.GRAY + "for detailed help!")
         @MessageComment("Command usage for /mclib mainlocale")
         Usage,
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Display or change your main locales!")
         @MessageComment("Short description for /mclib mainlocale")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Display or change your main locales!",

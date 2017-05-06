@@ -56,6 +56,8 @@ import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of signs.
+ * 
  * @author mepeisen
  *
  */
@@ -75,14 +77,24 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
     
     /**
+     * Constructor.
+     * 
      * @param plugin
+     *            the owning plugin.
      * @param registry
+     *            the registry.
      * @param sign
+     *            the bukkit sign
      * @param id
+     *            the id
      * @param handler
+     *            the handler managing the component
      * @param config
+     *            the config file
      * @param owner
+     *            thw owning service
      * @throws McException
+     *             thrown on config errors
      */
     public SignImpl(Plugin plugin, ComponentRegistry registry, Sign sign, SignId id, SignHandlerInterface handler, File config, ComponentOwner owner) throws McException
     {
@@ -126,7 +138,10 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     /**
+     * Really destroy the sign; f.e. invoked upon SignDestroyEvent.
+     * 
      * @throws McException
+     *             thrown on deletion problems; io errors etc.
      */
     public void delete0() throws McException
     {
@@ -164,9 +179,10 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     /**
-     * Sets the sign
+     * Sets the sign.
      * 
      * @param block
+     *            bukkit sign
      */
     public void setSign(Sign block)
     {
@@ -218,7 +234,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     /**
-     * Clears all event registrations
+     * Clears all event registrations.
      */
     public void clearEventRegistrations()
     {
@@ -226,7 +242,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.registerHandler(plugin, clazz, h);
     }
@@ -238,7 +254,7 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> h)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> h)
     {
         this.eventBus.unregisterHandler(plugin, clazz, h);
     }
@@ -250,15 +266,16 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     @Override
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         this.eventBus.handle(eventClass, event);
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {

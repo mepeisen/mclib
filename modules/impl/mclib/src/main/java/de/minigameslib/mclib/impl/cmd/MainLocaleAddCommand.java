@@ -40,6 +40,8 @@ import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 
 /**
+ * Command impl for "/mclib main locale add".
+ * 
  * @author mepeisen
  *
  */
@@ -72,8 +74,12 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Displays success (locale added).
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            new locale
      */
     private void displaySuccess(CommandInterface command, Locale loc)
     {
@@ -81,8 +87,12 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     }
     
     /**
+     * Display error (main locale already exists).
+     * 
      * @param command
+     *            command interface
      * @param loc
+     *            existing locale
      */
     private void displayDuplicate(CommandInterface command, Locale loc)
     {
@@ -108,21 +118,21 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
     }
     
     /**
-     * Messages
+     * Messages for /mclib mainlocale add.
      */
     @LocalizedMessages("cmd.mclib_defaultlocale_add")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Short description
+         * Short description.
          */
         @LocalizedMessage(defaultMessage = "Add a server main locale!")
         @MessageComment("Short description for /mclib mainlocale add")
         ShortDescription,
         
         /**
-         * Description
+         * Description.
          */
         @LocalizedMessageList({
             "Add a server main locale!",
@@ -133,21 +143,21 @@ public class MainLocaleAddCommand implements SubCommandHandlerInterface
         Description,
         
         /**
-         * Locale argument missing
+         * Locale argument missing.
          */
         @LocalizedMessage(defaultMessage = "Locale argument missing", severity = MessageSeverityType.Error)
         @MessageComment("Locale argument missing")
         MissingLocale,
         
         /**
-         * Locale already in list
+         * Locale already in list.
          */
         @LocalizedMessage(defaultMessage = "Locale already in list: " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Error)
         @MessageComment(value = "Locale already in list", args = @MessageComment.Argument("locale"))
         Duplicate,
         
         /**
-         * Locale added
+         * Locale added.
          */
         @LocalizedMessage(defaultMessage = "New main locale added: " + LocalizedMessage.CODE_COLOR + "%1$s", severity = MessageSeverityType.Success)
         @MessageComment(value = "Locale was added", args = @MessageComment.Argument("locale"))

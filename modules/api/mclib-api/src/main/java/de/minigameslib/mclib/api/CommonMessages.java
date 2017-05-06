@@ -578,4 +578,18 @@ public enum CommonMessages implements LocalizedMessageInterface
     @MessageComment(value = { "List too big" }, args = { @MessageComment.Argument("config path"), @MessageComment.Argument("given character count"), @MessageComment.Argument("max character count") })
     ValidateStringTooBig,
     
+    /**
+     * prev page icon
+     */
+    @LocalizedMessage(defaultMessage = "Previous page")
+    @MessageComment(value = "prev page icon")
+    IconPreviousPage,
+    
+    /**
+     * next page icon
+     */
+    @LocalizedMessage(defaultMessage = "Next page")
+    @MessageComment(value = "next page icon")
+    IconNextPage,
+    
 }

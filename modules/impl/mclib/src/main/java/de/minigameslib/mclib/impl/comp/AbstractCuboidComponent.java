@@ -61,6 +61,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * @param owner
      *            the component owner
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public AbstractCuboidComponent(ComponentRegistry registry, Cuboid cuboid, File config, ComponentOwner owner) throws McException
     {
@@ -73,6 +74,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * reads the file config.
      * 
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public void readConfig() throws McException
     {
@@ -92,6 +94,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * Saves the file config.
      * 
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public void saveConfig() throws McException
     {
@@ -115,6 +118,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * Stores core data into config.
      * 
      * @param coreSection
+     *            data section to save to
      */
     protected abstract void saveData(DataSection coreSection);
     
@@ -122,6 +126,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * Read core data from config.
      * 
      * @param coreSection
+     *            data section to read from
      */
     protected abstract void readData(DataSection coreSection);
     
@@ -167,6 +172,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
      * @param cub
      *            cuboid of the component.
      * @throws McException
+     *             thrown on io errors/ corrupt config; thrown if component is already deleted
      */
     public void setCuboid(Cuboid cub) throws McException
     {

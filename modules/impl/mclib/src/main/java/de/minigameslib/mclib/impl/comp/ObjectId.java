@@ -30,6 +30,8 @@ import de.minigameslib.mclib.api.objects.ObjectIdInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Implementation of object id.
+ * 
  * @author mepeisen
  *
  */
@@ -46,7 +48,7 @@ public class ObjectId implements ObjectIdInterface
     private String type;
     
     /**
-     * Constructor.
+     * Constructor for reading from file.
      */
     public ObjectId()
     {
@@ -54,9 +56,14 @@ public class ObjectId implements ObjectIdInterface
     }
     
     /**
+     * Constructor for new data.
+     * 
      * @param pluginName
+     *            plugin name
      * @param type
+     *            type name/ enumration name
      * @param uuid
+     *            unique id
      */
     public ObjectId(String pluginName, String type, UUID uuid)
     {
@@ -87,19 +94,24 @@ public class ObjectId implements ObjectIdInterface
         return section.isString("plugin") //$NON-NLS-1$
             && section.isString("type") //$NON-NLS-1$
             && section.isString("uuid") //$NON-NLS-1$
-            && isUUID(section.getString("uuid")); //$NON-NLS-1$
+            && isUuid(section.getString("uuid")); //$NON-NLS-1$
     }
     
     /**
+     * Checks for valid uuid.
+     * 
      * @param str
+     *            string to be tested
      * @return true if this is a uuid
      */
-    private boolean isUUID(String str)
+    private boolean isUuid(String str)
     {
         try
         {
             if (str == null)
+            {
                 return false;
+            }
             UUID.fromString(str);
             return true;
         }
@@ -110,6 +122,7 @@ public class ObjectId implements ObjectIdInterface
     }
     
     /**
+     * Returns the plugin name.
      * @return the pluginName
      */
     public String getPluginName()
@@ -118,6 +131,7 @@ public class ObjectId implements ObjectIdInterface
     }
     
     /**
+     * Returns the uuid.
      * @return the uuid
      */
     public UUID getUuid()
@@ -126,6 +140,7 @@ public class ObjectId implements ObjectIdInterface
     }
     
     /**
+     * Returns the type.
      * @return the type
      */
     public String getType()
@@ -148,33 +163,51 @@ public class ObjectId implements ObjectIdInterface
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         ObjectId other = (ObjectId) obj;
         if (this.pluginName == null)
         {
             if (other.pluginName != null)
+            {
                 return false;
+            }
         }
         else if (!this.pluginName.equals(other.pluginName))
+        {
             return false;
+        }
         if (this.type == null)
         {
             if (other.type != null)
+            {
                 return false;
+            }
         }
         else if (!this.type.equals(other.type))
+        {
             return false;
+        }
         if (this.uuid == null)
         {
             if (other.uuid != null)
+            {
                 return false;
+            }
         }
         else if (!this.uuid.equals(other.uuid))
+        {
             return false;
+        }
         return true;
     }
     

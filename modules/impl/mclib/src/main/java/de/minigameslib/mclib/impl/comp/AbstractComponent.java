@@ -70,6 +70,7 @@ public abstract class AbstractComponent
      * @param owner
      *            the owning component
      * @throws McException
+     *             thrown on io errors/ corrupt config
      */
     public AbstractComponent(ComponentRegistry registry, File config, ComponentOwner owner) throws McException
     {
@@ -100,11 +101,14 @@ public abstract class AbstractComponent
      * Sets/Changes the world chunks this component is located in.
      * 
      * @param chunks
+     *            the new world chunks of this component
      */
     protected void setWorldChunks(Set<WorldChunk> chunks)
     {
         if (this.registry == null)
+        {
             return;
+        }
         final Set<WorldChunk> removed = new HashSet<>(this.currentChunks);
         removed.removeAll(chunks);
         final Set<WorldChunk> added = new HashSet<>(chunks);
@@ -125,6 +129,7 @@ public abstract class AbstractComponent
      * Deletes this component.
      * 
      * @throws McException
+     *             thrown if data cannot be saved
      */
     public void delete() throws McException
     {
