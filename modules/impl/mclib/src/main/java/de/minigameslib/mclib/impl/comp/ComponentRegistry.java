@@ -93,6 +93,8 @@ public class ComponentRegistry
     /**
      * Fetches components within a world chunk and filters by given class
      * 
+     * @param <T>
+     *            the class filter
      * @param clazz
      *            the class filter
      * @param chunk

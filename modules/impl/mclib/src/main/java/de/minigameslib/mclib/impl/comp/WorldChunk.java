@@ -36,17 +36,21 @@ import org.bukkit.Location;
 public class WorldChunk
 {
     
-    /** the absolute server name; {@code null} for current/local server. */
+    /**
+     * the absolute server name; {@code null} for current/local server.
+     */
     private final String serverName;
     
     /** the world name. */
     private final String worldName;
     
+    // CHECKSTYLE:OFF
     /** x coordinate of the chunk. */
     private final int    x;
     
     /** z coordinate of the chunk. */
     private final int    z;
+    // CHECKSTYLE:ON
     
     /** pre calculated hash. */
     private final int    hash;
@@ -55,9 +59,13 @@ public class WorldChunk
      * Constructor to create the world chunk.
      * 
      * @param serverName
+     *            server name
      * @param worldName
+     *            world name
      * @param x
+     *            chunk x coord
      * @param z
+     *            chunk y coord
      */
     public WorldChunk(String serverName, String worldName, int x, int z)
     {
@@ -104,6 +112,8 @@ public class WorldChunk
     }
     
     /**
+     * Returns the server name.
+     * 
      * @return the serverName
      */
     public String getServerName()
@@ -112,6 +122,8 @@ public class WorldChunk
     }
     
     /**
+     * Returns the world name.
+     * 
      * @return the worldName
      */
     public String getWorldName()
@@ -120,6 +132,8 @@ public class WorldChunk
     }
     
     /**
+     * Returns the chunk x coord.
+     * 
      * @return the x
      */
     public int getX()
@@ -128,6 +142,8 @@ public class WorldChunk
     }
     
     /**
+     * Returns the chunk y coord.
+     * 
      * @return the z
      */
     public int getZ()
@@ -139,32 +155,52 @@ public class WorldChunk
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         WorldChunk other = (WorldChunk) obj;
         if (this.hash != other.hash)
+        {
             return false;
+        }
         if (this.serverName == null)
         {
             if (other.serverName != null)
+            {
                 return false;
+            }
         }
         else if (!this.serverName.equals(other.serverName))
+        {
             return false;
+        }
         if (this.worldName == null)
         {
             if (other.worldName != null)
+            {
                 return false;
+            }
         }
         else if (!this.worldName.equals(other.worldName))
+        {
             return false;
+        }
         if (this.x != other.x)
+        {
             return false;
+        }
         if (this.z != other.z)
+        {
             return false;
+        }
         return true;
     }
     

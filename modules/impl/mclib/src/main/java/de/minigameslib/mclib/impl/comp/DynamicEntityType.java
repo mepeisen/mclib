@@ -43,7 +43,7 @@ import de.minigameslib.mclib.shared.api.com.LocationData;
 import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
 
 /**
- * Type of entities created on demand
+ * Type of entities created on demand.
  * 
  * @author mepeisen
  */
@@ -66,9 +66,14 @@ public enum DynamicEntityType
     private final Consumer<Entity>                delete;
     
     /**
+     * Constructor.
+     * 
      * @param resume
+     *            function for resuming the entity.
      * @param store
+     *            function for writing data to store.
      * @param delete
+     *            function for deleting the entity.
      */
     private DynamicEntityType(Function<DataSection, Entity> resume, BiConsumer<DataSection, Entity> store, Consumer<Entity> delete)
     {
@@ -78,9 +83,10 @@ public enum DynamicEntityType
     }
     
     /**
-     * Resumes entity from data section
+     * Resumes entity from data section.
      * 
      * @param section
+     *            data section to read from
      * @return entity
      */
     public Entity onResume(DataSection section)
@@ -89,10 +95,12 @@ public enum DynamicEntityType
     }
     
     /**
-     * Stores data to data section
+     * Stores data to data section.
      * 
      * @param section
+     *            data section to write to
      * @param entity
+     *            bukkit entity
      */
     public void onStore(DataSection section, Entity entity)
     {
@@ -100,9 +108,10 @@ public enum DynamicEntityType
     }
     
     /**
-     * Deletion of entity
+     * Deletion of entity.
      * 
      * @param entity
+     *            bukkit entity to delete
      */
     public void onDelete(Entity entity)
     {
@@ -110,15 +119,16 @@ public enum DynamicEntityType
     }
     
     /**
-     * dummy villager helper
+     * dummy villager helper.
      */
     private static final class DummyVillager
     {
         
         /**
-         * Resumes entity from data section
+         * Resumes entity from data section.
          * 
          * @param section
+         *            data section to read from.
          * @return entity
          */
         static Entity onResume(DataSection section)
@@ -132,10 +142,12 @@ public enum DynamicEntityType
         }
         
         /**
-         * Stores data to data section
+         * Stores data to data section.
          * 
          * @param section
+         *            data section to write to
          * @param entity
+         *            bukkit entity
          */
         static void onStore(DataSection section, Entity entity)
         {
@@ -146,9 +158,10 @@ public enum DynamicEntityType
         }
         
         /**
-         * Delete function
+         * Delete function.
          * 
          * @param entity
+         *            bukkit entity
          */
         static void onDelete(Entity entity)
         {
@@ -159,15 +172,16 @@ public enum DynamicEntityType
     }
     
     /**
-     * dummy player helper
+     * dummy player helper.
      */
     private static final class DummyHuman
     {
         
         /**
-         * Resumes entity from data section
+         * Resumes entity from data section.
          * 
          * @param section
+         *            data section to read from.
          * @return entity
          */
         static Entity onResume(DataSection section)
@@ -185,10 +199,12 @@ public enum DynamicEntityType
         }
         
         /**
-         * Stores data to data section
+         * Stores data to data section.
          * 
          * @param section
+         *            data section to write to
          * @param entity
+         *            bukkit entity
          */
         static void onStore(DataSection section, Entity entity)
         {
@@ -206,9 +222,10 @@ public enum DynamicEntityType
         }
         
         /**
-         * Delete function
+         * Delete function.
          * 
          * @param entity
+         *            bukkit entity
          */
         static void onDelete(Entity entity)
         {
