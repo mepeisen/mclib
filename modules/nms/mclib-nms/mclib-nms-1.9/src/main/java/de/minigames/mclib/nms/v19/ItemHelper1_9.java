@@ -211,7 +211,7 @@ public class ItemHelper1_9 implements ItemHelperInterface
     {
         try
         {
-            final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
+            final Field field = ItemStack.class.getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             field.set(stack, meta);
         }
@@ -261,7 +261,7 @@ public class ItemHelper1_9 implements ItemHelperInterface
                 return stack.getItemMeta();
             }
             
-            final Field field = stack.getClass().getDeclaredField("meta"); //$NON-NLS-1$
+            final Field field = ItemStack.class.getDeclaredField("meta"); //$NON-NLS-1$
             field.setAccessible(true);
             return (ItemMeta) field.get(stack);
         }
