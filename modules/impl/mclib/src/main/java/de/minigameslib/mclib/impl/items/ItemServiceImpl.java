@@ -85,7 +85,6 @@ import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockInventoryMeta;
 import de.minigameslib.mclib.api.items.BlockMeta;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
-import de.minigameslib.mclib.api.items.BlockVariantData;
 import de.minigameslib.mclib.api.items.BlockVariantId;
 import de.minigameslib.mclib.api.items.CraftingItemInterface;
 import de.minigameslib.mclib.api.items.CraftingRecipes;
@@ -132,13 +131,13 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
 public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterface, ResourceServiceInterface, McListener
 {
     
-    /** java logger */
+    /** java logger. */
     private static final Logger                         LOGGER           = Logger.getLogger(ItemServiceImpl.class.getName());
     
     /** the item id to value map. */
     protected Map<ItemId, CustomItem>                   itemIdMap        = new HashMap<>();
     
-    /** the custom items per material/ damage value */
+    /** the custom items per material/ damage value. */
     private final Map<Material, Map<Short, CustomItem>> itemsPerMaterial = new HashMap<>();
     
     /** the block to numId map. */
@@ -157,15 +156,15 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     private Map<CustomBlock, Integer>                   blockMap         = new HashMap<>();
     
     /**
-     * a list of lazy initialization runnables; invoked by fetching PluginEnableEvent-
+     * a list of lazy initialization runnables; invoked by fetching PluginEnableEvent.
      */
     private Map<String, List<Runnable>>                 lazyPluginInit   = new HashMap<>();
     
-    /** list of countries for languages */
+    /** list of countries for languages. */
     private Map<String, Set<String>>                    languagesMap     = new TreeMap<>();
     
     /**
-     * Initialized the items from registered enumerations
+     * Initialized the items from registered enumerations.
      */
     public void init()
     {
@@ -225,54 +224,62 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     private class ToolBuilderImpl implements ToolBuilderInterface
     {
         /**
-         * tooling id to divide multiple toolings
+         * tooling id to divide multiple toolings.
          */
         private static final String                                    CUSTOMKEY_TOOLING_ID     = "toolingId";     //$NON-NLS-1$
         /**
-         * marker for clearing tooling on join
+         * marker for clearing tooling on join.
          */
         private static final String                                    CUSTOMKEY_CLEAR_ON_JOIN  = "clearOnJoin";   //$NON-NLS-1$
         /**
-         * tooling marker for custom tooling item
+         * tooling marker for custom tooling item.
          */
         private static final String                                    CUSTOMKEY_TOOLING_MARKER = "customTooling"; //$NON-NLS-1$
         /**
-         * plugin for item custom data
+         * plugin for item custom data.
          */
         private static final String                                    CUSTOMDATA_PLUGIN        = "mclib";         //$NON-NLS-1$
         
-        /** flag for single use */
+        /** flag for single use. */
         private boolean                                                singleUse;
-        /** right click handler */
+        /** right click handler. */
         private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClick;
-        /** left click handler */
+        /** left click handler. */
         private McBiConsumer<McPlayerInterface, McPlayerInteractEvent> leftClick;
-        /** description */
+        /** description. */
         private LocalizedMessageInterface                              description;
-        /** description arguments */
+        /** description arguments. */
         private Serializable[]                                         descriptionArgs;
         
         /**
-         * the player
+         * the player.
          */
         private final McPlayerInterface                                player;
         /**
-         * the item factory
+         * the item factory.
          */
         private final Supplier<ItemStack>                              itemFactory;
         
         /** the target inventory. */
         private Inventory                                              targetInventory;
-        /** target slot; -1 for any free slot */
+        /** target slot; -1 for any free slot. */
         private int                                                    targetSlot               = -1;
-        /** {@code true} to override existing items in {@code targetSlot} */
+        /**
+         * {@code true} to override existing items in {@code targetSlot}.
+         */
         private boolean                                                targetRemoveExisting;
-        /** {qcode true} to override any existing tooling; only if {@code targetSlot} if not set */
+        /**
+         * {@code true} to override any existing tooling; only if {@code targetSlot} if not set.
+         */
         private boolean                                                overridePlayerTools      = true;
         
         /**
+         * Constructor for creating a tool builder.
+         * 
          * @param player
+         *            target player.
          * @param itemFactory
+         *            the item factory.
          */
         public ToolBuilderImpl(McPlayerInterface player, Supplier<ItemStack> itemFactory)
         {
@@ -383,12 +390,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
-         * Sets tooling item to given slot
+         * Sets tooling item to given slot.
          * 
          * @param inventory
+         *            the target inventory.
          * @param slot
+         *            the target slot.
          * @param helper
+         *            the item helper.
          * @param marker
+         *            tooling data helper
          */
         private void setTooling(Inventory inventory, int slot, final ItemHelperInterface helper, ToolMarker marker)
         {
@@ -416,28 +427,35 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Item rule to pass to nms classes.
+     * 
      * @author mepeisen
      *
      */
     private final class NmsItemRule implements NmsItemRuleInterface
     {
         /**
-         * 
+         * damage rule got from annotations.
          */
         private final ItemDmgInterface    dmg;
         /**
-         * 
+         * repair rule got from annotations.
          */
         private final ItemRepairInterface rep;
         /**
-         * 
+         * dig rule got from annotations.
          */
         private final ItemDigInterface    dig;
         
         /**
+         * Constructor.
+         * 
          * @param dmg
+         *            damager rule got from annotations.
          * @param rep
+         *            repair rule got from annotations.
          * @param dig
+         *            dig rule got from annotations.
          */
         protected NmsItemRule(ItemDmgInterface dmg, ItemRepairInterface rep, ItemDigInterface dig)
         {
@@ -491,7 +509,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Listener to watch for new block registrations
+     * Listener to watch for new block registrations.
      * 
      * @author mepeisen
      */
@@ -499,7 +517,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public BlockListener()
         {
@@ -524,7 +542,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Listener to watch for new item registrations
+     * Listener to watch for new item registrations.
      * 
      * @author mepeisen
      */
@@ -532,7 +550,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public ItemListener()
         {
@@ -557,7 +575,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * initializes the items
+     * initializes the items.
      */
     private void initItems()
     {
@@ -583,21 +601,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * @param inventory
-     * @param targetSlot
-     * @param invitem
-     * @param helper
-     * @param marker
-     */
-    public void deleteTooling(Inventory inventory, int targetSlot, ItemStack invitem, ItemHelperInterface helper, ToolMarker marker)
-    {
-        final String id = helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID);
-        marker.getTools().remove(id);
-        inventory.setItem(targetSlot, null);
-    }
-    
-    /**
+     * Initializes items from given stream.
+     * 
      * @param stream
+     *            items that were added through enum service
      */
     protected void initItems(final Stream<ItemId> stream)
     {
@@ -654,7 +661,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 for (final Durability dur : type.getDurabilities())
                 {
                     if (this.itemsPerMaterial.get(type.getMaterial()).containsKey(dur.getItemStackDurability()))
+                    {
                         continue;
+                    }
                     
                     final CustomItem item = newSimpleItems.pop();
                     item.setCustomDurability(dur);
@@ -681,7 +690,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             for (int i = MclibConstants.MIN_ITEM_ID; i < MclibConstants.MAX_ITEM_ID; i++)
             {
                 if (this.itemNumIdMap.containsKey(i))
+                {
                     continue;
+                }
                 
                 final CustomItem item = newModdedItems.pop();
                 item.setNumId(i);
@@ -795,12 +806,41 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Delete tooling item.
+     * 
+     * @param inventory
+     *            target inventory
+     * @param targetSlot
+     *            target slot number
+     * @param invitem
+     *            inventory item
      * @param helper
+     *            item helper
+     * @param marker
+     *            tooling data helper
+     */
+    public void deleteTooling(Inventory inventory, int targetSlot, ItemStack invitem, ItemHelperInterface helper, ToolMarker marker)
+    {
+        final String id = helper.getCustomData(invitem, ToolBuilderImpl.CUSTOMDATA_PLUGIN, ToolBuilderImpl.CUSTOMKEY_TOOLING_ID);
+        marker.getTools().remove(id);
+        inventory.setItem(targetSlot, null);
+    }
+    
+    /**
+     * Initializes a sword (nms).
+     * 
+     * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param sword
+     *            the sword annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initSword(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemSword sword) throws InstantiationException, IllegalAccessException
     {
@@ -817,12 +857,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes a shovel (nms).
+     * 
      * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param shovel
+     *            the shovel annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initShovel(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemShovel shovel) throws InstantiationException, IllegalAccessException
     {
@@ -839,12 +887,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes a pickaxe (nms).
+     * 
      * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param pickaxe
+     *            the pickaxe annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initPickaxe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemPickaxe pickaxe) throws InstantiationException, IllegalAccessException
     {
@@ -861,12 +917,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes a hoe (nms).
+     * 
      * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param hoe
+     *            the hoe annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initHoe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemHoe hoe) throws InstantiationException, IllegalAccessException
     {
@@ -883,12 +947,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes an axe (nms).
+     * 
      * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param axe
+     *            the axe annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initAxe(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemAxe axe) throws InstantiationException, IllegalAccessException
     {
@@ -905,12 +977,20 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes an armor (nms).
+     * 
      * @param helper
+     *            item helper
      * @param custom
+     *            the custom item
      * @param item
+     *            the item id
      * @param armor
+     *            the armor annotation data
      * @throws IllegalAccessException
+     *             thrown on problems creating rules
      * @throws InstantiationException
+     *             thrown on problems creating rules
      */
     private void initArmor(ItemHelperInterface helper, CustomItem custom, ItemId item, ItemArmor armor) throws InstantiationException, IllegalAccessException
     {
@@ -927,7 +1007,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Converts crafting data to item array for shapeless crafts.
+     * 
      * @param items
+     *            crafting data from annotations.
      * @return shapeless items
      */
     private ItemStack[] toShapelessItems(Class<? extends CraftingItemInterface>[] items)
@@ -948,7 +1031,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Converts crafting data to item map for shaped crafts.
+     * 
      * @param items
+     *            crafting data from annotations.
      * @return shaped item map
      */
     private Map<Character, ItemStack> toShapedItems(CraftingShapedItem[] items)
@@ -969,7 +1055,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * initializes the items
+     * initializes the custom blocks.
      */
     private void initBlocks()
     {
@@ -985,7 +1071,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Initializes the custom blocks from given stream.
+     * 
      * @param stream
+     *            blocks registered at enumeration service.
      */
     protected void initBlocks(final Stream<BlockId> stream)
     {
@@ -1026,7 +1115,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             for (int i = MclibConstants.MIN_BLOCK_ID; i < MclibConstants.MAX_BLOCK_ID; i++)
             {
                 if (this.blockNumIdMap.containsKey(i))
+                {
                     continue;
+                }
                 
                 final CustomBlock block = newBlocks.pop();
                 block.setNumId(i);
@@ -1127,7 +1218,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Converts enumeration block id to numeric block id.
+     * 
      * @param block
+     *            block id (enumeration value)
      * @return num id
      */
     private int blockToNumId(final BlockId block)
@@ -1137,11 +1231,18 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Sets the block meta data.
+     * 
      * @param helper
+     *            item helper
      * @param block
+     *            enumeration block id
      * @param blockId
+     *            numeric block id
      * @param meta
+     *            block meta data
      * @param dropRule
+     *            the drop rule
      */
     private void setBlockMeta(final ItemHelperInterface helper, final BlockId block, final int blockId, final BlockMeta meta, final BlockDropRuleInterface dropRule)
     {
@@ -1179,9 +1280,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ResourceVersion getResourceVersion(MinecraftVersionsType minecraftVersion)
     {
         if (minecraftVersion.isBelow(MinecraftVersionsType.V1_9))
+        {
             return ResourceVersion.PACK_FORMAT_1;
+        }
         if (minecraftVersion.isBelow(MinecraftVersionsType.V1_11))
+        {
             return ResourceVersion.PACK_FORMAT_2;
+        }
         return ResourceVersion.PACK_FORMAT_3;
     }
     
@@ -1327,6 +1432,37 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         return createItem(item, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
     
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant)
+    {
+        return this.createItem(id, variant, null);
+    }
+    
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return this.createItem(id, variant, name == null ? null : name.toUserMessage(McLibInterface.instance().getDefaultLocale(), nameArgs));
+    }
+    
+    @Override
+    public ItemStack createItem(BlockId id, BlockVariantId variant, String name)
+    {
+        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(),
+            name == null ? "" : name); //$NON-NLS-1$
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant)
+    {
+        return this.createItem(player, id, variant, null);
+    }
+    
+    @Override
+    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
+    {
+        return this.createItem(id, variant, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
+    }
+    
     @SuppressWarnings("deprecation")
     @Override
     public ItemId getItemId(ItemStack stack)
@@ -1354,12 +1490,109 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         this.createResourcePack(target, this.getResourceVersion(McLibInterface.instance().getMinecraftVersion()));
     }
     
+    @Override
+    public void createResourcePack(File target, ResourceVersion version) throws IOException
+    {
+        if (!target.getParentFile().exists())
+        {
+            target.getParentFile().mkdirs();
+        }
+        if (target.exists())
+        {
+            target.delete();
+        }
+        try (final JarOutputStream jar = new JarOutputStream(new FileOutputStream(target)))
+        {
+            final JarEntry mcmeta = new JarEntry("pack.mcmeta"); //$NON-NLS-1$
+            mcmeta.setTime(System.currentTimeMillis());
+            jar.putNextEntry(mcmeta);
+            switch (version)
+            {
+                case PACK_FORMAT_1:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v1/pack.mcmeta"); //$NON-NLS-1$
+                    break;
+                case PACK_FORMAT_2:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v2/pack.mcmeta"); //$NON-NLS-1$
+                    break;
+                default:
+                case PACK_FORMAT_3:
+                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v3/pack.mcmeta"); //$NON-NLS-1$
+                    break;
+            }
+            jar.closeEntry();
+            
+            // default model overrides
+            this.itemsPerMaterial.forEach((martial, map) -> this.writeItemOverrides(jar, martial, map));
+            
+            // model files
+            this.itemsPerMaterial.forEach((material, map) -> this.writeItemModel(jar, material, map));
+            
+            // block states
+            this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
+            
+            // items
+            this.itemNumIdMap.forEach((numId, item) -> this.writeItems(jar, numId, item));
+            
+            // item/block names
+            for (final Locale loc : McLibInterface.instance().getMainLocales())
+            {
+                for (final Locale cloc : this.getClientLocales(loc))
+                {
+                    final String file = "assets/mclib/lang/" + cloc + ".lang"; //$NON-NLS-1$ //$NON-NLS-2$
+                    final JarEntry langFile = new JarEntry(file);
+                    langFile.setTime(System.currentTimeMillis());
+                    jar.putNextEntry(langFile);
+                    final StringBuilder buffer = new StringBuilder();
+                    this.blockNumIdMap.forEach((numId, block) ->
+                    {
+                        for (final BlockVariantId variant : block.getBlockId().variants())
+                        {
+                            NameProvider provider = variant.nameProvider();
+                            if (provider == null || provider.getName() == null)
+                            {
+                                provider = block.getNameProvider();
+                            }
+                            if (provider != null)
+                            {
+                                final LocalizedMessageInterface name = provider.getName();
+                                if (name != null)
+                                {
+                                    buffer.append("tile.custom-" + numId + ".variant_" + variant.ordinal() + ".name="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    buffer.append(name.toUserMessage(loc));
+                                    buffer.append("\n"); //$NON-NLS-1$
+                                }
+                            }
+                        }
+                    });
+                    this.itemNumIdMap.forEach((numId, item) ->
+                    {
+                        final NameProvider provider = item.getNameProvider();
+                        if (provider != null)
+                        {
+                            final LocalizedMessageInterface name = provider.getName();
+                            if (name != null)
+                            {
+                                buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
+                                buffer.append(name.toUserMessage(loc));
+                                buffer.append("\n"); //$NON-NLS-1$
+                            }
+                        }
+                    });
+                    writeFile(jar, buffer.toString());
+                }
+            }
+        }
+    }
+    
     /**
-     * write item overrides
+     * write item overrides.
      * 
      * @param jar
+     *            the jar output stream
      * @param material
+     *            the material that is generated
      * @param map
+     *            the map holding the material items by damage value
      */
     private void writeItemOverrides(JarOutputStream jar, Material material, Map<Short, CustomItem> map)
     {
@@ -1379,8 +1612,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             for (CustomItem item : map.values())
             {
                 if (item == null)
+                {
                     continue;
-                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ").append(item.getCustomDurability().getModelDurability()).append("}, \"model\": \"item/").append(item.getPluginName()) //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ") //$NON-NLS-1$
+                    .append(item.getCustomDurability().getModelDurability())
+                    .append("}, \"model\": \"item/").append(item.getPluginName()) //$NON-NLS-1$
                     .append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$
             }
             buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1394,11 +1631,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * write blockstates
+     * write blockstates.
      * 
      * @param jar
+     *            jar output stream
      * @param numId
+     *            numeric block id
      * @param block
+     *            custom block data.
      */
     private void writeBlockstates(JarOutputStream jar, Integer numId, CustomBlock block)
     {
@@ -1407,7 +1647,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final BlockId blockId = block.getBlockId();
             if (blockId == null)
             {
-                LOGGER.warning("Missing block " + block.getPluginName() + "/" + block.getEnumName() + "\nThis may not be a problem if the block is no more in use."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                LOGGER.warning(
+                    "Missing block " //$NON-NLS-1$
+                        + block.getPluginName() + "/" + block.getEnumName() //$NON-NLS-1$
+                        + "\nThis may not be a problem if the block is no more in use."); //$NON-NLS-1$
                 return;
             }
             
@@ -1420,9 +1663,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             for (final BlockVariantId variant : blockId.variants())
             {
                 if (first)
+                {
                     first = false;
+                }
                 else
+                {
                     buffer.append(", "); //$NON-NLS-1$
+                }
                 buffer.append("\"variant=variant_").append(variant.ordinal()).append("\": {"); //$NON-NLS-1$ //$NON-NLS-2$
                 buffer.append("\"model\": \"mclib:custom-").append(numId).append("-").append(variant.ordinal()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
@@ -1492,11 +1739,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * write item overrides
+     * write item overrides.
      * 
      * @param jar
+     *            jar output stream
      * @param material
+     *            material data
      * @param map
+     *            map with items per damage value
      */
     private void writeItemModel(JarOutputStream jar, Material material, Map<Short, CustomItem> map)
     {
@@ -1504,7 +1754,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         {
             if (item.getItemId() == null)
             {
-                LOGGER.warning("Missing item " + item.getPluginName() + "/" + item.getEnumName() + "\nThis may not be a problem if the item is no more in use."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                LOGGER.warning(
+                    "Missing item " //$NON-NLS-1$
+                        + item.getPluginName() + "/" + item.getEnumName() //$NON-NLS-1$
+                        + "\nThis may not be a problem if the item is no more in use."); //$NON-NLS-1$
                 continue;
             }
             try
@@ -1541,102 +1794,15 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
     }
     
-    @Override
-    public void createResourcePack(File target, ResourceVersion version) throws IOException
-    {
-        if (!target.getParentFile().exists())
-        {
-            target.getParentFile().mkdirs();
-        }
-        if (target.exists())
-        {
-            target.delete();
-        }
-        try (final JarOutputStream jar = new JarOutputStream(new FileOutputStream(target)))
-        {
-            final JarEntry mcmeta = new JarEntry("pack.mcmeta"); //$NON-NLS-1$
-            mcmeta.setTime(System.currentTimeMillis());
-            jar.putNextEntry(mcmeta);
-            switch (version)
-            {
-                case PACK_FORMAT_1:
-                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v1/pack.mcmeta"); //$NON-NLS-1$
-                    break;
-                case PACK_FORMAT_2:
-                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v2/pack.mcmeta"); //$NON-NLS-1$
-                    break;
-                default:
-                case PACK_FORMAT_3:
-                    copyFile(jar, this.getClass().getClassLoader(), "de/minigameslib/mclib/resources/v3/pack.mcmeta"); //$NON-NLS-1$
-                    break;
-            }
-            jar.closeEntry();
-            
-            // default model overrides
-            this.itemsPerMaterial.forEach((martial, map) -> this.writeItemOverrides(jar, martial, map));
-            
-            // model files
-            this.itemsPerMaterial.forEach((material, map) -> this.writeItemModel(jar, material, map));
-            
-            // block states
-            this.blockNumIdMap.forEach((numId, block) -> this.writeBlockstates(jar, numId, block));
-            
-            // items
-            this.itemNumIdMap.forEach((numId, item) -> this.writeItems(jar, numId, item));
-            
-            // item/block names
-            for (final Locale loc : McLibInterface.instance().getMainLocales())
-            {
-                for (final Locale cloc : this.getClientLocales(loc))
-                {
-                    final String file = "assets/mclib/lang/" + cloc + ".lang"; //$NON-NLS-1$ //$NON-NLS-2$
-                    final JarEntry langFile = new JarEntry(file);
-                    langFile.setTime(System.currentTimeMillis());
-                    jar.putNextEntry(langFile);
-                    final StringBuilder buffer = new StringBuilder();
-                    this.blockNumIdMap.forEach((numId, block) ->
-                    {
-                        for (final BlockVariantId variant : block.getBlockId().variants())
-                        {
-                            NameProvider provider = variant.nameProvider();
-                            if (provider == null || provider.getName() == null)
-                                provider = block.getNameProvider();
-                            if (provider != null)
-                            {
-                                final LocalizedMessageInterface name = provider.getName();
-                                if (name != null)
-                                {
-                                    buffer.append("tile.custom-" + numId + ".variant_" + variant.ordinal() + ".name="); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                                    buffer.append(name.toUserMessage(loc));
-                                    buffer.append("\n"); //$NON-NLS-1$
-                                }
-                            }
-                        }
-                    });
-                    this.itemNumIdMap.forEach((numId, item) ->
-                    {
-                        final NameProvider provider = item.getNameProvider();
-                        if (provider != null)
-                        {
-                            final LocalizedMessageInterface name = provider.getName();
-                            if (name != null)
-                            {
-                                buffer.append("tile.custom-" + numId + ".name="); //$NON-NLS-1$ //$NON-NLS-2$
-                                buffer.append(name.toUserMessage(loc));
-                                buffer.append("\n"); //$NON-NLS-1$
-                            }
-                        }
-                    });
-                    writeFile(jar, buffer.toString());
-                }
-            }
-        }
-    }
-    
     /**
+     * Writes items to jar file.
+     * 
      * @param jar
+     *            jar output stream
      * @param numId
+     *            numeric id
      * @param item
+     *            custom item data
      */
     private void writeItems(JarOutputStream jar, Integer numId, CustomItem item)
     {
@@ -1692,9 +1858,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Writes string to jar output stream file.
+     * 
      * @param jar
+     *            jar output stream
      * @param content
+     *            string to be written
      * @throws IOException
+     *             thrown on io errors in jar output stream
      */
     private void writeFile(JarOutputStream jar, String content) throws IOException
     {
@@ -1702,10 +1873,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Copies resource file from built plugin jar to jar output stream.
+     * 
      * @param jar
+     *            jar output stream
      * @param classLoader
+     *            class loader to fetch the file
      * @param name
+     *            name of the resource
      * @throws IOException
+     *             thrown on io errors in jar output stream or classloaders input stream
      */
     private void copyFile(JarOutputStream jar, ClassLoader classLoader, String name) throws IOException
     {
@@ -1718,7 +1895,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 {
                     int count = bis.read(buffer);
                     if (count == -1)
+                    {
                         break;
+                    }
                     jar.write(buffer, 0, count);
                 }
             }
@@ -1726,7 +1905,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
+     * Clear tools in players inventory.
+     * 
      * @param inventory
+     *            target inventory
      */
     public void clearTools(PlayerInventory inventory)
     {
@@ -1747,7 +1929,9 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ToolBuilderInterface prepareTool(ItemId item, McPlayerInterface player, LocalizedMessageInterface title, Serializable... titleArgs)
     {
         if (item.isModded())
+        {
             throw new IllegalStateException("modded items not yet supported"); // TODO support modded items (check for client mod) //$NON-NLS-1$
+        }
         return new ToolBuilderImpl(player, () -> createItem(player, item, title, titleArgs)) {
             @Override
             public void build()
@@ -1793,9 +1977,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Player death event; cancels the drop of the tooling item...
+     * Player death event; cancels the drop of the tooling item.
      * 
      * @param evt
+     *            event
      */
     @McEventHandler
     public void onDeath(McPlayerDeathEvent evt)
@@ -1813,9 +1998,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * On drop items; cancels drop of tooling item...
+     * On drop items; cancels drop of tooling item.
      * 
      * @param evt
+     *            event
      */
     @McEventHandler
     public void onPlayerDrop(McPlayerDropItemEvent evt)
@@ -1828,9 +2014,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * On inventory action; cancels drop of tooling item into other inventories...
+     * On inventory action; cancels drop of tooling item into other inventories.
      * 
      * @param evt
+     *            event
      */
     @McEventHandler
     public void onInventoryClick(McInventoryClickEvent evt)
@@ -1877,9 +2064,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Player mouse click
+     * Player mouse click.
      * 
      * @param evt
+     *            event
      */
     @McEventHandler
     public void onClick(McPlayerInteractEvent evt)
@@ -1988,7 +2176,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         private McRunnable         declined;
         
         /**
+         * Constructor.
+         * 
          * @param state
+         *            resource state
          */
         public ResourcePackMarker(ResourcePackStatus state)
         {
@@ -1996,11 +2187,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
-         * Constructor
+         * Constructor.
          * 
          * @param success
+         *            success function invoked once the status is reached
          * @param failure
+         *            failure function invoked once the status is reached
          * @param declined
+         *            declined function invoked once the status is reached
          */
         public ResourcePackMarker(McRunnable success, McRunnable failure, McRunnable declined)
         {
@@ -2010,6 +2204,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Sets the resource state.
+         * 
          * @param state
          *            the state to set
          */
@@ -2019,6 +2215,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the resource state.
+         * 
          * @return the state
          */
         public ResourcePackStatus getState()
@@ -2027,6 +2225,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the success function.
+         * 
          * @return the success
          */
         public McRunnable getSuccess()
@@ -2035,6 +2235,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the failure function.
+         * 
          * @return the failure
          */
         public McRunnable getFailure()
@@ -2043,6 +2245,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the declined function.
+         * 
          * @return the declined
          */
         public McRunnable getDeclined()
@@ -2053,7 +2257,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Tool data helper
+     * Tool data helper.
      * 
      * @author mepeisen
      */
@@ -2061,12 +2265,14 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     {
         
         /**
-         * tools
+         * tools.
          */
         @PersistentField
         protected Map<String, ToolData> tools = new HashMap<>();
         
         /**
+         * The tools data per uuid.
+         * 
          * @return the tools
          */
         public Map<String, ToolData> getTools()
@@ -2077,13 +2283,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * A marker for players that have installed tools
+     * A marker for players that have installed tools.
      */
     public static final class ToolData extends AnnotatedDataFragment
     {
         
         /**
-         * boolean for destroying of tool upon use
+         * boolean for destroying of tool upon use.
          */
         @PersistentField
         protected boolean                                                isOneUse;
@@ -2099,6 +2305,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         protected McBiConsumer<McPlayerInterface, McPlayerInteractEvent> rightClickHandler;
         
         /**
+         * Returns {@code true} for one use items.
+         * 
          * @return the isOneUse
          */
         public boolean isOneUse()
@@ -2107,6 +2315,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Sets the one use flag.
+         * 
          * @param isOneUse
          *            the isOneUse to set
          */
@@ -2116,6 +2326,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the left mouse click handler.
+         * 
          * @return the leftClickHandler
          */
         public McBiConsumer<McPlayerInterface, McPlayerInteractEvent> getLeftClickHandler()
@@ -2124,6 +2336,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Sets the left mouse click handler.
+         * 
          * @param leftClickHandler
          *            the leftClickHandler to set
          */
@@ -2133,6 +2347,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the right mouse click handler.
+         * 
          * @return the rightClickHandler
          */
         public McBiConsumer<McPlayerInterface, McPlayerInteractEvent> getRightClickHandler()
@@ -2141,6 +2357,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Sets the right mouse click handler.
+         * 
          * @param rightClickHandler
          *            the rightClickHandler to set
          */
@@ -2149,37 +2367,6 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             this.rightClickHandler = rightClickHandler;
         }
         
-    }
-    
-    @Override
-    public ItemStack createItem(BlockId id, BlockVariantId variant)
-    {
-        return this.createItem(id, variant, null);
-    }
-    
-    @Override
-    public ItemStack createItem(BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
-    {
-        return this.createItem(id, variant, name == null ? null : name.toUserMessage(McLibInterface.instance().getDefaultLocale(), nameArgs));
-    }
-    
-    @Override
-    public ItemStack createItem(BlockId id, BlockVariantId variant, String name)
-    {
-        return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).createItemStackForBlock(this.blockIdMap.get(id).getNumId(), variant.ordinal(),
-            name == null ? "" : name); //$NON-NLS-1$
-    }
-    
-    @Override
-    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant)
-    {
-        return this.createItem(player, id, variant, null);
-    }
-    
-    @Override
-    public ItemStack createItem(McPlayerInterface player, BlockId id, BlockVariantId variant, LocalizedMessageInterface name, Serializable... nameArgs)
-    {
-        return this.createItem(id, variant, name == null ? null : player.encodeMessage(name, nameArgs)[0]);
     }
     
     @Override
@@ -2233,9 +2420,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Saves the items to config
+     * Saves the items to config.
      * 
      * @param items
+     *            items to be saved
      */
     private void saveItems(CustomItem[] items)
     {
@@ -2244,9 +2432,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Saves the blocks to config
+     * Saves the blocks to config.
      * 
      * @param blocks
+     *            blocks to be saved
      */
     private void saveBlocks(CustomBlock[] blocks)
     {
@@ -2255,7 +2444,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * loads items from config
+     * loads items from config.
      * 
      * @return items
      */
@@ -2269,7 +2458,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * loads blocks from config
+     * loads blocks from config.
      * 
      * @return blocks
      */
@@ -2339,9 +2528,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * Populate ping data with block/item info
+     * Populate ping data with block/item info.
      * 
      * @param ping
+     *            ping data to be populated with block and item data.
      */
     public void populate(PingData ping)
     {
@@ -2415,9 +2605,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * On plugin enable
+     * On plugin enable.
      * 
      * @param plugin
+     *            plugin that was enabled.
      */
     public void onEnable(Plugin plugin)
     {
@@ -2429,21 +2620,26 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     }
     
     /**
-     * the item info
+     * the item info.
      */
     private static final class ItemInfo
     {
-        /** material */
+        /** material. */
         private final Material material;
-        /** durability */
+        /** durability. */
         private final short    durability;
-        /** numeric id */
+        /** numeric id. */
         private final int      numId;
         
         /**
+         * Constructor.
+         * 
          * @param material
+         *            material data
          * @param durability
+         *            durability value
          * @param numId
+         *            numeric id
          */
         public ItemInfo(Material material, short durability, int numId)
         {
@@ -2453,6 +2649,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the material.
+         * 
          * @return the material
          */
         public Material getMaterial()
@@ -2461,6 +2659,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the durability.
+         * 
          * @return the durability
          */
         public short getDurability()
@@ -2469,6 +2669,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         
         /**
+         * Returns the numeric id.
+         * 
          * @return the numId
          */
         public int getNumId()

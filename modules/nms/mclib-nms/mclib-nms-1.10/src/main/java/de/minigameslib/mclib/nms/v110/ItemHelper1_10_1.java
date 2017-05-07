@@ -83,13 +83,15 @@ import net.minecraft.server.v1_10_R1.RegistryID;
 import net.minecraft.server.v1_10_R1.WorldGenMinable;
 
 /**
+ * Item helper impl.
+ * 
  * @author mepeisen
  *
  */
 public class ItemHelper1_10_1 implements ItemHelperInterface
 {
     
-    /** Logger */
+    /** Logger. */
     private static final Logger LOGGER = Logger.getLogger(ItemHelper1_10_1.class.getName());
     
     @Override
@@ -198,8 +200,12 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
     
     /**
+     * sets meta data to item stack.
+     * 
      * @param stack
+     *            target stack
      * @param meta
+     *            meta data
      */
     public static void setMeta(ItemStack stack, ItemMeta meta)
     {
@@ -222,9 +228,9 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         if (meta == null)
         {
             meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
-            setMeta(stack, meta);
         }
         meta.setDisplayName(displayName);
+        setMeta(stack, meta);
     }
     
     @Override
@@ -234,13 +240,16 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         if (meta == null)
         {
             meta = CraftItemFactory.instance().getItemMeta(Material.APPLE);
-            setMeta(stack, meta);
         }
         meta.setLore(Arrays.asList(description));
+        setMeta(stack, meta);
     }
     
     /**
+     * Returns items meta data.
+     * 
      * @param stack
+     *            target stack
      * @return meta
      */
     public static ItemMeta getMeta(ItemStack stack)
@@ -266,12 +275,19 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
      * Creates a local bukkit material.
      * 
      * @param materials
+     *            materials array
      * @param byName
+     *            material by name
      * @param id
+     *            numeric id
      * @param name
+     *            material name
      * @param ctor
+     *            constructor
      * @param maxStack
+     *            max stack size
      * @param durability
+     *            durability
      * @return new bukkit material.
      */
     private Material createBukkitMaterial(Material[] materials, Map<String, Material> byName, int id, String name, Constructor<? extends MaterialData> ctor, int maxStack, short durability)
@@ -282,11 +298,14 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
     
     /**
-     * Sets a private field
+     * Sets a private field.
      * 
      * @param target
+     *            target object
      * @param name
+     *            field name
      * @param value
+     *            new field value
      */
     private void setPrivateField(Object target, String name, Object value)
     {
@@ -307,7 +326,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         try
         {
-            final Method itemMth = net.minecraft.server.v1_10_R1.Item.class.getDeclaredMethod("a", int.class, String.class, net.minecraft.server.v1_10_R1.Item.class); //$NON-NLS-1$
+            final Method itemMth = Item.class.getDeclaredMethod("a", int.class, String.class, Item.class); //$NON-NLS-1$
             itemMth.setAccessible(true);
             
             final Field byId = Material.class.getDeclaredField("byId"); //$NON-NLS-1$
@@ -341,7 +360,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         try
         {
-            final Method itemMth = net.minecraft.server.v1_10_R1.Item.class.getDeclaredMethod("a", net.minecraft.server.v1_10_R1.Block.class, net.minecraft.server.v1_10_R1.Item.class); //$NON-NLS-1$
+            final Method itemMth = Item.class.getDeclaredMethod("a", net.minecraft.server.v1_10_R1.Block.class, Item.class); //$NON-NLS-1$
             itemMth.setAccessible(true);
             
             final Field byId = Material.class.getDeclaredField("byId"); //$NON-NLS-1$
@@ -462,11 +481,14 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
     
     /**
-     * Returns the first partial
+     * Returns the first partial.
      * 
      * @param inv
+     *            inventory
      * @param typeId
+     *            type id
      * @param meta
+     *            meta data
      * @return partial index
      */
     @SuppressWarnings("deprecation")
@@ -602,7 +624,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        for (ItemStack mdata : shapelessItems)
         {
             @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
@@ -621,7 +643,7 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         Object[] data = new Object[shapelessItems.length];
         int i = 0;
-        for (org.bukkit.inventory.ItemStack mdata : shapelessItems)
+        for (ItemStack mdata : shapelessItems)
         {
             @SuppressWarnings("deprecation")
             int id = mdata.getTypeId();
@@ -635,10 +657,12 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
     
     /**
-     * Replaces a custom item with given modded (=special) item
+     * Replaces a custom item with given modded (=special) item.
      * 
      * @param itemId
+     *            numeric item id
      * @param newItem
+     *            new item
      */
     private void replaceModdedItem(int itemId, Item newItem)
     {
@@ -664,7 +688,10 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     }
     
     /**
+     * Converts armor slot to item slot.
+     * 
      * @param slot
+     *            armor slot from mclib
      * @return item slot
      */
     private EnumItemSlot toItemSlot(ArmorSlot slot)
