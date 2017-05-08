@@ -36,22 +36,29 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 
 /**
- * A list page being able to insert and remove color list elements
+ * A list page being able to insert and remove color list elements.
  * 
  * @author mepeisen
  */
 public class ColorListPage extends AbstractListPage<ConfigColorData>
 {
     
-    /** save function */
+    /** save function. */
     private McConsumer<List<ConfigColorData>> onSave;
     
     /**
+     * Constructor.
+     * 
      * @param title
+     *            page title
      * @param lines
+     *            existing values
      * @param onPrev
+     *            handler to display previous page/ the calling page
      * @param onDelete
+     *            function to invoke on deleting all values
      * @param save
+     *            handler to save the values.
      */
     public ColorListPage(Serializable title, ConfigColorData[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<ConfigColorData>> save)
     {

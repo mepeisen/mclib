@@ -43,31 +43,31 @@ public class InventoryData extends AnnotatedDataFragment
 {
     
     /**
-     * inventory type id
+     * inventory type id.
      */
     @PersistentField
     protected InventoryTypeId           typeId;
     
     /**
-     * inventory identifier
+     * inventory identifier.
      */
     @PersistentField
     protected String                    identifier;
     
     /**
-     * initial size
+     * initial size.
      */
     @PersistentField
     protected int                       initialSize;
     
     /**
-     * fixed flag
+     * fixed flag.
      */
     @PersistentField
     protected boolean                   fixed;
     
     /**
-     * shared flag
+     * shared flag.
      */
     @PersistentField
     protected boolean                   shared;
@@ -85,20 +85,26 @@ public class InventoryData extends AnnotatedDataFragment
     protected Set<LocationDataFragment> locations = new HashSet<>();
     
     /**
-     * players
+     * players.
      */
     @PersistentField
     protected Set<UUID>                 players   = new HashSet<>();
     
     /**
-     * Constructor to create new data
+     * Constructor to create new data.
      * 
      * @param typeId
+     *            inventory type id
      * @param identifier
+     *            string identifier (optional)
      * @param initialSize
+     *            initial inventory size in slots
      * @param fixed
+     *            fixed size flag
      * @param shared
+     *            shared flag
      * @param id
+     *            the inventory id to use
      */
     public InventoryData(InventoryTypeId typeId, String identifier, int initialSize, boolean fixed, boolean shared, InventoryId id)
     {
@@ -111,7 +117,7 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
-     * Constructor for reading from config
+     * Constructor for reading from config.
      */
     public InventoryData()
     {
@@ -119,6 +125,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the bound locations.
+     * 
      * @return the locations
      */
     public Set<LocationDataFragment> getLocations()
@@ -127,6 +135,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the players having an inventory data instance.
+     * 
      * @return the players
      */
     public Set<UUID> getPlayers()
@@ -135,6 +145,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventoy id.
+     * 
      * @return the id
      */
     public InventoryId getId()
@@ -143,6 +155,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventoy id.
+     * 
      * @param id
      *            the id to set
      */
@@ -152,6 +166,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventory type id.
+     * 
      * @return the typeId
      */
     public InventoryTypeId getTypeId()
@@ -160,6 +176,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventory type id.
+     * 
      * @param typeId
      *            the typeId to set
      */
@@ -169,6 +187,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the string identifier of this inventory.
+     * 
      * @return the identifier
      */
     public String getIdentifier()
@@ -177,6 +197,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the string identifier of this identifier.
+     * 
      * @param identifier
      *            the identifier to set
      */
@@ -186,6 +208,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the initial size in slots.
+     * 
      * @return the initialSize
      */
     public int getInitialSize()
@@ -194,6 +218,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the initial size in slots.
+     * 
      * @param initialSize
      *            the initialSize to set
      */
@@ -203,6 +229,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the fixed flag.
+     * 
      * @return the fixed
      */
     public boolean isFixed()
@@ -211,6 +239,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the fixed flag.
+     * 
      * @param fixed
      *            the fixed to set
      */
@@ -220,6 +250,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the shared flag.
+     * 
      * @return the shared
      */
     public boolean isShared()
@@ -228,6 +260,8 @@ public class InventoryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the shared flag.
+     * 
      * @param shared
      *            the shared to set
      */

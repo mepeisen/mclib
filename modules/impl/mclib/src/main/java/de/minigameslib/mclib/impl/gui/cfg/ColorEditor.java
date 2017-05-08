@@ -49,7 +49,7 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
- * Edit a color data
+ * Edit a color data.
  * 
  * @author mepeisen
  *
@@ -57,19 +57,23 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
 public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
 {
     
-    /** color */
+    /** color. */
     private int                         red;
-    /** color */
+    /** color. */
     private int                         blue;
-    /** color */
+    /** color. */
     private int                         green;
     
-    /** save function */
+    /** save function. */
     private McConsumer<ConfigColorData> onSave;
     
     /**
+     * Constructor.
+     * 
      * @param color
+     *            current value
      * @param onSave
+     *            handler to save a new value
      */
     public ColorEditor(ConfigColorData color, McConsumer<ConfigColorData> onSave)
     {
@@ -103,12 +107,16 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     }
     
     /**
-     * edit red
+     * edit red.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @throws McException
+     *             thrown for validation errors
      */
     private void onRed(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
@@ -137,12 +145,16 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     }
     
     /**
-     * edit green
+     * edit green.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @throws McException
+     *             thrown for validation errors
      */
     private void onGreen(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
@@ -171,12 +183,16 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     }
     
     /**
-     * edit blue
+     * edit blue.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @throws McException
+     *             thrown for validation errors
      */
     private void onBlue(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
@@ -205,12 +221,16 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     }
     
     /**
-     * accept
+     * accept.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @throws McException
+     *             thrown for validation errors
      */
     private void onYes(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface) throws McException
     {
@@ -219,11 +239,14 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     }
     
     /**
-     * abort
+     * abort.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      */
     private void onAbort(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface)
     {
@@ -258,63 +281,63 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
     {
         
         /**
-         * dialog title
+         * dialog title.
          */
         @LocalizedMessage(defaultMessage = "Edit rgb color")
         @MessageComment("dialog title")
         Title,
         
         /**
-         * yes icon
+         * yes icon.
          */
         @LocalizedMessage(defaultMessage = "Save")
         @MessageComment("yes icon")
         IconYes,
         
         /**
-         * no icon
+         * no icon.
          */
         @LocalizedMessage(defaultMessage = "Abort")
         @MessageComment("abort icon")
         IconAbort,
         
         /**
-         * red icon
+         * red icon.
          */
         @LocalizedMessage(defaultMessage = "red")
         @MessageComment("red icon")
         IconRed,
         
         /**
-         * green icon
+         * green icon.
          */
         @LocalizedMessage(defaultMessage = "green")
         @MessageComment("green icon")
         IconGreen,
         
         /**
-         * blue icon
+         * blue icon.
          */
         @LocalizedMessage(defaultMessage = "blue")
         @MessageComment("blue icon")
         IconBlue,
         
         /**
-         * red component
+         * red component.
          */
         @LocalizedMessageList("Edit the red color value. Enter numbers from 0 to 255.")
         @MessageComment("description for red color component")
         DecriptionRed,
         
         /**
-         * red component
+         * green component.
          */
         @LocalizedMessageList("Edit the green color value. Enter numbers from 0 to 255.")
         @MessageComment("description for green color component")
         DecriptionGreen,
         
         /**
-         * red component
+         * blue component.
          */
         @LocalizedMessageList("Edit the blue color value. Enter numbers from 0 to 255.")
         @MessageComment("description for blue color component")

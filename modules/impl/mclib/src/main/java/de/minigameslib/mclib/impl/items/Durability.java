@@ -25,7 +25,7 @@
 package de.minigameslib.mclib.impl.items;
 
 /**
- * The item durability
+ * The item durability.
  * 
  * @author mepeisen
  */
@@ -33,14 +33,14 @@ interface Durability
 {
     
     /**
-     * Returns the item durability
+     * Returns the item durability.
      * 
      * @return item durability
      */
     short getItemStackDurability();
     
     /**
-     * Retrurns the string durability for model files
+     * Returns the string durability for model files.
      * 
      * @return string durability
      */

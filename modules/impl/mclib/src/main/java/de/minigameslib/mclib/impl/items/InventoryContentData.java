@@ -42,35 +42,35 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
 public class InventoryContentData extends AnnotatedDataFragment
 {
     
-    /** empty stack (air) */
+    /** empty stack (air). */
     public static ConfigItemStackData   AIR   = ConfigItemStackData.fromBukkit(new ItemStack(Material.AIR));
     
     /**
-     * Number of slots in this repository
+     * Number of slots in this repository.
      */
     @PersistentField
     protected int                       slotSize;
     
     /**
-     * The max stack size
+     * The max stack size.
      */
     @PersistentField
     protected int                       maxStackSize;
     
     /**
-     * Inventory name
+     * Inventory name.
      */
     @PersistentField
     protected String                    name;
     
     /**
-     * Item stacks
+     * Item stacks.
      */
     @PersistentField
     protected List<ConfigItemStackData> slots = new ArrayList<>();
     
     /**
-     * Constructor for reading object
+     * Constructor for reading object.
      */
     public InventoryContentData()
     {
@@ -78,11 +78,14 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
-     * Constructor for initializing inventory
+     * Constructor for initializing inventory.
      * 
      * @param slotSize
+     *            number of slots
      * @param maxStackSize
+     *            maximum stack size
      * @param name
+     *            name of the inventory
      */
     public InventoryContentData(int slotSize, int maxStackSize, String name)
     {
@@ -96,6 +99,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the items/ slots.
+     * 
      * @return the slots
      */
     public List<ConfigItemStackData> getSlots()
@@ -104,6 +109,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the number of slots.
+     * 
      * @return the slotSize
      */
     public int getSlotSize()
@@ -112,6 +119,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the number of slots.
+     * 
      * @param slotSize
      *            the slotSize to set
      */
@@ -121,6 +130,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the max stack size.
+     * 
      * @return the maxStackSize
      */
     public int getMaxStackSize()
@@ -129,6 +140,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the max stack size.
+     * 
      * @param maxStackSize
      *            the maxStackSize to set
      */
@@ -138,6 +151,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventory name.
+     * 
      * @return the name
      */
     public String getName()
@@ -146,6 +161,8 @@ public class InventoryContentData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventory name.
+     * 
      * @param name
      *            the name to set
      */

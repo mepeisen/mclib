@@ -40,7 +40,7 @@ import de.minigameslib.mclib.impl.gui.AnvilGuis;
 import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
- * Base class for configuration option editors
+ * Base class for configuration option editors.
  * 
  * @author mepeisen
  *
@@ -48,11 +48,14 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
 public abstract class AbstractConfigOption
 {
     
-    /** the enum value */
+    /** the enum value. */
     private final ConfigurationValueInterface value;
     
     /**
+     * Constructor.
+     * 
      * @param value
+     *            the value to be edited.
      */
     public AbstractConfigOption(ConfigurationValueInterface value)
     {
@@ -60,17 +63,20 @@ public abstract class AbstractConfigOption
     }
     
     /**
-     * returns the click gui item
+     * returns the click gui item.
      * 
      * @param onChange
+     *            function to invoke once the config value is changed; may be {@code null}
      * @param contextProvider
-     * @return click gui item
+     *            runnable to setup context sensitive execution; may be {@code null}
+     * @return click gui item; may be {@code null}
      * @throws McException
+     *             thrown if there were problems creating an item.
      */
     public abstract ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException;
     
     /**
-     * The option name
+     * The option name.
      * 
      * @return option name
      */
@@ -80,6 +86,8 @@ public abstract class AbstractConfigOption
     }
     
     /**
+     * Returns the value to be edited.
+     * 
      * @return the value
      */
     public ConfigurationValueInterface getValue()
@@ -88,12 +96,17 @@ public abstract class AbstractConfigOption
     }
     
     /**
-     * Calculate function by providing a context
+     * Calculate function by providing a context.
      * 
+     * @param <T>
+     *            return class
      * @param contextProvider
+     *            runnable to setup context sensitive execution; may be {@code null}
      * @param supplier
-     * @return result
+     *            function to execute within context.
+     * @return result the result from supplier.
      * @throws McException
+     *             passed from supplier
      */
     protected <T> T calculate(McRunnable contextProvider, McSupplier<T> supplier) throws McException
     {
@@ -109,11 +122,14 @@ public abstract class AbstractConfigOption
     }
     
     /**
-     * Run function by providing a context
+     * Run function by providing a context.
      * 
      * @param contextProvider
+     *            runnable to setup context sensitive execution; may be {@code null}
      * @param runnable
+     *            function to execute within context.
      * @throws McException
+     *             passed from runnable
      */
     protected void run(McRunnable contextProvider, McRunnable runnable) throws McException
     {
@@ -132,9 +148,10 @@ public abstract class AbstractConfigOption
     }
     
     /**
-     * Creates config value option for given value
+     * Creates config value option for given value.
      * 
      * @param value
+     *            config value that will be edited
      * @return config value option
      */
     public static AbstractConfigOption create(ConfigurationValueInterface value)
@@ -278,7 +295,7 @@ public abstract class AbstractConfigOption
     }
     
     /**
-     * Common messages within gui
+     * Common messages within gui.
      * 
      * @author mepeisen
      */
@@ -293,7 +310,7 @@ public abstract class AbstractConfigOption
     {
         
         /**
-         * gui config name
+         * gui config name.
          * 
          * <p>
          * No Arguments
@@ -304,7 +321,7 @@ public abstract class AbstractConfigOption
         ConfigName,
         
         /**
-         * gui config name
+         * gui config name.
          * 
          * <p>
          * No Arguments
@@ -315,7 +332,7 @@ public abstract class AbstractConfigOption
         ConfigNameWithDecimalValue,
         
         /**
-         * gui config name
+         * gui config name.
          * 
          * <p>
          * No Arguments
@@ -326,7 +343,7 @@ public abstract class AbstractConfigOption
         ConfigNameWithStringValue,
         
         /**
-         * gui config name
+         * gui config name.
          * 
          * <p>
          * No Arguments
@@ -337,28 +354,28 @@ public abstract class AbstractConfigOption
         ConfigNameWithFloatValue,
         
         /**
-         * invalid numeric format
+         * invalid numeric format.
          */
         @LocalizedMessage(defaultMessage = "The text you entered is not a valid number", severity = MessageSeverityType.Error)
         @MessageComment(value = { "invalid numeric format" })
         InvalidNumericFormat,
         
         /**
-         * number out of range
+         * number out of range.
          */
         @LocalizedMessage(defaultMessage = "The number you entered is out of range (min %1$d, max %2$d)", severity = MessageSeverityType.Error)
         @MessageComment(value = { "number out of range" }, args = { @MessageComment.Argument("min value"), @MessageComment.Argument("max value") })
         NumberOutOfRange,
         
         /**
-         * text not a character
+         * text not a character.
          */
         @LocalizedMessage(defaultMessage = "The text you entered is not a single character", severity = MessageSeverityType.Error)
         @MessageComment(value = { "text not a character" })
         TextNotACharacter,
         
         /**
-         * not implemented
+         * not implemented.
          */
         @LocalizedMessage(defaultMessage = "Editor not implemented", severity = MessageSeverityType.Error)
         @MessageComment(value = { "not implemented" })

@@ -31,14 +31,13 @@ import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
-import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 
 /**
- * Config option to edit boolean variables
+ * Config option to edit player list variables.
  * 
  * @author mepeisen
  *
@@ -47,7 +46,10 @@ public class PlayerListConfigOption extends AbstractConfigOption
 {
     
     /**
+     * Constructor.
+     * 
      * @param value
+     *            value to be edited.
      */
     public PlayerListConfigOption(ConfigurationValueInterface value)
     {
@@ -63,14 +65,20 @@ public class PlayerListConfigOption extends AbstractConfigOption
     }
     
     /**
-     * selector
+     * selector.
      * 
      * @param player
+     *            target player clicking the edit item
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @param onChange
+     *            function to invoke once the config value is changed; may be {@code null}
      * @param contextProvider
+     *            runnable to setup context sensitive execution; may be {@code null}
      * @throws McException
+     *             thrown on errors
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {

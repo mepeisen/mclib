@@ -42,54 +42,82 @@ import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
+ * Generic objects container withz utitlity methods on objects.
+ * 
+ * @param <ID>
+ *            interface for ids
+ * @param <IDIMPL>
+ *            impl class for ids.
+ * @param <COMP>
+ *            Component type class
+ * @param <TYPE>
+ *            type id class
+ * @param <HANDLER>
+ *            handler class
+ * 
  * @author mepeisen
- * @param <IdInterface>
- * @param <Id>
- * @param <Comp>
- * @param <TypeId>
- * @param <Handler>
  *
  */
-public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInterface, Comp, TypeId, Handler>
+public class ObjectsContainer<
+    ID extends DataFragment,
+    IDIMPL extends ID,
+    COMP,
+    TYPE,
+    HANDLER>
 {
     
     /** the components. */
-    private final Map<Id, Comp>                 components         = new HashMap<>();
+    private final Map<IDIMPL, COMP>                 components         = new HashMap<>();
     
     /** registered components per plugin name. */
-    private final Map<String, Map<Id, Boolean>> componentsByPlugin = new HashMap<>();
+    private final Map<String, Map<IDIMPL, Boolean>> componentsByPlugin = new HashMap<>();
     
     /**
+     * Puts a new object to container.
+     * 
      * @param pluginName
+     *            plugin name owning the object.
      * @param id
+     *            id of object
      * @param impl
+     *            object instance to be stored
      * @param persist
+     *            true for persistent objects and false for runtime objects
      */
-    public void put(String pluginName, Id id, Comp impl, boolean persist)
+    public void put(String pluginName, IDIMPL id, COMP impl, boolean persist)
     {
         this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>()).put(id, persist);
         this.components.put(id, impl);
     }
     
     /**
+     * Removes object from container.
+     * 
      * @param id
+     *            id to be removed.
      * @return value
      */
-    public Comp remove(Id id)
+    public COMP remove(IDIMPL id)
     {
         return this.components.remove(id);
     }
     
     /**
+     * Removes object from container.
+     * 
      * @param pluginName
+     *            owning plugin name
      * @param id
+     *            object id to be removed
      * @param folder
+     *            data folder to save the id list
      * @return value
      * @throws McException
+     *             wrapped io exception
      */
-    public Comp remove(String pluginName, Id id, File folder) throws McException
+    public COMP remove(String pluginName, IDIMPL id, File folder) throws McException
     {
-        final Map<Id, Boolean> map = this.componentsByPlugin.get(pluginName);
+        final Map<IDIMPL, Boolean> map = this.componentsByPlugin.get(pluginName);
         if (map != null)
         {
             boolean persist = map.remove(id);
@@ -102,37 +130,48 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     }
     
     /**
+     * Removes all objects owned by given plugin from container.
+     * 
      * @param pluginName
+     *            plugin that was disabled.
      * @return ids
      */
-    public Map<Id, Boolean> removePlugin(String pluginName)
+    public Map<IDIMPL, Boolean> removePlugin(String pluginName)
     {
-        final Map<Id, Boolean> cmap = this.componentsByPlugin.remove(pluginName);
+        final Map<IDIMPL, Boolean> cmap = this.componentsByPlugin.remove(pluginName);
         return cmap == null ? Collections.emptyMap() : cmap;
     }
     
     /**
+     * Returns object from given id.
+     * 
      * @param id
+     *            id to search for.
      * @return value
      */
-    public Comp get(Id id)
+    public COMP get(IDIMPL id)
     {
         return this.components.get(id);
     }
     
     /**
-     * For each component
+     * For each component.
      * 
      * @param consumer
+     *            Consumer to invoke for each object.
      */
-    public void forEach(Consumer<Comp> consumer)
+    public void forEach(Consumer<COMP> consumer)
     {
         this.components.values().forEach(consumer);
     }
     
     /**
+     * Checks if given plugin has registered objects.
+     * 
      * @param pluginName
-     * @return boolean
+     *            plugin name
+     * 
+     * @return {@code true} if objects of given plugin are registered.
      */
     public boolean containsPluginName(String pluginName)
     {
@@ -140,22 +179,28 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     }
     
     /**
+     * Returns all objects of given plugin.
+     * 
      * @param pluginName
+     *            plugin name
      * @return ids by plugin name
      */
-    public Set<Id> getByPlugin(String pluginName)
+    public Set<IDIMPL> getByPlugin(String pluginName)
     {
         return this.componentsByPlugin.get(pluginName).keySet();
     }
     
     /**
-     * Load registry
+     * Load registry.
      * 
      * @param factory
+     *            Factory to create ids
      * @param folder
+     *            folder to read from
      * @throws McException
+     *             wrapped io exception
      */
-    public void loadRegistry(Supplier<Id> factory, File folder) throws McException
+    public void loadRegistry(Supplier<IDIMPL> factory, File folder) throws McException
     {
         final File file = new File(folder, "registry.yml"); //$NON-NLS-1$
         if (file.exists())
@@ -165,12 +210,12 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
                 final YmlFile config = new YmlFile(file);
                 for (final String pluginName : config.getKeys(false))
                 {
-                    final Map<Id, Boolean> idmap = this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>());
+                    final Map<IDIMPL, Boolean> idmap = this.componentsByPlugin.computeIfAbsent(pluginName, k -> new HashMap<>());
                     final DataSection pluginSection = config.getSection(pluginName);
                     for (final String idkey : pluginSection.getKeys(false))
                     {
                         final DataSection section = pluginSection.getSection(idkey);
-                        final Id id = factory.get();
+                        final IDIMPL id = factory.get();
                         id.read(section);
                         idmap.put(id, Boolean.TRUE);
                     }
@@ -184,8 +229,12 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     }
     
     /**
+     * Saves the id list.
+     * 
      * @param folder
+     *            folder to save to
      * @throws McException
+     *             wrapped io exception
      */
     public void saveIdList(File folder) throws McException
     {
@@ -194,7 +243,7 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
         {
             final DataSection section = fileConfig.createSection(k);
             int i = 0;
-            for (final Map.Entry<Id, Boolean> data : v.entrySet())
+            for (final Map.Entry<IDIMPL, Boolean> data : v.entrySet())
             {
                 if (data.getValue())
                 {
@@ -214,21 +263,27 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
     }
     
     /**
-     * resume objects
+     * resume objects.
      * 
      * @param pluginName
+     *            name of the owning plugin
      * @param typesByPlugin
+     *            the types per plugin map
      * @param mapIdToType
+     *            the id to type map
      * @param safeCreateHandler
+     *            the safe create handler function.
      * @param creator
+     *            the object creator function.
      * @param brokenComponents
+     *            the map to store broken objects to
      */
-    public void resumeObjects(String pluginName, Map<String, Map<String, TypeId>> typesByPlugin, Function<Id, String> mapIdToType, McBiFunction<String, TypeId, Handler> safeCreateHandler,
-        McBiFunction<Id, Handler, Comp> creator, Map<IdInterface, McException> brokenComponents)
+    public void resumeObjects(String pluginName, Map<String, Map<String, TYPE>> typesByPlugin, Function<IDIMPL, String> mapIdToType, McBiFunction<String, TYPE, HANDLER> safeCreateHandler,
+        McBiFunction<IDIMPL, HANDLER, COMP> creator, Map<ID, McException> brokenComponents)
     {
         if (this.containsPluginName(pluginName))
         {
-            for (final Id id : this.getByPlugin(pluginName))
+            for (final IDIMPL id : this.getByPlugin(pluginName))
             {
                 if (!typesByPlugin.containsKey(pluginName))
                 {
@@ -236,7 +291,7 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
                     continue;
                 }
                 
-                final TypeId type = typesByPlugin.get(pluginName).get(mapIdToType.apply(id));
+                final TYPE type = typesByPlugin.get(pluginName).get(mapIdToType.apply(id));
                 if (type == null)
                 {
                     brokenComponents.put(id, new McException(CommonMessages.BrokenObjectType, pluginName, mapIdToType.apply(id), "?")); //$NON-NLS-1$
@@ -246,8 +301,8 @@ public class ObjectsContainer<IdInterface extends DataFragment, Id extends IdInt
                 try
                 {
                     // init
-                    final Handler handler = safeCreateHandler.apply(pluginName, type);
-                    final Comp impl = creator.apply(id, handler);
+                    final HANDLER handler = safeCreateHandler.apply(pluginName, type);
+                    final COMP impl = creator.apply(id, handler);
                     
                     // store data
                     this.put(pluginName, id, impl, true);

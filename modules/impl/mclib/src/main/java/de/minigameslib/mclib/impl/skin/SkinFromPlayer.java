@@ -51,7 +51,7 @@ public class SkinFromPlayer extends AnnotatedDataFragment implements SkinInterfa
     protected UUID   uuid;
     
     /**
-     * Constructor
+     * Constructor.
      */
     public SkinFromPlayer()
     {
@@ -59,9 +59,10 @@ public class SkinFromPlayer extends AnnotatedDataFragment implements SkinInterfa
     }
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param uuid
+     *            player uuid.
      */
     public SkinFromPlayer(UUID uuid)
     {
@@ -70,6 +71,8 @@ public class SkinFromPlayer extends AnnotatedDataFragment implements SkinInterfa
     }
     
     /**
+     * Returns the player uuid.
+     * 
      * @return the playerUuid
      */
     public UUID getPlayerUuid()

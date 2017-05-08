@@ -127,19 +127,19 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     /** target data folder. */
     private final File                                                                                                           dataFolder;
     
-    /** data container */
+    /** data container. */
     private final ObjectsContainer<ComponentIdInterface, ComponentId, ComponentImpl, ComponentTypeId, ComponentHandlerInterface> components              = new ObjectsContainer<>();
     
-    /** data container */
+    /** data container. */
     private final ObjectsContainer<ObjectIdInterface, ObjectId, ObjectImpl, ObjectTypeId, ObjectHandlerInterface>                objects                 = new ObjectsContainer<>();
     
-    /** data container */
+    /** data container. */
     private final ObjectsContainer<SignIdInterface, SignId, SignImpl, SignTypeId, SignHandlerInterface>                          signs                   = new ObjectsContainer<>();
     
-    /** data container */
+    /** data container. */
     private final ObjectsContainer<EntityIdInterface, EntityId, EntityImpl, EntityTypeId, EntityHandlerInterface>                entities                = new ObjectsContainer<>();
     
-    /** data container */
+    /** data container. */
     private final ObjectsContainer<ZoneIdInterface, ZoneId, ZoneImpl, ZoneTypeId, ZoneHandlerInterface>                          zones                   = new ObjectsContainer<>();
     
     /** component types per plugin name. */
@@ -172,7 +172,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     /** registered handlers. */
     private final Map<ObjectTypeId, Class<? extends ObjectHandlerInterface>>                                                     objectHandlerClasses    = new HashMap<>();
     
-    /** the component registry handling location specific components (components, zones, signs) */
+    /** the component registry handling location specific components (components, zones, signs). */
     private final ComponentRegistry                                                                                              registry                = new ComponentRegistry();
     
     /** the components folder. */
@@ -207,7 +207,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     private final Map<UUID, Set<EntityId>>                                                                                       entitiesByUuid          = new HashMap<>();
     
-    /** logger */
+    /** logger. */
     private static final Logger                                                                                                  LOGGER                  = Logger
         .getLogger(ObjectsManager.class.getName());
     
@@ -215,8 +215,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * Constructor.
      * 
      * @param dataFolder
+     *            data folder for object registries.
      * @param players
+     *            player registry
      * @throws McException
+     *             thrown on errors loading the objects registries.
      */
     public ObjectsManager(File dataFolder, PlayerRegistry players) throws McException
     {
@@ -229,15 +232,25 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         this.objectsFolder = new File(this.dataFolder, "objects"); //$NON-NLS-1$
         
         if (!this.componentsFolder.exists())
+        {
             this.componentsFolder.mkdirs();
+        }
         if (!this.signsFolder.exists())
+        {
             this.signsFolder.mkdirs();
+        }
         if (!this.entitiesFolder.exists())
+        {
             this.entitiesFolder.mkdirs();
+        }
         if (!this.zonesFolder.exists())
+        {
             this.zonesFolder.mkdirs();
+        }
         if (!this.objectsFolder.exists())
+        {
             this.objectsFolder.mkdirs();
+        }
         
         this.components.loadRegistry(ComponentId::new, this.componentsFolder);
         this.zones.loadRegistry(ZoneId::new, this.zonesFolder);
@@ -299,9 +312,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * resume objects for given plugin
+     * resume objects for given plugin.
      * 
      * @param plugin
+     *            plugin that requested object resume.
      * @return resume report
      */
     private ResumeReport resumeObjects(Plugin plugin)
@@ -348,6 +362,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 }
                 
                 @Override
+                public McException getException(ObjectIdInterface id)
+                {
+                    return brokenObjects.contains(id) ? dupException : null;
+                }
+                
+                @Override
                 public Iterable<ZoneIdInterface> getBrokenZones()
                 {
                     return brokenZones;
@@ -375,12 +395,6 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 public Iterable<ObjectIdInterface> getBrokenObjects()
                 {
                     return brokenObjects;
-                }
-                
-                @Override
-                public McException getException(ObjectIdInterface id)
-                {
-                    return brokenObjects.contains(id) ? dupException : null;
                 }
             };
         }
@@ -519,6 +533,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             }
             
             @Override
+            public McException getException(ObjectIdInterface id)
+            {
+                return brokenObjects.get(id);
+            }
+            
+            @Override
             public Iterable<ZoneIdInterface> getBrokenZones()
             {
                 return brokenZones.keySet();
@@ -547,17 +567,14 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             {
                 return brokenObjects.keySet();
             }
-            
-            @Override
-            public McException getException(ObjectIdInterface id)
-            {
-                return brokenObjects.get(id);
-            }
         };
     }
     
     /**
+     * Invoked upon plugin disable.
+     * 
      * @param plugin
+     *            disabled plugin.
      */
     public void onDisable(Plugin plugin)
     {
@@ -700,7 +717,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
+     * Invoked upon plugin enable.
+     * 
      * @param plugin
+     *            enabled plugin
      */
     public void onEnable(Plugin plugin)
     {
@@ -712,7 +732,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public ComponentInterface findComponent(Location location)
     {
         if (location == null)
+        {
             return null;
+        }
         final Optional<ComponentImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c)
             .filter(c -> c.getLocation().equals(location)).findFirst();
         return result.isPresent() ? result.get() : null;
@@ -722,6 +744,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public ComponentInterface findComponent(ComponentIdInterface id)
     {
         return id == null ? null : this.components.get((ComponentId) id);
+    }
+    
+    @Override
+    public ComponentInterface findComponent(Block block)
+    {
+        return block == null ? null : this.findComponent(block.getLocation());
     }
     
     @Override
@@ -770,7 +798,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * safe get plugin name from enum.
      * 
      * @param name
+     *            enum value as string (name)
      * @param enumValue
+     *            enum value as object
      * @return plugin name
      * @throws McException
      *             thrown if enum is invalid or not registered
@@ -784,7 +814,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * safe get plugin from enum.
      * 
      * @param name
+     *            enum value as string (name)
      * @param enumValue
+     *            enum value as object
      * @return plugin
      * @throws McException
      *             thrown if enum is invalid or not registered
@@ -808,9 +840,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * Safe create handler from type.
      * 
      * @param pluginName
+     *            plugin name
      * @param type
+     *            enum type
      * @return handler
      * @throws McException
+     *             thrown if object type is broken
      */
     private ComponentHandlerInterface safeCreateHandler(String pluginName, ComponentTypeId type) throws McException
     {
@@ -829,11 +864,41 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
     }
     
+    /**
+     * Safe create handler from type.
+     * 
+     * @param pluginName
+     *            plugin name
+     * @param type
+     *            object type
+     * @return handler
+     * @throws McException
+     *             thrown if object type is broken
+     */
+    private SignHandlerInterface safeCreateHandler(String pluginName, SignTypeId type) throws McException
+    {
+        final Class<? extends SignHandlerInterface> clazz = this.signHandlerClasses.get(type);
+        if (clazz == null)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
+        }
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
+        }
+    }
+    
     @Override
     public EntityInterface findEntity(Entity entity)
     {
         if (entity == null)
+        {
             return null;
+        }
         final UUID uuid = entity.getUniqueId();
         if (this.entitiesByUuid.containsKey(uuid))
         {
@@ -900,7 +965,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public SignInterface findSign(Location location)
     {
         if (location == null)
+        {
             return null;
+        }
         final Optional<SignImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
             .findFirst();
         return result.isPresent() ? result.get() : null;
@@ -910,6 +977,18 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public SignInterface findSign(SignIdInterface id)
     {
         return id == null ? null : this.signs.get((SignId) id);
+    }
+    
+    @Override
+    public SignInterface findSign(Block block)
+    {
+        return block == null ? null : this.findSign(block.getLocation());
+    }
+    
+    @Override
+    public SignInterface findSign(Sign sign)
+    {
+        return sign == null ? null : this.findSign(sign.getLocation());
     }
     
     @Override
@@ -958,13 +1037,16 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * Safe create handler from type.
      * 
      * @param pluginName
+     *            plugin name
      * @param type
+     *            object type
      * @return handler
      * @throws McException
+     *             thrown if object type is broken
      */
-    private SignHandlerInterface safeCreateHandler(String pluginName, SignTypeId type) throws McException
+    private EntityHandlerInterface safeCreateHandler(String pluginName, EntityTypeId type) throws McException
     {
-        final Class<? extends SignHandlerInterface> clazz = this.signHandlerClasses.get(type);
+        final Class<? extends EntityHandlerInterface> clazz = this.entityHandlerClasses.get(type);
         if (clazz == null)
         {
             throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
@@ -983,13 +1065,44 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * Safe create handler from type.
      * 
      * @param pluginName
+     *            plugin name
      * @param type
+     *            object type
      * @return handler
      * @throws McException
+     *             thrown if object type is broken
      */
-    private EntityHandlerInterface safeCreateHandler(String pluginName, EntityTypeId type) throws McException
+    private ZoneHandlerInterface safeCreateHandler(String pluginName, ZoneTypeId type) throws McException
     {
-        final Class<? extends EntityHandlerInterface> clazz = this.entityHandlerClasses.get(type);
+        final Class<? extends ZoneHandlerInterface> clazz = this.zoneHandlerClasses.get(type);
+        if (clazz == null)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
+        }
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
+        }
+    }
+    
+    /**
+     * Safe create handler from type.
+     * 
+     * @param pluginName
+     *            plugin name
+     * @param type
+     *            object type
+     * @return handler
+     * @throws McException
+     *             thrown if object type is broken
+     */
+    private ObjectHandlerInterface safeCreateHandler(String pluginName, ObjectTypeId type) throws McException
+    {
+        final Class<? extends ObjectHandlerInterface> clazz = this.objectHandlerClasses.get(type);
         if (clazz == null)
         {
             throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
@@ -1046,56 +1159,6 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         return impl;
     }
     
-    /**
-     * Safe create handler from type.
-     * 
-     * @param pluginName
-     * @param type
-     * @return handler
-     * @throws McException
-     */
-    private ZoneHandlerInterface safeCreateHandler(String pluginName, ZoneTypeId type) throws McException
-    {
-        final Class<? extends ZoneHandlerInterface> clazz = this.zoneHandlerClasses.get(type);
-        if (clazz == null)
-        {
-            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
-        }
-        try
-        {
-            return clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
-        }
-    }
-    
-    /**
-     * Safe create handler from type.
-     * 
-     * @param pluginName
-     * @param type
-     * @return handler
-     * @throws McException
-     */
-    private ObjectHandlerInterface safeCreateHandler(String pluginName, ObjectTypeId type) throws McException
-    {
-        final Class<? extends ObjectHandlerInterface> clazz = this.objectHandlerClasses.get(type);
-        if (clazz == null)
-        {
-            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
-        }
-        try
-        {
-            return clazz.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
-        }
-    }
-    
     @Override
     public ZoneInterface findZone(ZoneIdInterface id)
     {
@@ -1103,20 +1166,120 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     @Override
+    public ZoneInterface findZone(Location location)
+    {
+        if (location == null)
+        {
+            return null;
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
+    {
+        if (cuboid == null || mode == null)
+        {
+            return null;
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
+    {
+        if (cuboid == null || mode == null || type == null || type.length == 0)
+        {
+            return null;
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+            .findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public ZoneInterface findZone(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return null;
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
     public Collection<ZoneInterface> findZonesWithoutYd(Location location)
     {
         if (location == null)
+        {
             return Collections.emptyList();
+        }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutYd(location))
             .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutYd(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).collect(Collectors.toList());
     }
     
     @Override
     public ZoneInterface findZoneWithoutYd(Location location)
     {
         if (location == null)
+        {
             return null;
+        }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public ZoneInterface findZoneWithoutYd(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return null;
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
             .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
@@ -1125,38 +1288,137 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<ZoneInterface> findZonesWithoutY(Location location)
     {
         if (location == null)
+        {
             return Collections.emptyList();
+        }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLocWithoutY(location))
             .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
     }
     
     @Override
     public ZoneInterface findZoneWithoutY(Location location)
     {
         if (location == null)
+        {
             return null;
+        }
         final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
             .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
         return result.isPresent() ? result.get() : null;
     }
     
     @Override
+    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return null;
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
+    {
+        if (cuboid == null || mode == null)
+        {
+            return Collections.emptyList();
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
+    {
+        if (cuboid == null || mode == null || type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
+        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
+            .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
+    {
+        if (location == null || type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
+            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
+            .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
+    }
+    
+    @Override
     public Collection<ZoneInterface> findZones(Location location)
     {
         if (location == null)
+        {
             return Collections.emptyList();
+        }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(c -> c.getCuboid().containsLoc(location))
             .collect(Collectors.toList());
     }
     
     @Override
-    public ZoneInterface findZone(Location location)
+    public Collection<ZoneInterface> findZones(ZoneTypeId... type)
     {
-        if (location == null)
-            return null;
-        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
-        return result.isPresent() ? result.get() : null;
+        if (type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final ZoneTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<ZoneInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) ->
+        {
+            this.zones.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
+        });
+        
+        return result;
     }
     
     @Override
@@ -1185,10 +1447,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Deletes a component
+     * Deletes a component.
      * 
      * @param component
+     *            component to be deleted
      * @throws McException
+     *             thrown if deletion failed.
      */
     private void onDelete(ComponentImpl component) throws McException
     {
@@ -1197,10 +1461,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Deletes a zone
+     * Deletes a zone.
      * 
      * @param zone
+     *            zone to be deleted
      * @throws McException
+     *             thrown if deletion failed.
      */
     private void onDelete(ZoneImpl zone) throws McException
     {
@@ -1209,10 +1475,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Deletes a sign
+     * Deletes a sign.
      * 
      * @param sign
+     *            sign to be deleted
      * @throws McException
+     *             thrown if deletion failed.
      */
     private void onDelete(SignImpl sign) throws McException
     {
@@ -1221,10 +1489,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Deletes an object
+     * Deletes an object.
      * 
      * @param obj
+     *            object to be deleted
      * @throws McException
+     *             thrown if deletion failed.
      */
     private void onDelete(ObjectImpl obj) throws McException
     {
@@ -1236,7 +1506,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * Deletes an entity
      * 
      * @param ent
+     *            entity to be deleted
      * @throws McException
+     *             thrown if deletion failed.
      */
     private void onDelete(EntityImpl ent) throws McException
     {
@@ -1253,16 +1525,26 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<ComponentInterface> findComponents(Location location)
     {
         if (location == null)
+        {
             return Collections.emptyList();
+        }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c).filter(c -> c.getLocation().equals(location))
             .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<ComponentInterface> findComponents(Block block)
+    {
+        return block == null ? Collections.emptyList() : this.findComponents(block.getLocation());
     }
     
     @Override
     public Collection<ComponentInterface> findComponents(ComponentTypeId... type)
     {
         if (type == null || type.length == 0)
+        {
             return Collections.emptyList();
+        }
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ComponentTypeId typeid : type)
         {
@@ -1282,7 +1564,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<EntityInterface> findEntities(Entity entity)
     {
         if (entity == null)
+        {
             return Collections.emptyList();
+        }
         final UUID uuid = entity.getUniqueId();
         if (this.entitiesByUuid.containsKey(uuid))
         {
@@ -1295,7 +1579,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<EntityInterface> findEntities(EntityTypeId... type)
     {
         if (type == null || type.length == 0)
+        {
             return Collections.emptyList();
+        }
         final List<EntityInterface> result = new ArrayList<>();
         final Set<EntityTypeId> types = new HashSet<>();
         for (final EntityTypeId t : type)
@@ -1313,7 +1599,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<SignInterface> findSigns(Location location)
     {
         if (location == null)
+        {
             return Collections.emptyList();
+        }
         return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> c.getLocation().equals(location))
             .collect(Collectors.toList());
     }
@@ -1322,7 +1610,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<SignInterface> findSigns(SignTypeId... type)
     {
         if (type == null || type.length == 0)
+        {
             return Collections.emptyList();
+        }
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final SignTypeId typeid : type)
         {
@@ -1338,10 +1628,23 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         return result;
     }
     
+    @Override
+    public Collection<SignInterface> findSigns(Block block)
+    {
+        return block == null ? Collections.emptyList() : this.findSigns(block.getLocation());
+    }
+    
+    @Override
+    public Collection<SignInterface> findSigns(Sign sign)
+    {
+        return sign == null ? Collections.emptyList() : this.findSigns(sign.getLocation());
+    }
+    
     /**
-     * Returns a stream for all chunks in given cuboid
+     * Returns a stream for all chunks in given cuboid.
      * 
      * @param cuboid
+     *            the cuboid to search for
      * @return stream
      */
     private Stream<AbstractComponent> fetchForCuboid(Cuboid cuboid)
@@ -1361,7 +1664,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
+     * Returns a test function for given cuboid fetch mode.
+     * 
      * @param mode
+     *            the fetch mode.
      * @return test function
      */
     private BiPredicate<ZoneImpl, Cuboid> getTester(CuboidMode mode)
@@ -1383,211 +1689,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     @Override
-    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode)
-    {
-        if (cuboid == null || mode == null)
-            return null;
-        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).findFirst();
-        return result.isPresent() ? result.get() : null;
-    }
-    
-    @Override
-    public ZoneInterface findZone(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
-    {
-        if (cuboid == null || mode == null || type == null || type.length == 0)
-            return null;
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        final Optional<ZoneImpl> result = this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
-            .findFirst();
-        return result.isPresent() ? result.get() : null;
-    }
-    
-    @Override
-    public ZoneInterface findZone(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return null;
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLoc(location)).findFirst();
-        return result.isPresent() ? result.get() : null;
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode)
-    {
-        if (cuboid == null || mode == null)
-            return Collections.emptyList();
-        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c).filter(z -> tester.test(z, cuboid)).collect(Collectors.toList());
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZones(Cuboid cuboid, CuboidMode mode, ZoneTypeId... type)
-    {
-        if (cuboid == null || mode == null || type == null || type.length == 0)
-            return Collections.emptyList();
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        final BiPredicate<ZoneImpl, Cuboid> tester = getTester(mode);
-        return this.fetchForCuboid(cuboid).filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType())).filter(z -> tester.test(z, cuboid))
-            .collect(Collectors.toList());
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZones(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return Collections.emptyList();
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLoc(location)).collect(Collectors.toList());
-    }
-    
-    @Override
-    public ZoneInterface findZoneWithoutY(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return null;
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLocWithoutY(location)).findFirst();
-        return result.isPresent() ? result.get() : null;
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutY(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return Collections.emptyList();
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLocWithoutY(location)).collect(Collectors.toList());
-    }
-    
-    @Override
-    public ZoneInterface findZoneWithoutYd(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return null;
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        final Optional<ZoneImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).findFirst();
-        return result.isPresent() ? result.get() : null;
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZonesWithoutYd(Location location, ZoneTypeId... type)
-    {
-        if (location == null || type == null || type.length == 0)
-            return Collections.emptyList();
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof ZoneImpl).map(c -> (ZoneImpl) c)
-            .filter(z -> perPlugin.containsKey(z.getZoneId().getPluginName()) && perPlugin.get(z.getZoneId().getPluginName()).contains(z.getZoneId().getType()))
-            .filter(c -> c.getCuboid().containsLocWithoutYd(location)).collect(Collectors.toList());
-    }
-    
-    @Override
-    public Collection<ZoneInterface> findZones(ZoneTypeId... type)
-    {
-        if (type == null || type.length == 0)
-            return Collections.emptyList();
-        final Map<String, Set<String>> perPlugin = new HashMap<>();
-        for (final ZoneTypeId typeid : type)
-        {
-            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
-        }
-        
-        final List<ZoneInterface> result = new ArrayList<>();
-        perPlugin.forEach((plugin, ids) ->
-        {
-            this.zones.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
-        });
-        
-        return result;
-    }
-    
-    @Override
-    public ComponentInterface findComponent(Block block)
-    {
-        return block == null ? null : this.findComponent(block.getLocation());
-    }
-    
-    @Override
-    public Collection<ComponentInterface> findComponents(Block block)
-    {
-        return block == null ? Collections.emptyList() : this.findComponents(block.getLocation());
-    }
-    
-    @Override
-    public SignInterface findSign(Block block)
-    {
-        return block == null ? null : this.findSign(block.getLocation());
-    }
-    
-    @Override
-    public Collection<SignInterface> findSigns(Block block)
-    {
-        return block == null ? Collections.emptyList() : this.findSigns(block.getLocation());
-    }
-    
-    @Override
-    public SignInterface findSign(Sign sign)
-    {
-        return sign == null ? null : this.findSign(sign.getLocation());
-    }
-    
-    @Override
-    public Collection<SignInterface> findSigns(Sign sign)
-    {
-        return sign == null ? Collections.emptyList() : this.findSigns(sign.getLocation());
-    }
-    
-    @Override
     public McPlayerInterface getPlayer(Player player)
     {
         if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId()))
+        {
             return null;
+        }
         return this.players.getPlayer(player);
     }
     
@@ -1595,7 +1702,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public McPlayerInterface getPlayer(OfflinePlayer player)
     {
         if (player == null || this.entitiesByUuid.containsKey(player.getUniqueId()))
+        {
             return null;
+        }
         return this.players.getPlayer(player);
     }
     
@@ -1603,7 +1712,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public McPlayerInterface getPlayer(UUID uuid)
     {
         if (uuid == null || this.entitiesByUuid.containsKey(uuid))
+        {
             return null;
+        }
         return this.players.getPlayer(uuid);
     }
     
@@ -1652,7 +1763,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<ObjectInterface> findObjects(ObjectTypeId... type)
     {
         if (type == null || type.length == 0)
+        {
             return Collections.emptyList();
+        }
         final Map<String, Set<String>> perPlugin = new HashMap<>();
         for (final ObjectTypeId typeid : type)
         {
@@ -1711,11 +1824,16 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Runs given method in context and sets given value
+     * Runs given method in context and sets given value.
      * 
+     * @param <T>
+     *            context value type
      * @param clazz
+     *            context value type
      * @param value
+     *            context value to be set
      * @param run
+     *            runnable to execute within context
      */
     private <T> void runInContext(Class<T> clazz, T value, McRunnable run)
     {
@@ -1746,7 +1864,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Disable objects manager
+     * Disable objects manager.
      */
     public void disable()
     {
@@ -1767,7 +1885,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
+     * Handle sign deletion.
+     * 
      * @param evt
+     *            sign event.
      */
     public void onSignDelete(BlockBreakEvent evt)
     {
@@ -1793,6 +1914,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      * World was loaded, resuming objects of given world.
      * 
      * @param world
+     *            world that was loaded.
      */
     public void onWorldLoaded(World world)
     {
@@ -1801,7 +1923,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * initialize object manager
+     * initialize object manager.
      */
     public void init()
     {

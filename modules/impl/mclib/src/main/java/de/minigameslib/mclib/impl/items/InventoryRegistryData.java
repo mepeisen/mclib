@@ -36,25 +36,25 @@ public class InventoryRegistryData extends AnnotatedDataFragment
 {
     
     /**
-     * the plugin name
+     * the plugin name.
      */
     @PersistentField
     protected String pluginName;
     
     /**
-     * the uuid
+     * the uuid.
      */
     @PersistentField
     protected String uuid;
     
     /**
-     * the enum name
+     * the enum name.
      */
     @PersistentField
     protected String enumName;
     
     /**
-     * Constructor for reading from file
+     * Constructor for reading from file.
      */
     public InventoryRegistryData()
     {
@@ -62,11 +62,14 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
-     * Constructor for new data
+     * Constructor for new data.
      * 
      * @param pluginName
+     *            plugin name of inventory type
      * @param uuid
+     *            unique id of inventory
      * @param enumName
+     *            enumeration name of inventory type.
      */
     public InventoryRegistryData(String pluginName, String uuid, String enumName)
     {
@@ -76,6 +79,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventory types plugin name.
+     * 
      * @return the pluginName
      */
     public String getPluginName()
@@ -84,6 +89,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventory types plugin name.
+     * 
      * @param pluginName
      *            the pluginName to set
      */
@@ -93,6 +100,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventories uuid.
+     * 
      * @return the uuid
      */
     public String getUuid()
@@ -101,6 +110,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventories uuid.
+     * 
      * @param uuid
      *            the uuid to set
      */
@@ -110,6 +121,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the inventory types enumeration name.
+     * 
      * @return the enumName
      */
     public String getEnumName()
@@ -118,6 +131,8 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the inventory types enumeration name.
+     * 
      * @param enumName
      *            the enumName to set
      */
@@ -141,33 +156,51 @@ public class InventoryRegistryData extends AnnotatedDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         InventoryRegistryData other = (InventoryRegistryData) obj;
         if (this.enumName == null)
         {
             if (other.enumName != null)
+            {
                 return false;
+            }
         }
         else if (!this.enumName.equals(other.enumName))
+        {
             return false;
+        }
         if (this.pluginName == null)
         {
             if (other.pluginName != null)
+            {
                 return false;
+            }
         }
         else if (!this.pluginName.equals(other.pluginName))
+        {
             return false;
+        }
         if (this.uuid == null)
         {
             if (other.uuid != null)
+            {
                 return false;
+            }
         }
         else if (!this.uuid.equals(other.uuid))
+        {
             return false;
+        }
         return true;
     }
     

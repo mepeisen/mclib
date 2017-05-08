@@ -53,29 +53,34 @@ import de.minigameslib.mclib.impl.gui.ClickGuis;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
- * A list page being able to select enum values
+ * A list page being able to select enum values.
  * 
  * @author mepeisen
  */
 public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements ClickGuiInterface
 {
     
-    /** save function */
+    /** save function. */
     private McConsumer<EnumerationValue>            onSave;
     
-    /** enum class */
+    /** enum class. */
     private final Class<? extends EnumerationValue> clazz;
     
     /** enumeration value. */
     private EnumerationValue                        value;
     
-    /** sorted list */
+    /** sorted list. */
     private List<? extends EnumerationValue>        values;
     
     /**
+     * Constructor.
+     * 
      * @param clazz
+     *            enum class
      * @param value
+     *            current value
      * @param save
+     *            handler to accept a new value
      */
     public EnumEditor(Class<? extends EnumerationValue> clazz, EnumerationValue value, McConsumer<EnumerationValue> save)
     {
@@ -120,13 +125,18 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
     }
     
     /**
-     * Select handler
+     * Select handler.
      * 
      * @param player
+     *            target player.
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @param elm
+     *            selected element
      * @throws McException
+     *             thrown on validation errors
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, EnumerationValue elm) throws McException
     {
@@ -179,21 +189,21 @@ public class EnumEditor extends PagableClickGuiPage<EnumerationValue> implements
     {
         
         /**
-         * Back icon
+         * Back icon.
          */
         @LocalizedMessage(defaultMessage = "Back")
         @MessageComment("back icon")
         IconBack,
         
         /**
-         * dialog title
+         * dialog title.
          */
         @LocalizedMessage(defaultMessage = "Edit enumeration value")
         @MessageComment("dialog title")
         Title,
         
         /**
-         * enum value
+         * enum value.
          */
         @LocalizedMessage(defaultMessage = "%1$s")
         @MessageComment(value = "enum value", args = { @MessageComment.Argument("enum value name") })

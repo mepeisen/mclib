@@ -27,19 +27,19 @@ package de.minigameslib.mclib.impl.gui;
 import de.minigameslib.mclib.api.gui.ClickGuiId;
 
 /**
- * click guis
+ * click guis.
  * 
  * @author mepeisen
  *
  */
 public enum ClickGuis implements ClickGuiId
 {
-    /** gui to edit a list */
+    /** gui to edit a list. */
     List,
-    /** gui to edit colors */
+    /** gui to edit colors. */
     Color,
-    /** gui to edit an enum */
+    /** gui to edit an enum. */
     Enum,
-    /** gui to display oversized inventories */
+    /** gui to display oversized inventories. */
     Inventory
 }

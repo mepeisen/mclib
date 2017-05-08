@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
 
 /**
- * Core configuration values for inventories
+ * Core configuration values for inventories.
  * 
  * @author mepeisen
  */
@@ -39,7 +39,7 @@ public enum McInventoriesConfig implements ConfigurationValueInterface
 {
     
     /**
-     * list of inventories on this server
+     * list of inventories on this server.
      */
     @ConfigurationSection
     @ConfigComment("DO NOT EDIT! Special data section for inventories")

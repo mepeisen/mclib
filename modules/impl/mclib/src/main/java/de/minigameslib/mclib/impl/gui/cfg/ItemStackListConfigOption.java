@@ -38,7 +38,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 
 /**
- * Config option to edit boolean variables
+ * Config option to edit item stack list variables.
  * 
  * @author mepeisen
  *
@@ -47,7 +47,10 @@ public class ItemStackListConfigOption extends AbstractConfigOption
 {
     
     /**
+     * Constructor.
+     * 
      * @param value
+     *            value to be edited.
      */
     public ItemStackListConfigOption(ConfigurationValueInterface value)
     {
@@ -63,14 +66,20 @@ public class ItemStackListConfigOption extends AbstractConfigOption
     }
     
     /**
-     * selector
+     * selector.
      * 
      * @param player
+     *            target player clicking the edit item
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @param onChange
+     *            function to invoke once the config value is changed; may be {@code null}
      * @param contextProvider
+     *            runnable to setup context sensitive execution; may be {@code null}
      * @throws McException
+     *             thrown on errors
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {

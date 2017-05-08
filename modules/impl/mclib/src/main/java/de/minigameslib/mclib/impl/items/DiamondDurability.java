@@ -57,8 +57,12 @@ class DiamondDurability implements Durability
     private final String stringValue;
     
     /**
+     * Constructor for diamond durability.
+     * 
      * @param shortValue
+     *            durability value as short value
      * @param stringValue
+     *            durability value as string to be used in resource packs.
      */
     private DiamondDurability(short shortValue, String stringValue)
     {

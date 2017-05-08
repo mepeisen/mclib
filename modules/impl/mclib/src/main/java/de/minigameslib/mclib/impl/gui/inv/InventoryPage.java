@@ -38,7 +38,7 @@ import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.PagableClickGuiPage;
 
 /**
- * Inventory page
+ * Inventory page.
  * 
  * @author mepeisen
  */
@@ -49,7 +49,10 @@ public class InventoryPage extends PagableClickGuiPage<ItemStack>
     private Inventory inventory;
     
     /**
+     * Constructor.
+     * 
      * @param inventory
+     *            the target inventory
      */
     public InventoryPage(Inventory inventory)
     {

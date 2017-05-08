@@ -43,8 +43,9 @@ import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 
 /**
+ * Implementation of HumanBuilderInterface to create dummy humans.
+ * 
  * @author mepeisen
- *
  */
 public class HumanBuilder implements HumanBuilderInterface
 {

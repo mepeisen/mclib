@@ -72,7 +72,9 @@ public class YmlFile extends YmlCommentableSection
      * Constructor to read from existing file.
      * 
      * @param file
+     *            java io file to read data from
      * @throws IOException
+     *             thrown if file cannot be read
      */
     public YmlFile(File file) throws IOException
     {
@@ -87,7 +89,9 @@ public class YmlFile extends YmlCommentableSection
      * Constructor to read from existing file.
      * 
      * @param file
+     *            java stream to read data from
      * @throws IOException
+     *             thrown if stream cannot be read
      */
     public YmlFile(InputStream file) throws IOException
     {
@@ -99,7 +103,9 @@ public class YmlFile extends YmlCommentableSection
      * Reads a file into this config.
      * 
      * @param fr
+     *            java reader to read data from
      * @throws IOException
+     *             thrown if file cannot be read
      */
     public void load(FileReader fr) throws IOException
     {
@@ -111,7 +117,9 @@ public class YmlFile extends YmlCommentableSection
      * Reads a file into this config.
      * 
      * @param fr
+     *            java stream to read data from
      * @throws IOException
+     *             thrown if stream cannot be read
      */
     public void load(InputStream fr) throws IOException
     {
@@ -123,7 +131,9 @@ public class YmlFile extends YmlCommentableSection
      * Saves config to file.
      * 
      * @param file
+     *            target file
      * @throws IOException
+     *             thrown if file cannot be saved
      */
     public void saveFile(File file) throws IOException
     {
@@ -148,7 +158,7 @@ public class YmlFile extends YmlCommentableSection
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public MyConstructor()
         {
@@ -329,7 +339,7 @@ public class YmlFile extends YmlCommentableSection
         private static final long    serialVersionUID = -8759792473880471350L;
         
         /**
-         * Constructor
+         * Constructor.
          */
         public MyCommentMap()
         {

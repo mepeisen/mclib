@@ -26,9 +26,7 @@ package de.minigameslib.mclib.impl.gui.cfg;
 
 import org.bukkit.inventory.ItemStack;
 
-import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
@@ -39,7 +37,7 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 
 /**
- * Config option to edit boolean variables
+ * Config option to edit item stack variables.
  * 
  * @author mepeisen
  *
@@ -48,7 +46,10 @@ public class ItemStackConfigOption extends AbstractConfigOption
 {
     
     /**
+     * Constructor.
+     * 
      * @param value
+     *            value to be edited.
      */
     public ItemStackConfigOption(ConfigurationValueInterface value)
     {
@@ -64,14 +65,20 @@ public class ItemStackConfigOption extends AbstractConfigOption
     }
     
     /**
-     * selector
+     * selector.
      * 
      * @param player
+     *            target player clicking the edit item
      * @param session
+     *            gui session
      * @param guiInterface
+     *            click gui
      * @param onChange
+     *            function to invoke once the config value is changed; may be {@code null}
      * @param contextProvider
+     *            runnable to setup context sensitive execution; may be {@code null}
      * @throws McException
+     *             thrown on errors
      */
     private void select(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface guiInterface, Runnable onChange, McRunnable contextProvider) throws McException
     {

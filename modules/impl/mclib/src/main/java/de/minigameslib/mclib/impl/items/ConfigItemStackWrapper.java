@@ -31,7 +31,7 @@ import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
- * Config item stack wrapper
+ * Config item stack wrapper.
  * 
  * @author mepeisen
  */

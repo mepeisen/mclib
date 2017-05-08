@@ -27,6 +27,8 @@ package de.minigameslib.mclib.impl.items;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 /**
+ * Inventory listener to listen for closed inventories.
+ * 
  * @author mepeisen
  *
  */
@@ -34,7 +36,7 @@ public interface InventoryListener
 {
     
     /**
-     * Handle close event
+     * Handle close event.
      * 
      * @param evt
      *            close event

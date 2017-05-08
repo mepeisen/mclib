@@ -82,33 +82,37 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
     final Map<InventoryTypeId, Map<String, InventoryId>> inventoryByTypeAndName = new HashMap<>();
     
     /**
-     * inventories
+     * inventories.
      */
     final Map<InventoryId, InventoryComponent>           inventories            = new HashMap<>();
     
-    /** component registry for inventory objects */
+    /** component registry for inventory objects. */
     final ComponentRegistry                              objects                = new ComponentRegistry();
     
-    /** configuration folder */
+    /** configuration folder. */
     File                                                 configFolder;
     
-    /** main config file */
+    /** main config file. */
     File                                                 configFile;
     
-    /** the known inventories */
+    /** the known inventories. */
     List<InventoryRegistryData>                          inventoryIds           = new ArrayList<>();
     
-    /** logger */
+    /** logger. */
     static final Logger                                  LOGGER                 = Logger.getLogger(InventoryServiceImpl.class.getName());
     
     /**
-     * @param configFolder
+     * Constructor.
+     * 
+     * @param configFolder the config folder to be used for inventory storage.
      */
     public InventoryServiceImpl(File configFolder)
     {
         this.configFolder = configFolder;
         if (!this.configFolder.exists())
+        {
             this.configFolder.mkdirs();
+        }
         this.configFile = new File(this.configFolder, "registry.yml"); //$NON-NLS-1$
         if (this.configFile.exists())
         {
@@ -185,6 +189,12 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
         final Optional<InventoryComponent> comp = this.objects.fetch(new WorldChunk(location)).stream().map(c -> (InventoryComponent) c).filter(i -> i.getLocations().contains(location))
             .filter(i -> i.getTypeId() == type).findFirst();
         return comp.isPresent() ? comp.get().getId() : null;
+    }
+    
+    @Override
+    public InventoryDescriptorInterface getInventory(InventoryId id)
+    {
+        return this.inventories.get(id);
     }
     
     @Override
@@ -291,28 +301,22 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
         }
     }
     
-    @Override
-    public InventoryDescriptorInterface getInventory(InventoryId id)
-    {
-        return this.inventories.get(id);
-    }
-    
     /**
-     * the inventory messages
+     * the inventory messages.
      */
     @LocalizedMessages(value = "inventory", defaultLocale = "en")
     public enum Messages implements LocalizedMessageInterface
     {
         
         /**
-         * Not enough free slots
+         * Not enough free slots.
          */
         @LocalizedMessage(defaultMessage = "Unable to shrink repository. Not enough free slots.", severity = MessageSeverityType.Error)
         @MessageComment(value = { "Not enough free slots" })
         NotEnoughFreeSlots,
         
         /**
-         * Cannot change fixed inventory
+         * Cannot change fixed inventory.
          */
         @LocalizedMessage(defaultMessage = "Cannot change size of fixed inventory", severity = MessageSeverityType.Error)
         @MessageComment(value = { "Cannot change fixed inventory" })
@@ -334,7 +338,9 @@ public class InventoryServiceImpl implements InventoryServiceInterface, Componen
                     {
                         try
                         {
-                            final InventoryComponent comp = new InventoryComponent(InventoryServiceImpl.this.objects, new File(InventoryServiceImpl.this.configFolder, "inv-" + r.getUuid() + ".yml"), //$NON-NLS-1$ //$NON-NLS-2$
+                            final InventoryComponent comp = new InventoryComponent(
+                                InventoryServiceImpl.this.objects,
+                                new File(InventoryServiceImpl.this.configFolder, "inv-" + r.getUuid() + ".yml"), //$NON-NLS-1$ //$NON-NLS-2$
                                 InventoryServiceImpl.this);
                             InventoryServiceImpl.this.inventories.put(comp.getId(), comp);
                             InventoryServiceImpl.this.inventoryByType.computeIfAbsent(type, t -> new HashSet<>()).add(comp.getId());

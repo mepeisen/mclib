@@ -43,7 +43,10 @@ public class InventoryGui implements ClickGuiInterface
     private Inventory inventory;
     
     /**
+     * Constructor.
+     * 
      * @param inventory
+     *            target inventory
      */
     public InventoryGui(Inventory inventory)
     {

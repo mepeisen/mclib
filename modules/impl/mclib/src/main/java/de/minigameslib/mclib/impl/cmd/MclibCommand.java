@@ -53,7 +53,18 @@ public class MclibCommand extends AbstractCompositeCommandHandler
         this.subCommands.put("locale", new LocaleCommand()); //$NON-NLS-1$
         this.subCommands.put("defaultlocale", new DefaultLocaleCommand()); //$NON-NLS-1$
         this.subCommands.put("mainlocale", new MainLocaleCommand()); //$NON-NLS-1$
-        // TODO this.subCommands.put("translate", new TranslateCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("translate", new TranslateGuiCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("config", new ConfigGuiCommand()); //$NON-NLS-1$
+        
+        // TODO this.subCommands.put("inv", new InventoryGuiCommand()); //$NON-NLS-1$
+        
+        // TODO this.subCommands.put("components", new ComponentsGuiCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("signs", new SignsGuiCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("entities", new EntitiesGuiCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("zones", new ZonesGuiCommand()); //$NON-NLS-1$
+        // TODO this.subCommands.put("objects", new ObjectsGuiCommand()); //$NON-NLS-1$
+        
+        // TODO this.subCommands.put("plugins", new PluginsGuiCommand()); //$NON-NLS-1$
         this.subCommands.put("bungee", new BungeeCommand()); //$NON-NLS-1$
     }
     

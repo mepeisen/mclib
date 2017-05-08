@@ -54,7 +54,7 @@ public class CustomItem extends AnnotatedDataFragment
     protected short           durability;
     
     /**
-     * the numeric item id for modded items
+     * the numeric item id for modded items.
      */
     @PersistentField
     protected int             numId;
@@ -69,6 +69,7 @@ public class CustomItem extends AnnotatedDataFragment
     private NameProvider      nameProvider;
     
     /**
+     * Constructor to read from config.
      */
     public CustomItem()
     {
@@ -76,8 +77,12 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Constructor.
+     * 
      * @param pluginName
+     *            plugin name
      * @param enumName
+     *            enum value name
      */
     public CustomItem(String pluginName, String enumName)
     {
@@ -86,9 +91,14 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Constructor.
+     * 
      * @param pluginName
+     *            plugin name
      * @param enumName
+     *            enumeration value name.
      * @param itemId
+     *            item id to use
      */
     public CustomItem(String pluginName, String enumName, ItemId itemId)
     {
@@ -98,6 +108,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the numeric item id for modded items.
+     * 
      * @return the numId
      */
     public int getNumId()
@@ -106,6 +118,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the numeric item id.
+     * 
      * @param numId
      *            the numId to set
      */
@@ -115,6 +129,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the name provider.
+     * 
      * @return the nameProvider
      */
     public NameProvider getNameProvider()
@@ -123,6 +139,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the short durability value.
+     * 
      * @return the durability
      */
     public short getDurability()
@@ -131,6 +149,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the short durability value.
+     * 
      * @param durability
      *            the durability to set
      */
@@ -140,6 +160,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Sets item id.
+     * 
      * @param itemId
      *            the itemId to set
      */
@@ -150,6 +172,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the custom item type.
+     * 
      * @return the customType
      */
     public CustomItemTypes getCustomType()
@@ -158,6 +182,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the custom item type.
+     * 
      * @param customType
      *            the customType to set
      */
@@ -167,6 +193,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the custom durability.
+     * 
      * @return the customDurability
      */
     public Durability getCustomDurability()
@@ -175,6 +203,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the custom durability.
+     * 
      * @param customDurability
      *            the customDurability to set
      */
@@ -185,6 +215,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the plugin name.
+     * 
      * @return the pluginName
      */
     public String getPluginName()
@@ -193,6 +225,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the enumeration value name.
+     * 
      * @return the enumName
      */
     public String getEnumName()
@@ -201,6 +235,8 @@ public class CustomItem extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the item id.
+     * 
      * @return the itemId
      */
     public ItemId getItemId()
@@ -222,26 +258,40 @@ public class CustomItem extends AnnotatedDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         CustomItem other = (CustomItem) obj;
         if (this.enumName == null)
         {
             if (other.enumName != null)
+            {
                 return false;
+            }
         }
         else if (!this.enumName.equals(other.enumName))
+        {
             return false;
+        }
         if (this.pluginName == null)
         {
             if (other.pluginName != null)
+            {
                 return false;
+            }
         }
         else if (!this.pluginName.equals(other.pluginName))
+        {
             return false;
+        }
         return true;
     }
     

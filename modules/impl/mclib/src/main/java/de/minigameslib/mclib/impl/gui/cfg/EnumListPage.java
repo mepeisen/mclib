@@ -37,26 +37,34 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
- * A list page being able to insert and remove enum list elements
+ * A list page being able to insert and remove enum list elements.
  * 
  * @author mepeisen
  */
 public class EnumListPage extends AbstractListPage<EnumerationValue>
 {
     
-    /** save function */
+    /** save function. */
     private McConsumer<List<EnumerationValue>>      onSave;
     
-    /** enum class */
+    /** enum class. */
     private final Class<? extends EnumerationValue> clazz;
     
     /**
+     * Constructor.
+     * 
      * @param title
+     *            page title
      * @param lines
+     *            existing values
      * @param onPrev
+     *            handler to display previous page/ the calling page
      * @param onDelete
+     *            function to invoke on deleting all values
      * @param save
+     *            handler to save the values.
      * @param clazz
+     *            enum class
      */
     public EnumListPage(Serializable title, EnumerationValue[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<EnumerationValue>> save, Class<? extends EnumerationValue> clazz)
     {

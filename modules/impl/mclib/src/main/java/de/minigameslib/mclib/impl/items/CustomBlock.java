@@ -65,6 +65,7 @@ public class CustomBlock extends AnnotatedDataFragment
     private NameProvider                       nameProvider;
     
     /**
+     * Constructor to read from file.
      */
     public CustomBlock()
     {
@@ -72,8 +73,12 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Constructor for new blocks.
+     * 
      * @param pluginName
+     *            plugin name
      * @param enumName
+     *            enum value name
      */
     public CustomBlock(String pluginName, String enumName)
     {
@@ -82,9 +87,14 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Constructor for new blocks.
+     * 
      * @param pluginName
+     *            plugin name
      * @param enumName
+     *            enum value name
      * @param blockId
+     *            block id
      */
     public CustomBlock(String pluginName, String enumName, BlockId blockId)
     {
@@ -94,6 +104,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the block id.
+     * 
      * @param blockId
      *            the blockId to set
      */
@@ -116,6 +128,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the name provider.
+     * 
      * @return the nameProvider
      */
     public NameProvider getNameProvider()
@@ -124,6 +138,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the plugin name.
+     * 
      * @return the pluginName
      */
     public String getPluginName()
@@ -132,6 +148,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the enum value name.
+     * 
      * @return the enumName
      */
     public String getEnumName()
@@ -140,6 +158,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the numeric block id.
+     * 
      * @return the numId
      */
     public int getNumId()
@@ -148,6 +168,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the numeric block id.
+     * 
      * @param numId
      *            the numId to set
      */
@@ -157,6 +179,8 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the block id.
+     * 
      * @return the blockId
      */
     public BlockId getBlockId()
@@ -165,7 +189,10 @@ public class CustomBlock extends AnnotatedDataFragment
     }
     
     /**
+     * Returns the block variant id for given ordinal/ meta value.
+     * 
      * @param variantId
+     *            ordinal/meta value
      * @return custom variant
      */
     public BlockVariantId getVariant(int variantId)
@@ -187,26 +214,40 @@ public class CustomBlock extends AnnotatedDataFragment
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         CustomBlock other = (CustomBlock) obj;
         if (this.enumName == null)
         {
             if (other.enumName != null)
+            {
                 return false;
+            }
         }
         else if (!this.enumName.equals(other.enumName))
+        {
             return false;
+        }
         if (this.pluginName == null)
         {
             if (other.pluginName != null)
+            {
                 return false;
+            }
         }
         else if (!this.pluginName.equals(other.pluginName))
+        {
             return false;
+        }
         return true;
     }
     

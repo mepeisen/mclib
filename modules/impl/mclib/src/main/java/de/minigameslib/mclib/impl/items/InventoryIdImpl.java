@@ -31,6 +31,8 @@ import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.PersistentField;
 
 /**
+ * Implementation of inventory id.
+ * 
  * @author mepeisen
  */
 public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryId
@@ -43,7 +45,7 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     protected String uuid;
     
     /**
-     * Constructor for rading from config
+     * Constructor for rading from config.
      */
     public InventoryIdImpl()
     {
@@ -51,7 +53,10 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     }
     
     /**
+     * Constructor for new ids.
+     * 
      * @param uuid
+     *            unique id
      */
     public InventoryIdImpl(UUID uuid)
     {
@@ -59,6 +64,8 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     }
     
     /**
+     * Returns the unique inventory id.
+     * 
      * @return the uuid
      */
     public UUID getUuid()
@@ -67,6 +74,8 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     }
     
     /**
+     * Sets the unique inventory id.
+     * 
      * @param uuid
      *            the uuid to set
      */
@@ -88,19 +97,29 @@ public class InventoryIdImpl extends AnnotatedDataFragment implements InventoryI
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         InventoryIdImpl other = (InventoryIdImpl) obj;
         if (this.uuid == null)
         {
             if (other.uuid != null)
+            {
                 return false;
+            }
         }
         else if (!this.uuid.equals(other.uuid))
+        {
             return false;
+        }
         return true;
     }
     

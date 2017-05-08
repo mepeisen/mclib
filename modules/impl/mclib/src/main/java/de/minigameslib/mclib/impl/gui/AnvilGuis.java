@@ -27,13 +27,13 @@ package de.minigameslib.mclib.impl.gui;
 import de.minigameslib.mclib.api.gui.AnvilGuiId;
 
 /**
- * Anvil guis
+ * Anvil guis.
  * 
  * @author mepeisen
  *
  */
 public enum AnvilGuis implements AnvilGuiId
 {
-    /** gui to query text */
+    /** gui to query text. */
     QueryText
 }

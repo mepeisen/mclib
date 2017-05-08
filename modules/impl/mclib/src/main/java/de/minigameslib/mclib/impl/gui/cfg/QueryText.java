@@ -46,25 +46,29 @@ import de.minigameslib.mclib.impl.gui.AnvilGuis;
 public class QueryText implements AnvilGuiInterface
 {
     
-    /** cancel func */
+    /** cancel func. */
     private McRunnable         onCancel;
     
-    /** input func */
+    /** input func. */
     private McConsumer<String> onInput;
     
     /** source text. */
     private String             src;
     
-    /** description */
+    /** description. */
     private String[]           description;
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param src
+     *            source string
      * @param onCancel
+     *            handler for cancelling the input
      * @param onInput
+     *            handler for accepting a new value
      * @param description
+     *            the string description for the queried value
      */
     public QueryText(String src, McRunnable onCancel, McConsumer<String> onInput, String[] description)
     {

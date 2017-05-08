@@ -53,6 +53,8 @@ import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
+ * Implementation of the skin service.
+ * 
  * @author mepeisen
  *
  */
@@ -62,11 +64,11 @@ public class SkinServiceImpl implements SkinServiceInterface
     /** the executor service. */
     private ExecutorService executor;
     
-    /** logger */
+    /** logger. */
     static final Logger     LOGGER = Logger.getLogger(SkinServiceImpl.class.getName());
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param executor
      *            the executor service for asynchronous service execution
@@ -108,6 +110,12 @@ public class SkinServiceImpl implements SkinServiceInterface
     }
     
     @Override
+    public void getSkinSnapshot(McPlayerInterface player, McConsumer<SkinInterface> completion)
+    {
+        this.getSkinSnapshot(this.get(player), completion);
+    }
+    
+    @Override
     public void getSkinSnapshot(SkinInterface skin, McConsumer<SkinInterface> completion)
     {
         if (skin instanceof SkinFromTextures)
@@ -141,12 +149,6 @@ public class SkinServiceImpl implements SkinServiceInterface
         {
             LOGGER.log(Level.INFO, "error fetching skin", e); //$NON-NLS-1$
         }
-    }
-    
-    @Override
-    public void getSkinSnapshot(McPlayerInterface player, McConsumer<SkinInterface> completion)
-    {
-        this.getSkinSnapshot(this.get(player), completion);
     }
     
     @Override
@@ -198,20 +200,24 @@ public class SkinServiceImpl implements SkinServiceInterface
     }
     
     /**
-     * Completion task
+     * Completion task.
      */
     private static final class Completion extends BukkitRunnable
     {
         
-        /** consumer */
+        /** consumer. */
         private final McConsumer<SkinInterface> consumer;
         
-        /** skin */
+        /** skin. */
         private final SkinInterface             skin;
         
         /**
+         * Constructor.
+         * 
          * @param consumer
+         *            the consumer function to fetch the skin.
          * @param skin
+         *            the skin interface to query.
          */
         public Completion(McConsumer<SkinInterface> consumer, SkinInterface skin)
         {

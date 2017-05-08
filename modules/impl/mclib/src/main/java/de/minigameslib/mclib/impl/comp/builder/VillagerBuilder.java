@@ -34,14 +34,16 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
-import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.NpcServiceInterface.VillagerBuilderInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.impl.comp.DynamicEntityType;
 import de.minigameslib.mclib.impl.comp.EntityImpl;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 
 /**
+ * Implementation of HumanBuilderInterface to create dummy villagers.
+ * 
  * @author mepeisen
  *
  */

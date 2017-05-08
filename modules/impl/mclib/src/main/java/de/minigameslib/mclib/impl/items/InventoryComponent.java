@@ -64,6 +64,8 @@ import de.minigameslib.mclib.nms.api.CraftInventoryWrapper;
 import de.minigameslib.mclib.shared.api.com.LocationDataFragment;
 
 /**
+ * Implementation of inventory object.
+ * 
  * @author mepeisen
  *
  */
@@ -74,26 +76,31 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     private InventoryData            data;
     
     /**
-     * the shared inventory
+     * the shared inventory.
      */
     private InventoryImpl            shared;
     
-    /** Logger */
+    /** Logger. */
     static final Logger              LOGGER            = Logger.getLogger(InventoryComponent.class.getName());
     
     /**
-     * player inventories
+     * player inventories.
      */
     private Map<UUID, InventoryImpl> playerInventories = new HashMap<>();
     
     /**
-     * Constructor for new inventories
+     * Constructor for new inventories.
      * 
      * @param registry
+     *            component registry used for location binds
      * @param config
+     *            configuration file for this inventory
      * @param owner
+     *            component owner
      * @param data
+     *            inventory data
      * @throws McException
+     *             thrown for io errors writing the initial config
      */
     public InventoryComponent(ComponentRegistry registry, File config, ComponentOwner owner, InventoryData data) throws McException
     {
@@ -104,12 +111,16 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
-     * Constructor for existing inventories
+     * Constructor for existing inventories.
      * 
      * @param registry
+     *            component registry used for location binds
      * @param config
+     *            configuration file for this inventory
      * @param owner
+     *            component owner
      * @throws McException
+     *             thrown for io errors reading the config
      */
     public InventoryComponent(ComponentRegistry registry, File config, ComponentOwner owner) throws McException
     {
@@ -119,9 +130,10 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
-     * Saves the config data
+     * Saves the config data.
      * 
      * @throws McException
+     *             wraps io errors
      */
     void saveData() throws McException
     {
@@ -151,6 +163,8 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
+     * Returns the inventory data.
+     * 
      * @return the data
      */
     public InventoryData getData()
@@ -198,7 +212,9 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     public List<McPlayerInterface> getPlayers()
     {
         if (this.isShared())
+        {
             return Collections.emptyList();
+        }
         final ObjectServiceInterface osi = ObjectServiceInterface.instance();
         return this.data.getPlayers().stream().map(osi::getPlayer).collect(Collectors.toList());
     }
@@ -222,7 +238,9 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
         // return null if not known
         final File file = new File(this.configFile.getParentFile(), this.getId() + "-player-" + uuid + " .yml"); //$NON-NLS-1$ //$NON-NLS-2$
         if (!file.exists())
+        {
             return null;
+        }
         
         // create existing inventory
         final InventoryContentData content = this.getContent(file);
@@ -232,10 +250,11 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
-     * Shared inventory
+     * Returns the shared inventory.
      * 
      * @return shared inventory
      * @throws McException
+     *             thrown for problems reading the content.
      */
     private InventoryImpl getSharedInventory() throws McException
     {
@@ -249,11 +268,13 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
-     * Gets content from file
+     * Gets content from file.
      * 
      * @param file
+     *            data file
      * @return content from file
      * @throws McException
+     *             wraps io exceptions
      */
     private InventoryContentData getContent(File file) throws McException
     {
@@ -286,9 +307,13 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
+     * Returns content from file.
+     * 
      * @param uuid
+     *            unique id of player
      * @return inventory impl
      * @throws McException
+     *             wrapped io exception
      */
     private InventoryImpl getOrCreate(final UUID uuid) throws McException
     {
@@ -344,6 +369,33 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     @Override
+    public void shrinkInventory(int slotAmount) throws McException
+    {
+        if (this.isFixed())
+        {
+            throw new McException(InventoryServiceImpl.Messages.CannotChangeFixedInventory);
+        }
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        
+        if (this.isShared())
+        {
+            final InventoryImpl sharedInventory = this.getSharedInventory();
+            sharedInventory.shrink(slotAmount);
+            // reopen inventory
+            reopenInventory(osi, sharedInventory);
+        }
+        else
+        {
+            for (UUID uuid : this.data.getPlayers())
+            {
+                final InventoryImpl i = this.getOrCreate(uuid);
+                i.shrink(slotAmount);
+                this.reopenInventory(osi, i);
+            }
+        }
+    }
+    
+    @Override
     public void shrinkInventory(McPlayerInterface player, int slotAmount) throws McException
     {
         if (this.isFixed())
@@ -366,6 +418,33 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
             inv.shrink(slotAmount);
             // reopen inventory
             reopenInventory(osi, inv);
+        }
+    }
+    
+    @Override
+    public void setInventorySize(int slots) throws McException
+    {
+        if (this.isFixed())
+        {
+            throw new McException(InventoryServiceImpl.Messages.CannotChangeFixedInventory);
+        }
+        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
+        
+        if (this.isShared())
+        {
+            final InventoryImpl sharedInventory = this.getSharedInventory();
+            sharedInventory.setSize(slots);
+            // reopen inventory
+            reopenInventory(osi, sharedInventory);
+        }
+        else
+        {
+            for (UUID uuid : this.data.getPlayers())
+            {
+                final InventoryImpl i = this.getOrCreate(uuid);
+                i.setSize(slots);
+                this.reopenInventory(osi, i);
+            }
         }
     }
     
@@ -422,60 +501,6 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     @Override
-    public void shrinkInventory(int slotAmount) throws McException
-    {
-        if (this.isFixed())
-        {
-            throw new McException(InventoryServiceImpl.Messages.CannotChangeFixedInventory);
-        }
-        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
-        
-        if (this.isShared())
-        {
-            final InventoryImpl sharedInventory = this.getSharedInventory();
-            sharedInventory.shrink(slotAmount);
-            // reopen inventory
-            reopenInventory(osi, sharedInventory);
-        }
-        else
-        {
-            for (UUID uuid : this.data.getPlayers())
-            {
-                final InventoryImpl i = this.getOrCreate(uuid);
-                i.shrink(slotAmount);
-                this.reopenInventory(osi, i);
-            }
-        }
-    }
-    
-    @Override
-    public void setInventorySize(int slots) throws McException
-    {
-        if (this.isFixed())
-        {
-            throw new McException(InventoryServiceImpl.Messages.CannotChangeFixedInventory);
-        }
-        final ObjectServiceInterface osi = ObjectServiceInterface.instance();
-        
-        if (this.isShared())
-        {
-            final InventoryImpl sharedInventory = this.getSharedInventory();
-            sharedInventory.setSize(slots);
-            // reopen inventory
-            reopenInventory(osi, sharedInventory);
-        }
-        else
-        {
-            for (UUID uuid : this.data.getPlayers())
-            {
-                final InventoryImpl i = this.getOrCreate(uuid);
-                i.setSize(slots);
-                this.reopenInventory(osi, i);
-            }
-        }
-    }
-    
-    @Override
     public void growInventory(int slotAmount) throws McException
     {
         if (this.isFixed())
@@ -504,12 +529,16 @@ public class InventoryComponent extends AbstractComponent implements InventoryDe
     }
     
     /**
+     * Re-open an inventory after changing the inventory size.
+     * 
      * @param osi
-     * @param sharedInventory
+     *            object service interface
+     * @param inventory
+     *            the inventory to reopen.
      */
-    private void reopenInventory(final ObjectServiceInterface osi, final InventoryImpl sharedInventory)
+    private void reopenInventory(final ObjectServiceInterface osi, final InventoryImpl inventory)
     {
-        sharedInventory.getViewers().stream().forEach(v ->
+        inventory.getViewers().stream().forEach(v ->
         {
             v.closeInventory();
             try

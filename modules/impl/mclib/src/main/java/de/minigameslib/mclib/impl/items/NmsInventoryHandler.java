@@ -42,33 +42,40 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.NmsInventoryHandlerInterface;
 
 /**
+ * Implementation of nms inventory callback handler.
+ * 
  * @author mepeisen
  *
  */
 public class NmsInventoryHandler implements NmsInventoryHandlerInterface
 {
     
-    /** the initial size */
+    /** the initial size. */
     private int                     initialSize;
     
-    /** block id */
+    /** block id. */
     private BlockId                 blockId;
-    /** block variant id */
+    /** block variant id. */
     private BlockVariantId          variantId;
     
-    /** fixed inventory size */
+    /** fixed inventory size. */
     private boolean                 fixed;
     
-    /** shared inventory */
+    /** shared inventory. */
     private boolean                 shared;
     
-    /** helper interface */
+    /** helper interface. */
     private BlockInventoryInterface helper;
     
     /**
+     * Constructor.
+     * 
      * @param blockId
+     *            block to be used for inventories
      * @param variantId
+     *            variant to be used for inventories
      * @param variantInv
+     *            annotation data for this inventory
      */
     public NmsInventoryHandler(BlockId blockId, BlockVariantId variantId, BlockInventoryMeta variantInv)
     {

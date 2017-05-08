@@ -52,7 +52,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     private String[]              mapComments;
     
     /**
-     * Constructor
+     * Constructor.
      */
     protected YmlCommentableSection()
     {
@@ -63,8 +63,11 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
      * Constructor.
      * 
      * @param path
+     *            path of this section
      * @param name
+     *            name of this section
      * @param parent
+     *            the parent section
      */
     public YmlCommentableSection(String path, String name, MemoryDataSection parent)
     {
@@ -86,16 +89,19 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
-     * Loads data from given comment map
+     * Loads data from given comment map.
      * 
      * @param map
+     *            map to read data from.
      */
     protected void load(MyCommentMap map)
     {
         this.clearAll();
         // null mp --> empty file
         if (map == null)
+        {
             return;
+        }
         boolean isFirst = true;
         boolean isFirstCommentSet = false;
         String firstKey = null;
@@ -136,7 +142,11 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
+     * removes comment char from input.
+     * 
      * @param strings
+     *            input.
+     * 
      * @return string array
      */
     private String[] removeCommentChar(String[] strings)
@@ -166,9 +176,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
-     * Stores data to given comment map
+     * Stores data to given comment map.
      * 
      * @param map
+     *            target map
      */
     protected void store(MyCommentMap map)
     {
@@ -198,7 +209,11 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
+     * Adds comment char to output.
+     * 
      * @param strings
+     *            source string.
+     * 
      * @return string array
      */
     private String[] addCommentChar(String[] strings)
@@ -231,6 +246,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
      * Returns the comment for given key.
      * 
      * @param key
+     *            section key or path
      * @return comment lines or {@code null} if no comment was set.
      */
     public String[] getComment(String key)
@@ -253,6 +269,7 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
      * Sets the comment lines.
      * 
      * @param key
+     *            section key or path
      * @param newValue
      *            new comment lines or {@code null} to clear the comment.
      */
@@ -269,7 +286,10 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
+     * Clears comment for given key or path.
+     * 
      * @param key
+     *            key or path to clear the comment
      */
     private void clearComment(String key)
     {
@@ -287,8 +307,12 @@ public class YmlCommentableSection extends MemoryDataSection implements Commenta
     }
     
     /**
+     * Sets the comment.
+     * 
      * @param key
+     *            section key or path to set the comment
      * @param value
+     *            comment value
      */
     private void doSetComment(String key, String[] value)
     {

@@ -42,6 +42,8 @@ public class MclibPlayersConfig extends AnnotatedDataFragment
     protected String preferredLocale = null;
     
     /**
+     * Returns the preferred locale of player.
+     * 
      * @return the preferredLocale
      */
     public Locale getPreferredLocale()
@@ -50,6 +52,8 @@ public class MclibPlayersConfig extends AnnotatedDataFragment
     }
     
     /**
+     * Sets the players preferred locale.
+     * 
      * @param preferredLocale
      *            the preferredLocale to set
      */

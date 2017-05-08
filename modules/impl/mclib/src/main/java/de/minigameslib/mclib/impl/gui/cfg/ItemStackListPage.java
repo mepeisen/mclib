@@ -36,22 +36,29 @@ import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 
 /**
- * A list page being able to insert and remove itemstack list elements
+ * A list page being able to insert and remove itemstack list elements.
  * 
  * @author mepeisen
  */
 public class ItemStackListPage extends AbstractListPage<ConfigItemStackData>
 {
     
-    /** save function */
+    /** save function. */
     private McConsumer<List<ConfigItemStackData>> onSave;
     
     /**
+     * Constructor.
+     * 
      * @param title
+     *            page title
      * @param lines
+     *            existing values
      * @param onPrev
+     *            handler to display previous page/ the calling page
      * @param onDelete
+     *            function to invoke on deleting all values
      * @param save
+     *            handler to save the values.
      */
     public ItemStackListPage(Serializable title, ConfigItemStackData[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, McConsumer<List<ConfigItemStackData>> save)
     {

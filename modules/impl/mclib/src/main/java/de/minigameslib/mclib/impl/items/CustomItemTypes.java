@@ -27,57 +27,91 @@ package de.minigameslib.mclib.impl.items;
 import org.bukkit.Material;
 
 /**
+ * The custom item types to be used for non-modded items.
+ * 
  * @author mepeisen
  *
  */
 enum CustomItemTypes
 {
     /**
-     * Diamond Axe items
+     * Diamond Axe items.
      */
-    DiamondAxe(Material.DIAMOND_AXE, "models/item/diamond_axe.json", "item/handheld", "item/diamond_axe", "items/diamond_axe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    DiamondAxe(
+        Material.DIAMOND_AXE,
+        "models/item/diamond_axe.json", //$NON-NLS-1$
+        "item/handheld", //$NON-NLS-1$
+        "item/diamond_axe", //$NON-NLS-1$
+        "items/diamond_axe", //$NON-NLS-1$
+        DiamondDurability.VALUES),
     
     /**
-     * Diamond Hoe items
+     * Diamond Hoe items.
      */
-    DiamondHoe(Material.DIAMOND_HOE, "models/item/diamond_hoe.json", "item/handheld", "item/diamond_hoe", "items/diamond_hoe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    DiamondHoe(
+        Material.DIAMOND_HOE,
+        "models/item/diamond_hoe.json", //$NON-NLS-1$
+        "item/handheld", //$NON-NLS-1$
+        "item/diamond_hoe", //$NON-NLS-1$
+        "items/diamond_hoe", //$NON-NLS-1$
+        DiamondDurability.VALUES),
     
     /**
-     * Diamond Pickaxe items
+     * Diamond Pickaxe items.
      */
-    DiamondPickaxe(Material.DIAMOND_PICKAXE, "models/item/diamond_pickaxe.json", "item/handheld", "item/diamond_pickaxe", "items/diamond_pickaxe", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    DiamondPickaxe(
+        Material.DIAMOND_PICKAXE,
+        "models/item/diamond_pickaxe.json", //$NON-NLS-1$
+        "item/handheld", //$NON-NLS-1$
+        "item/diamond_pickaxe", //$NON-NLS-1$
+        "items/diamond_pickaxe", //$NON-NLS-1$
+        DiamondDurability.VALUES),
     
     /**
-     * Diamond Shovel items
+     * Diamond Shovel items.
      */
-    DiamondShovel(Material.DIAMOND_SPADE, "models/item/diamond_shovel.json", "item/handheld", "item/diamond_shovel", "items/diamond_shovel", DiamondDurability.VALUES), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-    ;
+    DiamondShovel(
+        Material.DIAMOND_SPADE,
+        "models/item/diamond_shovel.json", //$NON-NLS-1$
+        "item/handheld", //$NON-NLS-1$
+        "item/diamond_shovel", //$NON-NLS-1$
+        "items/diamond_shovel", //$NON-NLS-1$
+        DiamondDurability.VALUES),
+        ;
     
-    /** models filename */
+    /** models filename. */
     private final String       modelsFilename;
     
-    /** parent */
+    /** parent. */
     private final String       parent;
     
-    /** default model */
+    /** default model. */
     private final String       defaultModel;
     
-    /** default texture */
+    /** default texture. */
     private final String       defaultTexture;
     
-    /** durability */
+    /** durability. */
     private final Durability[] durabilities;
     
     /** the material. */
     private final Material     material;
     
     /**
+     * Constructor.
+     * 
      * @param material
+     *            bukkit material to be used
      * @param modelsFilename
+     *            the models file name
      * @param parent
+     *            the models parent
      * @param defaultModel
+     *            the default model
      * @param defaultTexture
+     *            the texture to use
      * @param durabilities
+     *            the possible durabilities
      */
     private CustomItemTypes(Material material, String modelsFilename, String parent, String defaultModel, String defaultTexture, Durability[] durabilities)
     {
@@ -90,6 +124,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the model filenames.
+     * 
      * @return models file name
      */
     public String getModelsFilename()
@@ -98,6 +134,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the models parent.
+     * 
      * @return parent
      */
     public String getParent()
@@ -106,6 +144,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the default model.
+     * 
      * @return default model
      */
     public String getDefaultModel()
@@ -114,6 +154,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the default texture.
+     * 
      * @return default texture
      */
     public String getDefaultTexture()
@@ -122,6 +164,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the possible durabilities.
+     * 
      * @return durabilities
      */
     public Durability[] getDurabilities()
@@ -130,6 +174,8 @@ enum CustomItemTypes
     }
     
     /**
+     * Returns the bukkit material.
+     * 
      * @return the material
      */
     public Material getMaterial()
