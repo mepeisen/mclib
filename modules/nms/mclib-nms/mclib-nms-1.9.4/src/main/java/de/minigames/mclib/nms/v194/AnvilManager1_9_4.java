@@ -65,7 +65,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         final Helper helper = new Helper(entity, stack, listener);
         int c = entity.nextContainerCounter();
-        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("FOO", new Object[] {}), 0));
+        entity.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("FOO", new Object[] {}), 0)); //$NON-NLS-1$ //$NON-NLS-2$
         entity.activeContainer = helper;
         helper.windowId = c;
         entity.activeContainer.addSlotListener(entity);
@@ -75,7 +75,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
     }
     
     /**
-     * Player click event
+     * Player click event.
      * 
      * @param evt
      *            player click event
@@ -91,7 +91,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
     }
     
     /**
-     * Inventory click event
+     * Inventory click event.
      * 
      * @param evt
      *            inventory click event
@@ -108,8 +108,10 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
                 final ItemStack stack = evt.getCurrentItem();
                 String name = new ItemHelper1_9_4().getDisplayName(stack);
                 if (name == null)
+                {
                     name = ""; //$NON-NLS-1$
-                    
+                }
+                
                 if (this.playerInventories.get(uuid).listener.onCommit(name))
                 {
                     // clear item before closing
@@ -123,7 +125,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
     }
     
     /**
-     * Inventory drag event
+     * Inventory drag event.
      * 
      * @param evt
      *            inventory drag event
@@ -139,7 +141,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
     }
     
     /**
-     * Inventory close event
+     * Inventory close event.
      * 
      * @param evt
      *            inventory close event
@@ -162,6 +164,7 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
     {
         
         /** bukkit item stack. */
+        @SuppressWarnings("unused")
         private ItemStack    stack;
         /** craft entity. */
         private EntityPlayer entity;
@@ -169,9 +172,14 @@ public class AnvilManager1_9_4 implements AnvilManagerInterface
         AnvilListener        listener;
         
         /**
+         * Constructor.
+         * 
          * @param entity
+         *            player opening the gui
          * @param stack
+         *            source item stack
          * @param listener
+         *            listener to fetch close event
          */
         public Helper(EntityPlayer entity, ItemStack stack, AnvilListener listener)
         {

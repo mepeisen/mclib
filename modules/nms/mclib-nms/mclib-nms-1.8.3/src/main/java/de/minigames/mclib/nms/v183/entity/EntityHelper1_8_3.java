@@ -274,7 +274,7 @@ public class EntityHelper1_8_3 implements EntityHelperInterface
     @Override
     public boolean isDummyHuman(HumanEntity human)
     {
-        return human instanceof DummyHuman1_8_3.HumanNPC;
+        return human instanceof DummyHuman1_8_3.HumanNpc;
     }
     
 }

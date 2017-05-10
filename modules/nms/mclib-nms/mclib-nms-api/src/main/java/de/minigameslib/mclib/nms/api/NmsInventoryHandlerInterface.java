@@ -31,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * NMS Helper for supporting inventory callbacks.
+ * 
  * @author mepeisen
  *
  */
@@ -38,38 +40,50 @@ public interface NmsInventoryHandlerInterface
 {
     
     /**
-     * place handler
+     * place handler.
      * 
      * @param location
+     *            target location
      */
     void onPlace(Location location);
     
     /**
-     * post place handler
+     * post place handler.
      * 
      * @param location
+     *            target location
      * @param stack
+     *            item stack to be used
      * @param player
+     *            target player.
      */
     void onPostPlace(Location location, ItemStack stack, Player player);
     
     /**
-     * break handler
+     * break handler.
      * 
      * @param location
+     *            target location.
      */
     void onBreak(Location location);
     
     /**
-     * right click handler
+     * right click handler.
      * 
      * @param location
+     *            target location.
      * @param bukkitEntity
+     *            bukkt entity that interacts with chest
      * @param mainHand
+     *            {@coede true} for using main hand and {@code false} for using off hand
      * @param blockFace
+     *            the block face
      * @param hitX
+     *            x pos for clicking
      * @param hitY
+     *            y pos for clicking
      * @param hitZ
+     *            z pos for clicking
      * @return {@code true} on success
      */
     boolean onInteract(Location location, HumanEntity bukkitEntity, boolean mainHand, BlockFace blockFace, float hitX, float hitY, float hitZ);

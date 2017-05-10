@@ -41,16 +41,16 @@ import de.minigameslib.mclib.api.util.function.TrueStub;
  * Base Implementation for minigame events.
  * 
  * @author mepeisen
- * @param <Evt>
- *            event class
- * @param <MgEvt>
+ * @param <EVT>
+ *            minecraft event class
+ * @param <MGEVT>
  *            minigame event class
  */
-public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends MinecraftEvent<Evt, MgEvt>> implements MinecraftEvent<Evt, MgEvt>
+public abstract class AbstractMinigameEvent<EVT extends Event, MGEVT extends MinecraftEvent<EVT, MGEVT>> implements MinecraftEvent<EVT, MGEVT>
 {
     
     /** the bukkit event object. */
-    private Evt               event;
+    private EVT               event;
     
     /** the player for this event. */
     private McPlayerInterface player;
@@ -64,8 +64,9 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
      * @param event
      *            the event.
      * @param player
+     *            player involved in this event
      */
-    public AbstractMinigameEvent(Evt event, McPlayerInterface player)
+    public AbstractMinigameEvent(EVT event, McPlayerInterface player)
     {
         this.event = event;
         this.player = player;
@@ -78,8 +79,9 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
      * @param event
      *            the event.
      * @param zone
+     *            zone involved in this event
      */
-    public AbstractMinigameEvent(Evt event, ZoneInterface zone)
+    public AbstractMinigameEvent(EVT event, ZoneInterface zone)
     {
         this.event = event;
         this.zone = zone;
@@ -91,9 +93,11 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
      * @param event
      *            the event.
      * @param player
+     *            player involved in this event
      * @param zone
+     *            zone involved in this event
      */
-    public AbstractMinigameEvent(Evt event, McPlayerInterface player, ZoneInterface zone)
+    public AbstractMinigameEvent(EVT event, McPlayerInterface player, ZoneInterface zone)
     {
         this.event = event;
         this.player = player;
@@ -106,9 +110,11 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
      * @param event
      *            the event.
      * @param player
+     *            player involved in this event
      * @param location
+     *            location involved in this event
      */
-    public AbstractMinigameEvent(Evt event, McPlayerInterface player, Location location)
+    public AbstractMinigameEvent(EVT event, McPlayerInterface player, Location location)
     {
         this.event = event;
         this.player = player;
@@ -116,7 +122,7 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
     }
     
     @Override
-    public Evt getBukkitEvent()
+    public EVT getBukkitEvent()
     {
         return this.event;
     }
@@ -135,13 +141,13 @@ public abstract class AbstractMinigameEvent<Evt extends Event, MgEvt extends Min
     
     @SuppressWarnings("unchecked")
     @Override
-    public McOutgoingStubbing<MgEvt> when(McPredicate<MgEvt> test) throws McException
+    public McOutgoingStubbing<MGEVT> when(McPredicate<MGEVT> test) throws McException
     {
-        if (test.test((MgEvt) this))
+        if (test.test((MGEVT) this))
         {
-            return new TrueStub<>((MgEvt) this);
+            return new TrueStub<>((MGEVT) this);
         }
-        return new FalseStub<>((MgEvt) this);
+        return new FalseStub<>((MGEVT) this);
     }
     
 }

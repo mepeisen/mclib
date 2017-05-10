@@ -39,9 +39,15 @@ public interface MgEventListener
     /**
      * Handles given event.
      * 
+     * @param <T>
+     *            minecraft event class
+     * @param <EVT>
+     *            mclib event class
      * @param eventClass
+     *            mclib event class
      * @param event
+     *            event instance
      */
-    <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event);
+    <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event);
     
 }

@@ -35,7 +35,10 @@ public interface NmsFactory
     /**
      * Creates an nms implementation of the given class.
      * 
+     * @param <T>
+     *            nms interface class
      * @param clazz
+     *            nms interface class
      * @return nms impl.
      */
     <T> T create(Class<T> clazz);

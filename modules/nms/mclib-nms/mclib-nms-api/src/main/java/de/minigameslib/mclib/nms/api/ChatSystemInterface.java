@@ -38,15 +38,18 @@ public interface ChatSystemInterface
      * Formats the given source message to json text including formatting.
      * 
      * @param src
+     *            source string.
      * @return json text
      */
     String toJson(String src);
     
     /**
-     * Sends raw message to client
+     * Sends raw message to client.
      * 
      * @param player
+     *            target player.
      * @param json
+     *            json text
      */
     void sendMessage(Player player, String json);
     

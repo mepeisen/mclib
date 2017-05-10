@@ -38,7 +38,9 @@ public interface PlayerManagerInterface
      * Registers a channel without need of sending REGISTER packages.
      * 
      * @param player
+     *            target player
      * @param channel
+     *            channel name
      */
     void registerChannelEx(Player player, String channel);
     

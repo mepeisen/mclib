@@ -163,8 +163,10 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
+//CHECKSTYLE:OFF
 import de.minigames.mclib.nms.v183.event.*;
 import de.minigameslib.mclib.api.event.*;
+//CHECKSTYLE:ON
 import de.minigameslib.mclib.nms.api.AbstractEventSystem;
 
 /**
@@ -172,11 +174,12 @@ import de.minigameslib.mclib.nms.api.AbstractEventSystem;
  * 
  * @author mepeisen
  */
+@SuppressWarnings("deprecation")
 public class EventSystem1_8_3 extends AbstractEventSystem
 {
     
     /**
-     * Constructor
+     * Constructor.
      */
     public EventSystem1_8_3()
     {

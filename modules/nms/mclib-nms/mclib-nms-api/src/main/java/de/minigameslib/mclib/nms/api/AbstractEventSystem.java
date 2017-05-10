@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -71,9 +73,12 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     private final Map<Class<? extends Event>, EventExecutor>                         executors     = new ConcurrentHashMap<>();
     
     /**
-     * mapping from mclib event classes to bukkit event classes
+     * mapping from mclib event classes to bukkit event classes.
      */
     private final Map<Class<? extends MinecraftEvent<?, ?>>, Class<? extends Event>> classMap      = new HashMap<>();
+    
+    /** logger. */
+    protected static final Logger                                                    LOGGER        = Logger.getLogger(AbstractEventSystem.class.getName());
     
     /**
      * Constructor.
@@ -96,10 +101,12 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     }
     
     /**
-     * Register class mapping
+     * Register class mapping.
      * 
      * @param src
+     *            source class (mclib event class)
      * @param target
+     *            target class (bukkit/spigot event class)
      */
     protected void registerMapping(Class<? extends MinecraftEvent<?, ?>> src, Class<? extends Event> target)
     {
@@ -107,19 +114,23 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     }
     
     /**
-     * Register an event class
+     * Register an event class.
      * 
+     * @param <EVT>
+     *            minecraft event class
      * @param clazz
+     *            minecraft event class
      */
-    <Evt extends MinecraftEvent<?, Evt>> void registerEventClass(Class<Evt> clazz)
+    <EVT extends MinecraftEvent<?, EVT>> void registerEventClass(Class<EVT> clazz)
     {
         this.registerEventClassEx(this.classMap.get(clazz));
     }
     
     /**
-     * Registers an event class for listening
+     * Registers an event class for listening.
      * 
      * @param clazz
+     *            bukkit event class.
      */
     void registerEventClassEx(Class<? extends Event> clazz)
     {
@@ -140,10 +151,11 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     this.handle(event);
                 }
                 
-                private <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void handle(T event)
+                private <T extends Event, MGEVT extends MinecraftEvent<T, MGEVT>> void handle(T event)
                 {
+                    @SuppressWarnings("unchecked")
                     final Class<T> clazz2 = (Class<T>) clazz;
-                    final MinecraftEventHandler<T, MgEvt> handler = AbstractEventSystem.this.getHandler(clazz2);
+                    final MinecraftEventHandler<T, MGEVT> handler = AbstractEventSystem.this.getHandler(clazz2);
                     handler.handle(event);
                 }
                 
@@ -156,19 +168,27 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     /**
      * Returns the minigame event handler for given class.
      * 
+     * @param <T>
+     *            minecraft event class
+     * @param <MGEVT>
+     *            mclib event class
      * @param clazz
      *            event class.
      * @return event handler.
      */
     @SuppressWarnings("unchecked")
-    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> MinecraftEventHandler<T, MgEvt> getHandler(Class<T> clazz)
+    protected <T extends Event, MGEVT extends MinecraftEvent<T, MGEVT>> MinecraftEventHandler<T, MGEVT> getHandler(Class<T> clazz)
     {
-        return (MinecraftEventHandler<T, MgEvt>) this.eventHandlers.get(clazz);
+        return (MinecraftEventHandler<T, MGEVT>) this.eventHandlers.get(clazz);
     }
     
     /**
      * Registers the minigame event handler for given class.
      * 
+     * @param <T>
+     *            event class.
+     * @param <MGEVT>
+     *            minecraft event class
      * @param clazz
      *            event class.
      * @param mgclazz
@@ -176,7 +196,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      * @param factory
      *            the factory to create minigame events.
      */
-    protected <T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>> void registerHandler(Class<T> clazz, Class<MgEvt> mgclazz, MinecraftEventFactory<T> factory)
+    protected <T extends Event, MGEVT extends MinecraftEvent<T, MGEVT>> void registerHandler(Class<T> clazz, Class<MGEVT> mgclazz, MinecraftEventFactory<T> factory)
     {
         this.classMap.put(mgclazz, clazz);
         this.eventHandlers.put(clazz, new MinecraftEventHandler<>(clazz, mgclazz, factory));
@@ -184,13 +204,13 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     
     @SuppressWarnings("unchecked")
     @Override
-    public <Evt extends Event, MgEvt extends MinecraftEvent<Evt, MgEvt>> MgEvt createEvent(Evt bukkitEvent)
+    public <EVT extends Event, MGEVT extends MinecraftEvent<EVT, MGEVT>> MGEVT createEvent(EVT bukkitEvent)
     {
-        return ((MinecraftEventHandler<Evt, MgEvt>) this.getHandler(bukkitEvent.getClass())).createMgEvent(bukkitEvent);
+        return ((MinecraftEventHandler<EVT, MGEVT>) this.getHandler(bukkitEvent.getClass())).createMgEvent(bukkitEvent);
     }
     
     @Override
-    public <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz)
+    public <EVT extends Event & MinecraftEvent<EVT, EVT>> void registerEvent(Plugin plugin, Class<EVT> clazz)
     {
         // Bukkit.getPluginManager().registerEvent(clazz, this, EventPriority.NORMAL, new EventExecutor() {
         //
@@ -209,18 +229,19 @@ public abstract class AbstractEventSystem implements EventSystemInterface
      * @author mepeisen
      * @param <T>
      *            event clazz for handling the events.
-     * @param <MgEvt>
+     * @param <MGEVT>
      *            event clazz for handling the events.
      */
-    protected final class MinecraftEventHandler<T extends Event, MgEvt extends MinecraftEvent<T, MgEvt>>
+    protected final class MinecraftEventHandler<T extends Event, MGEVT extends MinecraftEvent<T, MGEVT>>
     {
         
         /** the event factory. */
         private MinecraftEventFactory<T> factory;
         /** event class. */
+        @SuppressWarnings("unused")
         private Class<T>                 cls;
         /** event class. */
-        private Class<MgEvt>             mgcls;
+        private Class<MGEVT>             mgcls;
         
         /**
          * Constructor.
@@ -232,7 +253,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          * @param factory
          *            mg event factory
          */
-        public MinecraftEventHandler(Class<T> clazz, Class<MgEvt> mgclazz, MinecraftEventFactory<T> factory)
+        public MinecraftEventHandler(Class<T> clazz, Class<MGEVT> mgclazz, MinecraftEventFactory<T> factory)
         {
             this.cls = clazz;
             this.mgcls = mgclazz;
@@ -243,11 +264,12 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          * Handles minigame event.
          * 
          * @param evt
+         *            minecraft event
          */
         public void handle(T evt)
         {
             final McLibInterface mclib = McLibInterface.instance();
-            final MgEvt mgevt = this.createMgEvent(evt);
+            final MGEVT mgevt = this.createMgEvent(evt);
             for (MgEventListener listener : AbstractEventSystem.this.listeners)
             {
                 try
@@ -260,7 +282,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                 }
                 catch (McException ex)
                 {
-                    // TODO logging
+                    LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + listener, ex); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             
@@ -284,7 +306,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + player, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -309,7 +331,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + arena, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -334,7 +356,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + sign, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -359,7 +381,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + entity, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -384,7 +406,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + comp, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -409,7 +431,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     }
                     catch (McException ex)
                     {
-                        // TODO logging
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + obj, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -423,9 +445,9 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          * @return minigame event.
          */
         @SuppressWarnings("unchecked")
-        public MgEvt createMgEvent(T evt)
+        public MGEVT createMgEvent(T evt)
         {
-            return (MgEvt) this.factory.create(evt);
+            return (MGEVT) this.factory.create(evt);
         }
         
     }
@@ -433,10 +455,11 @@ public abstract class AbstractEventSystem implements EventSystemInterface
     /**
      * Interface for creating minigame event classes from given bukkit event.
      *
-     * @param <Evt>
+     * @param <EVT>
+     *            minecraft event class
      */
     @FunctionalInterface
-    public interface MinecraftEventFactory<Evt extends Event>
+    public interface MinecraftEventFactory<EVT extends Event>
     {
         
         /**
@@ -446,7 +469,7 @@ public abstract class AbstractEventSystem implements EventSystemInterface
          *            bukkit event.
          * @return the minigame event object.
          */
-        MinecraftEvent<?, ?> create(Evt event);
+        MinecraftEvent<?, ?> create(EVT event);
         
     }
     

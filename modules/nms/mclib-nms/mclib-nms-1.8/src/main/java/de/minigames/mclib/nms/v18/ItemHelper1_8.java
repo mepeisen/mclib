@@ -728,7 +728,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int durability, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
+    public void initArmor(Material material, short itemStackDurability, int dmgReduceAmount, int itemEnchantability, float toughness, ArmorSlot slot, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
@@ -745,7 +745,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initAxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    public void initAxe(Material material, short itemStackDurability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
@@ -762,7 +762,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initPickaxe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    public void initPickaxe(Material material, short itemStackDurability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
@@ -779,7 +779,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initHoe(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    public void initHoe(Material material, short itemStackDurability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
@@ -796,7 +796,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initShovel(Material material, short itemStackDurability, int durability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    public void initShovel(Material material, short itemStackDurability, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }
@@ -814,7 +814,7 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     @Override
-    public void initSword(Material material, short itemStackDurability, int durability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
+    public void initSword(Material material, short itemStackDurability, float damageVsEntity, double damage, int itemEnchantability, double speed, NmsItemRuleInterface nmsItemRule)
     {
         LOGGER.log(Level.WARNING, "Problems installing item meta for unmodded items; not yet supported"); //$NON-NLS-1$
     }

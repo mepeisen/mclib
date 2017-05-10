@@ -30,6 +30,8 @@ import org.bukkit.entity.Player;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 
 /**
+ * Implementation of player manager interface.
+ * 
  * @author mepeisen
  *
  */

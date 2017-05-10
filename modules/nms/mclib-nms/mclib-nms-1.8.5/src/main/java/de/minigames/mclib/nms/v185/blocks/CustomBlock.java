@@ -47,14 +47,19 @@ import net.minecraft.server.v1_8_R3.Material;
 import net.minecraft.server.v1_8_R3.World;
 
 /**
+ * Custom block implementation for modded blocks.
+ * 
  * @author mepeisen
  *
  */
 public class CustomBlock extends Block
 {
-    // the block variant
+    /** the block variants. */
     public static final BlockStateEnum<EnumCustomVariant> VARIANT = BlockStateEnum.of("variant", EnumCustomVariant.class); //$NON-NLS-1$
     
+    /**
+     * Constructor.
+     */
     public CustomBlock()
     {
         super(Material.STONE);
@@ -66,8 +71,17 @@ public class CustomBlock extends Block
     /** the nms drop rule. */
     private NmsDropRuleInterface                       dropRule;
     
+    /** the inventory handler for inventory blocks. */
     private Map<Integer, NmsInventoryHandlerInterface> inventoryHandler = new HashMap<>();
     
+    /**
+     * Sets the inventory handler.
+     * 
+     * @param variant
+     *            target variant for inventory handler
+     * @param inventory
+     *            inventory handler
+     */
     public void setInventoryHandler(int variant, NmsInventoryHandlerInterface inventory)
     {
         this.inventoryHandler.put(variant, inventory);
@@ -131,7 +145,10 @@ public class CustomBlock extends Block
     }
     
     /**
+     * Converts nms direction to bukkit block face.
+     * 
      * @param paramEnumDirection
+     *            nms direction
      * @return block face
      */
     private BlockFace toBlockFace(net.minecraft.server.v1_8_R3.EnumDirection paramEnumDirection)
@@ -155,6 +172,16 @@ public class CustomBlock extends Block
         }
     }
     
+    /**
+     * Sets block meta data.
+     * 
+     * @param hardness
+     *            block hardness
+     * @param resistence
+     *            block resistence
+     * @param dropRule
+     *            drop rule
+     */
     public void setMeta(float hardness, float resistence, NmsDropRuleInterface dropRule)
     {
         this.c(hardness);
@@ -163,21 +190,23 @@ public class CustomBlock extends Block
     }
     
     @Override
-    public net.minecraft.server.v1_8_R3.Item getDropType(IBlockData iblockdata, Random random, int i)
+    public net.minecraft.server.v1_8_R3.Item getDropType(IBlockData iblockdata, Random random, int fortune)
     {
-        return this.dropRule == null ? super.getDropType(iblockdata, random, i) : net.minecraft.server.v1_8_R3.Item.getById(this.dropRule.getDropType(this.toLegacyData(iblockdata), random, i));
+        return this.dropRule == null
+            ? super.getDropType(iblockdata, random, fortune)
+                : net.minecraft.server.v1_8_R3.Item.getById(this.dropRule.getDropType(this.toLegacyData(iblockdata), random, fortune));
     }
     
     @Override
-    public int getDropCount(int i, Random random)
+    public int getDropCount(int fortune, Random random)
     {
-        return this.dropRule == null ? super.getDropCount(i, random) : this.dropRule.getDropCount(random, i);
+        return this.dropRule == null ? super.getDropCount(fortune, random) : this.dropRule.getDropCount(random, fortune);
     }
     
     @Override
-    public int getExpDrop(net.minecraft.server.v1_8_R3.World world, IBlockData data, int i)
+    public int getExpDrop(net.minecraft.server.v1_8_R3.World world, IBlockData data, int enchantmentLevel)
     {
-        return this.dropRule == null ? super.getExpDrop(world, data, i) : this.dropRule.getExpDrop(this.toLegacyData(data), world.random, i);
+        return this.dropRule == null ? super.getExpDrop(world, data, enchantmentLevel) : this.dropRule.getExpDrop(this.toLegacyData(data), world.random, enchantmentLevel);
     }
     
     @Override
@@ -186,44 +215,77 @@ public class CustomBlock extends Block
         return this.dropRule == null ? super.getDropData(paramIBlockData) : this.dropRule.getDropVariant(this.toLegacyData(paramIBlockData));
     }
     
+    @Override
     public IBlockData fromLegacyData(int paramInt)
     {
         return getBlockData().set(VARIANT, EnumCustomVariant.values()[paramInt]);
     }
     
+    @Override
     public int toLegacyData(IBlockData paramIBlockData)
     {
-        return ((EnumCustomVariant) paramIBlockData.get(VARIANT)).ordinal();
+        return paramIBlockData.get(VARIANT).ordinal();
     }
     
+    @Override
     protected BlockStateList getStateList()
     {
         return new BlockStateList(this, new IBlockState[] { VARIANT });
     }
     
+    /**
+     * generic block variants.
+     * 
+     * @author mepeisen
+     *
+     */
     public enum EnumCustomVariant implements INamable
     {
-        VARIANT_0, VARIANT_1, VARIANT_2, VARIANT_3, VARIANT_4, VARIANT_5, VARIANT_6, VARIANT_7, VARIANT_8, VARIANT_9, VARIANT_10, VARIANT_11, VARIANT_12, VARIANT_13, VARIANT_14, VARIANT_15;
+        /** variant #0. */
+        VARIANT_0,
+        /** variant #1. */
+        VARIANT_1,
+        /** variant #2. */
+        VARIANT_2,
+        /** variant #3. */
+        VARIANT_3,
+        /** variant #4. */
+        VARIANT_4,
+        /** variant #5. */
+        VARIANT_5,
+        /** variant #6. */
+        VARIANT_6,
+        /** variant #7. */
+        VARIANT_7,
+        /** variant #8. */
+        VARIANT_8,
+        /** variant #9. */
+        VARIANT_9,
+        /** variant #10. */
+        VARIANT_10,
+        /** variant #11. */
+        VARIANT_11,
+        /** variant #12. */
+        VARIANT_12,
+        /** variant #13. */
+        VARIANT_13,
+        /** variant #14. */
+        VARIANT_14,
+        /** variant #15. */
+        VARIANT_15;
         
-        public int a()
-        {
-            return this.ordinal();
-        }
-        
+        @Override
         public String toString()
         {
             return this.name().toLowerCase();
         }
         
+        @Override
         public String getName()
         {
             return this.toString();
         }
         
-        public String c()
-        {
-            return this.toString();
-        }
     }
     
 }

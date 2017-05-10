@@ -26,6 +26,8 @@ package de.minigames.mclib.nms.v194.entity;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.entity.EntityType;
 
@@ -34,34 +36,44 @@ import net.minecraft.server.v1_9_R2.EntityTypes;
 import net.minecraft.server.v1_9_R2.EntityVillager;
 
 /**
+ * A custom entity type.
+ * 
  * @author mepeisen
  * @see EntityTypes
  */
 public enum CustomEntityType1_9_4
 {
     
-    /** a dummy villager */
+    /** a dummy villager. */
     DUMMY_VILLAGER("Villager", 120, EntityType.VILLAGER, EntityVillager.class, DummyVillager1_9_4.class); //$NON-NLS-1$
     
-    /** string name */
+    /** string name. */
     private String                            name;
-    /** numeric id */
+    /** numeric id. */
     private int                               id;
-    /** entity type */
+    /** entity type. */
     private EntityType                        entityType;
-    /** nms class */
+    /** nms class. */
     private Class<? extends EntityInsentient> nmsClass;
-    /** custom class */
+    /** custom class. */
     private Class<? extends EntityInsentient> customClass;
     
+    /** logger. */
+    private static final Logger               LOGGER = Logger.getLogger(CustomEntityType1_9_4.class.getName());
+    
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param name
+     *            string name
      * @param id
+     *            numeric id
      * @param entityType
+     *            entity type
      * @param nmsClass
+     *            nms class
      * @param customClass
+     *            custom class
      */
     private CustomEntityType1_9_4(String name, int id, EntityType entityType, Class<? extends EntityInsentient> nmsClass, Class<? extends EntityInsentient> customClass)
     {
@@ -73,6 +85,8 @@ public enum CustomEntityType1_9_4
     }
     
     /**
+     * Returns the string name.
+     * 
      * @return the string name
      */
     public String getName()
@@ -81,14 +95,18 @@ public enum CustomEntityType1_9_4
     }
     
     /**
+     * Returns the numeric id.
+     * 
      * @return the numeric id
      */
-    public int getID()
+    public int getId()
     {
         return this.id;
     }
     
     /**
+     * Returns the bukkit entity type.
+     * 
      * @return the entity type
      */
     public EntityType getEntityType()
@@ -97,14 +115,18 @@ public enum CustomEntityType1_9_4
     }
     
     /**
+     * Returns the (original) nms class.
+     * 
      * @return the nms class
      */
-    public Class<? extends EntityInsentient> getNMSClass()
+    public Class<? extends EntityInsentient> getNmsClass()
     {
         return this.nmsClass;
     }
     
     /**
+     * Returns the custom (replaced) nms class.
+     * 
      * @return the custom class
      */
     public Class<? extends EntityInsentient> getCustomClass()
@@ -118,7 +140,9 @@ public enum CustomEntityType1_9_4
     public static void registerEntities()
     {
         for (CustomEntityType1_9_4 entity : values())
+        {
             entity.registerEntity();
+        }
     }
     
     /**
@@ -126,7 +150,7 @@ public enum CustomEntityType1_9_4
      */
     public void registerEntity()
     {
-        register(this.getCustomClass(), this.getName(), this.getID());
+        register(this.getCustomClass(), this.getName(), this.getId());
         
         // // BiomeBase#biomes became private.
         // BiomeBase[] biomes;
@@ -172,7 +196,9 @@ public enum CustomEntityType1_9_4
     public static void unregisterEntities()
     {
         for (CustomEntityType1_9_4 entity : values())
+        {
             entity.unregisterEntity();
+        }
     }
     
     /**
@@ -203,7 +229,7 @@ public enum CustomEntityType1_9_4
         try
         {
             // Unregister each entity by writing the NMS back in place of the custom class.
-            register(this.getNMSClass(), this.getName(), this.getID());
+            register(this.getNmsClass(), this.getName(), this.getId());
         }
         catch (Exception e)
         {
@@ -267,9 +293,14 @@ public enum CustomEntityType1_9_4
     }
     
     /**
+     * Register entity.
+     * 
      * @param paramClass
+     *            entity type class
      * @param paramString
+     *            entity type name
      * @param paramInt
+     *            entity type id
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void register(Class<?> paramClass, String paramString, int paramInt)
@@ -285,7 +316,7 @@ public enum CustomEntityType1_9_4
         catch (Exception exc)
         {
             // Unable to register the new class.
-            // TODO Logging
+            LOGGER.log(Level.WARNING, "unable to register entity " + paramInt + "/" + paramString, exc); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 }

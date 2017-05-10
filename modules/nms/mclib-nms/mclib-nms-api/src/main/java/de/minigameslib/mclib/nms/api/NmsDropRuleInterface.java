@@ -27,7 +27,7 @@ package de.minigameslib.mclib.nms.api;
 import java.util.Random;
 
 /**
- * Interface representing drop rules
+ * Interface representing drop rules.
  * 
  * @author mepeisen
  */
@@ -35,38 +35,47 @@ public interface NmsDropRuleInterface
 {
     
     /**
-     * returns the type id for drops
+     * returns the type id for drops.
      * 
      * @param variant
+     *            variant type id.
      * @param random
+     *            world random.
      * @param fortune
+     *            fortune of player
      * @return type id
      */
     int getDropType(int variant, Random random, int fortune);
     
     /**
-     * Returns the amount of drops
+     * Returns the amount of drops.
      * 
      * @param random
+     *            world random
      * @param fortune
+     *            fortune of player
      * @return amount
      */
     int getDropCount(Random random, int fortune);
     
     /**
-     * Returns the experience for drops
+     * Returns the experience for drops.
      * 
      * @param variant
+     *            variant type id
      * @param random
+     *            world random
      * @param enchantmentLevel
+     *            enchantment level of tooling item
      * @return experience
      */
     int getExpDrop(int variant, Random random, int enchantmentLevel);
     
     /**
-     * Returns the variants for drops
+     * Returns the variants for drops.
      * 
      * @param variant
+     *            numeric variant id
      * @return variants
      */
     int getDropVariant(int variant);

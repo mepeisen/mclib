@@ -105,7 +105,7 @@ public interface InventoryManagerInterface extends Listener
         Inventory getBukkitInventory();
         
         /**
-         * Changes the page items and name
+         * Changes the page items and name.
          * 
          * @param name
          *            new page name
@@ -142,9 +142,10 @@ public interface InventoryManagerInterface extends Listener
     }
     
     /**
-     * Strips the string that was originally encoded by toColorsString
+     * Strips the string that was originally encoded by toColorsString.
      * 
      * @param src
+     *            source string
      * @return hiddenString
      */
     static String stripColoredString(String src)

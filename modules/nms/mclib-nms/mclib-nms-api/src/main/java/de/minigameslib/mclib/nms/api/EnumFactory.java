@@ -25,6 +25,8 @@
 package de.minigameslib.mclib.nms.api;
 
 /**
+ * Enumeration helper.
+ * 
  * @author mepeisen
  *
  */
@@ -32,12 +34,18 @@ public class EnumFactory
 {
     
     /**
-     * Addsa an enumeration value dynamically to given enum
+     * Adds an enumeration value dynamically to given enum.
      * 
+     * @param <T>
+     *            java enum class
      * @param enumType
+     *            java enum class
      * @param enumName
+     *            name of the new enum value
      * @param argTypes
+     *            constructor arguments
      * @param args
+     *            constructor values
      * @return enum instance value
      */
     public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName, Class<?>[] argTypes, Object[] args)

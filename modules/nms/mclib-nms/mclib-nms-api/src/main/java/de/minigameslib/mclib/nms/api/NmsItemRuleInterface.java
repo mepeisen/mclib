@@ -31,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
+ * Item rules to be passed to nms classes.
+ * 
  * @author mepeisen
  *
  */
@@ -38,59 +40,75 @@ public interface NmsItemRuleInterface
 {
     
     /**
-     * Returns the harvest speed modified
+     * Returns the harvest speed modified.
      * 
      * @param stack
+     *            item stack that is used for harvesting.
      * @param blockId
+     *            block that is harvested
      * @param variantId
+     *            block variant that is harvested
      * @return harvest
      */
     float getHarvestSpeed(ItemStack stack, int blockId, int variantId);
     
     /**
-     * Returns the damage by harvesting a block
+     * Returns the damage by harvesting a block.
      * 
      * @param stack
+     *            item stack that is used for harvesting.
      * @param blockId
+     *            block that is harvested
      * @param variantId
+     *            block variant that is harvested
      * @param location
+     *            target location
      * @param player
+     *            target player
      * @return harvest block modifier
      */
     int getDamageByBlock(ItemStack stack, int blockId, int variantId, Location location, Player player);
     
     /**
-     * Checks if block can be harvested
+     * Checks if block can be harvested.
      * 
      * @param material
+     *            bukkit material to check
      * @return true for harvest block
      */
     boolean canHarvest(Material material);
     
     /**
-     * Checks if block can be harvested
+     * Checks if block can be harvested.
      * 
      * @param block
+     *            block id
      * @param variant
+     *            block variant id
      * @return true for harvest block
      */
     boolean canHarvest(int block, int variant);
     
     /**
-     * Returns the amount of damage for damaging an entity
+     * Returns the amount of damage for damaging an entity.
      * 
      * @param stack
+     *            item stack that was used
      * @param target
+     *            target entity
      * @param player
+     *            target player
      * @return damage for entity attack
      */
     int getDamageByEntity(ItemStack stack, Entity target, Player player);
     
     /**
-     * Checks if item is repairable
+     * Checks if item is repairable.
      * 
      * @param toRepair
+     *            item that will be repaired
      * @param repair
+     *            repair item to be consumed
      * @return {@code true} if repairable
      */
     boolean getIsRepairable(ItemStack toRepair, ItemStack repair);

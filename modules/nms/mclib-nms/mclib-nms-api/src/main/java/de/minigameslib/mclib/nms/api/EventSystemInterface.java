@@ -41,25 +41,35 @@ public interface EventSystemInterface extends Listener
     /**
      * Creates a minigame event from given bukkit event.
      * 
+     * @param <EVT>
+     *            bukkit event class
+     * @param <MGEVT>
+     *            mclib event class
      * @param bukkitEvent
+     *            bukkit event
      * @return minigame event.
      */
-    <Evt extends Event, MgEvt extends MinecraftEvent<Evt, MgEvt>> MgEvt createEvent(Evt bukkitEvent);
+    <EVT extends Event, MGEVT extends MinecraftEvent<EVT, MGEVT>> MGEVT createEvent(EVT bukkitEvent);
     
     /**
      * Adds a new event listener.
      * 
      * @param listener
+     *            listener to be added.
      */
     void addEventListener(MgEventListener listener);
     
     /**
      * Registers a new event class for event system
      * 
+     * @param <EVT>
+     *            bukkit event class
      * @param plugin
+     *            plugin ownung the event class.
      * @param clazz
+     *            bukkit event class
      */
-    <Evt extends Event & MinecraftEvent<Evt, Evt>> void registerEvent(Plugin plugin, Class<Evt> clazz);
+    <EVT extends Event & MinecraftEvent<EVT, EVT>> void registerEvent(Plugin plugin, Class<EVT> clazz);
     
     /**
      * Creates a new event bus.

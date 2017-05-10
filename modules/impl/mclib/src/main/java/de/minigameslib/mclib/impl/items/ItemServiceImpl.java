@@ -851,7 +851,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.durability(), sword.damageVsEntity(), sword.damage(),
+            helper.initSword(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), sword.damageVsEntity(), sword.damage(),
                 sword.getItemEnchantability(), sword.speed(), new NmsItemRule(sword.dmgRule().newInstance(), sword.repairRule().newInstance(), sword.digRule().newInstance()));
         }
     }
@@ -881,7 +881,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.durability(), shovel.damage(), shovel.getItemEnchantability(),
+            helper.initShovel(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), shovel.damage(), shovel.getItemEnchantability(),
                 shovel.speed(), new NmsItemRule(shovel.dmgRule().newInstance(), shovel.repairRule().newInstance(), shovel.digRule().newInstance()));
         }
     }
@@ -911,7 +911,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.durability(), pickaxe.damage(), pickaxe.getItemEnchantability(),
+            helper.initPickaxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), pickaxe.damage(), pickaxe.getItemEnchantability(),
                 pickaxe.speed(), new NmsItemRule(pickaxe.dmgRule().newInstance(), pickaxe.repairRule().newInstance(), pickaxe.digRule().newInstance()));
         }
     }
@@ -941,7 +941,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.durability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
+            helper.initHoe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), hoe.damage(), hoe.getItemEnchantability(), hoe.speed(),
                 new NmsItemRule(hoe.dmgRule().newInstance(), hoe.repairRule().newInstance(), hoe.digRule().newInstance()));
         }
     }
@@ -971,7 +971,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.durability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
+            helper.initAxe(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), axe.damage(), axe.getItemEnchantability(), axe.speed(),
                 new NmsItemRule(axe.dmgRule().newInstance(), axe.repairRule().newInstance(), axe.digRule().newInstance()));
         }
     }
@@ -1001,7 +1001,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
         }
         else
         {
-            helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.durability(), armor.getItemEnchantability(),
+            helper.initArmor(custom.getCustomType().getMaterial(), custom.getCustomDurability().getItemStackDurability(), armor.dmgReduceAmount(), armor.getItemEnchantability(),
                 armor.toughness(), armor.slot(), new NmsItemRule(null, armor.repairRule().newInstance(), null));
         }
     }

@@ -55,7 +55,7 @@ public interface AnvilManagerInterface extends Listener
     public interface AnvilListener
     {
         /**
-         * Invoked upon close of the inventory,
+         * Invoked upon close of the inventory.
          */
         void onClose();
         

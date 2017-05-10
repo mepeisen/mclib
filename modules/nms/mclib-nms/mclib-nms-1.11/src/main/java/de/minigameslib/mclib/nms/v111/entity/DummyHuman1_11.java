@@ -71,6 +71,8 @@ import net.minecraft.server.v1_11_R1.PlayerInteractManager;
 import net.minecraft.server.v1_11_R1.WorldServer;
 
 /**
+ * A dummy human entity.
+ * 
  * @author mepeisen
  *
  */
@@ -86,15 +88,22 @@ public class DummyHuman1_11 extends EntityPlayer
     /** players in range. */
     Map<UUID, Boolean>     inRange        = new HashMap<>();
     
-    /** respawn flag */
+    /** respawn flag. */
     boolean                respawn;
     
     /**
+     * Constructor.
+     * 
      * @param minecraftserver
+     *            active minecraft server
      * @param worldserver
+     *            target world
      * @param gameprofile
+     *            game profile to use
      * @param playerinteractmanager
+     *            the player interact manager
      * @param loc
+     *            spawn location
      */
     public DummyHuman1_11(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, Location loc)
     {
@@ -146,7 +155,9 @@ public class DummyHuman1_11 extends EntityPlayer
                                 final byte encodedyaw = toAngle(DummyHuman1_11.this.yaw);
                                 float body = DummyHuman1_11.this.yaw + 45;
                                 if (body >= 180)
+                                {
                                     body -= 360;
+                                }
                                 final byte encodedbody = toAngle(body);
                                 sendPackages(con, 1,
                                     new PacketPlayOutEntityDestroy(DummyHuman1_11.this.getId()),
@@ -169,11 +180,14 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Sends packets to given connection with given delay
+     * Sends packets to given connection with given delay.
      * 
      * @param con
+     *            target connection
      * @param delay
+     *            delay (ticks)
      * @param packets
+     *            packets to send
      */
     void sendPackages(PlayerConnection con, int delay, Packet<?>... packets)
     {
@@ -191,9 +205,10 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Converts yaw/pitch value to byte degrees
+     * Converts yaw/pitch value to byte degrees.
      * 
      * @param value
+     *            float value.
      * @return degrees
      */
     static byte toAngle(float value)
@@ -208,7 +223,7 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Marks all players to respawn the entity
+     * Marks all players to respawn the entity.
      */
     public void respawnAll()
     {
@@ -216,9 +231,10 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Returns the suawred distance between this human and players
+     * Returns the squared distance between this human and players.
      * 
      * @param player
+     *            target player
      * @return squared distance
      */
     protected double getDistanceSquared(Player player)
@@ -231,9 +247,10 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * untrack given player
+     * untrack given player.
      * 
      * @param player
+     *            target player
      */
     public void untrack(Player player)
     {
@@ -249,9 +266,10 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * track given player
+     * track given player.
      * 
      * @param player
+     *            target player
      */
     public void track(Player player)
     {
@@ -269,7 +287,7 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Delete/cleanup the human
+     * Delete/cleanup the human.
      */
     public void delete()
     {
@@ -321,13 +339,16 @@ public class DummyHuman1_11 extends EntityPlayer
     {
         if (this.bukkitEntity == null)
         {
-            this.bukkitEntity = new HumanNPC(this);
+            this.bukkitEntity = new HumanNpc(this);
         }
         return super.getBukkitEntity();
     }
     
     /**
+     * Set entity position.
+     * 
      * @param loc
+     *            target location.
      */
     void setPosition(Location loc)
     {
@@ -342,9 +363,9 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Bukkit npc class
+     * Bukkit npc class.
      */
-    protected static final class HumanNPC extends CraftPlayer
+    protected static final class HumanNpc extends CraftPlayer
     {
         
         /** craft server. */
@@ -354,8 +375,9 @@ public class DummyHuman1_11 extends EntityPlayer
          * Constructor.
          * 
          * @param handle
+         *            nms handle
          */
-        public HumanNPC(DummyHuman1_11 handle)
+        public HumanNpc(DummyHuman1_11 handle)
         {
             super((CraftServer) Bukkit.getServer(), handle);
             this.spigot = (CraftServer) Bukkit.getServer();
@@ -388,16 +410,19 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Dummy net handler
+     * Dummy net handler.
      */
     private static final class DummyNetHandler extends PlayerConnection
     {
         /**
-         * Constructor
+         * Constructor.
          * 
          * @param minecraftServer
+         *            active minecraft server
          * @param networkManager
+         *            network manager
          * @param entityPlayer
+         *            target entity
          */
         public DummyNetHandler(MinecraftServer minecraftServer, NetworkManager networkManager, EntityPlayer entityPlayer)
         {
@@ -412,13 +437,16 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * A dummy network manager
+     * A dummy network manager.
      */
     private static final class DummyNetworkManager extends NetworkManager
     {
         
         /**
+         * Constructor.
+         * 
          * @param direction
+         *            protocol direction
          */
         public DummyNetworkManager(EnumProtocolDirection direction)
         {
@@ -435,12 +463,12 @@ public class DummyHuman1_11 extends EntityPlayer
     }
     
     /**
-     * Dummy netty channel
+     * Dummy netty channel.
      */
     private static final class DummyChannel extends AbstractChannel
     {
         /**
-         * Constructor
+         * Constructor.
          */
         protected DummyChannel()
         {

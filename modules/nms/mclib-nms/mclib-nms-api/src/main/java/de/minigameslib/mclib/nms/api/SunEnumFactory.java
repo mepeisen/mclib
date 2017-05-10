@@ -41,11 +41,27 @@ import sun.reflect.ReflectionFactory;
  * 
  * @author mepeisen
  */
+@SuppressWarnings("restriction")
 public class SunEnumFactory
 {
     
+    /** reflection factory. */
     private static ReflectionFactory reflectionFactory = ReflectionFactory.getReflectionFactory();
     
+    /**
+     * Sets field value.
+     * 
+     * @param field
+     *            target field
+     * @param target
+     *            target object
+     * @param value
+     *            new value
+     * @throws NoSuchFieldException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     * @throws IllegalAccessException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     */
     private static void setFailsafeFieldValue(Field field, Object target, Object value)
         throws NoSuchFieldException, IllegalAccessException
     {
@@ -68,6 +84,18 @@ public class SunEnumFactory
         fa.set(target, value);
     }
     
+    /**
+     * Clears a field value.
+     * 
+     * @param enumClass
+     *            target class
+     * @param fieldName
+     *            field name
+     * @throws NoSuchFieldException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     * @throws IllegalAccessException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     */
     private static void blankField(Class<?> enumClass, String fieldName)
         throws NoSuchFieldException, IllegalAccessException
     {
@@ -82,13 +110,33 @@ public class SunEnumFactory
         }
     }
     
+    /**
+     * Clears internal enum cache.
+     * 
+     * @param enumClass
+     *            target class
+     * @throws NoSuchFieldException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     * @throws IllegalAccessException
+     *             thrown on internal problems changing the field modifiers (should never happen)
+     */
     private static void cleanEnumCache(Class<?> enumClass) throws NoSuchFieldException, IllegalAccessException
     {
-        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK //$NON-NLS-1$
-                                                        // 1.5/6
+        blankField(enumClass, "enumConstantDirectory"); // Sun (Oracle?!?) JDK 1.5/6 //$NON-NLS-1$
         blankField(enumClass, "enumConstants"); // IBM JDK //$NON-NLS-1$
     }
     
+    /**
+     * Gets constructor.
+     * 
+     * @param enumClass
+     *            target class
+     * @param additionalParameterTypes
+     *            additional parameters
+     * @return constructor
+     * @throws NoSuchMethodException
+     *             thrown if constructor is not found
+     */
     private static ConstructorAccessor getConstructorAccessor(Class<?> enumClass, Class<?>[] additionalParameterTypes)
         throws NoSuchMethodException
     {
@@ -99,6 +147,23 @@ public class SunEnumFactory
         return reflectionFactory.newConstructorAccessor(enumClass.getDeclaredConstructor(parameterTypes));
     }
     
+    /**
+     * Creates a new enum value.
+     * 
+     * @param enumClass
+     *            target class
+     * @param value
+     *            name
+     * @param ordinal
+     *            ordinal value
+     * @param additionalTypes
+     *            additional constructor args types
+     * @param additionalValues
+     *            additional constructor args
+     * @return enum value
+     * @throws Exception
+     *             thrown if there were problems creating the enum.
+     */
     private static Object makeEnum(Class<?> enumClass, String value, int ordinal, Class<?>[] additionalTypes,
         Object[] additionalValues) throws Exception
     {
@@ -119,8 +184,10 @@ public class SunEnumFactory
      * @param enumName
      *            the name of the new enum instance to be added to the class.
      * @param argTypes
+     *            additional constructor args types
      * @param args
-     * @return
+     *            additional constructor args
+     * @return enum value
      */
     @SuppressWarnings("unchecked")
     public static <T extends Enum<?>> T addEnum(Class<T> enumType, String enumName, Class<?>[] argTypes, Object[] args)
@@ -144,6 +211,10 @@ public class SunEnumFactory
                 break;
             }
         }
+        if (valuesField == null)
+        {
+            throw new IllegalStateException("$VALUES not found"); //$NON-NLS-1$
+        }
         AccessibleObject.setAccessible(new Field[] { valuesField }, true);
         
         try
@@ -156,11 +227,8 @@ public class SunEnumFactory
             // 3. build new enum
             T newValue = (T) makeEnum(enumType, // The target enum class
                 enumName, // THE NEW ENUM INSTANCE TO BE DYNAMICALLY ADDED
-                values.size(), argTypes, // could be used to pass
-                                         // values to the enum
-                                         // constuctor if needed
-                args); // could be used to pass values to the
-                       // enum constuctor if needed
+                values.size(), argTypes, // could be used to pass values to the enum constuctor if needed
+                args); // could be used to pass values to the enum constuctor if needed
             
             // 4. add new value
             values.add(newValue);

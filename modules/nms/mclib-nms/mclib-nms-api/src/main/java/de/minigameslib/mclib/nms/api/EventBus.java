@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.bukkit.event.Event;
@@ -59,11 +61,14 @@ public class EventBus
     /** the event descriptors per class. */
     private static final Map<Class<?>, Set<EventDescriptor<?>>> eventDescriptors       = new HashMap<>();
     
-    /** the abstract event system owning this event bus */
+    /** the abstract event system owning this event bus. */
     private final AbstractEventSystem                           eventSystem;
     
+    /** logger. */
+    static final Logger                                         LOGGER                 = Logger.getLogger(EventBus.class.getName());
+    
     /**
-     * Secured constructor
+     * Secured constructor.
      * 
      * @param eventSystem
      *            the abstract event system
@@ -83,24 +88,30 @@ public class EventBus
     }
     
     /**
-     * Registers handler
+     * Registers handler.
      * 
+     * @param <EVT>
+     *            mclib event class
      * @param plugin
+     *            plugin owning the handler
      * @param clazz
+     *            mclib event class
      * @param handler
+     *            handler to be invoked for events
      */
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
-        final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
+        final EventHandler<EVT> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).add(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).add(eventHandler);
         this.eventSystem.registerEventClass(clazz);
     }
     
     /**
-     * Calculates the descriptors
+     * Calculates the descriptors.
      * 
      * @param clazz
+     *            event listener class
      * @return descriptors
      */
     private Set<EventDescriptor<?>> calculateDescriptors(Class<?> clazz)
@@ -129,7 +140,9 @@ public class EventBus
         {
             final McEventHandler eh = method.getAnnotation(McEventHandler.class);
             if (eh == null)
+            {
                 continue;
+            }
             // Do not register bridge or synthetic methods to avoid event duplication
             // Fixes SPIGOT-893
             if (method.isBridge() || method.isSynthetic())
@@ -151,25 +164,32 @@ public class EventBus
     }
     
     /**
-     * registers with given listener
+     * registers with given listener.
      * 
+     * @param <EVT>
+     *            mclib event class
      * @param plugin
+     *            plugin owning the handler.
      * @param desc
+     *            event descriptor
      * @param listener
+     *            listener to be invoked for events
      */
-    private <Evt extends MinecraftEvent<?, Evt>> void register(Plugin plugin, EventDescriptor<Evt> desc, McListener listener)
+    private <EVT extends MinecraftEvent<?, EVT>> void register(Plugin plugin, EventDescriptor<EVT> desc, McListener listener)
     {
-        final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), desc.eventClass, evt -> desc.handle(listener, evt), listener);
+        final EventHandler<EVT> eventHandler = new EventHandler<>(plugin.getName(), desc.eventClass, evt -> desc.handle(listener, evt), listener);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).add(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).add(eventHandler);
         this.eventSystem.registerEventClass(desc.eventClass);
     }
     
     /**
-     * Registers handler
+     * Registers handler.
      * 
      * @param plugin
+     *            plugin owning the listener
      * @param listener
+     *            listener object with methods tagged with {@link McEventHandler}.
      */
     public void registerHandlers(Plugin plugin, McListener listener)
     {
@@ -180,25 +200,32 @@ public class EventBus
     }
     
     /**
-     * Unregisters handler
+     * Unregisters handler.
      * 
+     * @param <EVT>
+     *            mclib event class
      * @param plugin
+     *            plugin owning the handler
      * @param clazz
+     *            mclib event class
      * @param handler
+     *            handöler to be removed
      */
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
-        final EventHandler<Evt> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
+        final EventHandler<EVT> eventHandler = new EventHandler<>(plugin.getName(), clazz, handler, null);
         this.eventHandlersPerPlugin.computeIfAbsent(eventHandler.pluginName, k -> new HashSet<>()).remove(eventHandler);
         this.eventHandlersPerClass.computeIfAbsent(eventHandler.eventClass, k -> new HashSet<>()).remove(eventHandler);
         // TODO this.eventSystem.unregisterEventClass
     }
     
     /**
-     * Unregisters handler
+     * Unregisters handler.
      * 
      * @param plugin
+     *            plugin owning the listener
      * @param listener
+     *            listener to be removed
      */
     public void unregisterHandlers(Plugin plugin, McListener listener)
     {
@@ -216,13 +243,19 @@ public class EventBus
     }
     
     /**
-     * Handles event
+     * Handles event.
      * 
+     * @param <T>
+     *            the minecraft event class
+     * @param <EVT>
+     *            the mclib event class
      * @param eventClass
+     *            the mclib event class
      * @param event
+     *            the mclib event
      */
     @SuppressWarnings("unchecked")
-    public <T extends Event, Evt extends MinecraftEvent<T, Evt>> void handle(Class<Evt> eventClass, Evt event)
+    public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
         final Set<EventHandler<?>> handlers = this.eventHandlersPerClass.get(eventClass);
         if (handlers != null)
@@ -231,11 +264,11 @@ public class EventBus
             {
                 try
                 {
-                    ((McConsumer<Evt>) handler.handler).accept(event);
+                    ((McConsumer<EVT>) handler.handler).accept(event);
                 }
                 catch (McException e)
                 {
-                    // TODO Auto-generated catch block
+                    LOGGER.log(Level.WARNING, "Unhandled exception while invoking event handler for " + event, e); //$NON-NLS-1$
                 }
             }
         }
@@ -245,20 +278,25 @@ public class EventBus
      * event descriptor helper.
      * 
      * @author mepeisen
-     * @param <Evt>
+     * @param <EVT>
+     *            mclib event class
      */
-    private static final class EventDescriptor<Evt extends MinecraftEvent<?, Evt>>
+    private static final class EventDescriptor<EVT extends MinecraftEvent<?, EVT>>
     {
         /** the event class. */
-        public final Class<Evt> eventClass;
+        public final Class<EVT> eventClass;
         /** java reflection method. */
         public final Method     method;
         
         /**
+         * Constructor.
+         * 
          * @param eventClass
+         *            minecraft event class
          * @param method
+         *            reflection method to be invoked.
          */
-        public EventDescriptor(Class<Evt> eventClass, Method method)
+        public EventDescriptor(Class<EVT> eventClass, Method method)
         {
             this.eventClass = eventClass;
             this.method = method;
@@ -268,9 +306,11 @@ public class EventBus
          * Handles given event.
          * 
          * @param listener
+         *            listener object that has to handle the event.
          * @param event
+         *            event to be passed to listener method.
          */
-        public void handle(McListener listener, Evt event)
+        public void handle(McListener listener, EVT event)
         {
             try
             {
@@ -278,7 +318,7 @@ public class EventBus
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
             {
-                // TODO Auto-generated catch block
+                LOGGER.log(Level.WARNING, "Exception handling event " + event, e); //$NON-NLS-1$
             }
         }
         
@@ -288,26 +328,33 @@ public class EventBus
      * Event handler impl.
      * 
      * @author mepeisen
-     * @param <Evt>
+     * @param <EVT>
+     *            mclib event class
      */
-    private static final class EventHandler<Evt extends MinecraftEvent<?, Evt>>
+    private static final class EventHandler<EVT extends MinecraftEvent<?, EVT>>
     {
         /** the plugin name. */
         public final String          pluginName;
         /** the event class. */
-        public final Class<Evt>      eventClass;
+        public final Class<EVT>      eventClass;
         /** the event handler. */
-        public final McConsumer<Evt> handler;
+        public final McConsumer<EVT> handler;
         /** the minecraft listener object. */
         public final McListener      listener;
         
         /**
+         * Constructor.
+         * 
          * @param pluginName
+         *            name of plugin owning the handler.
          * @param eventClass
+         *            event class
          * @param handler
+         *            handler to fetch the event
          * @param listener
+         *            listener object
          */
-        public EventHandler(String pluginName, Class<Evt> eventClass, McConsumer<Evt> handler, McListener listener)
+        public EventHandler(String pluginName, Class<EVT> eventClass, McConsumer<EVT> handler, McListener listener)
         {
             this.pluginName = pluginName;
             this.eventClass = eventClass;
@@ -330,41 +377,60 @@ public class EventBus
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             EventHandler<?> other = (EventHandler<?>) obj;
             if (this.eventClass == null)
             {
                 if (other.eventClass != null)
+                {
                     return false;
+                }
             }
             else if (!this.eventClass.equals(other.eventClass))
+            {
                 return false;
+            }
             if (this.handler == null)
             {
                 if (other.handler != null)
+                {
                     return false;
+                }
             }
             else if (!this.handler.equals(other.handler))
+            {
                 return false;
+            }
             if (this.pluginName == null)
             {
                 if (other.pluginName != null)
+                {
                     return false;
+                }
             }
             else if (!this.pluginName.equals(other.pluginName))
+            {
                 return false;
+            }
             return true;
         }
     }
     
     /**
-     * Plugin disable
+     * Plugin disable.
      * 
      * @param plugin
+     *            plugin that was disabled.
      */
     public void onDisable(Plugin plugin)
     {
