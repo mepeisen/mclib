@@ -75,7 +75,7 @@ public interface NmsInventoryHandlerInterface
      * @param bukkitEntity
      *            bukkt entity that interacts with chest
      * @param mainHand
-     *            {@coede true} for using main hand and {@code false} for using off hand
+     *            {@code true} for using main hand and {@code false} for using off hand
      * @param blockFace
      *            the block face
      * @param hitX
