@@ -37,7 +37,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 
 
 /**
- * test case for {@link McContext}
+ * test case for {@link McContext}.
  * 
  * @author mepeisen
  */
@@ -45,7 +45,7 @@ public class McContextTest
 {
     
     /**
-     * Tests {@link McContext#getCurrentZone()}
+     * Tests {@link McContext#getCurrentZone()}.
      */
     @Test
     public void getCurrentZoneTest()
@@ -59,7 +59,7 @@ public class McContextTest
     }
     
     /**
-     * Tests {@link McContext#getCurrentComponent()}
+     * Tests {@link McContext#getCurrentComponent()}.
      */
     @Test
     public void getCurrentComponentTest()
@@ -73,7 +73,7 @@ public class McContextTest
     }
     
     /**
-     * Tests {@link McContext#getCurrentPlayer()}
+     * Tests {@link McContext#getCurrentPlayer()}.
      */
     @Test
     public void getCurrentPlayerTest()

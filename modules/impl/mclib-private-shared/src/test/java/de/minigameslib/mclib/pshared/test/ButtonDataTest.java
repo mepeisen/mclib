@@ -33,7 +33,7 @@ import de.minigameslib.mclib.pshared.ButtonData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link ButtonData}
+ * Test case for {@link ButtonData}.
  * 
  * @author mepeisen
  *
@@ -42,7 +42,7 @@ public class ButtonDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link FormData}
+ * Test case for {@link FormData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class FormDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * test case for {@link CommonMessages}
+ * test case for {@link CommonMessages}.
  * 
  * @author mepeisen
  */
@@ -38,7 +38,7 @@ public class CommonMessagesTest
 {
     
     /**
-     * Tests the enum
+     * Tests the enum.
      */
     @Test
     public void enumTest()

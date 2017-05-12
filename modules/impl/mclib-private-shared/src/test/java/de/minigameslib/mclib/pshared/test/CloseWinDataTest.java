@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.CloseWinData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link CloseWinData}
+ * Test case for {@link CloseWinData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class CloseWinDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

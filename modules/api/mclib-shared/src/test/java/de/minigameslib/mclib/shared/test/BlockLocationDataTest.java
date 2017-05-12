@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.minigameslib.mclib.shared.api.com.BlockLocationData;
 
 /**
- * Testing {@code BlockLocationData}
+ * Testing {@code BlockLocationData}.
  * 
  * @author mepeisen
  */

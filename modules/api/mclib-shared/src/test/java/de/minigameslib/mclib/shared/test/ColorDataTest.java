@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.minigameslib.mclib.shared.api.com.ColorData;
 
 /**
- * Testing {@code ColorData}
+ * Testing {@code ColorData}.
  * 
  * @author mepeisen
  */

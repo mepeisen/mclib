@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.minigameslib.mclib.shared.api.com.VectorData;
 
 /**
- * Testing {@code VectorData}
+ * Testing {@code VectorData}.
  * 
  * @author mepeisen
  */

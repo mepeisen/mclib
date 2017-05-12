@@ -60,7 +60,7 @@ import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
- * Testing AnnotatedDataFragment
+ * Testing AnnotatedDataFragment.
  * 
  * @author mepeisen
  */
@@ -182,7 +182,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Tests reading with final field
+     * Tests reading with final field.
      */
     @Test
     public void testFinal()
@@ -194,7 +194,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Tests reading with final field
+     * Tests reading with final field.
      */
     @Test
     public void testFinal2()
@@ -205,7 +205,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Tests reading with final field
+     * Tests reading with final field.
      */
     @Test(expected = IllegalStateException.class)
     public void testStaticFinal()
@@ -216,7 +216,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Tests reading with final field
+     * Tests reading with final field.
      */
     @Test
     public void testStaticFinal2()
@@ -229,7 +229,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedRefTypeTest1()
@@ -240,7 +240,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedRefTypeTest2()
@@ -251,7 +251,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedPrimListTypeTest1()
@@ -262,7 +262,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedPrimSetTypeTest1()
@@ -273,7 +273,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentListTypeTest1()
@@ -284,7 +284,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentListTypeTest2()
@@ -295,7 +295,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentListTypeTest3()
@@ -306,7 +306,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentListTypeTest4()
@@ -317,7 +317,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentSetTypeTest1()
@@ -328,7 +328,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentSetTypeTest2()
@@ -339,7 +339,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentSetTypeTest3()
@@ -350,7 +350,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested types for invalid data
+     * Test nested types for invalid data.
      */
     @Test
     public void testNestedFragmentSetTypeTest4()
@@ -361,7 +361,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test(expected = IllegalStateException.class)
     public void testNestedObject()
@@ -370,7 +370,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test(expected = IllegalStateException.class)
     public void testNestedObjectSet()
@@ -379,7 +379,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test(expected = IllegalStateException.class)
     public void testNestedObject2()
@@ -388,7 +388,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test
     public void testNestedVector()
@@ -407,7 +407,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test
     public void testNestedVectorSet()
@@ -426,7 +426,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test
     public void testNestedVector2()
@@ -444,7 +444,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test
     public void testNestedVector3()
@@ -460,7 +460,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested vectors
+     * Test nested vectors.
      */
     @Test
     public void testNestedVector3Set()
@@ -476,7 +476,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedVector4()
@@ -492,7 +492,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStack()
@@ -511,7 +511,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStackSet()
@@ -530,7 +530,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStack2()
@@ -548,7 +548,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStack3()
@@ -564,7 +564,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStack3Set()
@@ -580,7 +580,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested item stacks
+     * Test nested item stacks.
      */
     @Test
     public void testNestedItemStack4()
@@ -596,7 +596,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColor()
@@ -615,7 +615,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColorSet()
@@ -634,7 +634,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColor2()
@@ -652,7 +652,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColor3()
@@ -668,7 +668,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColorSet3()
@@ -684,7 +684,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested colors
+     * Test nested colors.
      */
     @Test
     public void testNestedColor4()
@@ -700,7 +700,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested player
+     * Test nested player.
      */
     @Test
     public void testNestedPlayer()
@@ -719,7 +719,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested player
+     * Test nested player.
      */
     @Test
     public void testNestedPlayerSet()
@@ -738,7 +738,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested players
+     * Test nested players.
      */
     @Test
     public void testNestedPlayer2()
@@ -756,7 +756,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested players
+     * Test nested players.
      */
     @Test
     public void testNestedPlayer3()
@@ -772,7 +772,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested players
+     * Test nested players.
      */
     @Test
     public void testNestedPlayer3Set()
@@ -788,7 +788,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test nested players
+     * Test nested players.
      */
     @Test
     public void testNestedPlayer4()
@@ -804,7 +804,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test primitive map
+     * Test primitive map.
      */
     @Test
     public void testPrimMap()
@@ -821,7 +821,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test uuid support
+     * Test uuid support.
      */
     @Test
     public void testUuid()
@@ -844,7 +844,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enums
+     * Test enums.
      */
     @Test
     public void testInvalidEnums()
@@ -855,7 +855,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enums
+     * Test enums.
      */
     @Test
     public void testInvalidEnums2()
@@ -866,7 +866,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enums
+     * Test enums.
      */
     @Test(expected = IllegalStateException.class)
     public void testInvalid1()
@@ -878,7 +878,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enums
+     * Test enums.
      */
     @Test(expected = IllegalStateException.class)
     public void testInvalid2()
@@ -890,7 +890,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enums
+     * Test enums.
      */
     @Test
     public void testEnums()
@@ -956,7 +956,7 @@ public class AnnotatedDataFragmentTest
      */
     public static class DataInvalid1 extends AnnotatedDataFragment
     {
-        /** invalid */
+        /** invalid. */
         @PersistentField
         public Map<AtomicBoolean, String> invalid = new HashMap<>();
     }
@@ -966,7 +966,7 @@ public class AnnotatedDataFragmentTest
      */
     public static class DataInvalid2 extends AnnotatedDataFragment
     {
-        /** invalid */
+        /** invalid. */
         @PersistentField
         public Map<String, AtomicBoolean> invalid = new HashMap<>();
     }
@@ -1024,42 +1024,66 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             Data1 other = (Data1) obj;
             if (this.int2 != other.int2)
+            {
                 return false;
+            }
             if (this.int3 == null)
             {
                 if (other.int3 != null)
+                {
                     return false;
+                }
             }
             else if (!this.int3.equals(other.int3))
+            {
                 return false;
+            }
             if (this.lst4 == null)
             {
                 if (other.lst4 != null)
+                {
                     return false;
+                }
             }
             else if (!this.lst4.equals(other.lst4))
+            {
                 return false;
+            }
             if (this.set5 == null)
             {
                 if (other.set5 != null)
+                {
                     return false;
+                }
             }
             else if (!this.set5.equals(other.set5))
+            {
                 return false;
+            }
             if (this.str1 == null)
             {
                 if (other.str1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.str1.equals(other.str1))
+            {
                 return false;
+            }
             return true;
         }
     }
@@ -1103,28 +1127,44 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             Data2 other = (Data2) obj;
             if (this.int2 != other.int2)
+            {
                 return false;
+            }
             if (this.int3 == null)
             {
                 if (other.int3 != null)
+                {
                     return false;
+                }
             }
             else if (!this.int3.equals(other.int3))
+            {
                 return false;
+            }
             if (this.str1 == null)
             {
                 if (other.str1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.str1.equals(other.str1))
+            {
                 return false;
+            }
             return true;
         }
     }
@@ -1153,31 +1193,41 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (!super.equals(obj))
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             Data3 other = (Data3) obj;
             if (this.str5 == null)
             {
                 if (other.str5 != null)
+                {
                     return false;
+                }
             }
             else if (!this.str5.equals(other.str5))
+            {
                 return false;
+            }
             return true;
         }
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataRefMap extends AnnotatedDataFragment
     {
         
         /**
-         * data1
+         * data1.
          */
         @PersistentField
         public Map<String, Data1> data1 = new HashMap<>();
@@ -1195,32 +1245,42 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             DataRefMap other = (DataRefMap) obj;
             if (this.data1 == null)
             {
                 if (other.data1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.data1.equals(other.data1))
+            {
                 return false;
+            }
             return true;
         }
         
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataRef extends AnnotatedDataFragment
     {
         
         /**
-         * data1
+         * data1.
          */
         @PersistentField
         protected Data1 data1;
@@ -1238,19 +1298,29 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             DataRef other = (DataRef) obj;
             if (this.data1 == null)
             {
                 if (other.data1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.data1.equals(other.data1))
+            {
                 return false;
+            }
             return true;
         }
         
@@ -1263,7 +1333,7 @@ public class AnnotatedDataFragmentTest
     {
         
         /**
-         * Creates a test data value
+         * Creates a test data value.
          * @return test data value
          */
         public static AllData result()
@@ -1625,190 +1695,310 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             AllData other = (AllData) obj;
             if (this.bfalse != other.bfalse)
+            {
                 return false;
+            }
             if (this.bnull == null)
             {
                 if (other.bnull != null)
+                {
                     return false;
+                }
             }
             else if (!this.bnull.equals(other.bnull))
+            {
                 return false;
+            }
             if (this.btrue != other.btrue)
+            {
                 return false;
+            }
             if (this.date1 == null)
             {
                 if (other.date1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.date1.equals(other.date1))
+            {
                 return false;
+            }
             if (this.date2 == null)
             {
                 if (other.date2 != null)
+                {
                     return false;
+                }
             }
             else if (!this.date2.equals(other.date2))
+            {
                 return false;
+            }
             if (this.dateNull == null)
             {
                 if (other.dateNull != null)
+                {
                     return false;
+                }
             }
             else if (!this.dateNull.equals(other.dateNull))
+            {
                 return false;
+            }
             if (this.datetime1 == null)
             {
                 if (other.datetime1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.datetime1.equals(other.datetime1))
+            {
                 return false;
+            }
             if (this.datetime2 == null)
             {
                 if (other.datetime2 != null)
+                {
                     return false;
+                }
             }
             else if (!this.datetime2.equals(other.datetime2))
+            {
                 return false;
+            }
             if (this.datetimeNull == null)
             {
                 if (other.datetimeNull != null)
+                {
                     return false;
+                }
             }
             else if (!this.datetimeNull.equals(other.datetimeNull))
+            {
                 return false;
+            }
             if (this.maxByte != other.maxByte)
+            {
                 return false;
+            }
             if (this.maxChar != other.maxChar)
+            {
                 return false;
+            }
             if (Double.doubleToLongBits(this.maxDouble) != Double.doubleToLongBits(other.maxDouble))
+            {
                 return false;
+            }
             if (Float.floatToIntBits(this.maxFloat) != Float.floatToIntBits(other.maxFloat))
+            {
                 return false;
+            }
             if (this.maxInt != other.maxInt)
+            {
                 return false;
+            }
             if (this.maxLong != other.maxLong)
+            {
                 return false;
+            }
             if (this.maxShort != other.maxShort)
+            {
                 return false;
+            }
             if (this.minByte != other.minByte)
+            {
                 return false;
+            }
             if (this.minChar != other.minChar)
+            {
                 return false;
+            }
             if (Double.doubleToLongBits(this.minDouble) != Double.doubleToLongBits(other.minDouble))
+            {
                 return false;
+            }
             if (Float.floatToIntBits(this.minFloat) != Float.floatToIntBits(other.minFloat))
+            {
                 return false;
+            }
             if (this.minInt != other.minInt)
+            {
                 return false;
+            }
             if (this.minLong != other.minLong)
+            {
                 return false;
+            }
             if (this.minShort != other.minShort)
+            {
                 return false;
+            }
             if (this.nullByte == null)
             {
                 if (other.nullByte != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullByte.equals(other.nullByte))
+            {
                 return false;
+            }
             if (this.nullChar == null)
             {
                 if (other.nullChar != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullChar.equals(other.nullChar))
+            {
                 return false;
+            }
             if (this.nullDouble == null)
             {
                 if (other.nullDouble != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullDouble.equals(other.nullDouble))
+            {
                 return false;
+            }
             if (this.nullFloat == null)
             {
                 if (other.nullFloat != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullFloat.equals(other.nullFloat))
+            {
                 return false;
+            }
             if (this.nullInt == null)
             {
                 if (other.nullInt != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullInt.equals(other.nullInt))
+            {
                 return false;
+            }
             if (this.nullLong == null)
             {
                 if (other.nullLong != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullLong.equals(other.nullLong))
+            {
                 return false;
+            }
             if (this.nullShort == null)
             {
                 if (other.nullShort != null)
+                {
                     return false;
+                }
             }
             else if (!this.nullShort.equals(other.nullShort))
+            {
                 return false;
+            }
             if (this.time1 == null)
             {
                 if (other.time1 != null)
+                {
                     return false;
+                }
             }
             else if (!this.time1.equals(other.time1))
+            {
                 return false;
+            }
             if (this.time2 == null)
             {
                 if (other.time2 != null)
+                {
                     return false;
+                }
             }
             else if (!this.time2.equals(other.time2))
+            {
                 return false;
+            }
             if (this.timeNull == null)
             {
                 if (other.timeNull != null)
+                {
                     return false;
+                }
             }
             else if (!this.timeNull.equals(other.timeNull))
+            {
                 return false;
+            }
             if (this.zeroByte != other.zeroByte)
+            {
                 return false;
+            }
             if (this.zeroChar != other.zeroChar)
+            {
                 return false;
+            }
             if (Double.doubleToLongBits(this.zeroDouble) != Double.doubleToLongBits(other.zeroDouble))
+            {
                 return false;
+            }
             if (Float.floatToIntBits(this.zeroFloat) != Float.floatToIntBits(other.zeroFloat))
+            {
                 return false;
+            }
             if (this.zeroInt != other.zeroInt)
+            {
                 return false;
+            }
             if (this.zeroLong != other.zeroLong)
+            {
                 return false;
+            }
             if (this.zeroShort != other.zeroShort)
+            {
                 return false;
+            }
             return true;
         }
         
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataFinal extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public final int number = 0;
@@ -1816,13 +2006,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataStaticFinal extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public static final Integer number = 0;
@@ -1830,13 +2020,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPrimList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<Integer> numbers = new ArrayList<>();
@@ -1844,13 +2034,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPrimSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<Integer> numbers = new HashSet<>();
@@ -1858,13 +2048,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataFragmentList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<Data1> refs = new ArrayList<>();
@@ -1872,13 +2062,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataFragmentSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<Data1> refs = new HashSet<>();
@@ -1886,13 +2076,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataVectorList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<VectorDataFragment> refs = new ArrayList<>();
@@ -1900,13 +2090,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataVectorSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<VectorDataFragment> refs = new HashSet<>();
@@ -1914,13 +2104,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataItemStackList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<ItemStackDataFragment> refs = new ArrayList<>();
@@ -1928,13 +2118,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataItemStackSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<ItemStackDataFragment> refs = new HashSet<>();
@@ -1942,13 +2132,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataColorList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<ColorDataFragment> refs = new ArrayList<>();
@@ -1956,13 +2146,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataColorSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<ColorDataFragment> refs = new HashSet<>();
@@ -1970,13 +2160,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPlayerList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<PlayerDataFragment> refs = new ArrayList<>();
@@ -1984,13 +2174,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPlayerSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<PlayerDataFragment> refs = new HashSet<>();
@@ -1998,13 +2188,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataObjectList extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<Object> refs = new ArrayList<>();
@@ -2012,13 +2202,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataObjectSet extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<Object> refs = new HashSet<>();
@@ -2026,13 +2216,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataVector extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public VectorDataFragment ref;
@@ -2040,13 +2230,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataItemStack extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public ItemStackDataFragment ref;
@@ -2054,13 +2244,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataColor extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public ColorDataFragment ref;
@@ -2068,13 +2258,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPlayer extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public PlayerDataFragment ref;
@@ -2082,13 +2272,13 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataObject extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Object ref;
@@ -2096,31 +2286,31 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataUuid extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public UUID uuid;
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public List<UUID> list = new ArrayList<>();
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Set<UUID> set = new HashSet<>();
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Map<String, UUID> map = new HashMap<>();
@@ -2141,53 +2331,75 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             DataUuid other = (DataUuid) obj;
             if (this.list == null)
             {
                 if (other.list != null)
+                {
                     return false;
+                }
             }
             else if (!this.list.equals(other.list))
+            {
                 return false;
+            }
             if (this.map == null)
             {
                 if (other.map != null)
+                {
                     return false;
+                }
             }
             else if (!this.map.equals(other.map))
+            {
                 return false;
+            }
             if (this.set == null)
             {
                 if (other.set != null)
+                {
                     return false;
+                }
             }
             else if (!this.set.equals(other.set))
+            {
                 return false;
+            }
             if (this.uuid == null)
             {
                 if (other.uuid != null)
+                {
                     return false;
+                }
             }
             else if (!this.uuid.equals(other.uuid))
+            {
                 return false;
+            }
             return true;
         }
         
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataPrimMap extends AnnotatedDataFragment
     {
         
         /**
-         * number
+         * number.
          */
         @PersistentField
         public Map<String, Integer> map = new HashMap<>();
@@ -2195,79 +2407,79 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test helper class
+     * Test helper class.
      */
     public static class DataEnums extends AnnotatedDataFragment
     {
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public UniqueEnumInterface1 unique;
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public NonUniqueEnumInterface1 nonUnique;
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Enum1 enum1;
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public List<UniqueEnumInterface1> uniqueList = new ArrayList<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public List<NonUniqueEnumInterface1> nonUniqueList = new ArrayList<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public List<Enum1> enum1List = new ArrayList<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Set<UniqueEnumInterface1> uniqueSet = new HashSet<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Set<NonUniqueEnumInterface1> nonUniqueSet = new HashSet<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Set<Enum1> enum1Set = new HashSet<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Map<String, UniqueEnumInterface1> uniqueMap = new HashMap<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Map<String, NonUniqueEnumInterface1> nonUniqueMap = new HashMap<>();
         
         /**
-         * enum
+         * enum.
          */
         @PersistentField
         public Map<String, Enum1> enum1Map = new HashMap<>();
@@ -2296,98 +2508,150 @@ public class AnnotatedDataFragmentTest
         public boolean equals(Object obj)
         {
             if (this == obj)
+            {
                 return true;
+            }
             if (obj == null)
+            {
                 return false;
+            }
             if (getClass() != obj.getClass())
+            {
                 return false;
+            }
             DataEnums other = (DataEnums) obj;
             if (this.enum1 != other.enum1)
+            {
                 return false;
+            }
             if (this.enum1List == null)
             {
                 if (other.enum1List != null)
+                {
                     return false;
+                }
             }
             else if (!this.enum1List.equals(other.enum1List))
+            {
                 return false;
+            }
             if (this.enum1Map == null)
             {
                 if (other.enum1Map != null)
+                {
                     return false;
+                }
             }
             else if (!this.enum1Map.equals(other.enum1Map))
+            {
                 return false;
+            }
             if (this.enum1Set == null)
             {
                 if (other.enum1Set != null)
+                {
                     return false;
+                }
             }
             else if (!this.enum1Set.equals(other.enum1Set))
+            {
                 return false;
+            }
             if (this.nonUnique == null)
             {
                 if (other.nonUnique != null)
+                {
                     return false;
+                }
             }
             else if (!this.nonUnique.equals(other.nonUnique))
+            {
                 return false;
+            }
             if (this.nonUniqueList == null)
             {
                 if (other.nonUniqueList != null)
+                {
                     return false;
+                }
             }
             else if (!this.nonUniqueList.equals(other.nonUniqueList))
+            {
                 return false;
+            }
             if (this.nonUniqueMap == null)
             {
                 if (other.nonUniqueMap != null)
+                {
                     return false;
+                }
             }
             else if (!this.nonUniqueMap.equals(other.nonUniqueMap))
+            {
                 return false;
+            }
             if (this.nonUniqueSet == null)
             {
                 if (other.nonUniqueSet != null)
+                {
                     return false;
+                }
             }
             else if (!this.nonUniqueSet.equals(other.nonUniqueSet))
+            {
                 return false;
+            }
             if (this.unique == null)
             {
                 if (other.unique != null)
+                {
                     return false;
+                }
             }
             else if (!this.unique.equals(other.unique))
+            {
                 return false;
+            }
             if (this.uniqueList == null)
             {
                 if (other.uniqueList != null)
+                {
                     return false;
+                }
             }
             else if (!this.uniqueList.equals(other.uniqueList))
+            {
                 return false;
+            }
             if (this.uniqueMap == null)
             {
                 if (other.uniqueMap != null)
+                {
                     return false;
+                }
             }
             else if (!this.uniqueMap.equals(other.uniqueMap))
+            {
                 return false;
+            }
             if (this.uniqueSet == null)
             {
                 if (other.uniqueSet != null)
+                {
                     return false;
+                }
             }
             else if (!this.uniqueSet.equals(other.uniqueSet))
+            {
                 return false;
+            }
             return true;
         }
         
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private interface UniqueEnumInterface1 extends UniqueEnumerationValue
     {
@@ -2395,7 +2659,7 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private interface NonUniqueEnumInterface1 extends EnumerationValue
     {
@@ -2403,15 +2667,15 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum UniqueEnum1a implements UniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val1,
-        /** value 2 */
+        /** value 2. */
         Val2,
-        /** value 3 */
+        /** value 3. */
         Val3;
 
         @Override
@@ -2422,15 +2686,15 @@ public class AnnotatedDataFragmentTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum NonUniqueEnum1a implements NonUniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val1,
-        /** value 2 */
+        /** value 2. */
         Val2,
-        /** value 3 */
+        /** value 3. */
         Val3;
     }
     
@@ -2439,11 +2703,11 @@ public class AnnotatedDataFragmentTest
      */
     private enum Enum1
     {
-        /** enum value 1 */
+        /** enum value 1. */
         SomeEnum1,
-        /** enum value 2 */
+        /** enum value 2. */
         SomeEnum2,
-        /** enum value 3 */
+        /** enum value 3. */
         SomeEnum3
     }
     

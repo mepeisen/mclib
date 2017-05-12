@@ -71,7 +71,7 @@ import de.minigameslib.mclib.shared.api.com.VectorData;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
 
 /**
- * Testing {@link MemoryDataSection}
+ * Testing {@link MemoryDataSection}.
  * 
  * @author mepeisen
  */
@@ -508,8 +508,8 @@ public class MemoryDataSectionTest
     public void testGetDeepLong()
     {
         final MemoryDataSection section = new MemoryDataSection();
-        section.set("FOO", 1l); //$NON-NLS-1$
-        section.set("FOO1.FOO2", 1l); //$NON-NLS-1$
+        section.set("FOO", 1L); //$NON-NLS-1$
+        section.set("FOO1.FOO2", 1L); //$NON-NLS-1$
         section.set("FOO3", "BAR"); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(1, section.getLong("FOO")); //$NON-NLS-1$
         assertEquals(1, section.getLong("FOO1.FOO2")); //$NON-NLS-1$
@@ -517,13 +517,13 @@ public class MemoryDataSectionTest
         assertTrue(section.isLong("FOO1.FOO2")); //$NON-NLS-1$
         assertEquals(0, section.getLong("FOO3")); //$NON-NLS-1$
         
-        assertEquals(1, section.getLong("FOO", 2l)); //$NON-NLS-1$
-        assertEquals(1, section.getLong("FOO1.FOO2", 2l)); //$NON-NLS-1$
+        assertEquals(1, section.getLong("FOO", 2L)); //$NON-NLS-1$
+        assertEquals(1, section.getLong("FOO1.FOO2", 2L)); //$NON-NLS-1$
         
-        assertEquals(2, section.getLong("FOO1", 2l)); //$NON-NLS-1$
-        assertEquals(2, section.getLong("FOO.FOO2", 2l)); //$NON-NLS-1$
-        assertEquals(2, section.getLong("FOO1.FOO3", 2l)); //$NON-NLS-1$
-        assertEquals(2, section.getLong("FOO3", 2l)); //$NON-NLS-1$
+        assertEquals(2, section.getLong("FOO1", 2L)); //$NON-NLS-1$
+        assertEquals(2, section.getLong("FOO.FOO2", 2L)); //$NON-NLS-1$
+        assertEquals(2, section.getLong("FOO1.FOO3", 2L)); //$NON-NLS-1$
+        assertEquals(2, section.getLong("FOO3", 2L)); //$NON-NLS-1$
         assertFalse(section.isLong("FOO1")); //$NON-NLS-1$
         assertFalse(section.isLong("FOO.FOO2")); //$NON-NLS-1$
         assertFalse(section.isLong("FOO1.FOO3")); //$NON-NLS-1$
@@ -1364,12 +1364,12 @@ public class MemoryDataSectionTest
     public void testGetLongList()
     {
         final MemoryDataSection section = new MemoryDataSection();
-        section.set("FOO.item0", 1l); //$NON-NLS-1$
-        section.set("FOO.item1", 2l); //$NON-NLS-1$
+        section.set("FOO.item0", 1L); //$NON-NLS-1$
+        section.set("FOO.item1", 2L); //$NON-NLS-1$
         final List<Long> result = section.getLongList("FOO"); //$NON-NLS-1$
         assertEquals(2, result.size());
-        assertTrue(result.contains(1l));
-        assertTrue(result.contains(2l));
+        assertTrue(result.contains(1L));
+        assertTrue(result.contains(2L));
         assertNull(section.getLongList("BAR")); //$NON-NLS-1$
         assertNull(section.getLongList("FOO.A")); //$NON-NLS-1$
     }
@@ -1381,8 +1381,8 @@ public class MemoryDataSectionTest
     public void testGetLongListInvalid()
     {
         final MemoryDataSection section = new MemoryDataSection();
-        section.set("FOO.item0", 1l); //$NON-NLS-1$
-        section.set("FOO.item1", 2l); //$NON-NLS-1$
+        section.set("FOO.item0", 1L); //$NON-NLS-1$
+        section.set("FOO.item1", 2L); //$NON-NLS-1$
         section.set("FOO.item2", "A"); //$NON-NLS-1$ //$NON-NLS-2$
         section.getIntegerList("FOO"); //$NON-NLS-1$
     }
@@ -2585,7 +2585,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * tests for invalid enums
+     * tests for invalid enums.
      */
     @Test(expected = ClassCastException.class)
     public void testInvalidEnumsInvalidList()
@@ -2926,7 +2926,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * tests for invalid enums
+     * tests for invalid enums.
      */
     @Test
     public void testInvalidNonUniqueEnumsInvalid()
@@ -2939,7 +2939,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * tests for invalid enums
+     * tests for invalid enums.
      */
     @Test
     public void testInvalidNonUniqueEnumsClassCast()
@@ -2952,7 +2952,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * tests for invalid enums
+     * tests for invalid enums.
      */
     @Test(expected = ClassCastException.class)
     public void testInvalidNonUniqueEnumsInvalidList()
@@ -2965,14 +2965,14 @@ public class MemoryDataSectionTest
     }
 
     /**
-     * Test helper
+     * Test helper.
      * @author mepeisen
      */
     private static final class ExtDataSection extends MemoryDataSection
     {
 
         /**
-         * 
+         * Constructor.
          */
         public ExtDataSection()
         {
@@ -2988,7 +2988,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test helper
+     * Test helper.
      */
     public static class PlayerData1 extends PlayerData
     {
@@ -2996,7 +2996,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test helper
+     * Test helper.
      */
     public static class PlayerData2 extends PlayerData
     {
@@ -3004,15 +3004,15 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test helper
+     * Test helper.
      */
-    private static abstract class InvalidFragment implements DataFragment
+    private abstract static class InvalidFragment implements DataFragment
     {
         // empty
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private interface UniqueEnumInterface1 extends UniqueEnumerationValue
     {
@@ -3020,7 +3020,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private interface NonUniqueEnumInterface1 extends EnumerationValue
     {
@@ -3028,7 +3028,7 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private interface NonUniqueEnumInterface2 extends EnumerationValue
     {
@@ -3036,15 +3036,15 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum UniqueEnum1a implements UniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val1,
-        /** value 2 */
+        /** value 2. */
         Val2,
-        /** value 3 */
+        /** value 3. */
         Val3;
 
         @Override
@@ -3055,15 +3055,15 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum UniqueEnum1b implements UniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val4,
-        /** value 2 */
+        /** value 2. */
         Val5,
-        /** value 3 */
+        /** value 3. */
         Val6;
 
         @Override
@@ -3074,28 +3074,28 @@ public class MemoryDataSectionTest
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum NonUniqueEnum1a implements NonUniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val1,
-        /** value 2 */
+        /** value 2. */
         Val2,
-        /** value 3 */
+        /** value 3. */
         Val3;
     }
     
     /**
-     * Test enum
+     * Test enum.
      */
     private enum NonUniqueEnum1b implements NonUniqueEnumInterface1
     {
-        /** value 1 */
+        /** value 1. */
         Val1,
-        /** value 2 */
+        /** value 2. */
         Val2,
-        /** value 3 */
+        /** value 3. */
         Val3;
     }
     
@@ -3104,11 +3104,11 @@ public class MemoryDataSectionTest
      */
     private enum Enum1
     {
-        /** enum value 1 */
+        /** enum value 1. */
         SomeEnum1,
-        /** enum value 2 */
+        /** enum value 2. */
         SomeEnum2,
-        /** enum value 3 */
+        /** enum value 3. */
         SomeEnum3
     }
     
@@ -3117,11 +3117,11 @@ public class MemoryDataSectionTest
      */
     private enum Enum2
     {
-        /** enum value 1 */
+        /** enum value 1. */
         SomeEnum3,
-        /** enum value 2 */
+        /** enum value 2. */
         SomeEnum4,
-        /** enum value 3 */
+        /** enum value 3. */
         SomeEnum5
     }
     

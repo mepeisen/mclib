@@ -33,7 +33,7 @@ import de.minigameslib.mclib.pshared.DisplayInfoData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link DisplayInfoData}
+ * Test case for {@link DisplayInfoData}.
  * 
  * @author mepeisen
  *
@@ -42,7 +42,7 @@ public class DisplayInfoDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

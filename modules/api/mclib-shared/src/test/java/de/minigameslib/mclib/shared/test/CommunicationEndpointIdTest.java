@@ -38,7 +38,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Tests for {@link CommunicationEndpointId}
+ * Tests for {@link CommunicationEndpointId}.
  * 
  * @author mepeisen
  *
@@ -47,8 +47,10 @@ public class CommunicationEndpointIdTest
 {
     
     /**
-     * Tests the delegation to service
-     * @throws Exception 
+     * Tests the delegation to service.
+     * 
+     * @throws Exception
+     *             thrown for errors
      */
     @Test
     public void testMe() throws Exception
@@ -63,7 +65,7 @@ public class CommunicationEndpointIdTest
         
         // only for code coverage
         clazz.newInstance();
-
+        
         // underlying test
         final DataSection data1 = new MemoryDataSection();
         final DataSection data2 = new MemoryDataSection();
@@ -75,12 +77,13 @@ public class CommunicationEndpointIdTest
     
     /**
      * dummy endpoints for testing.
+     * 
      * @author mepeisen
      *
      */
     private enum DummyEndpoints implements CommunicationEndpointId
     {
-        /** dummy endpoint */
+        /** dummy endpoint. */
         Dummy
     }
     

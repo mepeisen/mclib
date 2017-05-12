@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.ResetMarkersData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link ResetMarkersData}
+ * Test case for {@link ResetMarkersData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class ResetMarkersDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

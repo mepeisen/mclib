@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.RemoveMarkerData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link RemoveMarkerData}
+ * Test case for {@link RemoveMarkerData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class RemoveMarkerDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

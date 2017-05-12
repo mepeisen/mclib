@@ -33,7 +33,7 @@ import de.minigameslib.mclib.pshared.DisplayYesNoCancelData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link DisplayYesNoCancelData}
+ * Test case for {@link DisplayYesNoCancelData}.
  * 
  * @author mepeisen
  *
@@ -42,7 +42,7 @@ public class DisplayYesNoCancelDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

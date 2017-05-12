@@ -38,7 +38,7 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
 
 /**
- * Testing {@code PlayerData}
+ * Testing {@code PlayerData}.
  * 
  * @author mepeisen
  */
@@ -103,7 +103,7 @@ public class PlayerDataTest
     }
     
     /**
-     * Tests loading with invalid uri
+     * Tests loading with invalid uri.
      */
     @Test
     public void testInvalidUri()

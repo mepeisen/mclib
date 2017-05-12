@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.PongData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link PongData}
+ * Test case for {@link PongData}.
  * 
  * @author mepeisen
  *
@@ -41,12 +41,13 @@ public class PongDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()
     {
         final PongData data = new PongData();
+        data.setApi(42);
         data.getClientExtensions().put("winid", 16); //$NON-NLS-1$
         assertEquals(1, data.getClientExtensions().size());
         assertEquals(16, data.getClientExtensions().get("winid").intValue()); //$NON-NLS-1$
@@ -57,6 +58,7 @@ public class PongDataTest
         final PongData data2 = section.getFragment(PongData.class, "FOO"); //$NON-NLS-1$
         assertEquals(1, data2.getClientExtensions().size());
         assertEquals(16, data2.getClientExtensions().get("winid").intValue()); //$NON-NLS-1$
+        assertEquals(42, data2.getApi());
     }
     
 }

@@ -33,7 +33,7 @@ import de.minigameslib.mclib.pshared.FormData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link ActionPerformedData}
+ * Test case for {@link ActionPerformedData}.
  * 
  * @author mepeisen
  *
@@ -42,7 +42,7 @@ public class ActionPerformedDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

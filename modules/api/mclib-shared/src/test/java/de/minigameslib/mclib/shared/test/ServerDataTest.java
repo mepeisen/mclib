@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.minigameslib.mclib.shared.api.com.ServerData;
 
 /**
- * Testing {@code ServerData}
+ * Testing {@code ServerData}.
  * 
  * @author mepeisen
  */

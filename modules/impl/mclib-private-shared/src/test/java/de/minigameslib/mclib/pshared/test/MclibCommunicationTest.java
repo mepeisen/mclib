@@ -30,7 +30,7 @@ import de.minigameslib.mclib.pshared.MclibCommunication;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * Test for {@link MclibCommunication}
+ * Test for {@link MclibCommunication}.
  * 
  * @author mepeisen
  */

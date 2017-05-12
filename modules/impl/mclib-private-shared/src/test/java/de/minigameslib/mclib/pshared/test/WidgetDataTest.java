@@ -45,7 +45,7 @@ import de.minigameslib.mclib.pshared.WidgetData.TextInput;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link WidgetData}
+ * Test case for {@link WidgetData}.
  * 
  * @author mepeisen
  *
@@ -54,7 +54,7 @@ public class WidgetDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testLabel()
@@ -76,7 +76,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testSubmit()
@@ -104,7 +104,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testCancel()
@@ -132,7 +132,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testTextInput()
@@ -160,7 +160,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testComboInput()
@@ -211,7 +211,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testListInput()
@@ -267,7 +267,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testListRequest()
@@ -287,7 +287,7 @@ public class WidgetDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testListResponse()

@@ -30,7 +30,7 @@ import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * Test for {@link CoreMessages}
+ * Test for {@link CoreMessages}.
  * 
  * @author mepeisen
  */

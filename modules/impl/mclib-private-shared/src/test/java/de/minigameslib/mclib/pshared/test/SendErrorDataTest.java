@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.SendErrorData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link SendErrorData}
+ * Test case for {@link SendErrorData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class SendErrorDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

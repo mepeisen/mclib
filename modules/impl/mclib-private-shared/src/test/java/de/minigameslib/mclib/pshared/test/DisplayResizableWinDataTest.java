@@ -36,7 +36,7 @@ import de.minigameslib.mclib.pshared.WidgetData.Label;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link DisplayResizableWinData}
+ * Test case for {@link DisplayResizableWinData}.
  * 
  * @author mepeisen
  *
@@ -45,7 +45,7 @@ public class DisplayResizableWinDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

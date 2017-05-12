@@ -32,10 +32,11 @@ import de.minigameslib.mclib.pshared.DisplayMarkerData;
 import de.minigameslib.mclib.pshared.MarkerData;
 import de.minigameslib.mclib.pshared.MarkerData.BlockMarkerData;
 import de.minigameslib.mclib.pshared.MarkerData.CuboidMarkerData;
+import de.minigameslib.mclib.pshared.MarkerData.MarkerColorData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link DisplayMarkerData}
+ * Test case for {@link DisplayMarkerData}.
  * 
  * @author mepeisen
  *
@@ -44,7 +45,7 @@ public class DisplayMarkerDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()
@@ -69,7 +70,7 @@ public class DisplayMarkerDataTest
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testCuboid()
@@ -91,6 +92,13 @@ public class DisplayMarkerDataTest
         assertEquals(4, data.getMarker().getCuboid().getY2());
         assertEquals(5, data.getMarker().getCuboid().getZ1());
         assertEquals(6, data.getMarker().getCuboid().getZ2());
+        
+        final MarkerColorData color = new MarkerColorData();
+        color.setR(10);
+        color.setG(20);
+        color.setB(30);
+        color.setAlpha(40);
+        cub.setColor(color);
 
         final MemoryDataSection section = new MemoryDataSection();
         section.set("FOO", data); //$NON-NLS-1$
@@ -102,10 +110,15 @@ public class DisplayMarkerDataTest
         assertEquals(4, data2.getMarker().getCuboid().getY2());
         assertEquals(5, data2.getMarker().getCuboid().getZ1());
         assertEquals(6, data2.getMarker().getCuboid().getZ2());
+
+        assertEquals(10, data2.getMarker().getCuboid().getColor().getR());
+        assertEquals(20, data2.getMarker().getCuboid().getColor().getG());
+        assertEquals(30, data2.getMarker().getCuboid().getColor().getB());
+        assertEquals(40, data2.getMarker().getCuboid().getColor().getAlpha());
     }
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testBlock()
@@ -121,6 +134,13 @@ public class DisplayMarkerDataTest
         assertEquals(1, data.getMarker().getBlock().getX());
         assertEquals(2, data.getMarker().getBlock().getY());
         assertEquals(3, data.getMarker().getBlock().getZ());
+        
+        final MarkerColorData color = new MarkerColorData();
+        color.setR(10);
+        color.setG(20);
+        color.setB(30);
+        color.setAlpha(40);
+        block.setColor(color);
 
         final MemoryDataSection section = new MemoryDataSection();
         section.set("FOO", data); //$NON-NLS-1$
@@ -129,6 +149,11 @@ public class DisplayMarkerDataTest
         assertEquals(1, data2.getMarker().getBlock().getX());
         assertEquals(2, data2.getMarker().getBlock().getY());
         assertEquals(3, data2.getMarker().getBlock().getZ());
+        
+        assertEquals(10, data2.getMarker().getBlock().getColor().getR());
+        assertEquals(20, data2.getMarker().getBlock().getColor().getG());
+        assertEquals(30, data2.getMarker().getBlock().getColor().getB());
+        assertEquals(40, data2.getMarker().getBlock().getColor().getAlpha());
     }
     
 }

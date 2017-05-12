@@ -28,7 +28,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.ItemStackDataFragment;
 
 /**
- * Some dummy item stack class
+ * Some dummy item stack class.
  * 
  * @author mepeisen
  */
@@ -37,52 +37,54 @@ public class ItemStackUtil implements ItemStackDataFragment
     
     /** material id. */
     private int material;
-
+    
     /**
+     * Constructor.
+     * 
      * @param material
+     *            material id
      */
     public ItemStackUtil(int material)
     {
         this.material = material;
     }
-
+    
     /**
-     * 
+     * Constructor.
      */
     public ItemStackUtil()
     {
         // empty
     }
-
+    
     @Override
     public void read(DataSection section)
     {
         this.material = section.getInt("material"); //$NON-NLS-1$
     }
-
+    
     @Override
     public void write(DataSection section)
     {
         section.set("material", this.material); //$NON-NLS-1$
     }
-
+    
     @Override
     public boolean test(DataSection section)
     {
         return section.isInt("material"); //$NON-NLS-1$
     }
-
+    
     /**
+     * Returns the material id.
+     * 
      * @return the material
      */
     public int getMaterial()
     {
         return this.material;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+    
     @Override
     public int hashCode()
     {
@@ -91,22 +93,27 @@ public class ItemStackUtil implements ItemStackDataFragment
         result = prime * result + this.material;
         return result;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    
     @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
+        {
             return true;
+        }
         if (obj == null)
+        {
             return false;
+        }
         if (getClass() != obj.getClass())
+        {
             return false;
+        }
         ItemStackUtil other = (ItemStackUtil) obj;
         if (this.material != other.material)
+        {
             return false;
+        }
         return true;
     }
     

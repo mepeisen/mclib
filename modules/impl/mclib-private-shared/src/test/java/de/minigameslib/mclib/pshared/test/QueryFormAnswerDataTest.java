@@ -32,7 +32,7 @@ import de.minigameslib.mclib.pshared.QueryFormAnswerData;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * Test case for {@link QueryFormAnswerData}
+ * Test case for {@link QueryFormAnswerData}.
  * 
  * @author mepeisen
  *
@@ -41,7 +41,7 @@ public class QueryFormAnswerDataTest
 {
     
     /**
-     * Simple test case for reading/storing data
+     * Simple test case for reading/storing data.
      */
     @Test
     public void testMe()

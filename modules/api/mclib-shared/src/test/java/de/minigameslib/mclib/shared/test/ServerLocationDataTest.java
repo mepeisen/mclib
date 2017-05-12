@@ -35,7 +35,7 @@ import org.junit.Test;
 import de.minigameslib.mclib.shared.api.com.ServerLocationData;
 
 /**
- * Testing {@code ServerLocationData}
+ * Testing {@code ServerLocationData}.
  * 
  * @author mepeisen
  */
