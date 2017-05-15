@@ -2151,7 +2151,7 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                         marker.getTools().remove(id);
                         if (marker.getTools().size() == 0)
                         {
-                            evt.getPlayer().unregisterHandlers((Plugin) McLibInterface.instance(), ItemServiceImpl.this);
+                            evt.getPlayer().unregisterHandlers((Plugin) McLibInterface.instance(), this);
                             evt.getPlayer().getSessionStorage().set(ToolMarker.class, null);
                         }
                     }
@@ -3097,6 +3097,69 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
     public ConfigItemStackData fromConfigData(DataSection section)
     {
         return Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).fromConfigData(section);
+    }
+    
+    /**
+     * Returns the block mappings; the mappings are equal within the whole server.
+     * 
+     * @return block mappings (block name to numeric id)
+     */
+    public Map<String, Integer> getBlockMappings()
+    {
+        final Map<String, Integer> result = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class).getBlockMappings();
+        for (final CustomBlock block : this.blockMap.keySet())
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                final Integer val = result.remove("mclib:custom_" + block.getNumId() + ":" + i); //$NON-NLS-1$ //$NON-NLS-2$
+                result.put("mclib:" + block.getPluginName() + ":" + block.getEnumName() + ":" + i, val); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * calculate id mapping from data ids to local server ids.
+     * 
+     * @param blockMapping
+     *            block mapping read from schemata files
+     * @return local id mapping used by {@link #setCustomBlocks(Location, Map, int[])}
+     * @throws McException
+     *             thrown if a block from given mapping is unknown to local server
+     */
+    public Map<Integer, Integer> calculateIdMapping(Map<String, Integer> blockMapping) throws McException
+    {
+        final Map<String, Integer> currentMapping = this.getBlockMappings();
+        final Map<Integer, Integer> result = new HashMap<>();
+        for (final Map.Entry<String, Integer> entry : blockMapping.entrySet())
+        {
+            if (currentMapping.containsKey(entry.getKey()))
+            {
+                result.put(entry.getValue(), currentMapping.get(entry.getKey()));
+            }
+            else
+            {
+                // TODO throw exception for "unknown block mapping" error.
+                throw new McException(CommonMessages.InternalError);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Sets block data along z axis.
+     * 
+     * @param location
+     *            starting location
+     * @param blockMappings
+     *            block mappings
+     * @param blocks
+     *            blocks to set
+     */
+    public void setCustomBlocks(Location location, Map<Integer, Integer> blockMappings, int[] blocks)
+    {
+        final ItemHelperInterface itemHelper = Bukkit.getServicesManager().load(NmsFactory.class).create(ItemHelperInterface.class);
+        itemHelper.setBlocks(location, blockMappings, blocks);
     }
     
 }

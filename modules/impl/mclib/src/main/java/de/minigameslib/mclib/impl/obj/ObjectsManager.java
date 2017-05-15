@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.obj;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -111,8 +112,10 @@ import de.minigameslib.mclib.impl.comp.ZoneId;
 import de.minigameslib.mclib.impl.comp.ZoneImpl;
 import de.minigameslib.mclib.impl.comp.builder.HumanBuilder;
 import de.minigameslib.mclib.impl.comp.builder.VillagerBuilder;
+import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -1456,7 +1459,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     private void onDelete(ComponentImpl component) throws McException
     {
-        final ComponentId id = (ComponentId) component.getComponentId();
+        final ComponentId id = component.getComponentId();
         this.components.remove(id.getPluginName(), id, this.componentsFolder);
     }
     
@@ -1484,7 +1487,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     private void onDelete(SignImpl sign) throws McException
     {
-        final SignId id = (SignId) sign.getSignId();
+        final SignId id = sign.getSignId();
         this.signs.remove(id.getPluginName(), id, this.signsFolder);
     }
     
@@ -1498,7 +1501,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     private void onDelete(ObjectImpl obj) throws McException
     {
-        final ObjectId id = (ObjectId) obj.getObjectId();
+        final ObjectId id = obj.getObjectId();
         this.objects.remove(id.getPluginName(), id, this.objectsFolder);
     }
     
@@ -1512,7 +1515,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     private void onDelete(EntityImpl ent) throws McException
     {
-        final EntityId id = (EntityId) ent.getEntityId();
+        final EntityId id = ent.getEntityId();
         final UUID uuid = ent.getBukkitEntity().getUniqueId();
         if (this.entitiesByUuid.containsKey(uuid))
         {
@@ -1536,6 +1539,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<ComponentInterface> findComponents(Block block)
     {
         return block == null ? Collections.emptyList() : this.findComponents(block.getLocation());
+    }
+    
+    @Override
+    public Collection<ComponentInterface> findComponents(Cuboid cub)
+    {
+        return this.fetchForCuboid(cub).filter(c -> c instanceof ComponentImpl).map(c -> (ComponentImpl) c).filter(c -> cub.containsLoc(c.getLocation())).collect(Collectors.toList());
     }
     
     @Override
@@ -1573,6 +1582,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             return this.entitiesByUuid.get(uuid).stream().map(this::findEntity).collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+    
+    @Override
+    public Collection<EntityInterface> findEntities(Cuboid cub)
+    {
+        return this.fetchForCuboid(cub).filter(c -> c instanceof EntityImpl).map(c -> (EntityImpl) c).filter(c -> cub.containsLoc(c.getBukkitEntity().getLocation())).collect(Collectors.toList());
     }
     
     @Override
@@ -1632,6 +1647,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     public Collection<SignInterface> findSigns(Block block)
     {
         return block == null ? Collections.emptyList() : this.findSigns(block.getLocation());
+    }
+    
+    @Override
+    public Collection<SignInterface> findSigns(Cuboid cub)
+    {
+        return this.fetchForCuboid(cub).filter(c -> c instanceof SignImpl).map(c -> (SignImpl) c).filter(c -> cub.containsLoc(c.getLocation())).collect(Collectors.toList());
     }
     
     @Override
@@ -1940,6 +1961,281 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             });
             this.lazyPluginLoading.clear();
         }
+    }
+    
+    /**
+     * Converts given object to data section.
+     * 
+     * @param location
+     *            relative location to convert data
+     * @param object
+     *            object to convert.
+     * @return data section.
+     */
+    public DataSection toDataSection(Location location, Object object)
+    {
+        DataSection result = null;
+        if (object instanceof ZoneImpl)
+        {
+            final ZoneImpl zone = (ZoneImpl) object;
+            final ZoneId id = zone.getZoneId();
+            if (this.zones.isPersistent(id.getPluginName(), id))
+            {
+                return zone.copyAndSaveConfig(location);
+            }
+        }
+        else if (object instanceof ComponentImpl)
+        {
+            final ComponentImpl comp = (ComponentImpl) object;
+            final ComponentId id = comp.getComponentId();
+            if (this.components.isPersistent(id.getPluginName(), id))
+            {
+                return comp.copyAndSaveConfig(location);
+            }
+        }
+        else if (object instanceof SignImpl)
+        {
+            final SignImpl sign = (SignImpl) object;
+            final SignId id = sign.getSignId();
+            if (this.signs.isPersistent(id.getPluginName(), id))
+            {
+                return sign.copyAndSaveConfig(location);
+            }
+        }
+        else if (object instanceof EntityImpl)
+        {
+            final EntityImpl entity = (EntityImpl) object;
+            final EntityId id = entity.getEntityId();
+            if (this.entities.isPersistent(id.getPluginName(), id))
+            {
+                return entity.copyAndSaveConfig(location);
+            }
+        }
+        else if (object instanceof ObjectImpl)
+        {
+            final ObjectImpl obj = (ObjectImpl) object;
+            final ObjectId id = obj.getObjectId();
+            if (this.objects.isPersistent(id.getPluginName(), id))
+            {
+                return obj.copyAndSaveConfig();
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Creates a new component from given data section.
+     * 
+     * @param location
+     *            component location
+     * @param section
+     *            data section to load from
+     * @throws IOException
+     *             thrown on io errors
+     * @throws McException
+     *             thrown on creation errors
+     */
+    public void createFromDataSection(Location location, DataSection section) throws IOException, McException
+    {
+        switch (section.getString("otype")) //$NON-NLS-1$
+        {
+            case "zone": //$NON-NLS-1$
+                createZoneFromDataSection(location, section);
+                break;
+            case "component": //$NON-NLS-1$
+                createComponentFromDataSection(location, section);
+                break;
+            case "sign": //$NON-NLS-1$
+                createSignFromDataSection(location, section);
+                break;
+            case "entity": //$NON-NLS-1$
+                // TODO support entities
+                break;
+            case "object": //$NON-NLS-1$
+                createObjectFromDataSection(section);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * Creates a new component from given data section.
+     * 
+     * @param location
+     *            location start point
+     * @param section
+     *            data section to load from
+     * @throws IOException
+     *             thrown on io errors
+     * @throws McException
+     *             thrown on creation errors
+     */
+    private void createComponentFromDataSection(Location location, DataSection section) throws IOException, McException
+    {
+        final ComponentTypeId type = EnumServiceInterface.instance().getEnumValue(ComponentTypeId.class, section.getString("tplugin"), section.getString("tname")); //$NON-NLS-1$ //$NON-NLS-2$
+        final UUID uuid = UUID.randomUUID();
+        final ComponentId id = new ComponentId(type.getPluginName(), type.name(), uuid);
+        final File file = new File(this.componentsFolder, id.getUuid().toString() + ".yml"); //$NON-NLS-1$
+        final YmlFile yml = new YmlFile(section.getSection("file")); //$NON-NLS-1$
+        yml.saveFile(file);
+        final ComponentHandlerInterface handler = safeCreateHandler(type.getPluginName(), type);
+        final Location loc = new Location(
+            location.getWorld(),
+            location.getX() + section.getInt("x"), //$NON-NLS-1$
+            location.getY() + section.getInt("y"), //$NON-NLS-1$
+            location.getZ() + section.getInt("z")); //$NON-NLS-1$
+        final ComponentImpl impl = new ComponentImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, loc, id, handler, file, this);
+        impl.readConfig();
+        this.runInContext(ComponentInterface.class, impl, () ->
+        {
+            handler.onResume(impl);
+            
+            // store data
+            this.components.put(type.getPluginName(), id, impl, true);
+            
+            // save data
+            this.components.saveIdList(this.componentsFolder);
+        });
+        
+        final ComponentCreatedEvent createdEvent = new ComponentCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+    }
+    
+    /**
+     * Creates a new zone from given data section.
+     * 
+     * @param location
+     *            location start point
+     * @param section
+     *            data section to load from
+     * @throws IOException
+     *             thrown on io errors
+     * @throws McException
+     *             thrown on creation errors
+     */
+    private void createZoneFromDataSection(Location location, DataSection section) throws IOException, McException
+    {
+        final ZoneTypeId type = EnumServiceInterface.instance().getEnumValue(ZoneTypeId.class, section.getString("tplugin"), section.getString("tname")); //$NON-NLS-1$ //$NON-NLS-2$
+        final UUID uuid = UUID.randomUUID();
+        final ZoneId id = new ZoneId(type.getPluginName(), type.name(), uuid);
+        final File file = new File(this.zonesFolder, id.getUuid().toString() + ".yml"); //$NON-NLS-1$
+        final YmlFile yml = new YmlFile(section.getSection("file")); //$NON-NLS-1$
+        yml.saveFile(file);
+        final ZoneHandlerInterface handler = safeCreateHandler(type.getPluginName(), type);
+        final Location loc1 = new Location(
+            location.getWorld(),
+            location.getX() + section.getInt("x1"), //$NON-NLS-1$
+            location.getY() + section.getInt("y1"), //$NON-NLS-1$
+            location.getZ() + section.getInt("z1")); //$NON-NLS-1$
+        final Location loc2 = new Location(
+            location.getWorld(),
+            location.getX() + section.getInt("x2"), //$NON-NLS-1$
+            location.getY() + section.getInt("y2"), //$NON-NLS-1$
+            location.getZ() + section.getInt("z2")); //$NON-NLS-1$
+        final ZoneImpl impl = new ZoneImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, new Cuboid(loc1,  loc2), id, handler, file, this);
+        impl.readConfig();
+        this.runInContext(ZoneInterface.class, impl, () ->
+        {
+            handler.onResume(impl);
+            
+            // store data
+            this.zones.put(type.getPluginName(), id, impl, true);
+            
+            // save data
+            this.zones.saveIdList(this.zonesFolder);
+        });
+        
+        final ZoneCreatedEvent createdEvent = new ZoneCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+    }
+    
+    /**
+     * Creates a new sign from given data section.
+     * 
+     * @param location
+     *            location start point
+     * @param section
+     *            data section to load from
+     * @throws IOException
+     *             thrown on io errors
+     * @throws McException
+     *             thrown on creation errors
+     */
+    private void createSignFromDataSection(Location location, DataSection section) throws IOException, McException
+    {
+        final SignTypeId type = EnumServiceInterface.instance().getEnumValue(SignTypeId.class, section.getString("tplugin"), section.getString("tname")); //$NON-NLS-1$ //$NON-NLS-2$
+        final UUID uuid = UUID.randomUUID();
+        final SignId id = new SignId(type.getPluginName(), type.name(), uuid);
+        final File file = new File(this.signsFolder, id.getUuid().toString() + ".yml"); //$NON-NLS-1$
+        final YmlFile yml = new YmlFile(section.getSection("file")); //$NON-NLS-1$
+        yml.saveFile(file);
+        final SignHandlerInterface handler = safeCreateHandler(type.getPluginName(), type);
+        final Location loc = new Location(
+            location.getWorld(),
+            location.getX() + section.getInt("x"), //$NON-NLS-1$
+            location.getY() + section.getInt("y"), //$NON-NLS-1$
+            location.getZ() + section.getInt("z")); //$NON-NLS-1$
+        final SignImpl impl = new SignImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, null, id, handler, file, this);
+
+        // research sign
+        final BlockState block = loc.getBlock().getState();
+        if (!(block instanceof Sign))
+        {
+            throw new McException(CommonMessages.SignNotFoundError);
+        }
+        
+        impl.setSign((Sign) block);
+        impl.readConfig();
+        this.runInContext(SignInterface.class, impl, () ->
+        {
+            handler.onResume(impl);
+            
+            // store data
+            this.signs.put(type.getPluginName(), id, impl, true);
+            
+            // save data
+            this.signs.saveIdList(this.signsFolder);
+        });
+        
+        final SignCreatedEvent createdEvent = new SignCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+    }
+    
+    /**
+     * Creates a new object from given data section.
+     * 
+     * @param section
+     *            data section to load from
+     * @throws IOException
+     *             thrown on io errors
+     * @throws McException
+     *             thrown on creation errors
+     */
+    private void createObjectFromDataSection(DataSection section) throws IOException, McException
+    {
+        final ObjectTypeId type = EnumServiceInterface.instance().getEnumValue(ObjectTypeId.class, section.getString("tplugin"), section.getString("tname")); //$NON-NLS-1$ //$NON-NLS-2$
+        final UUID uuid = UUID.randomUUID();
+        final ObjectId id = new ObjectId(type.getPluginName(), type.name(), uuid);
+        final File file = new File(this.objectsFolder, id.getUuid().toString() + ".yml"); //$NON-NLS-1$
+        final YmlFile yml = new YmlFile(section.getSection("file")); //$NON-NLS-1$
+        yml.saveFile(file);
+        final ObjectHandlerInterface handler = safeCreateHandler(type.getPluginName(), type);
+        final ObjectImpl impl = new ObjectImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), id, handler, file, this);
+        impl.readConfig();
+        this.runInContext(ObjectInterface.class, impl, () ->
+        {
+            handler.onResume(impl);
+            
+            // store data
+            this.objects.put(type.getPluginName(), id, impl, true);
+            
+            // save data
+            this.objects.saveIdList(this.objectsFolder);
+        });
+        
+        final ObjectCreatedEvent createdEvent = new ObjectCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
     }
     
 }

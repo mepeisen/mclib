@@ -77,10 +77,12 @@ public class AbstractCompositeCommandHandlerTest
     private MessagesConfigInterface messages;
     /** library. */
     private MessageServiceInterface lib;
-
+    
     /**
      * Some setup.
-     * @throws ClassNotFoundException 
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on problems.
      */
     @Before
     public void setup() throws ClassNotFoundException
@@ -92,8 +94,10 @@ public class AbstractCompositeCommandHandlerTest
     }
     
     /**
-     * Tests pre method
-     * @throws McException 
+     * Tests pre method.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test(expected = McException.class)
     public void testPreFailed() throws McException
@@ -104,8 +108,10 @@ public class AbstractCompositeCommandHandlerTest
     }
     
     /**
-     * Tests usage sending on empty command
-     * @throws McException 
+     * Tests usage sending on empty command.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testSendsUsage() throws McException
@@ -119,8 +125,10 @@ public class AbstractCompositeCommandHandlerTest
     }
     
     /**
-     * Tests sending unknown sub command error
-     * @throws McException 
+     * Tests sending unknown sub command error.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testSendsUnknownSubCommand() throws McException
@@ -128,14 +136,16 @@ public class AbstractCompositeCommandHandlerTest
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final Player bukkitPlayer = mock(Player.class);
         
-        new DummyCommandHandler().handle(new Command(bukkitPlayer, player, null, null, new String[]{"unknown"})); //$NON-NLS-1$
+        new DummyCommandHandler().handle(new Command(bukkitPlayer, player, null, null, new String[] { "unknown" })); //$NON-NLS-1$
         
         verify(player, times(1)).sendMessage(CommonMessages.CompositeUnknownSubCommand, "path", "unknown"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     /**
-     * Tests invoking sub command
-     * @throws McException 
+     * Tests invoking sub command.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testInvokingSubCommand() throws McException
@@ -150,7 +160,7 @@ public class AbstractCompositeCommandHandlerTest
         // no twice injection
         assertFalse(handler.injectSubCommand("Sub", null)); //$NON-NLS-1$
         
-        doAnswer(new Answer<Void>(){
+        doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable
             {
@@ -160,14 +170,16 @@ public class AbstractCompositeCommandHandlerTest
             }
         }).when(subCommand).handle(anyObject());
         
-        handler.handle(new Command(bukkitPlayer, player, null, null, new String[]{"SUB", "FOO"})); //$NON-NLS-1$ //$NON-NLS-2$
+        handler.handle(new Command(bukkitPlayer, player, null, null, new String[] { "SUB", "FOO" })); //$NON-NLS-1$ //$NON-NLS-2$
         
         verify(player, times(1)).sendMessage(CommonMessages.CommandDisabled, "FOO"); //$NON-NLS-1$
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabComplete1() throws McException
@@ -179,14 +191,16 @@ public class AbstractCompositeCommandHandlerTest
         final DummyCommandHandler handler = new DummyCommandHandler();
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{}), ""); //$NON-NLS-1$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] {}), ""); //$NON-NLS-1$
         assertEquals(1, results.size());
         assertTrue(results.contains("sub")); //$NON-NLS-1$
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabComplete2() throws McException
@@ -199,15 +213,17 @@ public class AbstractCompositeCommandHandlerTest
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         assertTrue(handler.injectSubCommand("sub2", subCommand)); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{}), ""); //$NON-NLS-1$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] {}), ""); //$NON-NLS-1$
         assertEquals(2, results.size());
         assertTrue(results.contains("sub")); //$NON-NLS-1$
         assertTrue(results.contains("sub2")); //$NON-NLS-1$
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabComplete2b() throws McException
@@ -220,14 +236,16 @@ public class AbstractCompositeCommandHandlerTest
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         assertTrue(handler.injectSubCommand("foo", subCommand)); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{}), "f"); //$NON-NLS-1$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] {}), "f"); //$NON-NLS-1$
         assertEquals(1, results.size());
         assertTrue(results.contains("foo")); //$NON-NLS-1$
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabComplete2c() throws McException
@@ -240,13 +258,15 @@ public class AbstractCompositeCommandHandlerTest
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         assertTrue(handler.injectSubCommand("foo", subCommand)); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{}), "q"); //$NON-NLS-1$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] {}), "q"); //$NON-NLS-1$
         assertEquals(0, results.size());
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabCompleteUnknown() throws McException
@@ -259,13 +279,15 @@ public class AbstractCompositeCommandHandlerTest
         assertTrue(handler.injectSubCommand("sub", subCommand)); //$NON-NLS-1$
         assertTrue(handler.injectSubCommand("foo", subCommand)); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{"unknown"}), ""); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] { "unknown" }), ""); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(0, results.size());
     }
     
     /**
-     * Tests invoking on Tab complete
-     * @throws McException 
+     * Tests invoking on Tab complete.
+     * 
+     * @throws McException
+     *             thrown on problems.
      */
     @Test
     public void testOnTabCompleteKnown() throws McException
@@ -281,25 +303,25 @@ public class AbstractCompositeCommandHandlerTest
         
         when(subCommand.onTabComplete(anyObject(), anyString())).thenReturn(new ArrayList<>(Collections.singleton("bar"))); //$NON-NLS-1$
         
-        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[]{"sub"}), ""); //$NON-NLS-1$ //$NON-NLS-2$
+        final List<String> results = handler.onTabComplete(new Command(bukkitPlayer, player, null, null, new String[] { "sub" }), ""); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals(1, results.size());
         assertTrue(results.contains("bar")); //$NON-NLS-1$
     }
     
     /**
-     * dummy composite command
+     * dummy composite command.
      */
     private static final class DummyCommandHandler extends AbstractCompositeCommandHandler
     {
-
+        
         /**
-         * constructor
+         * constructor.
          */
         public DummyCommandHandler()
         {
             // empty
         }
-
+        
         @Override
         protected void sendUsage(CommandInterface command)
         {
@@ -309,28 +331,35 @@ public class AbstractCompositeCommandHandlerTest
     }
     
     /**
-     * Sample Command impl
+     * Sample Command impl.
      */
     private static final class Command implements CommandInterface
     {
         
-        /** sender */
-        private final CommandSender sender;
-        /** player */
-        private final McPlayerInterface player;
-        /** command */
+        /** sender. */
+        private final CommandSender              sender;
+        /** player. */
+        private final McPlayerInterface          player;
+        /** command. */
         private final org.bukkit.command.Command command;
-        /** label */
-        private final String label;
-        /** args */
-        private final String[] args;
-
+        /** label. */
+        private final String                     label;
+        /** args. */
+        private final String[]                   args;
+        
         /**
+         * Constructor.
+         * 
          * @param sender
+         *            command sender
          * @param player
+         *            target mclib player
          * @param command
+         *            bukkit command
          * @param label
+         *            command label
          * @param args
+         *            command arguments
          */
         public Command(CommandSender sender, McPlayerInterface player, org.bukkit.command.Command command, String label, String[] args)
         {
@@ -340,58 +369,58 @@ public class AbstractCompositeCommandHandlerTest
             this.label = label;
             this.args = args;
         }
-
+        
         @Override
         public CommandSender getSender()
         {
             return this.sender;
         }
-
+        
         @Override
         public McPlayerInterface getPlayer()
         {
             return this.player;
         }
-
+        
         @Override
         public org.bukkit.command.Command getCommand()
         {
             return this.command;
         }
-
+        
         @Override
         public String getLabel()
         {
             return this.label;
         }
-
+        
         @Override
         public String[] getArgs()
         {
             return this.args;
         }
-
+        
         @Override
         public CommandInterface consumeArgs(int count)
         {
             // dummy
             return new Command(this.sender, this.player, this.command, this.label, Arrays.copyOfRange(this.args, 1, this.args.length));
         }
-
+        
         @Override
         public String getCommandPath()
         {
             // dummy
             return "path"; //$NON-NLS-1$
         }
-
+        
         @Override
         public Locale getLocale()
         {
             // dummy
             return Locale.ENGLISH;
         }
-
+        
         @Override
         public McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException
         {
@@ -401,11 +430,11 @@ public class AbstractCompositeCommandHandlerTest
             }
             return new FalseStub<>(this);
         }
-
+        
         @Override
         public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
         {
-            return null;
+            return Optional.empty();
         }
         
     }

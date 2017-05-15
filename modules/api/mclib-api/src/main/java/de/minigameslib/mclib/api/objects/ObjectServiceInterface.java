@@ -412,6 +412,15 @@ public interface ObjectServiceInterface
     Collection<ComponentInterface> findComponents(ComponentTypeId... type);
     
     /**
+     * Find components within given cuboid.
+     * 
+     * @param cub
+     *            cuboid
+     * @return collection of components.
+     */
+    Collection<ComponentInterface> findComponents(Cuboid cub);
+    
+    /**
      * Creates a new component with given handler.
      * 
      * @param type
@@ -467,6 +476,15 @@ public interface ObjectServiceInterface
      * @return entities by type
      */
     Collection<EntityInterface> findEntities(EntityTypeId... type);
+    
+    /**
+     * Find entities within given cuboid.
+     * 
+     * @param cub
+     *            cuboid
+     * @return collection of entities.
+     */
+    Collection<EntityInterface> findEntities(Cuboid cub);
     
     /**
      * Creates a new entity with given handler.
@@ -564,6 +582,15 @@ public interface ObjectServiceInterface
      * @return signs by type.
      */
     Collection<SignInterface> findSigns(SignTypeId... type);
+    
+    /**
+     * Find signs within given cuboid.
+     * 
+     * @param cub
+     *            cuboid
+     * @return collection of signs.
+     */
+    Collection<SignInterface> findSigns(Cuboid cub);
     
     /**
      * Creates a new sign with given handler.

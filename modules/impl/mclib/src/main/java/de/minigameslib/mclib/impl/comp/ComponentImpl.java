@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,7 +42,6 @@ import de.minigameslib.mclib.api.mcevent.ComponentDeletedEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentRelocateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentRelocatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentHandlerInterface;
-import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.ComponentTypeId;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
@@ -50,6 +50,7 @@ import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Component implementation.
@@ -101,7 +102,7 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     }
     
     @Override
-    public ComponentIdInterface getComponentId()
+    public ComponentId getComponentId()
     {
         return this.id;
     }
@@ -239,6 +240,32 @@ public class ComponentImpl extends AbstractLocationComponent implements Componen
     public ComponentTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getComponentId());
+    }
+    
+    /**
+     * Copies configuration for storing in schemata.
+     * 
+     * @param lowloc
+     *            starting position of schemata part
+     * @return data section holding configuration needed for restoring the zone.
+     */
+    public DataSection copyAndSaveConfig(Location lowloc)
+    {
+        final DataSection result = new MemoryDataSection();
+        result.set("otype", "component"); //$NON-NLS-1$ //$NON-NLS-2$
+        result.set("tplugin", this.getTypeId().getPluginName()); //$NON-NLS-1$
+        result.set("tname", this.getTypeId().name()); //$NON-NLS-1$
+        result.set("x", this.getLocation().getBlockX() - lowloc.getBlockX()); //$NON-NLS-1$
+        result.set("y", this.getLocation().getBlockY() - lowloc.getBlockY()); //$NON-NLS-1$
+        result.set("z", this.getLocation().getBlockZ() - lowloc.getBlockZ()); //$NON-NLS-1$
+        if (this.config != null)
+        {
+            for (final Map.Entry<String, Object> entry : this.config.getValues(true).entrySet())
+            {
+                result.set("file." + entry.getKey(), entry.getValue()); //$NON-NLS-1$
+            }
+        }
+        return result;
     }
     
 }

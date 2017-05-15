@@ -24,9 +24,11 @@
 
 package de.minigameslib.mclib.nms.api;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -35,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
+import de.minigameslib.mclib.nms.api.ChunkDataImpl.TileEntityData;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
 /**
@@ -1276,5 +1279,43 @@ public interface ItemHelperInterface
      * @return config item stack
      */
     ConfigItemStackData fromConfigData(DataSection section);
+    
+    /**
+     * Returns a data snapshot of given chunk.
+     * 
+     * @param chunk
+     *            chunk to be stored
+     * @return data snapshot
+     */
+    ChunkDataImpl getChunkSnapshot(Chunk chunk);
+    
+    /**
+     * Returns the block mappings; the mappings are equal within the whole server.
+     * 
+     * @return block mappings (block name to numeric id)
+     */
+    Map<String, Integer> getBlockMappings();
+    
+    /**
+     * Load tile entities from given tile entity data.
+     * 
+     * @param loc
+     *            starting location.
+     * @param data
+     *            tile entity data.
+     */
+    void loadTileEntities(Location loc, List<TileEntityData> data);
+    
+    /**
+     * Sets blocks along z axis.
+     * 
+     * @param location
+     *            starting location.
+     * @param blockMappings
+     *            numeric block mappings
+     * @param blocks
+     *            block data
+     */
+    void setBlocks(Location location, Map<Integer, Integer> blockMappings, int[] blocks);
     
 }

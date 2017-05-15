@@ -26,9 +26,11 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -41,7 +43,6 @@ import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.EntityDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.EntityDeletedEvent;
 import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
-import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
@@ -50,6 +51,7 @@ import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Implementation of entities.
@@ -119,7 +121,7 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     }
     
     @Override
-    public EntityIdInterface getEntityId()
+    public EntityId getEntityId()
     {
         return this.id;
     }
@@ -333,6 +335,32 @@ public class EntityImpl extends AbstractComponent implements EntityInterface, Mg
     public DataSection getDynamicConfig()
     {
         return this.config.createSection("dynamic"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Copies configuration for storing in schemata.
+     * 
+     * @param lowloc
+     *            starting position of schemata part
+     * @return data section holding configuration needed for restoring the zone.
+     */
+    public DataSection copyAndSaveConfig(Location lowloc)
+    {
+        final DataSection result = new MemoryDataSection();
+        result.set("otype", "entity"); //$NON-NLS-1$ //$NON-NLS-2$
+        result.set("tplugin", this.getTypeId().getPluginName()); //$NON-NLS-1$
+        result.set("tname", this.getTypeId().name()); //$NON-NLS-1$
+        result.set("x", this.getBukkitEntity().getLocation().getBlockX() - lowloc.getBlockX()); //$NON-NLS-1$
+        result.set("y", this.getBukkitEntity().getLocation().getBlockY() - lowloc.getBlockY()); //$NON-NLS-1$
+        result.set("z", this.getBukkitEntity().getLocation().getBlockZ() - lowloc.getBlockZ()); //$NON-NLS-1$
+        if (this.config != null)
+        {
+            for (final Map.Entry<String, Object> entry : this.config.getValues(true).entrySet())
+            {
+                result.set("file." + entry.getKey(), entry.getValue()); //$NON-NLS-1$
+            }
+        }
+        return result;
     }
     
 }

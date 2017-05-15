@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.snakeyaml.DumperOptions.FlowStyle;
 import de.minigameslib.mclib.snakeyaml.Yaml;
 import de.minigameslib.mclib.snakeyaml.constructor.Construct;
@@ -66,6 +67,20 @@ public class YmlFile extends YmlCommentableSection
     public YmlFile()
     {
         this.yml.setSkipComments(false);
+    }
+    
+    /**
+     * Constructor to create a root section and copy from existing data
+     * 
+     * @param data
+     *            Data section to be copied.
+     */
+    public YmlFile(DataSection data)
+    {
+        for (final Map.Entry<String, Object> entry : data.getValues(true).entrySet())
+        {
+            this.set(entry.getKey(), entry.getValue());
+        }
     }
     
     /**

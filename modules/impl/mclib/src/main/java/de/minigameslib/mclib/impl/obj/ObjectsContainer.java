@@ -58,12 +58,7 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
  * @author mepeisen
  *
  */
-public class ObjectsContainer<
-    ID extends DataFragment,
-    IDIMPL extends ID,
-    COMP,
-    TYPE,
-    HANDLER>
+public class ObjectsContainer<ID extends DataFragment, IDIMPL extends ID, COMP, TYPE, HANDLER>
 {
     
     /** the components. */
@@ -127,6 +122,25 @@ public class ObjectsContainer<
             }
         }
         return this.components.remove(id);
+    }
+    
+    /**
+     * Checks if given object id is marked as a persistent object.
+     * 
+     * @param pluginName
+     *            owning plugin name
+     * @param id
+     *            object id to check
+     * @return {@code true} for persistent objects
+     */
+    public boolean isPersistent(String pluginName, IDIMPL id)
+    {
+        final Map<IDIMPL, Boolean> map = this.componentsByPlugin.get(pluginName);
+        if (map != null)
+        {
+            return map.get(id);
+        }
+        return false;
     }
     
     /**

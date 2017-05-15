@@ -24,11 +24,20 @@
 
 package de.minigames.mclib.nms.v18;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -36,6 +45,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -62,6 +72,8 @@ import de.minigames.mclib.nms.v18.items.CustomShovel;
 import de.minigames.mclib.nms.v18.items.CustomSword;
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
+import de.minigameslib.mclib.nms.api.ChunkDataImpl;
+import de.minigameslib.mclib.nms.api.ChunkDataImpl.TileEntityData;
 import de.minigameslib.mclib.nms.api.EnumFactory;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsDropRuleInterface;
@@ -76,9 +88,11 @@ import net.minecraft.server.v1_8_R1.Item;
 import net.minecraft.server.v1_8_R1.ItemArmor;
 import net.minecraft.server.v1_8_R1.ItemMultiTexture;
 import net.minecraft.server.v1_8_R1.MinecraftKey;
+import net.minecraft.server.v1_8_R1.NBTReadLimiter;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import net.minecraft.server.v1_8_R1.RecipesFurnace;
 import net.minecraft.server.v1_8_R1.RegistryID;
+import net.minecraft.server.v1_8_R1.TileEntity;
 import net.minecraft.server.v1_8_R1.WorldGenMinable;
 
 /**
@@ -1345,6 +1359,119 @@ public class ItemHelper1_8 implements ItemHelperInterface
         final ConfigItemStackData result = new ConfigItemStackDataImpl();
         result.read(section);
         return result;
+    }
+
+    @Override
+    public Map<String, Integer> getBlockMappings()
+    {
+        final Map<String, Integer> result = new HashMap<>();
+        for (final Object key : net.minecraft.server.v1_8_R1.Block.REGISTRY.keySet())
+        {
+            final String name = key.toString();
+            for (int i = 0; i < 16; i++)
+            {
+                final net.minecraft.server.v1_8_R1.Block block = (net.minecraft.server.v1_8_R1.Block) net.minecraft.server.v1_8_R1.Block.REGISTRY.get(key);
+                final int numid = net.minecraft.server.v1_8_R1.Block.REGISTRY.b(block);
+                result.put(name + ":" + i, numid << 4 | i); //$NON-NLS-1$
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ChunkDataImpl getChunkSnapshot(Chunk chunk)
+    {
+        // persist tiles
+        final List<TileEntityData> tiles = new ArrayList<>();
+        final net.minecraft.server.v1_8_R1.Chunk handle = ((CraftChunk)chunk).getHandle();
+        @SuppressWarnings("unchecked")
+        final Map<BlockPosition, TileEntity> origTiles = handle.getTileEntities();
+        for (final Map.Entry<BlockPosition, TileEntity> entry : origTiles.entrySet())
+        {
+            final NBTTagCompound tag = new NBTTagCompound();
+            entry.getValue().b(tag);
+            byte[] bindata = new byte[0];
+            
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final DataOutputStream dos = new DataOutputStream(baos);
+            try
+            {
+                final Method mth = NBTTagCompound.class.getDeclaredMethod("write", DataOutput.class); //$NON-NLS-1$
+                mth.setAccessible(true);
+                mth.invoke(tag, dos);
+                bindata = baos.toByteArray();
+            }
+            catch (Exception ex)
+            {
+                LOGGER.log(Level.WARNING, "Problems getting tile entity data", ex); //$NON-NLS-1$
+            }
+            
+            final TileEntityData data = new TileEntityData(bindata, tag.getString("id"), entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()); //$NON-NLS-1$
+            tiles.add(data);
+        }
+        
+        // persist item data
+        final int[][][] blockData = new int[8][][];
+        for (int x = 0; x < 8; x++)
+        {
+            blockData[x] = new int[256][];
+            for (int y = 0; y < 256; y++)
+            {
+                blockData[x][y] = new int[8];
+                for (int z = 0; z < 8; z++)
+                {
+                    final IBlockData data = handle.getBlockData(new BlockPosition(x, y, z));
+                    blockData[x][y][z] = net.minecraft.server.v1_8_R1.Block.d.b(data);
+                }
+            }
+        }
+        
+        final ChunkDataImpl result = new ChunkDataImpl(chunk.getX(), chunk.getZ(), tiles, blockData);
+        return result;
+    }
+
+    @Override
+    public void setBlocks(Location location, Map<Integer, Integer> blockMappings, int[] blocks)
+    {
+        for (int z = 0; z < blocks.length; z++)
+        {
+            final int targetId = blockMappings.get(blocks[z]);
+            final Location newLoc = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ() + z);
+            this.setBlockVariant(newLoc.getBlock(), targetId >> 4, targetId & 0xF);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void loadTileEntities(Location loc, List<TileEntityData> data)
+    {
+        for (final TileEntityData tiledata : data)
+        {
+            final Location newLoc = new Location(loc.getWorld(), loc.getBlockX() + tiledata.getXcoord(), loc.getBlockY() + tiledata.getYcoord(), loc.getBlockZ() + tiledata.getZcoord());
+
+            final NBTTagCompound tag = new NBTTagCompound();
+            final ByteArrayInputStream bais = new ByteArrayInputStream(tiledata.getData());
+            final DataInputStream dis = new DataInputStream(bais);
+
+            try
+            {
+                final Method mth = NBTTagCompound.class.getDeclaredMethod("load", DataInput.class, int.class, NBTReadLimiter.class); //$NON-NLS-1$
+                mth.setAccessible(true);
+                mth.invoke(tag, dis, 0, NBTReadLimiter.a);
+            }
+            catch (Exception ex)
+            {
+                LOGGER.log(Level.WARNING, "Problems setting tile entity tag data", ex); //$NON-NLS-1$
+            }
+            
+            tag.setInt("x", newLoc.getBlockX()); //$NON-NLS-1$
+            tag.setInt("y", newLoc.getBlockY()); //$NON-NLS-1$
+            tag.setInt("z", newLoc.getBlockZ()); //$NON-NLS-1$
+            
+            ((CraftChunk)newLoc.getChunk()).getHandle().tileEntities.put(
+                new BlockPosition(newLoc.getBlockX(), newLoc.getBlockY(), newLoc.getBlockZ()),
+                TileEntity.c(tag));
+        }
     }
     
 }

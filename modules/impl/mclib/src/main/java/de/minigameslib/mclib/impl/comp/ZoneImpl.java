@@ -26,8 +26,10 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 
@@ -51,6 +53,7 @@ import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Implementation of zones.
@@ -287,6 +290,35 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
     public ZoneTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getZoneId());
+    }
+    
+    /**
+     * Copies configuration for storing in schemata.
+     * 
+     * @param lowloc
+     *            starting position of schemata part
+     * @return data section holding configuration needed for restoring the zone.
+     */
+    public DataSection copyAndSaveConfig(Location lowloc)
+    {
+        final DataSection result = new MemoryDataSection();
+        result.set("otype", "zone"); //$NON-NLS-1$ //$NON-NLS-2$
+        result.set("tplugin", this.getTypeId().getPluginName()); //$NON-NLS-1$
+        result.set("tname", this.getTypeId().name()); //$NON-NLS-1$
+        result.set("x1", this.getCuboid().getLowLoc().getBlockX() - lowloc.getBlockX()); //$NON-NLS-1$
+        result.set("y1", this.getCuboid().getLowLoc().getBlockY() - lowloc.getBlockY()); //$NON-NLS-1$
+        result.set("z1", this.getCuboid().getLowLoc().getBlockZ() - lowloc.getBlockZ()); //$NON-NLS-1$
+        result.set("x2", this.getCuboid().getHighLoc().getBlockX() - lowloc.getBlockX()); //$NON-NLS-1$
+        result.set("y2", this.getCuboid().getHighLoc().getBlockY() - lowloc.getBlockY()); //$NON-NLS-1$
+        result.set("z2", this.getCuboid().getHighLoc().getBlockZ() - lowloc.getBlockZ()); //$NON-NLS-1$
+        if (this.config != null)
+        {
+            for (final Map.Entry<String, Object> entry : this.config.getValues(true).entrySet())
+            {
+                result.set("file." + entry.getKey(), entry.getValue()); //$NON-NLS-1$
+            }
+        }
+        return result;
     }
     
 }

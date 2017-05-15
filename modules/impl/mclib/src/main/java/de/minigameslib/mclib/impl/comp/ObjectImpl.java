@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -38,7 +39,6 @@ import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectDeleteEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectDeletedEvent;
 import de.minigameslib.mclib.api.objects.ObjectHandlerInterface;
-import de.minigameslib.mclib.api.objects.ObjectIdInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectTypeId;
@@ -47,6 +47,7 @@ import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Implementation of sbatract objects.
@@ -94,7 +95,7 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     }
     
     @Override
-    public ObjectIdInterface getObjectId()
+    public ObjectId getObjectId()
     {
         return this.id;
     }
@@ -217,6 +218,27 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
     public ObjectTypeId getTypeId()
     {
         return ObjectServiceInterface.instance().getType(this.getObjectId());
+    }
+    
+    /**
+     * Copies configuration for storing in schemata.
+     * 
+     * @return data section holding configuration needed for restoring the zone.
+     */
+    public DataSection copyAndSaveConfig()
+    {
+        final DataSection result = new MemoryDataSection();
+        result.set("otype", "object"); //$NON-NLS-1$ //$NON-NLS-2$
+        result.set("tplugin", this.getTypeId().getPluginName()); //$NON-NLS-1$
+        result.set("tname", this.getTypeId().name()); //$NON-NLS-1$
+        if (this.config != null)
+        {
+            for (final Map.Entry<String, Object> entry : this.config.getValues(true).entrySet())
+            {
+                result.set("file." + entry.getKey(), entry.getValue()); //$NON-NLS-1$
+            }
+        }
+        return result;
     }
     
 }
