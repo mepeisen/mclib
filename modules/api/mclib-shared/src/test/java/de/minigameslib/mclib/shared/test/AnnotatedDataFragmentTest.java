@@ -58,6 +58,7 @@ import de.minigameslib.mclib.shared.api.com.PersistentField;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 import de.minigameslib.mclib.shared.api.com.UniqueEnumerationValue;
 import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
+import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
  * Testing AnnotatedDataFragment.
@@ -66,6 +67,19 @@ import de.minigameslib.mclib.shared.api.com.VectorDataFragment;
  */
 public class AnnotatedDataFragmentTest
 {
+    
+    /**
+     * Test for code coverage.
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on errors
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testPrimTypeEnum() throws ClassNotFoundException
+    {
+        CommonTestUtil.testEnumClass((Class<? extends Enum<?>>) Class.forName("de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment$PrimitiveFieldType")); //$NON-NLS-1$
+    }
     
     /**
      * Simple test case.
@@ -235,7 +249,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedRefTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("data1.int2", 1);  //$NON-NLS-1$
+        data.set("data1.int2", 1); //$NON-NLS-1$
         assertTrue(new DataRef().test(data));
     }
     
@@ -246,7 +260,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedRefTypeTest2()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("data1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        data.set("data1.int2", "bar"); //$NON-NLS-1$//$NON-NLS-2$
         assertFalse(new DataRef().test(data));
     }
     
@@ -257,7 +271,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedPrimListTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("numbers.foo1", 1);  //$NON-NLS-1$
+        data.set("numbers.foo1", 1); //$NON-NLS-1$
         assertTrue(new DataPrimList().test(data));
     }
     
@@ -268,7 +282,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedPrimSetTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("numbers.foo1", 1);  //$NON-NLS-1$
+        data.set("numbers.foo1", 1); //$NON-NLS-1$
         assertTrue(new DataPrimSet().test(data));
     }
     
@@ -279,7 +293,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentListTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1.int2", 1);  //$NON-NLS-1$
+        data.set("refs.foo1.int2", 1); //$NON-NLS-1$
         assertTrue(new DataFragmentList().test(data));
     }
     
@@ -290,7 +304,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentListTypeTest2()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        data.set("refs.foo1.int2", "bar"); //$NON-NLS-1$//$NON-NLS-2$
         assertFalse(new DataFragmentList().test(data));
     }
     
@@ -301,7 +315,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentListTypeTest3()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1", 1);  //$NON-NLS-1$
+        data.set("refs.foo1", 1); //$NON-NLS-1$
         assertFalse(new DataFragmentList().test(data));
     }
     
@@ -312,7 +326,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentListTypeTest4()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs", 1);  //$NON-NLS-1$
+        data.set("refs", 1); //$NON-NLS-1$
         assertFalse(new DataFragmentList().test(data));
     }
     
@@ -323,7 +337,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentSetTypeTest1()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1.int2", 1);  //$NON-NLS-1$
+        data.set("refs.foo1.int2", 1); //$NON-NLS-1$
         assertTrue(new DataFragmentSet().test(data));
     }
     
@@ -334,7 +348,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentSetTypeTest2()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1.int2", "bar");  //$NON-NLS-1$//$NON-NLS-2$
+        data.set("refs.foo1.int2", "bar"); //$NON-NLS-1$//$NON-NLS-2$
         assertFalse(new DataFragmentSet().test(data));
     }
     
@@ -345,7 +359,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentSetTypeTest3()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs.foo1", 1);  //$NON-NLS-1$
+        data.set("refs.foo1", 1); //$NON-NLS-1$
         assertFalse(new DataFragmentSet().test(data));
     }
     
@@ -356,7 +370,7 @@ public class AnnotatedDataFragmentTest
     public void testNestedFragmentSetTypeTest4()
     {
         final MemoryDataSection data = new MemoryDataSection();
-        data.set("refs", 1);  //$NON-NLS-1$
+        data.set("refs", 1); //$NON-NLS-1$
         assertFalse(new DataFragmentSet().test(data));
     }
     
@@ -815,7 +829,7 @@ public class AnnotatedDataFragmentTest
         maps.map.put("BAR", 2); //$NON-NLS-1$
         maps.map.put("BAZ", 3); //$NON-NLS-1$
         data.set("foo", maps); //$NON-NLS-1$
-
+        
         assertTrue(data.isFragment(DataPrimMap.class, "foo")); //$NON-NLS-1$
         assertEquals(maps.map, data.getFragment(DataPrimMap.class, "foo").map); //$NON-NLS-1$
     }
@@ -838,7 +852,7 @@ public class AnnotatedDataFragmentTest
         src.map.put("BAR", UUID.randomUUID()); //$NON-NLS-1$
         src.map.put("BAZ", UUID.randomUUID()); //$NON-NLS-1$
         data.set("foo", src); //$NON-NLS-1$
-
+        
         assertTrue(data.isFragment(DataUuid.class, "foo")); //$NON-NLS-1$
         assertEquals(src, data.getFragment(DataUuid.class, "foo")); //$NON-NLS-1$
     }
@@ -946,7 +960,7 @@ public class AnnotatedDataFragmentTest
         enums.uniqueMap.put("foo3", UniqueEnum1a.Val3); //$NON-NLS-1$
         
         data.set("foo", enums); //$NON-NLS-1$
-
+        
         assertTrue(data.isFragment(DataEnums.class, "foo")); //$NON-NLS-1$
         assertEquals(enums, data.getFragment(DataEnums.class, "foo")); //$NON-NLS-1$
     }
@@ -981,19 +995,19 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public String str1;
+        public String      str1;
         
         /**
          * field.
          */
         @PersistentField
-        public int int2;
+        public int         int2;
         
         /**
          * field.
          */
         @PersistentField
-        public Integer int3;
+        public Integer     int3;
         
         /**
          * field.
@@ -1005,8 +1019,8 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public Set<Data3> set5 = new HashSet<>();
-
+        public Set<Data3>  set5 = new HashSet<>();
+        
         @Override
         public int hashCode()
         {
@@ -1019,7 +1033,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.set5 == null) ? 0 : this.set5.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -1098,20 +1112,20 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public String str1;
+        public String  str1;
         
         /**
          * field.
          */
         @PersistentField
-        public int int2;
+        public int     int2;
         
         /**
          * field.
          */
         @PersistentField
         public Integer int3;
-
+        
         @Override
         public int hashCode()
         {
@@ -1122,7 +1136,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.str1 == null) ? 0 : this.str1.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -1179,7 +1193,7 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public String str5;
-
+        
         @Override
         public int hashCode()
         {
@@ -1188,7 +1202,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.str5 == null) ? 0 : this.str5.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -1231,7 +1245,7 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         public Map<String, Data1> data1 = new HashMap<>();
-
+        
         @Override
         public int hashCode()
         {
@@ -1240,7 +1254,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.data1 == null) ? 0 : this.data1.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -1284,7 +1298,7 @@ public class AnnotatedDataFragmentTest
          */
         @PersistentField
         protected Data1 data1;
-
+        
         @Override
         public int hashCode()
         {
@@ -1293,7 +1307,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.data1 == null) ? 0 : this.data1.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -1334,6 +1348,7 @@ public class AnnotatedDataFragmentTest
         
         /**
          * Creates a test data value.
+         * 
          * @return test data value
          */
         public static AllData result()
@@ -1403,19 +1418,19 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public LocalTime time1;
+        public LocalTime     time1;
         
         /**
          * field.
          */
         @PersistentField
-        public LocalTime time2;
+        public LocalTime     time2;
         
         /**
          * field.
          */
         @PersistentField
-        public LocalTime timeNull;
+        public LocalTime     timeNull;
         
         // date
         
@@ -1423,19 +1438,19 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public LocalDate date1;
+        public LocalDate     date1;
         
         /**
          * field.
          */
         @PersistentField
-        public LocalDate date2;
+        public LocalDate     date2;
         
         /**
          * field.
          */
         @PersistentField
-        public LocalDate dateNull;
+        public LocalDate     dateNull;
         
         // boolean
         
@@ -1443,19 +1458,19 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public boolean btrue;
+        public boolean       btrue;
         
         /**
          * field.
          */
         @PersistentField
-        public boolean bfalse;
+        public boolean       bfalse;
         
         /**
          * field.
          */
         @PersistentField
-        public Boolean bnull;
+        public Boolean       bnull;
         
         // char
         
@@ -1463,25 +1478,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public char minChar;
+        public char          minChar;
         
         /**
          * field.
          */
         @PersistentField
-        public char maxChar;
+        public char          maxChar;
         
         /**
          * field.
          */
         @PersistentField
-        public char zeroChar;
+        public char          zeroChar;
         
         /**
          * field.
          */
         @PersistentField
-        public Character nullChar;
+        public Character     nullChar;
         
         // byte
         
@@ -1489,25 +1504,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public byte minByte;
+        public byte          minByte;
         
         /**
          * field.
          */
         @PersistentField
-        public byte maxByte;
+        public byte          maxByte;
         
         /**
          * field.
          */
         @PersistentField
-        public byte zeroByte;
+        public byte          zeroByte;
         
         /**
          * field.
          */
         @PersistentField
-        public Byte nullByte;
+        public Byte          nullByte;
         
         // short
         
@@ -1515,25 +1530,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public short minShort;
+        public short         minShort;
         
         /**
          * field.
          */
         @PersistentField
-        public short maxShort;
+        public short         maxShort;
         
         /**
          * field.
          */
         @PersistentField
-        public short zeroShort;
+        public short         zeroShort;
         
         /**
          * field.
          */
         @PersistentField
-        public Short nullShort;
+        public Short         nullShort;
         
         // int
         
@@ -1541,25 +1556,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public int minInt;
+        public int           minInt;
         
         /**
          * field.
          */
         @PersistentField
-        public int maxInt;
+        public int           maxInt;
         
         /**
          * field.
          */
         @PersistentField
-        public int zeroInt;
+        public int           zeroInt;
         
         /**
          * field.
          */
         @PersistentField
-        public Integer nullInt;
+        public Integer       nullInt;
         
         // long
         
@@ -1567,25 +1582,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public long minLong;
+        public long          minLong;
         
         /**
          * field.
          */
         @PersistentField
-        public long maxLong;
+        public long          maxLong;
         
         /**
          * field.
          */
         @PersistentField
-        public long zeroLong;
+        public long          zeroLong;
         
         /**
          * field.
          */
         @PersistentField
-        public Long nullLong;
+        public Long          nullLong;
         
         // double
         
@@ -1593,25 +1608,25 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public double minDouble;
+        public double        minDouble;
         
         /**
          * field.
          */
         @PersistentField
-        public double maxDouble;
+        public double        maxDouble;
         
         /**
          * field.
          */
         @PersistentField
-        public double zeroDouble;
+        public double        zeroDouble;
         
         /**
          * field.
          */
         @PersistentField
-        public Double nullDouble;
+        public Double        nullDouble;
         
         // float
         
@@ -1619,26 +1634,26 @@ public class AnnotatedDataFragmentTest
          * field.
          */
         @PersistentField
-        public float minFloat;
+        public float         minFloat;
         
         /**
          * field.
          */
         @PersistentField
-        public float maxFloat;
+        public float         maxFloat;
         
         /**
          * field.
          */
         @PersistentField
-        public float zeroFloat;
+        public float         zeroFloat;
         
         /**
          * field.
          */
         @PersistentField
-        public Float nullFloat;
-
+        public Float         nullFloat;
+        
         @Override
         public int hashCode()
         {
@@ -1690,7 +1705,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + this.zeroShort;
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -2295,26 +2310,26 @@ public class AnnotatedDataFragmentTest
          * number.
          */
         @PersistentField
-        public UUID uuid;
+        public UUID              uuid;
         
         /**
          * number.
          */
         @PersistentField
-        public List<UUID> list = new ArrayList<>();
+        public List<UUID>        list = new ArrayList<>();
         
         /**
          * number.
          */
         @PersistentField
-        public Set<UUID> set = new HashSet<>();
+        public Set<UUID>         set  = new HashSet<>();
         
         /**
          * number.
          */
         @PersistentField
-        public Map<String, UUID> map = new HashMap<>();
-
+        public Map<String, UUID> map  = new HashMap<>();
+        
         @Override
         public int hashCode()
         {
@@ -2326,7 +2341,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.uuid == null) ? 0 : this.uuid.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -2416,74 +2431,74 @@ public class AnnotatedDataFragmentTest
          * enum.
          */
         @PersistentField
-        public UniqueEnumInterface1 unique;
+        public UniqueEnumInterface1                 unique;
         
         /**
          * enum.
          */
         @PersistentField
-        public NonUniqueEnumInterface1 nonUnique;
+        public NonUniqueEnumInterface1              nonUnique;
         
         /**
          * enum.
          */
         @PersistentField
-        public Enum1 enum1;
+        public Enum1                                enum1;
         
         /**
          * enum.
          */
         @PersistentField
-        public List<UniqueEnumInterface1> uniqueList = new ArrayList<>();
+        public List<UniqueEnumInterface1>           uniqueList    = new ArrayList<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public List<NonUniqueEnumInterface1> nonUniqueList = new ArrayList<>();
+        public List<NonUniqueEnumInterface1>        nonUniqueList = new ArrayList<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public List<Enum1> enum1List = new ArrayList<>();
+        public List<Enum1>                          enum1List     = new ArrayList<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Set<UniqueEnumInterface1> uniqueSet = new HashSet<>();
+        public Set<UniqueEnumInterface1>            uniqueSet     = new HashSet<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Set<NonUniqueEnumInterface1> nonUniqueSet = new HashSet<>();
+        public Set<NonUniqueEnumInterface1>         nonUniqueSet  = new HashSet<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Set<Enum1> enum1Set = new HashSet<>();
+        public Set<Enum1>                           enum1Set      = new HashSet<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Map<String, UniqueEnumInterface1> uniqueMap = new HashMap<>();
+        public Map<String, UniqueEnumInterface1>    uniqueMap     = new HashMap<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Map<String, NonUniqueEnumInterface1> nonUniqueMap = new HashMap<>();
+        public Map<String, NonUniqueEnumInterface1> nonUniqueMap  = new HashMap<>();
         
         /**
          * enum.
          */
         @PersistentField
-        public Map<String, Enum1> enum1Map = new HashMap<>();
-
+        public Map<String, Enum1>                   enum1Map      = new HashMap<>();
+        
         @Override
         public int hashCode()
         {
@@ -2503,7 +2518,7 @@ public class AnnotatedDataFragmentTest
             result = prime * result + ((this.uniqueSet == null) ? 0 : this.uniqueSet.hashCode());
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {
@@ -2677,7 +2692,7 @@ public class AnnotatedDataFragmentTest
         Val2,
         /** value 3. */
         Val3;
-
+        
         @Override
         public String getPluginName()
         {

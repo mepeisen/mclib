@@ -59,9 +59,8 @@ import de.minigameslib.mclib.api.util.function.McPredicate;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
-
 /**
- * test case for {@link McPlayerInterface}
+ * test case for {@link McPlayerInterface}.
  * 
  * @author mepeisen
  */
@@ -69,7 +68,7 @@ public class McPlayerInterfaceTest
 {
     
     /**
-     * Tests {@link McPlayerInterface#isInZone()}
+     * Tests {@link McPlayerInterface#isInZone()}.
      * 
      * @throws McException
      *             thrown on errors
@@ -84,7 +83,7 @@ public class McPlayerInterfaceTest
     }
     
     /**
-     * Tests {@link McPlayerInterface#isInZone()}
+     * Tests {@link McPlayerInterface#isInZone()}.
      * 
      * @throws McException
      *             thrown on errors
@@ -100,7 +99,7 @@ public class McPlayerInterfaceTest
     // *****
     
     /**
-     * Tests {@link McPlayerInterface#isOnline()}
+     * Tests {@link McPlayerInterface#isOnline()}.
      * 
      * @throws McException
      *             thrown on errors
@@ -115,7 +114,7 @@ public class McPlayerInterfaceTest
     }
     
     /**
-     * Tests {@link McPlayerInterface#isOnline()}
+     * Tests {@link McPlayerInterface#isOnline()}.
      * 
      * @throws McException
      *             thrown on errors
@@ -129,256 +128,260 @@ public class McPlayerInterfaceTest
     }
     
     /**
-     * Dummy player for testing
+     * Dummy player for testing.
      */
     private class DummyPlayer implements McPlayerInterface
     {
-
+        
         /** the bukkit player. */
-        private Player player;
+        private Player        player;
         /** zone. */
         private ZoneInterface zone;
-
+        
         /**
+         * Constructor.
+         * 
          * @param player
-         * @param zone 
+         *            player
+         * @param zone
+         *            zone
          */
         public DummyPlayer(Player player, ZoneInterface zone)
         {
             this.player = player;
             this.zone = zone;
         }
-
+        
         @Override
         public Player getBukkitPlayer()
         {
             return this.player;
         }
-
+        
         @Override
         public String getName()
         {
             return null;
         }
-
+        
         @Override
         public OfflinePlayer getOfflinePlayer()
         {
             return null;
         }
-
+        
         @Override
         public UUID getPlayerUUID()
         {
             return null;
         }
-
+        
         @Override
         public void sendMessage(LocalizedMessageInterface msg, Serializable... args)
         {
             // empty
         }
-
+        
         @Override
         public Locale getPreferredLocale()
         {
             return null;
         }
-
+        
         @Override
         public void setPreferredLocale(Locale locale) throws McException
         {
             // empty
         }
-
+        
         @Override
         public boolean checkPermission(PermissionsInterface perm)
         {
             return false;
         }
-
+        
         @Override
         public McStorage getContextStorage()
         {
             return null;
         }
-
+        
         @Override
         public McStorage getSessionStorage()
         {
             return null;
         }
-
+        
         @Override
         public McStorage getPersistentStorage()
         {
             return null;
         }
-
+        
         @Override
         public GuiSessionInterface getGuiSession()
         {
             return null;
         }
-
+        
         @Override
         public GuiSessionInterface openClickGui(ClickGuiInterface gui) throws McException
         {
             return null;
         }
-
+        
         @Override
         public GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException
         {
             return null;
         }
-
-        @Override
-        public ZoneInterface getZone()
-        {
-            return this.zone;
-        }
-
-        @Override
-        public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
-        {
-            return null;
-        }
-
-        @Override
-        public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
-        {
-            return null;
-        }
-
-        @Override
-        public boolean hasSmartGui()
-        {
-            return false;
-        }
-
-        @Override
-        public GuiSessionInterface openSmartGui() throws McException
-        {
-            return null;
-        }
-
-        @Override
-        public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
-        {
-            // empty
-        }
-
-        @Override
-        public String getDisplayName()
-        {
-            return null;
-        }
-
-        @Override
-        public void read(DataSection section)
-        {
-            // empty
-        }
-
-        @Override
-        public void write(DataSection section)
-        {
-            // empty
-        }
-
-        @Override
-        public boolean test(DataSection section)
-        {
-            return false;
-        }
-
-        @Override
-        public void sendRaw(RawMessageInterface raw) throws McException
-        {
-            // empty
-        }
-
-        @Override
-        public boolean isInsideZone(ZoneInterface z)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isInsideRandomZone(ZoneInterface... z)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isInsideAllZones(ZoneInterface... z)
-        {
-            return false;
-        }
-
+        
         @Override
         public ZoneInterface getZone(ZoneTypeId... type)
         {
             return null;
         }
-
+        
+        @Override
+        public ZoneInterface getZone()
+        {
+            return this.zone;
+        }
+        
+        @Override
+        public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
+        {
+            return null;
+        }
+        
+        @Override
+        public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
+        {
+            return null;
+        }
+        
+        @Override
+        public boolean hasSmartGui()
+        {
+            return false;
+        }
+        
+        @Override
+        public GuiSessionInterface openSmartGui() throws McException
+        {
+            return null;
+        }
+        
+        @Override
+        public void sendToClient(CommunicationEndpointId endpoint, DataSection... data)
+        {
+            // empty
+        }
+        
+        @Override
+        public String getDisplayName()
+        {
+            return null;
+        }
+        
+        @Override
+        public void read(DataSection section)
+        {
+            // empty
+        }
+        
+        @Override
+        public void write(DataSection section)
+        {
+            // empty
+        }
+        
+        @Override
+        public boolean test(DataSection section)
+        {
+            return false;
+        }
+        
+        @Override
+        public void sendRaw(RawMessageInterface raw) throws McException
+        {
+            // empty
+        }
+        
+        @Override
+        public boolean isInsideZone(ZoneInterface z)
+        {
+            return false;
+        }
+        
+        @Override
+        public boolean isInsideRandomZone(ZoneInterface... z)
+        {
+            return false;
+        }
+        
         @Override
         public boolean isInsideRandomZone(ZoneTypeId... type)
         {
             return false;
         }
-
+        
+        @Override
+        public boolean isInsideAllZones(ZoneInterface... z)
+        {
+            return false;
+        }
+        
         @Override
         public Collection<ZoneInterface> getZones()
         {
             return Collections.emptyList();
         }
-
+        
         @Override
         public Collection<ZoneInterface> getZones(ZoneTypeId... type)
         {
             return Collections.emptyList();
         }
-
+        
         @Override
-        public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+        public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
         {
             // empty
         }
-
+        
         @Override
         public void registerHandlers(Plugin plugin, McListener listener)
         {
             // empty
         }
-
+        
         @Override
-        public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+        public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
         {
             // empty
         }
-
+        
         @Override
         public void unregisterHandlers(Plugin plugin, McListener listener)
         {
             // empty
         }
-
+        
         @Override
         public ClientInterface getClient()
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public GuiSessionInterface nestClickGui(ClickGuiInterface gui) throws McException
         {
             // empty
             return null;
         }
-
+        
         @Override
         public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
         {

@@ -34,7 +34,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McIntUnaryOperator;
 
 /**
- * Tests case for {@link McIntUnaryOperator}
+ * Tests case for {@link McIntUnaryOperator}.
  * 
  * @author mepeisen
  */
@@ -52,7 +52,11 @@ public class McIntUnaryOperatorTest
     {
         final AtomicInteger result1 = new AtomicInteger(0);
         final McIntUnaryOperator func = (l) -> l * 2;
-        final McIntUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McIntUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.compose(func2).applyAsInt(4));
         assertEquals(4, result1.get());
@@ -69,7 +73,11 @@ public class McIntUnaryOperatorTest
     {
         final AtomicInteger result1 = new AtomicInteger(0);
         final McIntUnaryOperator func = (l) -> l * 2;
-        final McIntUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McIntUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.andThen(func2).applyAsInt(4));
         assertEquals(8, result1.get());

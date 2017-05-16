@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * test case for {@link MessageSeverityType}
+ * test case for {@link MessageSeverityType}.
  * 
  * @author mepeisen
  */

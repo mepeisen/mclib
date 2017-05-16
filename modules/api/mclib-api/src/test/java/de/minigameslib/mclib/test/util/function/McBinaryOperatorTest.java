@@ -32,7 +32,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McBinaryOperator;
 
 /**
- * Tests case for {@link McBinaryOperator}
+ * Tests case for {@link McBinaryOperator}.
  * 
  * @author mepeisen
  */

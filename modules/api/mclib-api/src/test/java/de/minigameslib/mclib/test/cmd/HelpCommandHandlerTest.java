@@ -62,7 +62,7 @@ import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 
 /**
- * Test case for {@link HelpCommandHandler}
+ * Test case for {@link HelpCommandHandler}.
  * 
  * @author mepeisen
  */
@@ -72,13 +72,15 @@ public class HelpCommandHandlerTest
     /** msg services. */
     private MessageServiceInterface msgService;
     /** api services. */
-    private McLibInterface lib;
+    private McLibInterface          lib;
     /** messages interface. */
     private MessagesConfigInterface messages;
     
     /**
      * Tests the tab complete.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testTabComplete() throws McException
@@ -87,19 +89,21 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] {}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
+        
         final List<String> completions = help.onTabComplete(cmd, ""); //$NON-NLS-1$
         assertEquals(25, completions.size());
         for (int i = 0; i < 25; i++)
         {
-            assertTrue(completions.contains("sub" + (i+1))); //$NON-NLS-1$
+            assertTrue(completions.contains("sub" + (i + 1))); //$NON-NLS-1$
         }
     }
     
     /**
      * Tests the tab complete.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testTabComplete2() throws McException
@@ -108,19 +112,21 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] {}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
+        
         final List<String> completions = help.onTabComplete(cmd, "sub"); //$NON-NLS-1$
         assertEquals(25, completions.size());
         for (int i = 0; i < 25; i++)
         {
-            assertTrue(completions.contains("sub" + (i+1))); //$NON-NLS-1$
+            assertTrue(completions.contains("sub" + (i + 1))); //$NON-NLS-1$
         }
     }
     
     /**
      * Tests the tab complete.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testTabComplete3() throws McException
@@ -129,20 +135,22 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] {}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
+        
         final List<String> completions = help.onTabComplete(cmd, "sub2"); //$NON-NLS-1$
         assertEquals(7, completions.size());
         assertTrue(completions.contains("sub2")); //$NON-NLS-1$
         for (int i = 19; i < 25; i++)
         {
-            assertTrue(completions.contains("sub" + (i+1))); //$NON-NLS-1$
+            assertTrue(completions.contains("sub" + (i + 1))); //$NON-NLS-1$
         }
     }
     
     /**
      * Tests the help command.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsHelpForSubCommand() throws McException
@@ -151,18 +159,18 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"sub1"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-//        doAnswer(new Answer<Void>(){
-//
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable
-//            {
-//                System.out.println(invocation.getArgumentAt(0, String.class));
-//                return null;
-//            }
-//            
-//        }).when(sender).sendMessage(anyString());
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "sub1" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        // doAnswer(new Answer<Void>(){
+        //
+        // @Override
+        // public Void answer(InvocationOnMock invocation) throws Throwable
+        // {
+        // System.out.println(invocation.getArgumentAt(0, String.class));
+        // return null;
+        // }
+        //
+        // }).when(sender).sendMessage(anyString());
         
         help.handle(cmd);
         
@@ -177,7 +185,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command list.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsCommandList() throws McException
@@ -186,18 +196,18 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
-
-//        doAnswer(new Answer<Void>(){
-//
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable
-//            {
-//                System.out.println(invocation.getArgumentAt(0, String.class));
-//                return null;
-//            }
-//            
-//        }).when(sender).sendMessage(anyString());
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] {}, "help"); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        // doAnswer(new Answer<Void>(){
+        //
+        // @Override
+        // public Void answer(InvocationOnMock invocation) throws Throwable
+        // {
+        // System.out.println(invocation.getArgumentAt(0, String.class));
+        // return null;
+        // }
+        //
+        // }).when(sender).sendMessage(anyString());
         
         help.handle(cmd);
         
@@ -218,7 +228,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command list.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsCommandListPage2() throws McException
@@ -227,18 +239,18 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"2"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-//        doAnswer(new Answer<Void>(){
-//
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable
-//            {
-//                System.out.println(invocation.getArgumentAt(0, String.class));
-//                return null;
-//            }
-//            
-//        }).when(sender).sendMessage(anyString());
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "2" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        // doAnswer(new Answer<Void>(){
+        //
+        // @Override
+        // public Void answer(InvocationOnMock invocation) throws Throwable
+        // {
+        // System.out.println(invocation.getArgumentAt(0, String.class));
+        // return null;
+        // }
+        //
+        // }).when(sender).sendMessage(anyString());
         
         help.handle(cmd);
         
@@ -259,7 +271,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command list.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsCommandListPage3() throws McException
@@ -268,18 +282,18 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"3"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-//        doAnswer(new Answer<Void>(){
-//
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable
-//            {
-//                System.out.println(invocation.getArgumentAt(0, String.class));
-//                return null;
-//            }
-//            
-//        }).when(sender).sendMessage(anyString());
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "3" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        // doAnswer(new Answer<Void>(){
+        //
+        // @Override
+        // public Void answer(InvocationOnMock invocation) throws Throwable
+        // {
+        // System.out.println(invocation.getArgumentAt(0, String.class));
+        // return null;
+        // }
+        //
+        // }).when(sender).sendMessage(anyString());
         
         help.handle(cmd);
         
@@ -295,7 +309,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsHelpForSubCommandSecondPage() throws McException
@@ -304,18 +320,18 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"sub1", "2"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "sub1", "2" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         
-//        doAnswer(new Answer<Void>(){
-//
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable
-//            {
-//                System.out.println(invocation.getArgumentAt(0, String.class));
-//                return null;
-//            }
-//            
-//        }).when(sender).sendMessage(anyString());
+        // doAnswer(new Answer<Void>(){
+        //
+        // @Override
+        // public Void answer(InvocationOnMock invocation) throws Throwable
+        // {
+        // System.out.println(invocation.getArgumentAt(0, String.class));
+        // return null;
+        // }
+        //
+        // }).when(sender).sendMessage(anyString());
         
         help.handle(cmd);
         
@@ -330,7 +346,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsHelpForUnknownCommand() throws McException
@@ -339,7 +357,7 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"unknown"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "unknown" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         help.handle(cmd);
         
@@ -348,7 +366,9 @@ public class HelpCommandHandlerTest
     
     /**
      * Tests the help command.
-     * @throws McException 
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testReturnsHelpForInvisibleCommand() throws McException
@@ -357,15 +377,16 @@ public class HelpCommandHandlerTest
         
         final CommandSender sender = mock(CommandSender.class);
         final Command command = mock(Command.class);
-        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[]{"invis1"}, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final CommandInterface cmd = new CommandImpl(sender, command, "help", new String[] { "invis1" }, "help"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         help.handle(cmd);
         
         verify(sender, times(1)).sendMessage("§4Unknown command §9help invis1"); //$NON-NLS-1$
     }
-
+    
     /**
      * Generate help command
+     * 
      * @return help command.
      */
     private HelpCommandHandler genHelp()
@@ -390,8 +411,10 @@ public class HelpCommandHandlerTest
     }
     
     /**
-     * Init test case
+     * Init test case.
+     * 
      * @throws ClassNotFoundException
+     *             thrown on errors
      */
     @Before
     public void init() throws ClassNotFoundException
@@ -401,7 +424,7 @@ public class HelpCommandHandlerTest
         this.messages = mock(MessagesConfigInterface.class);
         when(this.msgService.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
         when(this.messages.getStringList(any(Locale.class), anyString(), any())).thenAnswer(new Answer<String[]>() {
-
+            
             @Override
             public String[] answer(InvocationOnMock invocation) throws Throwable
             {
@@ -409,7 +432,7 @@ public class HelpCommandHandlerTest
             }
         });
         when(this.messages.getString(any(Locale.class), anyString(), anyString())).thenAnswer(new Answer<String>() {
-
+            
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable
             {
@@ -423,19 +446,19 @@ public class HelpCommandHandlerTest
     }
     
     /**
-     * Dummy helper
+     * Dummy helper.
      */
     private static final class DummyComposite extends AbstractCompositeCommandHandler
     {
-
+        
         /**
-         * Constructor
+         * Constructor.
          */
         public DummyComposite()
         {
             // empty
         }
-
+        
         @Override
         protected void sendUsage(CommandInterface command)
         {
@@ -445,7 +468,8 @@ public class HelpCommandHandlerTest
     }
     
     /**
-     * Messages helper
+     * Messages helper.
+     * 
      * @author mepeisen
      */
     @LocalizedMessages(value = "test")

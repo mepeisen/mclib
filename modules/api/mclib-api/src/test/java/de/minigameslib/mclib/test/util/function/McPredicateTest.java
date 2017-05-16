@@ -33,7 +33,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 
 /**
- * Tests case for {@link McPredicate}
+ * Tests case for {@link McPredicate}.
  * 
  * @author mepeisen
  */

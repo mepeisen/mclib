@@ -84,7 +84,7 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
      * 
      * @return the oldLocation
      */
-    public Location getOldCuboid()
+    public Location getOldLocation()
     {
         return this.oldLocation;
     }
@@ -94,7 +94,7 @@ public class ComponentRelocatedEvent extends Event implements MinecraftEvent<Com
      * 
      * @return the newLocation
      */
-    public Location getNewCuboid()
+    public Location getNewLocation()
     {
         return this.newLocation;
     }

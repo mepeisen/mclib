@@ -107,9 +107,8 @@ import de.minigameslib.mclib.shared.api.com.PlayerData;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
 import de.minigameslib.mclib.shared.api.com.VectorData;
 
-
 /**
- * test case for {@link ConfigurationValueInterface}
+ * test case for {@link ConfigurationValueInterface}.
  * 
  * @author mepeisen
  */
@@ -117,19 +116,21 @@ public class ConfigurationValueInterfaceTest
 {
     
     /** the config mock. */
-    private ConfigInterface config;
+    private ConfigInterface        config;
     /** mocked config file. */
-    private MemoryDataSection file;
+    private MemoryDataSection      file;
     /** server. */
-    private Server server;
+    private Server                 server;
     /** library. */
     private ConfigServiceInterface lib;
     /** objects. */
     private ObjectServiceInterface objsrv;
-
+    
     /**
      * Some setup.
-     * @throws ClassNotFoundException thrown on problems
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on problems
      */
     @Before
     public void setup() throws ClassNotFoundException
@@ -140,8 +141,7 @@ public class ConfigurationValueInterfaceTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
         this.objsrv = mock(ObjectServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.objects.ObjectServiceCache"), "SERVICES", this.objsrv); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>()
-        {
+        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable
             {
@@ -172,7 +172,9 @@ public class ConfigurationValueInterfaceTest
     
     /**
      * Invoke constructor for code coverage.
-     * @throws Exception thrown on exceptions
+     * 
+     * @throws Exception
+     *             thrown on exceptions
      */
     @Test
     public void constructorTest() throws Exception
@@ -183,7 +185,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests {@link ConfigurationValueInterface#isset()}
+     * Tests {@link ConfigurationValueInterface#isset()}.
      */
     @Test
     public void issetTest()
@@ -201,7 +203,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests {@link ConfigurationValueInterface#isset()}
+     * Tests {@link ConfigurationValueInterface#isset()}.
      */
     @Test(expected = IllegalStateException.class)
     public void issetTestInvalie()
@@ -210,7 +212,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests {@link ConfigurationValueInterface#path()}
+     * Tests {@link ConfigurationValueInterface#path()}.
      */
     @Test(expected = IllegalStateException.class)
     public void pathTestInvalid()
@@ -219,7 +221,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests isxxx methods
+     * Tests isxxx methods.
      */
     @Test
     public void isxxxTestInvalid()
@@ -228,7 +230,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests for setters and getters
+     * Tests for setters and getters.
      */
     @Test
     public void getsetTest()
@@ -249,14 +251,14 @@ public class ConfigurationValueInterfaceTest
             assertEquals(true, TestOptions.SomeBooleanTrue.getBoolean());
             assertEquals(false, TestOptions.SomeBooleanFalse.getBoolean());
             assertEquals(false, TestOptions.SomeOtherBoolean.getBoolean());
-            assertArrayEquals(new boolean[]{true}, TestOptions.SomeBooleanList.getBooleanList());
-            assertArrayEquals(new boolean[]{}, TestOptions.SomeOtherBooleanList.getBooleanList());
+            assertArrayEquals(new boolean[] { true }, TestOptions.SomeBooleanList.getBooleanList());
+            assertArrayEquals(new boolean[] {}, TestOptions.SomeOtherBooleanList.getBooleanList());
             
             TestOptions.SomeBooleanTrue.setBoolean(false);
             TestOptions.SomeBooleanFalse.setBoolean(true);
             TestOptions.SomeOtherBoolean.setBoolean(false);
-            TestOptions.SomeBooleanList.setBooleanList(new boolean[]{false, false});
-            TestOptions.SomeOtherBooleanList.setBooleanList(new boolean[]{false, false});
+            TestOptions.SomeBooleanList.setBooleanList(new boolean[] { false, false });
+            TestOptions.SomeOtherBooleanList.setBooleanList(new boolean[] { false, false });
             
             assertEquals(Boolean.FALSE, this.file.get(TestOptions.SomeBooleanTrue.path()));
             assertEquals(Boolean.TRUE, this.file.get(TestOptions.SomeBooleanFalse.path()));
@@ -267,21 +269,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(false, TestOptions.SomeBooleanTrue.getBoolean());
             assertEquals(true, TestOptions.SomeBooleanFalse.getBoolean());
             assertEquals(false, TestOptions.SomeOtherBoolean.getBoolean());
-            assertArrayEquals(new boolean[]{false, false}, TestOptions.SomeBooleanList.getBooleanList());
-            assertArrayEquals(new boolean[]{false, false}, TestOptions.SomeOtherBooleanList.getBooleanList());
+            assertArrayEquals(new boolean[] { false, false }, TestOptions.SomeBooleanList.getBooleanList());
+            assertArrayEquals(new boolean[] { false, false }, TestOptions.SomeOtherBooleanList.getBooleanList());
             
             // byte
             assertEquals(1, TestOptions.SomeByte1.getByte());
             assertEquals(2, TestOptions.SomeByte2.getByte());
             assertEquals(0, TestOptions.SomeOtherByte.getByte());
-            assertArrayEquals(new byte[]{1, 2}, TestOptions.SomeByteList.getByteList());
-            assertArrayEquals(new byte[]{}, TestOptions.SomeOtherByteList.getByteList());
+            assertArrayEquals(new byte[] { 1, 2 }, TestOptions.SomeByteList.getByteList());
+            assertArrayEquals(new byte[] {}, TestOptions.SomeOtherByteList.getByteList());
             
             TestOptions.SomeByte1.setByte((byte) 2);
             TestOptions.SomeByte2.setByte((byte) 3);
             TestOptions.SomeOtherByte.setByte((byte) 4);
-            TestOptions.SomeByteList.setByteList(new byte[]{(byte) 5, (byte) 6});
-            TestOptions.SomeOtherByteList.setByteList(new byte[]{(byte) 5, (byte) 6});
+            TestOptions.SomeByteList.setByteList(new byte[] { (byte) 5, (byte) 6 });
+            TestOptions.SomeOtherByteList.setByteList(new byte[] { (byte) 5, (byte) 6 });
             
             assertEquals(Byte.valueOf((byte) 2), this.file.get(TestOptions.SomeByte1.path()));
             assertEquals(Byte.valueOf((byte) 3), this.file.get(TestOptions.SomeByte2.path()));
@@ -292,21 +294,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(2, TestOptions.SomeByte1.getByte());
             assertEquals(3, TestOptions.SomeByte2.getByte());
             assertEquals(4, TestOptions.SomeOtherByte.getByte());
-            assertArrayEquals(new byte[]{5, 6}, TestOptions.SomeByteList.getByteList());
-            assertArrayEquals(new byte[]{5, 6}, TestOptions.SomeOtherByteList.getByteList());
+            assertArrayEquals(new byte[] { 5, 6 }, TestOptions.SomeByteList.getByteList());
+            assertArrayEquals(new byte[] { 5, 6 }, TestOptions.SomeOtherByteList.getByteList());
             
             // char
             assertEquals('a', TestOptions.SomeCharacterA.getCharacter());
             assertEquals('b', TestOptions.SomeCharacterB.getCharacter());
             assertEquals(' ', TestOptions.SomeOtherCharacter.getCharacter());
-            assertArrayEquals(new char[]{'a', 'b'}, TestOptions.SomeCharacterList.getCharacterList());
-            assertArrayEquals(new char[]{}, TestOptions.SomeOtherCharacterList.getCharacterList());
+            assertArrayEquals(new char[] { 'a', 'b' }, TestOptions.SomeCharacterList.getCharacterList());
+            assertArrayEquals(new char[] {}, TestOptions.SomeOtherCharacterList.getCharacterList());
             
             TestOptions.SomeCharacterA.setCharacter('d');
             TestOptions.SomeCharacterB.setCharacter('e');
             TestOptions.SomeOtherCharacter.setCharacter('f');
-            TestOptions.SomeCharacterList.setCharacterList(new char[]{'q', 'w'});
-            TestOptions.SomeOtherCharacterList.setCharacterList(new char[]{'e', 'r'});
+            TestOptions.SomeCharacterList.setCharacterList(new char[] { 'q', 'w' });
+            TestOptions.SomeOtherCharacterList.setCharacterList(new char[] { 'e', 'r' });
             
             assertEquals("d", this.file.get(TestOptions.SomeCharacterA.path())); //$NON-NLS-1$
             assertEquals("e", this.file.get(TestOptions.SomeCharacterB.path())); //$NON-NLS-1$
@@ -317,21 +319,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals('d', TestOptions.SomeCharacterA.getCharacter());
             assertEquals('e', TestOptions.SomeCharacterB.getCharacter());
             assertEquals('f', TestOptions.SomeOtherCharacter.getCharacter());
-            assertArrayEquals(new char[]{'q', 'w'}, TestOptions.SomeCharacterList.getCharacterList());
-            assertArrayEquals(new char[]{'e', 'r'}, TestOptions.SomeOtherCharacterList.getCharacterList());
+            assertArrayEquals(new char[] { 'q', 'w' }, TestOptions.SomeCharacterList.getCharacterList());
+            assertArrayEquals(new char[] { 'e', 'r' }, TestOptions.SomeOtherCharacterList.getCharacterList());
             
             // color
             assertEquals(ConfigColorData.fromBukkitColor(Color.fromRGB(0x102030)), TestOptions.SomeColorA.getColor());
             assertEquals(ConfigColorData.fromBukkitColor(Color.fromRGB(0x203040)), TestOptions.SomeColorB.getColor());
             assertEquals(ConfigColorData.fromBukkitColor(Color.fromRGB(0)), TestOptions.SomeOtherColor.getColor());
-            assertArrayEquals(new ConfigColorData[]{}, TestOptions.SomeColorList.getColorList());
-            assertArrayEquals(new ConfigColorData[]{}, TestOptions.SomeOtherColorList.getColorList());
+            assertArrayEquals(new ConfigColorData[] {}, TestOptions.SomeColorList.getColorList());
+            assertArrayEquals(new ConfigColorData[] {}, TestOptions.SomeOtherColorList.getColorList());
             
             TestOptions.SomeColorA.setColor(ConfigColorData.fromBukkitColor(Color.RED));
             TestOptions.SomeColorB.setColor(ConfigColorData.fromBukkitColor(Color.BLUE));
             TestOptions.SomeOtherColor.setColor(ConfigColorData.fromBukkitColor(Color.AQUA));
-            TestOptions.SomeColorList.setColorList(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.BLACK), ConfigColorData.fromBukkitColor(Color.FUCHSIA)});
-            TestOptions.SomeOtherColorList.setColorList(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.GREEN), ConfigColorData.fromBukkitColor(Color.LIME)});
+            TestOptions.SomeColorList.setColorList(new ConfigColorData[] { ConfigColorData.fromBukkitColor(Color.BLACK), ConfigColorData.fromBukkitColor(Color.FUCHSIA) });
+            TestOptions.SomeOtherColorList.setColorList(new ConfigColorData[] { ConfigColorData.fromBukkitColor(Color.GREEN), ConfigColorData.fromBukkitColor(Color.LIME) });
             
             assertEquals(ConfigColorData.fromBukkitColor(Color.RED), this.file.getFragment(ConfigColorData.class, TestOptions.SomeColorA.path()));
             assertEquals(ConfigColorData.fromBukkitColor(Color.BLUE), this.file.getFragment(ConfigColorData.class, TestOptions.SomeColorB.path()));
@@ -340,21 +342,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(ConfigColorData.fromBukkitColor(Color.RED), TestOptions.SomeColorA.getColor());
             assertEquals(ConfigColorData.fromBukkitColor(Color.BLUE), TestOptions.SomeColorB.getColor());
             assertEquals(ConfigColorData.fromBukkitColor(Color.AQUA), TestOptions.SomeOtherColor.getColor());
-            assertArrayEquals(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.BLACK), ConfigColorData.fromBukkitColor(Color.FUCHSIA)}, TestOptions.SomeColorList.getColorList());
-            assertArrayEquals(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.GREEN), ConfigColorData.fromBukkitColor(Color.LIME)}, TestOptions.SomeOtherColorList.getColorList());
+            assertArrayEquals(new ConfigColorData[] { ConfigColorData.fromBukkitColor(Color.BLACK), ConfigColorData.fromBukkitColor(Color.FUCHSIA) }, TestOptions.SomeColorList.getColorList());
+            assertArrayEquals(new ConfigColorData[] { ConfigColorData.fromBukkitColor(Color.GREEN), ConfigColorData.fromBukkitColor(Color.LIME) }, TestOptions.SomeOtherColorList.getColorList());
             
             // double
             assertEquals(0.5, TestOptions.SomeDoubleA.getDouble(), 0);
             assertEquals(0.75, TestOptions.SomeDoubleB.getDouble(), 0);
             assertEquals(0d, TestOptions.SomeOtherDouble.getDouble(), 0);
-            assertArrayEquals(new double[]{1.1, 1.2}, TestOptions.SomeDoubleList.getDoubleList(), 0);
-            assertArrayEquals(new double[]{}, TestOptions.SomeOtherDoubleList.getDoubleList(), 0);
+            assertArrayEquals(new double[] { 1.1, 1.2 }, TestOptions.SomeDoubleList.getDoubleList(), 0);
+            assertArrayEquals(new double[] {}, TestOptions.SomeOtherDoubleList.getDoubleList(), 0);
             
             TestOptions.SomeDoubleA.setDouble(2.1);
             TestOptions.SomeDoubleB.setDouble(2.5);
             TestOptions.SomeOtherDouble.setDouble(2.3);
-            TestOptions.SomeDoubleList.setDoubleList(new double[]{2.2, 2.4});
-            TestOptions.SomeOtherDoubleList.setDoubleList(new double[]{2.6, 2.7});
+            TestOptions.SomeDoubleList.setDoubleList(new double[] { 2.2, 2.4 });
+            TestOptions.SomeOtherDoubleList.setDoubleList(new double[] { 2.6, 2.7 });
             
             assertEquals(Double.valueOf(2.1), this.file.get(TestOptions.SomeDoubleA.path()));
             assertEquals(Double.valueOf(2.5), this.file.get(TestOptions.SomeDoubleB.path()));
@@ -365,21 +367,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(2.1, TestOptions.SomeDoubleA.getDouble(), 0);
             assertEquals(2.5, TestOptions.SomeDoubleB.getDouble(), 0);
             assertEquals(2.3, TestOptions.SomeOtherDouble.getDouble(), 0);
-            assertArrayEquals(new double[]{2.2, 2.4}, TestOptions.SomeDoubleList.getDoubleList(), 0);
-            assertArrayEquals(new double[]{2.6, 2.7}, TestOptions.SomeOtherDoubleList.getDoubleList(), 0);
+            assertArrayEquals(new double[] { 2.2, 2.4 }, TestOptions.SomeDoubleList.getDoubleList(), 0);
+            assertArrayEquals(new double[] { 2.6, 2.7 }, TestOptions.SomeOtherDoubleList.getDoubleList(), 0);
             
             // float
             assertEquals(0.5f, TestOptions.SomeFloatA.getFloat(), 0);
             assertEquals(0.75f, TestOptions.SomeFloatB.getFloat(), 0);
             assertEquals(0f, TestOptions.SomeOtherFloat.getFloat(), 0);
-            assertArrayEquals(new float[]{1.1f, 1.2f}, TestOptions.SomeFloatList.getFloatList(), 0);
-            assertArrayEquals(new float[]{}, TestOptions.SomeOtherFloatList.getFloatList(), 0);
+            assertArrayEquals(new float[] { 1.1f, 1.2f }, TestOptions.SomeFloatList.getFloatList(), 0);
+            assertArrayEquals(new float[] {}, TestOptions.SomeOtherFloatList.getFloatList(), 0);
             
             TestOptions.SomeFloatA.setFloat(2.1f);
             TestOptions.SomeFloatB.setFloat(2.5f);
             TestOptions.SomeOtherFloat.setFloat(2.3f);
-            TestOptions.SomeFloatList.setFloatList(new float[]{2.2f, 2.4f});
-            TestOptions.SomeOtherFloatList.setFloatList(new float[]{2.6f, 2.7f});
+            TestOptions.SomeFloatList.setFloatList(new float[] { 2.2f, 2.4f });
+            TestOptions.SomeOtherFloatList.setFloatList(new float[] { 2.6f, 2.7f });
             
             assertEquals(Float.valueOf(2.1f), this.file.get(TestOptions.SomeFloatA.path()));
             assertEquals(Float.valueOf(2.5f), this.file.get(TestOptions.SomeFloatB.path()));
@@ -390,21 +392,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(2.1f, TestOptions.SomeFloatA.getFloat(), 0);
             assertEquals(2.5f, TestOptions.SomeFloatB.getFloat(), 0);
             assertEquals(2.3f, TestOptions.SomeOtherFloat.getFloat(), 0);
-            assertArrayEquals(new float[]{2.2f, 2.4f}, TestOptions.SomeFloatList.getFloatList(), 0);
-            assertArrayEquals(new float[]{2.6f, 2.7f}, TestOptions.SomeOtherFloatList.getFloatList(), 0);
+            assertArrayEquals(new float[] { 2.2f, 2.4f }, TestOptions.SomeFloatList.getFloatList(), 0);
+            assertArrayEquals(new float[] { 2.6f, 2.7f }, TestOptions.SomeOtherFloatList.getFloatList(), 0);
             
             // int
             assertEquals(1, TestOptions.SomeInt1.getInt());
             assertEquals(2, TestOptions.SomeInt2.getInt());
             assertEquals(0, TestOptions.SomeOtherInt.getInt());
-            assertArrayEquals(new int[]{1, 2}, TestOptions.SomeIntList.getIntList());
-            assertArrayEquals(new int[]{}, TestOptions.SomeOtherIntList.getIntList());
+            assertArrayEquals(new int[] { 1, 2 }, TestOptions.SomeIntList.getIntList());
+            assertArrayEquals(new int[] {}, TestOptions.SomeOtherIntList.getIntList());
             
             TestOptions.SomeInt1.setInt(2);
             TestOptions.SomeInt2.setInt(3);
             TestOptions.SomeOtherInt.setInt(4);
-            TestOptions.SomeIntList.setIntList(new int[]{5, 6});
-            TestOptions.SomeOtherIntList.setIntList(new int[]{5, 6});
+            TestOptions.SomeIntList.setIntList(new int[] { 5, 6 });
+            TestOptions.SomeOtherIntList.setIntList(new int[] { 5, 6 });
             
             assertEquals(Integer.valueOf(2), this.file.get(TestOptions.SomeInt1.path()));
             assertEquals(Integer.valueOf(3), this.file.get(TestOptions.SomeInt2.path()));
@@ -415,65 +417,77 @@ public class ConfigurationValueInterfaceTest
             assertEquals(2, TestOptions.SomeInt1.getInt());
             assertEquals(3, TestOptions.SomeInt2.getInt());
             assertEquals(4, TestOptions.SomeOtherInt.getInt());
-            assertArrayEquals(new int[]{5, 6}, TestOptions.SomeIntList.getIntList());
-            assertArrayEquals(new int[]{5, 6}, TestOptions.SomeOtherIntList.getIntList());
+            assertArrayEquals(new int[] { 5, 6 }, TestOptions.SomeIntList.getIntList());
+            assertArrayEquals(new int[] { 5, 6 }, TestOptions.SomeOtherIntList.getIntList());
             
             // item stack
             assertNull(TestOptions.SomeItemStack.getItemStack());
             assertNull(TestOptions.SomeOtherItemStack.getItemStack());
-            assertArrayEquals(new ItemStack[]{}, TestOptions.SomeItemStackList.getItemStackList());
-            assertArrayEquals(new ItemStack[]{}, TestOptions.SomeOtherItemStackList.getItemStackList());
+            assertArrayEquals(new ItemStack[] {}, TestOptions.SomeItemStackList.getItemStackList());
+            assertArrayEquals(new ItemStack[] {}, TestOptions.SomeOtherItemStackList.getItemStackList());
             
             TestOptions.SomeItemStack.setItemStack(new DummyItemStackData(new ItemStack(Material.AIR)));
             TestOptions.SomeOtherItemStack.setItemStack(new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR)));
-            TestOptions.SomeItemStackList.setItemStackList(new DummyItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)), new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))});
-            TestOptions.SomeOtherItemStackList.setItemStackList(new DummyItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE_GATE)), new DummyItemStackData(new ItemStack(Material.ACACIA_STAIRS))});
+            TestOptions.SomeItemStackList.setItemStackList(new DummyItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))
+            });
+            TestOptions.SomeOtherItemStackList.setItemStackList(new DummyItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE_GATE)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_STAIRS))
+            });
             
             assertEquals(new DummyItemStackData(new ItemStack(Material.AIR)), this.file.getItemStack(TestOptions.SomeItemStack.path()));
             assertEquals(new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR)), this.file.getItemStack(TestOptions.SomeOtherItemStack.path()));
             
             assertEquals(new DummyItemStackData(new ItemStack(Material.AIR)), TestOptions.SomeItemStack.getItemStack());
             assertEquals(new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR)), TestOptions.SomeOtherItemStack.getItemStack());
-            assertArrayEquals(new ConfigItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)), new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))}, TestOptions.SomeItemStackList.getItemStackList());
-            assertArrayEquals(new ConfigItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE_GATE)), new DummyItemStackData(new ItemStack(Material.ACACIA_STAIRS))}, TestOptions.SomeOtherItemStackList.getItemStackList());
+            assertArrayEquals(new ConfigItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))
+            }, TestOptions.SomeItemStackList.getItemStackList());
+            assertArrayEquals(new ConfigItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE_GATE)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_STAIRS))
+            }, TestOptions.SomeOtherItemStackList.getItemStackList());
             
             // long
             assertEquals(1, TestOptions.SomeLong1.getLong());
             assertEquals(2, TestOptions.SomeLong2.getLong());
             assertEquals(0, TestOptions.SomeOtherLong.getLong());
-            assertArrayEquals(new long[]{1, 2}, TestOptions.SomeLongList.getLongList());
-            assertArrayEquals(new long[]{}, TestOptions.SomeOtherLongList.getLongList());
+            assertArrayEquals(new long[] { 1, 2 }, TestOptions.SomeLongList.getLongList());
+            assertArrayEquals(new long[] {}, TestOptions.SomeOtherLongList.getLongList());
             
             TestOptions.SomeLong1.setLong(2);
             TestOptions.SomeLong2.setLong(3);
             TestOptions.SomeOtherLong.setLong(4);
-            TestOptions.SomeLongList.setLongList(new long[]{5, 6});
-            TestOptions.SomeOtherLongList.setLongList(new long[]{5, 6});
+            TestOptions.SomeLongList.setLongList(new long[] { 5, 6 });
+            TestOptions.SomeOtherLongList.setLongList(new long[] { 5, 6 });
             
             assertEquals(Long.valueOf(2), this.file.get(TestOptions.SomeLong1.path()));
             assertEquals(Long.valueOf(3), this.file.get(TestOptions.SomeLong2.path()));
             assertEquals(Long.valueOf(4), this.file.get(TestOptions.SomeOtherLong.path()));
-            assertEquals(Arrays.asList(5l, 6l), this.file.getPrimitiveList(TestOptions.SomeLongList.path()));
-            assertEquals(Arrays.asList(5l, 6l), this.file.getPrimitiveList(TestOptions.SomeOtherLongList.path()));
+            assertEquals(Arrays.asList(5L, 6L), this.file.getPrimitiveList(TestOptions.SomeLongList.path()));
+            assertEquals(Arrays.asList(5L, 6L), this.file.getPrimitiveList(TestOptions.SomeOtherLongList.path()));
             
             assertEquals(2, TestOptions.SomeLong1.getLong());
             assertEquals(3, TestOptions.SomeLong2.getLong());
             assertEquals(4, TestOptions.SomeOtherLong.getLong());
-            assertArrayEquals(new long[]{5, 6}, TestOptions.SomeLongList.getLongList());
-            assertArrayEquals(new long[]{5, 6}, TestOptions.SomeOtherLongList.getLongList());
+            assertArrayEquals(new long[] { 5, 6 }, TestOptions.SomeLongList.getLongList());
+            assertArrayEquals(new long[] { 5, 6 }, TestOptions.SomeOtherLongList.getLongList());
             
             // short
             assertEquals(1, TestOptions.SomeShort1.getShort());
             assertEquals(2, TestOptions.SomeShort2.getShort());
             assertEquals(0, TestOptions.SomeOtherShort.getShort());
-            assertArrayEquals(new short[]{1, 2}, TestOptions.SomeShortList.getShortList());
-            assertArrayEquals(new short[]{}, TestOptions.SomeOtherShortList.getShortList());
+            assertArrayEquals(new short[] { 1, 2 }, TestOptions.SomeShortList.getShortList());
+            assertArrayEquals(new short[] {}, TestOptions.SomeOtherShortList.getShortList());
             
             TestOptions.SomeShort1.setShort((short) 2);
             TestOptions.SomeShort2.setShort((short) 3);
             TestOptions.SomeOtherShort.setShort((short) 4);
-            TestOptions.SomeShortList.setShortList(new short[]{5, 6});
-            TestOptions.SomeOtherShortList.setShortList(new short[]{5, 6});
+            TestOptions.SomeShortList.setShortList(new short[] { 5, 6 });
+            TestOptions.SomeOtherShortList.setShortList(new short[] { 5, 6 });
             
             assertEquals(Short.valueOf((short) 2), this.file.get(TestOptions.SomeShort1.path()));
             assertEquals(Short.valueOf((short) 3), this.file.get(TestOptions.SomeShort2.path()));
@@ -484,21 +498,21 @@ public class ConfigurationValueInterfaceTest
             assertEquals(2, TestOptions.SomeShort1.getShort());
             assertEquals(3, TestOptions.SomeShort2.getShort());
             assertEquals(4, TestOptions.SomeOtherShort.getShort());
-            assertArrayEquals(new short[]{5, 6}, TestOptions.SomeShortList.getShortList());
-            assertArrayEquals(new short[]{5, 6}, TestOptions.SomeOtherShortList.getShortList());
+            assertArrayEquals(new short[] { 5, 6 }, TestOptions.SomeShortList.getShortList());
+            assertArrayEquals(new short[] { 5, 6 }, TestOptions.SomeOtherShortList.getShortList());
             
             // string
             assertEquals("a", TestOptions.SomeStringA.getString()); //$NON-NLS-1$
             assertEquals("b", TestOptions.SomeStringB.getString()); //$NON-NLS-1$
             assertEquals("", TestOptions.SomeOtherString.getString()); //$NON-NLS-1$
-            assertArrayEquals(new String[]{"a", "b"}, TestOptions.SomeStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
-            assertArrayEquals(new String[]{}, TestOptions.SomeOtherStringList.getStringList());
+            assertArrayEquals(new String[] { "a", "b" }, TestOptions.SomeStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
+            assertArrayEquals(new String[] {}, TestOptions.SomeOtherStringList.getStringList());
             
             TestOptions.SomeStringA.setString("d"); //$NON-NLS-1$
             TestOptions.SomeStringB.setString("e"); //$NON-NLS-1$
             TestOptions.SomeOtherString.setString("f"); //$NON-NLS-1$
-            TestOptions.SomeStringList.setStringList(new String[]{"q", "w"}); //$NON-NLS-1$ //$NON-NLS-2$
-            TestOptions.SomeOtherStringList.setStringList(new String[]{"e", "r"}); //$NON-NLS-1$ //$NON-NLS-2$
+            TestOptions.SomeStringList.setStringList(new String[] { "q", "w" }); //$NON-NLS-1$ //$NON-NLS-2$
+            TestOptions.SomeOtherStringList.setStringList(new String[] { "e", "r" }); //$NON-NLS-1$ //$NON-NLS-2$
             
             assertEquals("d", this.file.get(TestOptions.SomeStringA.path())); //$NON-NLS-1$
             assertEquals("e", this.file.get(TestOptions.SomeStringB.path())); //$NON-NLS-1$
@@ -509,14 +523,14 @@ public class ConfigurationValueInterfaceTest
             assertEquals("d", TestOptions.SomeStringA.getString()); //$NON-NLS-1$
             assertEquals("e", TestOptions.SomeStringB.getString()); //$NON-NLS-1$
             assertEquals("f", TestOptions.SomeOtherString.getString()); //$NON-NLS-1$
-            assertArrayEquals(new String[]{"q", "w"}, TestOptions.SomeStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
-            assertArrayEquals(new String[]{"e", "r"}, TestOptions.SomeOtherStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
+            assertArrayEquals(new String[] { "q", "w" }, TestOptions.SomeStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
+            assertArrayEquals(new String[] { "e", "r" }, TestOptions.SomeOtherStringList.getStringList()); //$NON-NLS-1$ //$NON-NLS-2$
             
             // player
             assertNull(TestOptions.SomePlayer.getPlayer());
             assertNull(TestOptions.SomeOtherPlayer.getPlayer());
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomePlayerList.getPlayerList());
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomeOtherPlayerList.getPlayerList());
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomePlayerList.getPlayerList());
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomeOtherPlayerList.getPlayerList());
             
             final McPlayerInterface player1 = createPlayer();
             final McPlayerInterface player2 = createPlayer();
@@ -527,41 +541,41 @@ public class ConfigurationValueInterfaceTest
             
             TestOptions.SomePlayer.setPlayer(player1);
             TestOptions.SomeOtherPlayer.setPlayer(player2);
-            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[]{player3, player4});
-            TestOptions.SomeOtherPlayerList.setPlayerList(new McPlayerInterface[]{player5, player6});
+            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[] { player3, player4 });
+            TestOptions.SomeOtherPlayerList.setPlayerList(new McPlayerInterface[] { player5, player6 });
             
             assertEquals(new DummyPlayer(player1), this.file.getPlayer(TestOptions.SomePlayer.path()));
             assertEquals(new DummyPlayer(player2), this.file.getPlayer(TestOptions.SomeOtherPlayer.path()));
             
             assertEquals(new DummyPlayer(player1), TestOptions.SomePlayer.getPlayer());
             assertEquals(new DummyPlayer(player2), TestOptions.SomeOtherPlayer.getPlayer());
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player3), new DummyPlayer(player4)}, TestOptions.SomePlayerList.getPlayerList());
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player5), new DummyPlayer(player6)}, TestOptions.SomeOtherPlayerList.getPlayerList());
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player3), new DummyPlayer(player4) }, TestOptions.SomePlayerList.getPlayerList());
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player5), new DummyPlayer(player6) }, TestOptions.SomeOtherPlayerList.getPlayerList());
             
             // vector
             assertNull(TestOptions.SomeVector.getVector());
             assertNull(TestOptions.SomeOtherVector.getVector());
-            assertArrayEquals(new Vector[]{}, TestOptions.SomeVectorList.getVectorList());
-            assertArrayEquals(new Vector[]{}, TestOptions.SomeOtherVectorList.getVectorList());
+            assertArrayEquals(new Vector[] {}, TestOptions.SomeVectorList.getVectorList());
+            assertArrayEquals(new Vector[] {}, TestOptions.SomeOtherVectorList.getVectorList());
             
             TestOptions.SomeVector.setVector(new ConfigVectorData(1, 2, 3));
             TestOptions.SomeOtherVector.setVector(new ConfigVectorData(2, 3, 4));
-            TestOptions.SomeVectorList.setVectorList(new ConfigVectorData[]{new ConfigVectorData(3, 4, 5), new ConfigVectorData(4, 5, 6)});
-            TestOptions.SomeOtherVectorList.setVectorList(new ConfigVectorData[]{new ConfigVectorData(5, 6, 7), new ConfigVectorData(6, 7, 8)});
+            TestOptions.SomeVectorList.setVectorList(new ConfigVectorData[] { new ConfigVectorData(3, 4, 5), new ConfigVectorData(4, 5, 6) });
+            TestOptions.SomeOtherVectorList.setVectorList(new ConfigVectorData[] { new ConfigVectorData(5, 6, 7), new ConfigVectorData(6, 7, 8) });
             
             assertEquals(new VectorData(1, 2, 3), this.file.getVector(TestOptions.SomeVector.path()));
             assertEquals(new VectorData(2, 3, 4), this.file.getVector(TestOptions.SomeOtherVector.path()));
             
             assertEquals(new ConfigVectorData(1, 2, 3), TestOptions.SomeVector.getVector());
             assertEquals(new ConfigVectorData(2, 3, 4), TestOptions.SomeOtherVector.getVector());
-            assertArrayEquals(new ConfigVectorData[]{new ConfigVectorData(3, 4, 5), new ConfigVectorData(4, 5, 6)}, TestOptions.SomeVectorList.getVectorList());
-            assertArrayEquals(new ConfigVectorData[]{new ConfigVectorData(5, 6, 7), new ConfigVectorData(6, 7, 8)}, TestOptions.SomeOtherVectorList.getVectorList());
+            assertArrayEquals(new ConfigVectorData[] { new ConfigVectorData(3, 4, 5), new ConfigVectorData(4, 5, 6) }, TestOptions.SomeVectorList.getVectorList());
+            assertArrayEquals(new ConfigVectorData[] { new ConfigVectorData(5, 6, 7), new ConfigVectorData(6, 7, 8) }, TestOptions.SomeOtherVectorList.getVectorList());
             
             // object
             assertNull(TestOptions.SomeObject.getObject());
             assertNull(TestOptions.SomeOtherObject.getObject());
-            assertArrayEquals(new FooObject[]{}, TestOptions.SomeObjectList.getObjectList(FooObject.class));
-            assertArrayEquals(new FooObject[]{}, TestOptions.SomeOtherObjectList.getObjectList(FooObject.class));
+            assertArrayEquals(new FooObject[] {}, TestOptions.SomeObjectList.getObjectList(FooObject.class));
+            assertArrayEquals(new FooObject[] {}, TestOptions.SomeOtherObjectList.getObjectList(FooObject.class));
             
             final FooObject obj1 = new FooObject(1);
             final FooObject obj2 = new FooObject(2);
@@ -572,13 +586,13 @@ public class ConfigurationValueInterfaceTest
             
             TestOptions.SomeObject.setObject(obj1);
             TestOptions.SomeOtherObject.setObject(obj2);
-            TestOptions.SomeObjectList.setObjectList(new FooObject[]{obj3, obj4});
-            TestOptions.SomeOtherObjectList.setObjectList(new FooObject[]{obj5, obj6});
+            TestOptions.SomeObjectList.setObjectList(new FooObject[] { obj3, obj4 });
+            TestOptions.SomeOtherObjectList.setObjectList(new FooObject[] { obj5, obj6 });
             
             assertEquals(obj1, TestOptions.SomeObject.getObject());
             assertEquals(obj2, TestOptions.SomeOtherObject.getObject());
-            assertArrayEquals(new FooObject[]{obj3, obj4}, TestOptions.SomeObjectList.getObjectList(FooObject.class));
-            assertArrayEquals(new FooObject[]{obj5, obj6}, TestOptions.SomeOtherObjectList.getObjectList(FooObject.class));
+            assertArrayEquals(new FooObject[] { obj3, obj4 }, TestOptions.SomeObjectList.getObjectList(FooObject.class));
+            assertArrayEquals(new FooObject[] { obj5, obj6 }, TestOptions.SomeOtherObjectList.getObjectList(FooObject.class));
             
             // sections
             // boolean
@@ -587,30 +601,30 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setBoolean(true, "Boolean"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Boolean")); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.getBoolean("Boolean", false)); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getBooleanList("BooleanList", null)); //$NON-NLS-1$
-            assertArrayEquals(new boolean[]{true, true}, TestOptions.SomeSection.getBooleanList("BooleanList", new boolean[]{true, true})); //$NON-NLS-1$
+            assertArrayEquals(new boolean[] { true, true }, TestOptions.SomeSection.getBooleanList("BooleanList", new boolean[] { true, true })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("BooleanList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setBooleanList(new boolean[]{true, false}, "BooleanList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setBooleanList(new boolean[] { true, false }, "BooleanList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("BooleanList")); //$NON-NLS-1$
-            assertArrayEquals(new boolean[]{true, false}, TestOptions.SomeSection.getBooleanList("BooleanList", new boolean[]{true, true})); //$NON-NLS-1$
-    
+            assertArrayEquals(new boolean[] { true, false }, TestOptions.SomeSection.getBooleanList("BooleanList", new boolean[] { true, true })); //$NON-NLS-1$
+            
             assertFalse(TestOptions.SomeOtherSection.getBoolean("Boolean", false)); //$NON-NLS-1$
             assertFalse(TestOptions.SomeOtherSection.isset("Boolean")); //$NON-NLS-1$
             TestOptions.SomeOtherSection.setBoolean(true, "Boolean"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeOtherSection.isset("Boolean")); //$NON-NLS-1$
             assertTrue(TestOptions.SomeOtherSection.getBoolean("Boolean", false)); //$NON-NLS-1$
-    
-            assertNull(TestOptions.SomeOtherSection.getBooleanList("BooleanList", null)); //$NON-NLS-1$
-            assertArrayEquals(new boolean[]{true, true}, TestOptions.SomeOtherSection.getBooleanList("BooleanList", new boolean[]{true, true})); //$NON-NLS-1$
-            assertFalse(TestOptions.SomeOtherSection.isset("BooleanList")); //$NON-NLS-1$
-            TestOptions.SomeOtherSection.setBooleanList(new boolean[]{true, false}, "BooleanList"); //$NON-NLS-1$
-            assertTrue(TestOptions.SomeOtherSection.isset("BooleanList")); //$NON-NLS-1$
-            assertArrayEquals(new boolean[]{true, false}, TestOptions.SomeOtherSection.getBooleanList("BooleanList", new boolean[]{true, true})); //$NON-NLS-1$
             
-            //getKeys
-            assertArrayEquals(new String[]{"Boolean", "BooleanList"}, TestOptions.SomeSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
-            assertArrayEquals(new String[]{"Boolean", "BooleanList"}, TestOptions.SomeOtherSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
+            assertNull(TestOptions.SomeOtherSection.getBooleanList("BooleanList", null)); //$NON-NLS-1$
+            assertArrayEquals(new boolean[] { true, true }, TestOptions.SomeOtherSection.getBooleanList("BooleanList", new boolean[] { true, true })); //$NON-NLS-1$
+            assertFalse(TestOptions.SomeOtherSection.isset("BooleanList")); //$NON-NLS-1$
+            TestOptions.SomeOtherSection.setBooleanList(new boolean[] { true, false }, "BooleanList"); //$NON-NLS-1$
+            assertTrue(TestOptions.SomeOtherSection.isset("BooleanList")); //$NON-NLS-1$
+            assertArrayEquals(new boolean[] { true, false }, TestOptions.SomeOtherSection.getBooleanList("BooleanList", new boolean[] { true, true })); //$NON-NLS-1$
+            
+            // getKeys
+            assertArrayEquals(new String[] { "Boolean", "BooleanList" }, TestOptions.SomeSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
+            assertArrayEquals(new String[] { "Boolean", "BooleanList" }, TestOptions.SomeOtherSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
             
             // byte
             assertEquals(1, TestOptions.SomeSection.getByte("Byte", (byte) 1)); //$NON-NLS-1$
@@ -618,13 +632,13 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setByte((byte) 2, "Byte"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Byte")); //$NON-NLS-1$
             assertEquals(2, TestOptions.SomeSection.getByte("Byte", (byte) 1)); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getByteList("ByteList", null)); //$NON-NLS-1$
-            assertArrayEquals(new byte[]{1, 2}, TestOptions.SomeSection.getByteList("ByteList", new byte[]{1, 2})); //$NON-NLS-1$
+            assertArrayEquals(new byte[] { 1, 2 }, TestOptions.SomeSection.getByteList("ByteList", new byte[] { 1, 2 })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ByteList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setByteList(new byte[]{2, 3}, "ByteList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setByteList(new byte[] { 2, 3 }, "ByteList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ByteList")); //$NON-NLS-1$
-            assertArrayEquals(new byte[]{2, 3}, TestOptions.SomeSection.getByteList("ByteList", new byte[]{1, 2})); //$NON-NLS-1$
+            assertArrayEquals(new byte[] { 2, 3 }, TestOptions.SomeSection.getByteList("ByteList", new byte[] { 1, 2 })); //$NON-NLS-1$
             
             // character
             assertEquals('a', TestOptions.SomeSection.getCharacter("Character", 'a')); //$NON-NLS-1$
@@ -632,13 +646,13 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setCharacter('b', "Character"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Character")); //$NON-NLS-1$
             assertEquals('b', TestOptions.SomeSection.getCharacter("Character", 'a')); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getCharacterList("CharacterList", null)); //$NON-NLS-1$
-            assertArrayEquals(new char[]{'a', 'b'}, TestOptions.SomeSection.getCharacterList("CharacterList", new char[]{'a', 'b'})); //$NON-NLS-1$
+            assertArrayEquals(new char[] { 'a', 'b' }, TestOptions.SomeSection.getCharacterList("CharacterList", new char[] { 'a', 'b' })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("CharacterList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setCharacterList(new char[]{'b', 'c'}, "CharacterList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setCharacterList(new char[] { 'b', 'c' }, "CharacterList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("CharacterList")); //$NON-NLS-1$
-            assertArrayEquals(new char[]{'b', 'c'}, TestOptions.SomeSection.getCharacterList("CharacterList", new char[]{'a', 'b'})); //$NON-NLS-1$
+            assertArrayEquals(new char[] { 'b', 'c' }, TestOptions.SomeSection.getCharacterList("CharacterList", new char[] { 'a', 'b' })); //$NON-NLS-1$
             
             // color
             assertEquals(ConfigColorData.fromBukkitColor(Color.RED), TestOptions.SomeSection.getColor("Color", ConfigColorData.fromBukkitColor(Color.RED))); //$NON-NLS-1$
@@ -646,13 +660,16 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setColor(ConfigColorData.fromBukkitColor(Color.BLUE), "Color"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Color")); //$NON-NLS-1$
             assertEquals(ConfigColorData.fromBukkitColor(Color.BLUE), TestOptions.SomeSection.getColor("Color", ConfigColorData.fromBukkitColor(Color.RED))); //$NON-NLS-1$
-    
+            
             assertArrayEquals(new Color[0], TestOptions.SomeSection.getColorList("ColorList")); //$NON-NLS-1$
             // assertArrayEquals(new Color[]{Color.RED, Color.BLUE}, TestOptions.SomeSection.getColorList("ColorList", new Color[]{Color.RED, Color.BLUE})); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ColorList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setColorList(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.BLUE), ConfigColorData.fromBukkitColor(Color.GREEN)}, "ColorList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setColorList(new ConfigColorData[] { ConfigColorData.fromBukkitColor(Color.BLUE), ConfigColorData.fromBukkitColor(Color.GREEN) }, "ColorList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ColorList")); //$NON-NLS-1$
-            assertArrayEquals(new ConfigColorData[]{ConfigColorData.fromBukkitColor(Color.BLUE), ConfigColorData.fromBukkitColor(Color.GREEN)}, TestOptions.SomeSection.getColorList("ColorList")); //$NON-NLS-1$
+            assertArrayEquals(new ConfigColorData[] {
+                ConfigColorData.fromBukkitColor(Color.BLUE),
+                ConfigColorData.fromBukkitColor(Color.GREEN)
+            }, TestOptions.SomeSection.getColorList("ColorList")); //$NON-NLS-1$
             
             // double
             assertEquals(0.2, TestOptions.SomeSection.getDouble("Double", 0.2), 0); //$NON-NLS-1$
@@ -660,13 +677,13 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setDouble(0.3, "Double"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Double")); //$NON-NLS-1$
             assertEquals(0.3, TestOptions.SomeSection.getDouble("Double", 0.2), 0); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getDoubleList("DoubleList", null)); //$NON-NLS-1$
-            assertArrayEquals(new double[]{0.3, 0.4}, TestOptions.SomeSection.getDoubleList("DoubleList", new double[]{0.3, 0.4}), 0); //$NON-NLS-1$
+            assertArrayEquals(new double[] { 0.3, 0.4 }, TestOptions.SomeSection.getDoubleList("DoubleList", new double[] { 0.3, 0.4 }), 0); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("DoubleList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setDoubleList(new double[]{0.4, 0.5}, "DoubleList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setDoubleList(new double[] { 0.4, 0.5 }, "DoubleList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("DoubleList")); //$NON-NLS-1$
-            assertArrayEquals(new double[]{0.4, 0.5}, TestOptions.SomeSection.getDoubleList("DoubleList", new double[]{0.3, 0.4}), 0); //$NON-NLS-1$
+            assertArrayEquals(new double[] { 0.4, 0.5 }, TestOptions.SomeSection.getDoubleList("DoubleList", new double[] { 0.3, 0.4 }), 0); //$NON-NLS-1$
             
             // float
             assertEquals(0.2f, TestOptions.SomeSection.getFloat("Float", 0.2f), 0); //$NON-NLS-1$
@@ -674,13 +691,13 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setFloat(0.3f, "Float"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Float")); //$NON-NLS-1$
             assertEquals(0.3f, TestOptions.SomeSection.getFloat("Float", 0.2f), 0); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getFloatList("FloatList", null)); //$NON-NLS-1$
-            assertArrayEquals(new float[]{0.3f, 0.4f}, TestOptions.SomeSection.getFloatList("FloatList", new float[]{0.3f, 0.4f}), 0); //$NON-NLS-1$
+            assertArrayEquals(new float[] { 0.3f, 0.4f }, TestOptions.SomeSection.getFloatList("FloatList", new float[] { 0.3f, 0.4f }), 0); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("FloatList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setFloatList(new float[]{0.4f, 0.5f}, "FloatList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setFloatList(new float[] { 0.4f, 0.5f }, "FloatList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("FloatList")); //$NON-NLS-1$
-            assertArrayEquals(new float[]{0.4f, 0.5f}, TestOptions.SomeSection.getFloatList("FloatList", new float[]{0.3f, 0.4f}), 0); //$NON-NLS-1$
+            assertArrayEquals(new float[] { 0.4f, 0.5f }, TestOptions.SomeSection.getFloatList("FloatList", new float[] { 0.3f, 0.4f }), 0); //$NON-NLS-1$
             
             // int
             assertEquals(2, TestOptions.SomeSection.getInt("Int", 2)); //$NON-NLS-1$
@@ -688,26 +705,32 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setInt(3, "Int"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Int")); //$NON-NLS-1$
             assertEquals(3, TestOptions.SomeSection.getInt("Int", 2)); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getIntList("IntList", null)); //$NON-NLS-1$
-            assertArrayEquals(new int[]{3, 4}, TestOptions.SomeSection.getIntList("IntList", new int[]{3, 4})); //$NON-NLS-1$
+            assertArrayEquals(new int[] { 3, 4 }, TestOptions.SomeSection.getIntList("IntList", new int[] { 3, 4 })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("IntList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setIntList(new int[]{4, 5}, "IntList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setIntList(new int[] { 4, 5 }, "IntList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("IntList")); //$NON-NLS-1$
-            assertArrayEquals(new int[]{4, 5}, TestOptions.SomeSection.getIntList("IntList", new int[]{3, 4})); //$NON-NLS-1$
-    
+            assertArrayEquals(new int[] { 4, 5 }, TestOptions.SomeSection.getIntList("IntList", new int[] { 3, 4 })); //$NON-NLS-1$
+            
             // ItemStack
             assertNull(TestOptions.SomeSection.getItemStack("ItemStack")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ItemStack")); //$NON-NLS-1$
             TestOptions.SomeSection.setItemStack(new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR)), "ItemStack"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ItemStack")); //$NON-NLS-1$
             assertEquals(new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR)), TestOptions.SomeSection.getItemStack("ItemStack")); //$NON-NLS-1$
-    
-            assertArrayEquals(new ItemStack[]{}, TestOptions.SomeSection.getItemStackList("ItemStackList")); //$NON-NLS-1$
+            
+            assertArrayEquals(new ItemStack[] {}, TestOptions.SomeSection.getItemStackList("ItemStackList")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ItemStackList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setItemStackList(new DummyItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)), new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))}, "ItemStackList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setItemStackList(new DummyItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))
+            }, "ItemStackList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ItemStackList")); //$NON-NLS-1$
-            assertArrayEquals(new DummyItemStackData[]{new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)), new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))}, TestOptions.SomeSection.getItemStackList("ItemStackList")); //$NON-NLS-1$
+            assertArrayEquals(new DummyItemStackData[] {
+                new DummyItemStackData(new ItemStack(Material.ACACIA_DOOR_ITEM)),
+                new DummyItemStackData(new ItemStack(Material.ACACIA_FENCE))
+            }, TestOptions.SomeSection.getItemStackList("ItemStackList")); //$NON-NLS-1$
             
             // Long
             assertEquals(2, TestOptions.SomeSection.getLong("Long", 2)); //$NON-NLS-1$
@@ -715,39 +738,39 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setLong(3, "Long"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Long")); //$NON-NLS-1$
             assertEquals(3, TestOptions.SomeSection.getLong("Long", 2)); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getLongList("LongList", null)); //$NON-NLS-1$
-            assertArrayEquals(new long[]{3, 4}, TestOptions.SomeSection.getLongList("LongList", new long[]{3, 4})); //$NON-NLS-1$
+            assertArrayEquals(new long[] { 3, 4 }, TestOptions.SomeSection.getLongList("LongList", new long[] { 3, 4 })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("LongList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setLongList(new long[]{4, 5}, "LongList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setLongList(new long[] { 4, 5 }, "LongList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("LongList")); //$NON-NLS-1$
-            assertArrayEquals(new long[]{4, 5}, TestOptions.SomeSection.getLongList("LongList", new long[]{3, 4})); //$NON-NLS-1$
-    
+            assertArrayEquals(new long[] { 4, 5 }, TestOptions.SomeSection.getLongList("LongList", new long[] { 3, 4 })); //$NON-NLS-1$
+            
             // Object
             assertNull(TestOptions.SomeSection.getObject(FooObject.class, "Object")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("Object")); //$NON-NLS-1$
             TestOptions.SomeSection.setObject(obj1, "Object"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Object")); //$NON-NLS-1$
             assertEquals(obj1, TestOptions.SomeSection.getObject(FooObject.class, "Object")); //$NON-NLS-1$
-    
-            assertArrayEquals(new FooObject[]{}, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
+            
+            assertArrayEquals(new FooObject[] {}, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ObjectList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setObjectList(new FooObject[]{obj2, obj3}, "ObjectList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setObjectList(new FooObject[] { obj2, obj3 }, "ObjectList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ObjectList")); //$NON-NLS-1$
-            assertArrayEquals(new FooObject[]{obj2, obj3}, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
-    
+            assertArrayEquals(new FooObject[] { obj2, obj3 }, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
+            
             // Player
             assertNull(TestOptions.SomeSection.getPlayer("Player")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("Player")); //$NON-NLS-1$
             TestOptions.SomeSection.setPlayer(player1, "Player"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Player")); //$NON-NLS-1$
             assertEquals(new DummyPlayer(player1), TestOptions.SomeSection.getPlayer("Player")); //$NON-NLS-1$
-    
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("PlayerList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[]{player3, player4}, "PlayerList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[] { player3, player4 }, "PlayerList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("PlayerList")); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player3), new DummyPlayer(player4)}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player3), new DummyPlayer(player4) }, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
             
             // Short
             assertEquals(2, TestOptions.SomeSection.getShort("Short", (short) 2)); //$NON-NLS-1$
@@ -755,13 +778,13 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setShort((short) 3, "Short"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Short")); //$NON-NLS-1$
             assertEquals(3, TestOptions.SomeSection.getShort("Short", (short) 2)); //$NON-NLS-1$
-    
+            
             assertNull(TestOptions.SomeSection.getShortList("ShortList", null)); //$NON-NLS-1$
-            assertArrayEquals(new short[]{3, 4}, TestOptions.SomeSection.getShortList("ShortList", new short[]{3, 4})); //$NON-NLS-1$
+            assertArrayEquals(new short[] { 3, 4 }, TestOptions.SomeSection.getShortList("ShortList", new short[] { 3, 4 })); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ShortList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setShortList(new short[]{4, 5}, "ShortList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setShortList(new short[] { 4, 5 }, "ShortList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ShortList")); //$NON-NLS-1$
-            assertArrayEquals(new short[]{4, 5}, TestOptions.SomeSection.getShortList("ShortList", new short[]{3, 4})); //$NON-NLS-1$
+            assertArrayEquals(new short[] { 4, 5 }, TestOptions.SomeSection.getShortList("ShortList", new short[] { 3, 4 })); //$NON-NLS-1$
             
             // String
             assertEquals("2", TestOptions.SomeSection.getString("String", "2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -769,26 +792,28 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setString("3", "String"); //$NON-NLS-1$ //$NON-NLS-2$
             assertTrue(TestOptions.SomeSection.isset("String")); //$NON-NLS-1$
             assertEquals("3", TestOptions.SomeSection.getString("String", "2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    
+            
             assertNull(TestOptions.SomeSection.getStringList("StringList", null)); //$NON-NLS-1$
-            assertArrayEquals(new String[]{"3", "4"}, TestOptions.SomeSection.getStringList("StringList", new String[]{"3", "4"})); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            assertArrayEquals(new String[] { "3", "4" }, //$NON-NLS-1$ //$NON-NLS-2$
+                TestOptions.SomeSection.getStringList("StringList", new String[] { "3", "4" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             assertFalse(TestOptions.SomeSection.isset("StringList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setStringList(new String[]{"4", "5"}, "StringList"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            TestOptions.SomeSection.setStringList(new String[] { "4", "5" }, "StringList"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             assertTrue(TestOptions.SomeSection.isset("StringList")); //$NON-NLS-1$
-            assertArrayEquals(new String[]{"4", "5"}, TestOptions.SomeSection.getStringList("StringList", new String[]{"3", "4"})); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-    
+            assertArrayEquals(new String[] { "4", "5" }, //$NON-NLS-1$ //$NON-NLS-2$
+                TestOptions.SomeSection.getStringList("StringList", new String[] { "3", "4" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            
             // Vector
             assertNull(TestOptions.SomeSection.getVector("Vector")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("Vector")); //$NON-NLS-1$
             TestOptions.SomeSection.setVector(new ConfigVectorData(1, 2, 3), "Vector"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Vector")); //$NON-NLS-1$
             assertEquals(new ConfigVectorData(1, 2, 3), TestOptions.SomeSection.getVector("Vector")); //$NON-NLS-1$
-    
-            assertArrayEquals(new Vector[]{}, TestOptions.SomeSection.getVectorList("VectorList")); //$NON-NLS-1$
+            
+            assertArrayEquals(new Vector[] {}, TestOptions.SomeSection.getVectorList("VectorList")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("VectorList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setVectorList(new ConfigVectorData[]{new ConfigVectorData(2, 3, 4), new ConfigVectorData(3, 4, 5)}, "VectorList"); //$NON-NLS-1$
+            TestOptions.SomeSection.setVectorList(new ConfigVectorData[] { new ConfigVectorData(2, 3, 4), new ConfigVectorData(3, 4, 5) }, "VectorList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("VectorList")); //$NON-NLS-1$
-            assertArrayEquals(new ConfigVectorData[]{new ConfigVectorData(2, 3, 4), new ConfigVectorData(3, 4, 5)}, TestOptions.SomeSection.getVectorList("VectorList")); //$NON-NLS-1$
+            assertArrayEquals(new ConfigVectorData[] { new ConfigVectorData(2, 3, 4), new ConfigVectorData(3, 4, 5) }, TestOptions.SomeSection.getVectorList("VectorList")); //$NON-NLS-1$
         }
         finally
         {
@@ -801,7 +826,8 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Creates a mocked player
+     * Creates a mocked player.
+     * 
      * @return mocked player
      */
     private McPlayerInterface createPlayer()
@@ -819,8 +845,8 @@ public class ConfigurationValueInterfaceTest
         when(this.objsrv.getPlayer(uuid)).thenReturn(player);
         when(this.objsrv.getPlayer(bPlayer)).thenReturn(player);
         when(this.objsrv.getPlayer((OfflinePlayer) bPlayer)).thenReturn(player);
-        doAnswer(new Answer<Void>(){
-
+        doAnswer(new Answer<Void>() {
+            
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable
             {
@@ -833,9 +859,9 @@ public class ConfigurationValueInterfaceTest
         }).when(player).write(any(DataSection.class));
         return player;
     }
-
+    
     /**
-     * Tests {@link ConfigurationValueInterface#path()}
+     * Tests {@link ConfigurationValueInterface#path()}.
      */
     @Test
     public void pathTest()
@@ -844,70 +870,70 @@ public class ConfigurationValueInterfaceTest
         assertEquals("core.config.some_other_boolean", TestOptions.SomeOtherBoolean.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeBooleanList", TestOptions.SomeBooleanList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_boolean_list", TestOptions.SomeOtherBooleanList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeByte1", TestOptions.SomeByte1.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_byte", TestOptions.SomeOtherByte.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeByteList", TestOptions.SomeByteList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_byte_list", TestOptions.SomeOtherByteList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeCharacterA", TestOptions.SomeCharacterA.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_character", TestOptions.SomeOtherCharacter.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeCharacterList", TestOptions.SomeCharacterList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_character_list", TestOptions.SomeOtherCharacterList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeColorA", TestOptions.SomeColorA.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_color", TestOptions.SomeOtherColor.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeColorList", TestOptions.SomeColorList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_color_list", TestOptions.SomeOtherColorList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeDoubleA", TestOptions.SomeDoubleA.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_double", TestOptions.SomeOtherDouble.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeDoubleList", TestOptions.SomeDoubleList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_double_list", TestOptions.SomeOtherDoubleList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeFloatA", TestOptions.SomeFloatA.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_float", TestOptions.SomeOtherFloat.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeFloatList", TestOptions.SomeFloatList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_float_list", TestOptions.SomeOtherFloatList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeInt1", TestOptions.SomeInt1.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_int", TestOptions.SomeOtherInt.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeIntList", TestOptions.SomeIntList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_int_list", TestOptions.SomeOtherIntList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeItemStack", TestOptions.SomeItemStack.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_itemstack", TestOptions.SomeOtherItemStack.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeItemStackList", TestOptions.SomeItemStackList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_itemstack_list", TestOptions.SomeOtherItemStackList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeSection", TestOptions.SomeSection.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_section", TestOptions.SomeOtherSection.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeLong1", TestOptions.SomeLong1.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_long", TestOptions.SomeOtherLong.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeLongList", TestOptions.SomeLongList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_long_list", TestOptions.SomeOtherLongList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeObject", TestOptions.SomeObject.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_object", TestOptions.SomeOtherObject.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeObjectList", TestOptions.SomeObjectList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_object_list", TestOptions.SomeOtherObjectList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomePlayer", TestOptions.SomePlayer.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_player", TestOptions.SomeOtherPlayer.path()); //$NON-NLS-1$
         assertEquals("core.config.SomePlayerList", TestOptions.SomePlayerList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_player_list", TestOptions.SomeOtherPlayerList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeShort1", TestOptions.SomeShort1.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_short", TestOptions.SomeOtherShort.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeShortList", TestOptions.SomeShortList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_short_list", TestOptions.SomeOtherShortList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeStringA", TestOptions.SomeStringA.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_string", TestOptions.SomeOtherString.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeStringList", TestOptions.SomeStringList.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_string_list", TestOptions.SomeOtherStringList.path()); //$NON-NLS-1$
-
+        
         assertEquals("core.config.SomeVector", TestOptions.SomeVector.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_vector", TestOptions.SomeOtherVector.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeVectorList", TestOptions.SomeVectorList.path()); //$NON-NLS-1$
@@ -915,10 +941,10 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests the isxx functions
+     * Tests the isxx functions.
      */
     @Test
-    public void isXXTest()
+    public void isXxTest()
     {
         assertTrue(TestOptions.SomeBooleanTrue.isBoolean());
         assertFalse(TestOptions.SomeBooleanTrue.isBooleanList());
@@ -1103,7 +1129,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Tests the list resetting
+     * Tests the list resetting.
      */
     @Test
     public void testResettingList()
@@ -1122,26 +1148,26 @@ public class ConfigurationValueInterfaceTest
             final McPlayerInterface player3 = createPlayer();
             final McPlayerInterface player4 = createPlayer();
             
-            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[]{player3, player4});
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player3), new DummyPlayer(player4)}, TestOptions.SomePlayerList.getPlayerList());
-            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[]{player1, player2});
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player1), new DummyPlayer(player2)}, TestOptions.SomePlayerList.getPlayerList());
-            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[]{});
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomePlayerList.getPlayerList());
+            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[] { player3, player4 });
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player3), new DummyPlayer(player4) }, TestOptions.SomePlayerList.getPlayerList());
+            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[] { player1, player2 });
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player1), new DummyPlayer(player2) }, TestOptions.SomePlayerList.getPlayerList());
+            TestOptions.SomePlayerList.setPlayerList(new McPlayerInterface[] {});
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomePlayerList.getPlayerList());
             
-            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[]{player3, player4}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player3), new DummyPlayer(player4)}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[]{player1, player2}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player1), new DummyPlayer(player2)}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
-            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[]{}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[] { player3, player4 }, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player3), new DummyPlayer(player4) }, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[] { player1, player2 }, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player1), new DummyPlayer(player2) }, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeSection.setPlayerList(new McPlayerInterface[] {}, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomeSection.getPlayerList("PlayerList")); //$NON-NLS-1$
             
-            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[]{player3, player4}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player3), new DummyPlayer(player4)}, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
-            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[]{player1, player2}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{new DummyPlayer(player1), new DummyPlayer(player2)}, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
-            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[]{}, "PlayerList"); //$NON-NLS-1$
-            assertArrayEquals(new McPlayerInterface[]{}, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[] { player3, player4 }, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player3), new DummyPlayer(player4) }, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[] { player1, player2 }, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] { new DummyPlayer(player1), new DummyPlayer(player2) }, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
+            TestOptions.SomeOtherSection.setPlayerList(new McPlayerInterface[] {}, "PlayerList"); //$NON-NLS-1$
+            assertArrayEquals(new McPlayerInterface[] {}, TestOptions.SomeOtherSection.getPlayerList("PlayerList")); //$NON-NLS-1$
         }
         finally
         {
@@ -1155,11 +1181,12 @@ public class ConfigurationValueInterfaceTest
     
     /**
      * Some invalid config.
+     * 
      * @author mepeisen
      */
     public static final class InvalidConfig2 implements ConfigurationValueInterface
     {
-
+        
         @Override
         public String name()
         {
@@ -1170,6 +1197,7 @@ public class ConfigurationValueInterfaceTest
     
     /**
      * Some invalid config.
+     * 
      * @author mepeisen
      */
     public static enum InvalidConfig implements ConfigurationValueInterface
@@ -1182,7 +1210,7 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * Some test options
+     * Some test options.
      */
     @ConfigurationValues(path = "config")
     public static enum TestOptions implements ConfigurationValueInterface
@@ -1198,7 +1226,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherBoolean,
         
         /** some value list. */
-        @ConfigurationBoolList(defaultValue = {true})
+        @ConfigurationBoolList(defaultValue = { true })
         SomeBooleanList,
         /** some value list. */
         @ConfigurationBoolList(name = "some_other_boolean_list")
@@ -1215,7 +1243,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherByte,
         
         /** some value list. */
-        @ConfigurationByteList(defaultValue = {1, 2})
+        @ConfigurationByteList(defaultValue = { 1, 2 })
         SomeByteList,
         /** some value list. */
         @ConfigurationByteList(name = "some_other_byte_list")
@@ -1232,7 +1260,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherCharacter,
         
         /** some value list. */
-        @ConfigurationCharacterList(defaultValue = {'a', 'b'})
+        @ConfigurationCharacterList(defaultValue = { 'a', 'b' })
         SomeCharacterList,
         /** some value list. */
         @ConfigurationCharacterList(name = "some_other_character_list")
@@ -1266,7 +1294,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherDouble,
         
         /** some value list. */
-        @ConfigurationDoubleList(defaultValue = {1.1, 1.2})
+        @ConfigurationDoubleList(defaultValue = { 1.1, 1.2 })
         SomeDoubleList,
         /** some value list. */
         @ConfigurationDoubleList(name = "some_other_double_list")
@@ -1283,7 +1311,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherFloat,
         
         /** some value list. */
-        @ConfigurationFloatList(defaultValue = {1.1f, 1.2f})
+        @ConfigurationFloatList(defaultValue = { 1.1f, 1.2f })
         SomeFloatList,
         /** some value list. */
         @ConfigurationFloatList(name = "some_other_float_list")
@@ -1300,7 +1328,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherInt,
         
         /** some value list. */
-        @ConfigurationIntList(defaultValue = {1, 2})
+        @ConfigurationIntList(defaultValue = { 1, 2 })
         SomeIntList,
         /** some value list. */
         @ConfigurationIntList(name = "some_other_int_list")
@@ -1338,7 +1366,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherLong,
         
         /** some value list. */
-        @ConfigurationLongList(defaultValue = {1, 2})
+        @ConfigurationLongList(defaultValue = { 1, 2 })
         SomeLongList,
         /** some value list. */
         @ConfigurationLongList(name = "some_other_long_list")
@@ -1383,7 +1411,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherShort,
         
         /** some value list. */
-        @ConfigurationShortList(defaultValue = {1, 2})
+        @ConfigurationShortList(defaultValue = { 1, 2 })
         SomeShortList,
         /** some value list. */
         @ConfigurationShortList(name = "some_other_short_list")
@@ -1400,7 +1428,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherString,
         
         /** some value list. */
-        @ConfigurationStringList(defaultValue = {"a", "b"})
+        @ConfigurationStringList(defaultValue = { "a", "b" })
         SomeStringList,
         /** some value list. */
         @ConfigurationStringList(name = "some_other_string_list")
@@ -1425,11 +1453,11 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
-     * A sample configurable
+     * A sample configurable.
      */
     public static final class FooObject extends AnnotatedDataFragment
     {
-
+        
         /** obj value. */
         @PersistentField
         protected int i;
@@ -1441,15 +1469,18 @@ public class ConfigurationValueInterfaceTest
         {
             // empty
         }
-
+        
         /**
-         * @param i i
+         * Constructor.
+         * 
+         * @param i
+         *            i
          */
         public FooObject(int i)
         {
             this.i = i;
         }
-
+        
         @Override
         public int hashCode()
         {
@@ -1458,7 +1489,7 @@ public class ConfigurationValueInterfaceTest
             result = prime * result + this.i;
             return result;
         }
-
+        
         @Override
         public boolean equals(Object obj)
         {

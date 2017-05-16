@@ -44,7 +44,7 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 
 /**
- * Tests {@link Cuboid}
+ * Tests {@link Cuboid}.
  * 
  * @author mepeisen
  *
@@ -53,7 +53,7 @@ public class CuboidTest
 {
     
     /**
-     * Tests constructors
+     * Tests constructors.
      */
     @Test
     public void testConstructor()
@@ -78,7 +78,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests constructors
+     * Tests constructors.
      */
     @Test
     public void testConstructorNormalization()
@@ -93,7 +93,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#setLowLoc(Location)}
+     * Tests {@link Cuboid#setLowLoc(Location)}.
      */
     @Test
     public void testSetLowLoc()
@@ -108,7 +108,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#setHighLoc(Location)}
+     * Tests {@link Cuboid#setHighLoc(Location)}.
      */
     @Test
     public void testSetHighLoc()
@@ -123,7 +123,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#isAreaWithinArea(Cuboid)}
+     * Tests {@link Cuboid#isAreaWithinArea(Cuboid)}.
      */
     @Test
     public void testIsAreaWithinArea()
@@ -140,7 +140,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#containsLoc(Location)}
+     * Tests {@link Cuboid#containsLoc(Location)}.
      */
     @Test
     public void testContainsLoc()
@@ -162,7 +162,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#containsLocWithoutY(Location)}
+     * Tests {@link Cuboid#containsLocWithoutY(Location)}.
      */
     @Test
     public void testContainsLocWithoutY()
@@ -184,10 +184,10 @@ public class CuboidTest
     }
     
     /**
-     * Tests {@link Cuboid#containsLocWithoutYd(Location)}
+     * Tests {@link Cuboid#containsLocWithoutYd(Location)}.
      */
     @Test
-    public void containsLocWithoutYD()
+    public void testContainsLocWithoutYd()
     {
         final World world = mock(World.class);
         final World world2 = mock(World.class);
@@ -224,7 +224,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests sizes
+     * Tests sizes.
      */
     @Test
     public void testSize()
@@ -248,7 +248,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#getWorld()}
+     * Tests  {@link Cuboid#getWorld()}.
      */
     @Test
     public void testGetWorld()
@@ -260,7 +260,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#toRaw()}
+     * Tests  {@link Cuboid#toRaw()}.
      */
     @Test
     public void testToRaw()
@@ -276,7 +276,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#toString()}
+     * Tests  {@link Cuboid#toString()}.
      */
     @Test
     public void testToString()
@@ -292,7 +292,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#getRandomLocation()}
+     * Tests  {@link Cuboid#getRandomLocation()}.
      */
     @Test
     public void testGetRandomLocation()
@@ -306,7 +306,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#getRandomLocation()}
+     * Tests  {@link Cuboid#getRandomLocation()}.
      */
     @Test
     public void testGetRandomLocation1()
@@ -320,7 +320,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#getRandomLocationForMobs()}
+     * Tests  {@link Cuboid#getRandomLocationForMobs()}.
      */
     @Test
     public void testGetRandomLocationForMobs()
@@ -334,7 +334,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests  {@link Cuboid#read(de.minigameslib.mclib.shared.api.com.DataSection)}
+     * Tests  {@link Cuboid#read(de.minigameslib.mclib.shared.api.com.DataSection)}.
      */
     @Test
     public void testConfigurable()
@@ -371,7 +371,7 @@ public class CuboidTest
     }
     
     /**
-     * Tests configurable (invalid)
+     * Tests configurable (invalid).
      */
     @Test(expected = IllegalArgumentException.class)
     public void testConfigurableInvalid()

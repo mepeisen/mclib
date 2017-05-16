@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
 /**
- * Test case for {@link CommonItems}
+ * Test case for {@link CommonItems}.
  * 
  * @author mepeisen
  */

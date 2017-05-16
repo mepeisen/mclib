@@ -56,6 +56,8 @@ import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerData;
 
 /**
+ * Dummy player.
+ * 
  * @author mepeisen
  *
  */
@@ -63,7 +65,7 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
 {
     
     /**
-     * Constructor
+     * Constructor.
      */
     public DummyPlayer()
     {
@@ -71,7 +73,9 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
     }
     
     /**
-     * @param player4
+     * Constructor.
+     * 
+     * @param player4 player.
      */
     public DummyPlayer(McPlayerInterface player4)
     {
@@ -179,6 +183,12 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
     {
         return ObjectServiceInterface.instance().getPlayer(this.getPlayerUUID()).getZone();
     }
+
+    @Override
+    public ZoneInterface getZone(ZoneTypeId... type)
+    {
+        return null;
+    }
     
     @Override
     public McOutgoingStubbing<McPlayerInterface> when(McPredicate<McPlayerInterface> test) throws McException
@@ -211,19 +221,13 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
     }
 
     @Override
-    public boolean isInsideAllZones(ZoneInterface... zone)
+    public boolean isInsideRandomZone(ZoneTypeId... type)
     {
         return false;
     }
 
     @Override
-    public ZoneInterface getZone(ZoneTypeId... type)
-    {
-        return null;
-    }
-
-    @Override
-    public boolean isInsideRandomZone(ZoneTypeId... type)
+    public boolean isInsideAllZones(ZoneInterface... zone)
     {
         return false;
     }
@@ -241,7 +245,7 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
     }
 
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void registerHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void registerHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         // empty
     }
@@ -253,7 +257,7 @@ public class DummyPlayer extends PlayerData implements McPlayerInterface
     }
 
     @Override
-    public <Evt extends MinecraftEvent<?, Evt>> void unregisterHandler(Plugin plugin, Class<Evt> clazz, McConsumer<Evt> handler)
+    public <EVT extends MinecraftEvent<?, EVT>> void unregisterHandler(Plugin plugin, Class<EVT> clazz, McConsumer<EVT> handler)
     {
         // empty
     }

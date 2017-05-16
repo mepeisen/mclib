@@ -67,10 +67,12 @@ public class CommandInterfaceTest
     private MessagesConfigInterface messages;
     /** library. */
     private MessageServiceInterface lib;
-
+    
     /**
      * Some setup.
-     * @throws ClassNotFoundException 
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on errors
      */
     @Before
     public void setup() throws ClassNotFoundException
@@ -82,7 +84,7 @@ public class CommandInterfaceTest
     }
     
     /**
-     * Tests {@link CommandInterface#isOp()}
+     * Tests {@link CommandInterface#isOp()}.
      */
     @Test
     public void testIsOp()
@@ -97,8 +99,10 @@ public class CommandInterfaceTest
     }
     
     /**
-     * Tests {@link CommandInterface#isPlayer()}
-     * @throws McException 
+     * Tests {@link CommandInterface#isPlayer()}.
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testIsPlayer() throws McException
@@ -111,11 +115,13 @@ public class CommandInterfaceTest
     }
     
     /**
-     * Tests {@link CommandInterface#permThrowException(PermissionsInterface, String)}
-     * @throws McException 
+     * Tests {@link CommandInterface#permThrowException(PermissionsInterface, String)}.
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test
-    public void testPermThrowExceptionOK() throws McException
+    public void testPermThrowExceptionOk() throws McException
     {
         final CommandSender sender = mock(CommandSender.class);
         when(sender.hasPermission(anyString())).thenReturn(true);
@@ -125,8 +131,10 @@ public class CommandInterfaceTest
     }
     
     /**
-     * Tests {@link CommandInterface#permThrowException(PermissionsInterface, String)}
-     * @throws McException 
+     * Tests {@link CommandInterface#permThrowException(PermissionsInterface, String)}.
+     * 
+     * @throws McException
+     *             thrown on errors
      */
     @Test(expected = McException.class)
     public void testPermThrowExceptionFailed() throws McException
@@ -160,28 +168,29 @@ public class CommandInterfaceTest
     }
     
     /**
-     * Sample Command impl
+     * Sample Command impl.
      */
     private static final class Command implements CommandInterface
     {
         
-        /** sender */
-        private final CommandSender sender;
-        /** player */
-        private final McPlayerInterface player;
-        /** command */
+        /** sender. */
+        private final CommandSender              sender;
+        /** player. */
+        private final McPlayerInterface          player;
+        /** command. */
         private final org.bukkit.command.Command command;
-        /** label */
-        private final String label;
-        /** args */
-        private final String[] args;
-
+        /** label. */
+        private final String                     label;
+        /** args. */
+        private final String[]                   args;
+        
         /**
-         * @param sender
-         * @param player
-         * @param command
-         * @param label
-         * @param args
+         * Constructor.
+         * @param sender sender
+         * @param player player
+         * @param command command
+         * @param label label
+         * @param args args
          */
         public Command(CommandSender sender, McPlayerInterface player, org.bukkit.command.Command command, String label, String[] args)
         {
@@ -191,69 +200,69 @@ public class CommandInterfaceTest
             this.label = label;
             this.args = args;
         }
-
+        
         @Override
         public CommandSender getSender()
         {
             return this.sender;
         }
-
+        
         @Override
         public McPlayerInterface getPlayer()
         {
             return this.player;
         }
-
+        
         @Override
         public org.bukkit.command.Command getCommand()
         {
             return this.command;
         }
-
+        
         @Override
         public String getLabel()
         {
             return this.label;
         }
-
+        
         @Override
         public String[] getArgs()
         {
             return this.args;
         }
-
+        
         @Override
         public CommandInterface consumeArgs(int count)
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public String getCommandPath()
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public Locale getLocale()
         {
             // dummy
             return Locale.ENGLISH;
         }
-
+        
         @Override
         public McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
         {
-            return null;
+            return Optional.empty();
         }
         
     }

@@ -47,9 +47,8 @@ import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
 
-
 /**
- * Tests for {@link AbstractPagableCommandHandler}
+ * Tests for {@link AbstractPagableCommandHandler}.
  * 
  * @author mepeisen
  *
@@ -58,8 +57,10 @@ public class AbstractPagableCommandHandlerTest
 {
     
     /**
-     * tests the first page
+     * tests the first page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testFirstPage() throws McException
@@ -67,7 +68,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{});
+        final Command cmd = new Command(sender, player, null, null, new String[] {});
         
         dummy.handle(cmd);
         
@@ -87,8 +88,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the second page
+     * tests the second page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testFirstPage2() throws McException
@@ -96,7 +99,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"1"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "1" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -116,8 +119,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the second page
+     * tests the second page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testSecondPage() throws McException
@@ -125,7 +130,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"2"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "2" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -145,8 +150,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the third page
+     * tests the third page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testThirdPage() throws McException
@@ -154,7 +161,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"3"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "3" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -169,8 +176,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the negative page
+     * tests the negative page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testNegativePage() throws McException
@@ -178,7 +187,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"-1"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "-1" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -188,8 +197,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the zero page
+     * tests the zero page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testZeroPage() throws McException
@@ -197,7 +208,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"0"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "0" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -207,8 +218,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the fourth page
+     * tests the fourth page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testFourthPage() throws McException
@@ -216,7 +229,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"4"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "4" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -226,16 +239,18 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the number format exception
+     * tests the number format exception.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
-    public void testNFE() throws McException
+    public void testNfe() throws McException
     {
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final DummyHandler dummy = new DummyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"foo"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "foo" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -246,8 +261,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the first page
+     * tests the first page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testEmptyFirstPage() throws McException
@@ -255,7 +272,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final EmptyHandler dummy = new EmptyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{});
+        final Command cmd = new Command(sender, player, null, null, new String[] {});
         
         dummy.handle(cmd);
         
@@ -265,8 +282,10 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * tests the first page
+     * tests the first page.
+     * 
      * @throws McException
+     *             thrown on errors
      */
     @Test
     public void testEmptyFirstPage2() throws McException
@@ -274,7 +293,7 @@ public class AbstractPagableCommandHandlerTest
         final CommandSender sender = mock(CommandSender.class);
         final McPlayerInterface player = mock(McPlayerInterface.class);
         final EmptyHandler dummy = new EmptyHandler();
-        final Command cmd = new Command(sender, player, null, null, new String[]{"1"}); //$NON-NLS-1$
+        final Command cmd = new Command(sender, player, null, null, new String[] { "1" }); //$NON-NLS-1$
         
         dummy.handle(cmd);
         
@@ -284,28 +303,35 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * Sample Command impl
+     * Sample Command impl.
      */
     private static final class Command implements CommandInterface
     {
         
-        /** sender */
-        private final CommandSender sender;
-        /** player */
-        private final McPlayerInterface player;
-        /** command */
+        /** sender. */
+        private final CommandSender              sender;
+        /** player. */
+        private final McPlayerInterface          player;
+        /** command. */
         private final org.bukkit.command.Command command;
-        /** label */
-        private final String label;
-        /** args */
-        private final String[] args;
-
+        /** label. */
+        private final String                     label;
+        /** args. */
+        private final String[]                   args;
+        
         /**
+         * Constructor.
+         * 
          * @param sender
+         *            sender
          * @param player
+         *            player
          * @param command
+         *            command
          * @param label
+         *            label
          * @param args
+         *            args
          */
         public Command(CommandSender sender, McPlayerInterface player, org.bukkit.command.Command command, String label, String[] args)
         {
@@ -315,99 +341,99 @@ public class AbstractPagableCommandHandlerTest
             this.label = label;
             this.args = args;
         }
-
+        
         @Override
         public CommandSender getSender()
         {
             return this.sender;
         }
-
+        
         @Override
         public McPlayerInterface getPlayer()
         {
             return this.player;
         }
-
+        
         @Override
         public org.bukkit.command.Command getCommand()
         {
             return this.command;
         }
-
+        
         @Override
         public String getLabel()
         {
             return this.label;
         }
-
+        
         @Override
         public String[] getArgs()
         {
             return this.args;
         }
-
+        
         @Override
         public CommandInterface consumeArgs(int count)
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public String getCommandPath()
         {
             // dummy
             return "path"; //$NON-NLS-1$
         }
-
+        
         @Override
         public Locale getLocale()
         {
             // dummy
             return Locale.ENGLISH;
         }
-
+        
         @Override
         public McOutgoingStubbing<CommandInterface> when(McPredicate<CommandInterface> test) throws McException
         {
             // dummy
             return null;
         }
-
+        
         @Override
         public <T> Optional<T> fetch(McBiFunction<CommandInterface, String, T> mapper) throws McException
         {
-            return null;
+            return Optional.empty();
         }
         
     }
     
     /**
-     * Test Helper
+     * Test Helper.
      */
     private static class DummyHandler extends AbstractPagableCommandHandler
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public DummyHandler()
         {
             // empty
         }
-
+        
         @Override
         protected int getLineCount(CommandInterface command)
         {
             return 25;
         }
-
+        
         @Override
         protected Serializable getHeader(CommandInterface command)
         {
             return "DUMMY-HEADER"; //$NON-NLS-1$
         }
-
+        
         @Override
         protected Serializable[] getLines(CommandInterface command, int start, int count)
         {
@@ -422,31 +448,31 @@ public class AbstractPagableCommandHandlerTest
     }
     
     /**
-     * Test Helper
+     * Test Helper.
      */
     private static class EmptyHandler extends AbstractPagableCommandHandler
     {
         
         /**
-         * Constructor
+         * Constructor.
          */
         public EmptyHandler()
         {
             // empty
         }
-
+        
         @Override
         protected int getLineCount(CommandInterface command)
         {
             return 0;
         }
-
+        
         @Override
         protected Serializable getHeader(CommandInterface command)
         {
             return "EMPTY-HEADER"; //$NON-NLS-1$
         }
-
+        
         @Override
         protected Serializable[] getLines(CommandInterface command, int start, int count)
         {

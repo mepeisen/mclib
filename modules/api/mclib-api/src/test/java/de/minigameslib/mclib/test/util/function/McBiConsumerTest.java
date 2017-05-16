@@ -34,7 +34,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
 
 /**
- * Tests case for {@link McBiConsumer}
+ * Tests case for {@link McBiConsumer}.
  * 
  * @author mepeisen
  */
@@ -54,8 +54,16 @@ public class McBiConsumerTest
         final AtomicInteger result2 = new AtomicInteger(0);
         final AtomicInteger result3 = new AtomicInteger(0);
         final AtomicInteger result4 = new AtomicInteger(0);
-        final McBiConsumer<Integer, Integer> func = (i, j) -> { result1.set(i); result2.set(j + 10); };
-        final McBiConsumer<Integer, Integer> func2 = (i, j) -> { result3.set(i + result1.get()); result4.set(j + result2.get()); };
+        final McBiConsumer<Integer, Integer> func = (i, j) ->
+        {
+            result1.set(i);
+            result2.set(j + 10);
+        };
+        final McBiConsumer<Integer, Integer> func2 = (i, j) ->
+        {
+            result3.set(i + result1.get());
+            result4.set(j + result2.get());
+        };
         
         func.andThen(func2).accept(5, 7);
         

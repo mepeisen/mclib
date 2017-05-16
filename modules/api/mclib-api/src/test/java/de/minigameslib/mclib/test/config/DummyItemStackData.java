@@ -41,28 +41,27 @@ public class DummyItemStackData extends AnnotatedDataFragment implements ConfigI
     /** the material. */
     @PersistentField
     public int material;
-
+    
     /**
-     * 
+     * Constructor.
      */
     public DummyItemStackData()
     {
         super();
     }
-
+    
     /**
-     * Constructor
+     * Constructor.
+     * 
      * @param itemStack
+     *            item stack.
      */
     @SuppressWarnings("deprecation")
     public DummyItemStackData(ItemStack itemStack)
     {
         this.material = itemStack.getType().getId();
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+    
     @Override
     public int hashCode()
     {
@@ -71,10 +70,7 @@ public class DummyItemStackData extends AnnotatedDataFragment implements ConfigI
         result = prime * result + this.material;
         return result;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    
     @Override
     public boolean equals(Object obj)
     {
@@ -97,7 +93,7 @@ public class DummyItemStackData extends AnnotatedDataFragment implements ConfigI
         }
         return true;
     }
-
+    
     @Override
     public ItemStack toBukkit()
     {

@@ -28,12 +28,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.util.function.McDoubleConsumer;
 import com.google.common.util.concurrent.AtomicDouble;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McDoubleConsumer;
+
 /**
- * Tests case for {@link McDoubleConsumer}
+ * Tests case for {@link McDoubleConsumer}.
  * 
  * @author mepeisen
  */
