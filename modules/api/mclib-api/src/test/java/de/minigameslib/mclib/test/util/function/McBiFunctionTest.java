@@ -33,7 +33,7 @@ import de.minigameslib.mclib.api.util.function.McBiFunction;
 import de.minigameslib.mclib.api.util.function.McFunction;
 
 /**
- * Tests case for {@link McBiFunction}
+ * Tests case for {@link McBiFunction}.
  * 
  * @author mepeisen
  */

@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
+import com.google.common.util.concurrent.AtomicDouble;
+
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McBiConsumer;
@@ -79,10 +81,9 @@ import de.minigameslib.mclib.api.util.function.McToIntFunction;
 import de.minigameslib.mclib.api.util.function.McToLongBiFunction;
 import de.minigameslib.mclib.api.util.function.McToLongFunction;
 import de.minigameslib.mclib.api.util.function.McUnaryOperator;
-import com.google.common.util.concurrent.AtomicDouble;
 
 /**
- * Tests case for {@link McFunctionUtils}
+ * Tests case for {@link McFunctionUtils}.
  * 
  * @author mepeisen
  */
@@ -100,7 +101,11 @@ public class McFunctionUtilsTest
     {
         final AtomicInteger result1 = new AtomicInteger(0);
         final AtomicInteger result2 = new AtomicInteger(0);
-        final McBiConsumer<Integer, Integer> func = (i, j) -> { result1.set(i); result2.set(j + 10); };
+        final McBiConsumer<Integer, Integer> func = (i, j) ->
+        {
+            result1.set(i);
+            result2.set(j + 10);
+        };
         
         McFunctionUtils.wrap(func).accept(5, 7);
         
@@ -117,7 +122,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testBiConsumerFailed() throws McException
     {
-        final McBiConsumer<Integer, Integer> func = (i, j) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McBiConsumer<Integer, Integer> func = (i, j) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -152,7 +160,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testBiFunctionFailed() throws McException
     {
-        final McBiFunction<String, String, String> func = (a1, a2) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McBiFunction<String, String, String> func = (a1, a2) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -187,7 +198,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testBinaryOperatorFailed() throws McException
     {
-        final McBinaryOperator<Integer> func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McBinaryOperator<Integer> func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -222,7 +236,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testBiPredicateFailed() throws McException
     {
-        final McBiPredicate<Integer, Integer> func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McBiPredicate<Integer, Integer> func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -257,7 +274,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testBooleanSupplierFailed() throws McException
     {
-        final McBooleanSupplier func = () -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McBooleanSupplier func = () ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -292,7 +312,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testComparatorFailed() throws McException
     {
-        final McComparator<Integer> func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McComparator<Integer> func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -329,7 +352,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testConsumerFailed() throws McException
     {
-        final McConsumer<Integer> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McConsumer<Integer> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -366,7 +392,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleConsumerFailed() throws McException
     {
-        final McDoubleConsumer func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleConsumer func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -403,7 +432,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntConsumerFailed() throws McException
     {
-        final McIntConsumer func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntConsumer func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -440,7 +472,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongConsumerFailed() throws McException
     {
-        final McLongConsumer func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongConsumer func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -475,7 +510,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleFunctionFailed() throws McException
     {
-        final McDoubleFunction<Long> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleFunction<Long> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -510,7 +548,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleSupplierFailed() throws McException
     {
-        final McDoubleSupplier func = () -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleSupplier func = () ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -545,7 +586,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoublePredicateFailed() throws McException
     {
-        final McDoublePredicate func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoublePredicate func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -580,7 +624,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleToIntFunctionFailed() throws McException
     {
-        final McDoubleToIntFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleToIntFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -615,7 +662,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleToLongFunctionFailed() throws McException
     {
-        final McDoubleToLongFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleToLongFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -650,7 +700,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleUnaryOperatorFailed() throws McException
     {
-        final McDoubleUnaryOperator func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleUnaryOperator func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -685,7 +738,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testDoubleBinaryOperatorFailed() throws McException
     {
-        final McDoubleBinaryOperator func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McDoubleBinaryOperator func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -720,7 +776,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testFunctionFailed() throws McException
     {
-        final McFunction<Double, Double> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McFunction<Double, Double> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -755,7 +814,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntFunctionFailed() throws McException
     {
-        final McIntFunction<Long> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntFunction<Long> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -790,7 +852,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntSupplierFailed() throws McException
     {
-        final McIntSupplier func = () -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntSupplier func = () ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -825,7 +890,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntPredicateFailed() throws McException
     {
-        final McIntPredicate func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntPredicate func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -860,7 +928,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntToDoubleFunctionFailed() throws McException
     {
-        final McIntToDoubleFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntToDoubleFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -895,7 +966,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntToLongFunctionFailed() throws McException
     {
-        final McIntToLongFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntToLongFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -930,7 +1004,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntUnaryOperatorFailed() throws McException
     {
-        final McIntUnaryOperator func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntUnaryOperator func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -965,7 +1042,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testIntBinaryOperatorFailed() throws McException
     {
-        final McIntBinaryOperator func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McIntBinaryOperator func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1000,7 +1080,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongFunctionFailed() throws McException
     {
-        final McLongFunction<Long> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongFunction<Long> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1035,7 +1118,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongSupplierFailed() throws McException
     {
-        final McLongSupplier func = () -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongSupplier func = () ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1070,7 +1156,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongPredicateFailed() throws McException
     {
-        final McLongPredicate func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongPredicate func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1105,7 +1194,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongToDoubleFunctionFailed() throws McException
     {
-        final McLongToDoubleFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongToDoubleFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1140,7 +1232,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongToLongFunctionFailed() throws McException
     {
-        final McLongToIntFunction func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongToIntFunction func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1175,7 +1270,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongUnaryOperatorFailed() throws McException
     {
-        final McLongUnaryOperator func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongUnaryOperator func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1210,7 +1308,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testLongBinaryOperatorFailed() throws McException
     {
-        final McLongBinaryOperator func = (a, b) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McLongBinaryOperator func = (a, b) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1245,7 +1346,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testPredicateFailed() throws McException
     {
-        final McPredicate<Double> func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McPredicate<Double> func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1280,7 +1384,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testSupplierFailed() throws McException
     {
-        final McSupplier<Double> func = () -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McSupplier<Double> func = () ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1315,7 +1422,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToDoubleFunctionFailed() throws McException
     {
-        final McToDoubleFunction<Double> func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToDoubleFunction<Double> func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1350,7 +1460,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToIntFunctionFailed() throws McException
     {
-        final McToIntFunction<Integer> func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToIntFunction<Integer> func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1373,7 +1486,7 @@ public class McFunctionUtilsTest
     {
         final McToLongFunction<Long> func = (d) -> d;
         
-        assertEquals(9, McFunctionUtils.wrap(func).applyAsLong(9l));
+        assertEquals(9, McFunctionUtils.wrap(func).applyAsLong(9L));
     }
     
     /**
@@ -1385,11 +1498,14 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToLongFunctionFailed() throws McException
     {
-        final McToLongFunction<Long> func = (d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToLongFunction<Long> func = (d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
-            McFunctionUtils.wrap(func).applyAsLong(9l);
+            McFunctionUtils.wrap(func).applyAsLong(9L);
         }
         catch (McFunctionUtils.WrappedException ex)
         {
@@ -1420,7 +1536,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToDoubleBiFunctionFailed() throws McException
     {
-        final McToDoubleBiFunction<Double, Double> func = (d, e) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToDoubleBiFunction<Double, Double> func = (d, e) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1455,7 +1574,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToIntBiFunctionFailed() throws McException
     {
-        final McToIntBiFunction<Integer, Integer> func = (d, e) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToIntBiFunction<Integer, Integer> func = (d, e) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1478,7 +1600,7 @@ public class McFunctionUtilsTest
     {
         final McToLongBiFunction<Long, Long> func = (d, e) -> d + e;
         
-        assertEquals(10, McFunctionUtils.wrap(func).applyAsLong(9l, 1l));
+        assertEquals(10, McFunctionUtils.wrap(func).applyAsLong(9L, 1L));
     }
     
     /**
@@ -1490,11 +1612,14 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testToLongBiFunctionFailed() throws McException
     {
-        final McToLongBiFunction<Long, Long> func = (d,e) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McToLongBiFunction<Long, Long> func = (d, e) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
-            McFunctionUtils.wrap(func).applyAsLong(9l, 1l);
+            McFunctionUtils.wrap(func).applyAsLong(9L, 1L);
         }
         catch (McFunctionUtils.WrappedException ex)
         {
@@ -1527,7 +1652,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testObjDoubleConsumerFailed() throws McException
     {
-        final McObjDoubleConsumer<AtomicDouble> func = (a, d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McObjDoubleConsumer<AtomicDouble> func = (a, d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1564,7 +1692,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testObjIntConsumerFailed() throws McException
     {
-        final McObjIntConsumer<AtomicInteger> func = (a, d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McObjIntConsumer<AtomicInteger> func = (a, d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1601,7 +1732,10 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testObjLongConsumerFailed() throws McException
     {
-        final McObjLongConsumer<AtomicLong> func = (a, d) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McObjLongConsumer<AtomicLong> func = (a, d) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
@@ -1624,7 +1758,7 @@ public class McFunctionUtilsTest
     {
         final McUnaryOperator<Long> func = (a) -> a + 1;
         
-        assertEquals(10, McFunctionUtils.wrap(func).apply(9l).longValue());
+        assertEquals(10, McFunctionUtils.wrap(func).apply(9L).longValue());
     }
     
     /**
@@ -1636,11 +1770,14 @@ public class McFunctionUtilsTest
     @Test(expected = McException.class)
     public void testUnaryOperatorFailed() throws McException
     {
-        final McUnaryOperator<Long> func = (a) -> { throw new McException(CommonMessages.InvokeIngame); };
+        final McUnaryOperator<Long> func = (a) ->
+        {
+            throw new McException(CommonMessages.InvokeIngame);
+        };
         
         try
         {
-            McFunctionUtils.wrap(func).apply(9l);
+            McFunctionUtils.wrap(func).apply(9L);
         }
         catch (McFunctionUtils.WrappedException ex)
         {
@@ -1649,7 +1786,7 @@ public class McFunctionUtilsTest
     }
     
     /**
-     * Constructor test for code coverage
+     * Constructor test for code coverage.
      */
     @SuppressWarnings("unused")
     @Test

@@ -36,9 +36,8 @@ import de.minigameslib.mclib.api.perms.Permission;
 import de.minigameslib.mclib.api.perms.Permissions;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
 
-
 /**
- * test case for {@link PermissionsInterface}
+ * test case for {@link PermissionsInterface}.
  * 
  * @author mepeisen
  */
@@ -46,7 +45,7 @@ public class PermissionsInterfaceTest
 {
     
     /**
-     * Tests {@link PermissionsInterface#fullPath()}
+     * Tests {@link PermissionsInterface#fullPath()}.
      */
     @Test
     public void fullPathTest()
@@ -56,7 +55,7 @@ public class PermissionsInterfaceTest
     }
     
     /**
-     * Tests {@link PermissionsInterface#fullPath()}
+     * Tests {@link PermissionsInterface#fullPath()}.
      */
     @Test(expected = IllegalStateException.class)
     public void fullPathTestInvalid1()
@@ -65,7 +64,7 @@ public class PermissionsInterfaceTest
     }
     
     /**
-     * Tests {@link PermissionsInterface#fullPath()}
+     * Tests {@link PermissionsInterface#fullPath()}.
      */
     @Test(expected = IllegalStateException.class)
     public void fullPathTestInvalid2()
@@ -74,8 +73,10 @@ public class PermissionsInterfaceTest
     }
     
     /**
-     * Tests {@link PermissionsInterface#resolveName()}
-     * @throws ClassNotFoundException 
+     * Tests {@link PermissionsInterface#resolveName()}.
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on errors
      */
     @Test
     public void resolveNameTest() throws ClassNotFoundException
@@ -90,7 +91,7 @@ public class PermissionsInterfaceTest
     /**
      * some sample permission.
      */
-    @Permissions(value="FOO")
+    @Permissions(value = "FOO")
     private static enum PermissionEnum implements PermissionsInterface
     {
         /** bar permission. */
@@ -114,7 +115,7 @@ public class PermissionsInterfaceTest
     /**
      * some sample permission.
      */
-    @Permissions(value="FOO")
+    @Permissions(value = "FOO")
     private static enum InvalidEnum2 implements PermissionsInterface
     {
         /** bar permission. */

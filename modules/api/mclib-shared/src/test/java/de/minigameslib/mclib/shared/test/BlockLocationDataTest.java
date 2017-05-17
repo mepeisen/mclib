@@ -25,7 +25,9 @@
 package de.minigameslib.mclib.shared.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,8 @@ import java.util.Map;
 import org.junit.Test;
 
 import de.minigameslib.mclib.shared.api.com.BlockLocationData;
+import de.minigameslib.mclib.shared.api.com.DataSection;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Testing {@code BlockLocationData}.
@@ -100,6 +104,72 @@ public class BlockLocationDataTest
         assertEquals("FOO", map.get(new BlockLocationData(1, 2, 3, "world"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("BAR", map.get(new BlockLocationData(1, 2, 3, "world2"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("BAR2", map.get(new BlockLocationData(1, 2, 3, null))); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testValid()
+    {
+        final DataSection section = new MemoryDataSection();
+        section.set("foo.x", 1); //$NON-NLS-1$
+        section.set("foo.y", 2); //$NON-NLS-1$
+        section.set("foo.z", 3); //$NON-NLS-1$
+        section.set("foo.world", "world"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(section.isFragment(BlockLocationData.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testInvalid1()
+    {
+        final DataSection section = new MemoryDataSection();
+        section.set("foo.y", 2); //$NON-NLS-1$
+        section.set("foo.z", 3); //$NON-NLS-1$
+        section.set("foo.world", "world"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(section.isFragment(BlockLocationData.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testInvalid2()
+    {
+        final DataSection section = new MemoryDataSection();
+        section.set("foo.x", 1); //$NON-NLS-1$
+        section.set("foo.z", 3); //$NON-NLS-1$
+        section.set("foo.world", "world"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(section.isFragment(BlockLocationData.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testInvalid3()
+    {
+        final DataSection section = new MemoryDataSection();
+        section.set("foo.x", 1); //$NON-NLS-1$
+        section.set("foo.y", 2); //$NON-NLS-1$
+        section.set("foo.world", "world"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(section.isFragment(BlockLocationData.class, "foo")); //$NON-NLS-1$
+    }
+    
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testInvalid4()
+    {
+        final DataSection section = new MemoryDataSection();
+        section.set("foo.x", 1); //$NON-NLS-1$
+        section.set("foo.y", 2); //$NON-NLS-1$
+        section.set("foo.z", 3); //$NON-NLS-1$
+        assertFalse(section.isFragment(BlockLocationData.class, "foo")); //$NON-NLS-1$
     }
     
 }

@@ -31,14 +31,14 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
+import com.google.common.util.concurrent.AtomicDouble;
+
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McComparator;
 import de.minigameslib.mclib.spigottest.CommonTestUtil;
 
-import com.google.common.util.concurrent.AtomicDouble;
-
 /**
- * Tests case for {@link McComparator}
+ * Tests case for {@link McComparator}.
  * 
  * @author mepeisen
  */
@@ -432,7 +432,7 @@ public class McComparatorTest
         assertEquals(0, func2.compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(1, func2.compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(-1, func2.compare(new FooInt(10, 10), new FooInt(10, 20)));
-
+        
         assertEquals(0, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(-1, func2.reversed().compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(1, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 20)));
@@ -453,7 +453,7 @@ public class McComparatorTest
         assertEquals(0, func2.compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(1, func2.compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(-1, func2.compare(new FooInt(10, 10), new FooInt(10, 20)));
-
+        
         assertEquals(0, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(-1, func2.reversed().compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(1, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 20)));
@@ -477,7 +477,7 @@ public class McComparatorTest
         assertEquals(-1, func3.compare(new FooInt(10, 10), new FooInt(10, 20)));
         assertEquals(1, func3.compare(new FooInt(20, 10), new FooInt(10, 10)));
         assertEquals(-1, func3.compare(new FooInt(10, 10), new FooInt(20, 10)));
-
+        
         assertEquals(0, func3.reversed().compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(-1, func3.reversed().compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(1, func3.reversed().compare(new FooInt(10, 10), new FooInt(10, 20)));
@@ -500,7 +500,7 @@ public class McComparatorTest
         assertEquals(0, func2.compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(1, func2.compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(-1, func2.compare(new FooInt(10, 10), new FooInt(10, 20)));
-
+        
         assertEquals(0, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 10)));
         assertEquals(-1, func2.reversed().compare(new FooInt(10, 20), new FooInt(10, 10)));
         assertEquals(1, func2.reversed().compare(new FooInt(10, 10), new FooInt(10, 20)));
@@ -521,7 +521,7 @@ public class McComparatorTest
         assertEquals(0, func2.compare(new FooLong(10, 10), new FooLong(10, 10)));
         assertEquals(1, func2.compare(new FooLong(10, 20), new FooLong(10, 10)));
         assertEquals(-1, func2.compare(new FooLong(10, 10), new FooLong(10, 20)));
-
+        
         assertEquals(0, func2.reversed().compare(new FooLong(10, 10), new FooLong(10, 10)));
         assertEquals(-1, func2.reversed().compare(new FooLong(10, 20), new FooLong(10, 10)));
         assertEquals(1, func2.reversed().compare(new FooLong(10, 10), new FooLong(10, 20)));
@@ -542,14 +542,14 @@ public class McComparatorTest
         assertEquals(0, func2.compare(new FooDouble(10, 10), new FooDouble(10, 10)));
         assertEquals(1, func2.compare(new FooDouble(10, 20), new FooDouble(10, 10)));
         assertEquals(-1, func2.compare(new FooDouble(10, 10), new FooDouble(10, 20)));
-
+        
         assertEquals(0, func2.reversed().compare(new FooDouble(10, 10), new FooDouble(10, 10)));
         assertEquals(-1, func2.reversed().compare(new FooDouble(10, 20), new FooDouble(10, 10)));
         assertEquals(1, func2.reversed().compare(new FooDouble(10, 10), new FooDouble(10, 20)));
     }
     
     /**
-     * Tests the enums
+     * Tests the enums.
      */
     @Test
     public void enumTest()
@@ -564,35 +564,42 @@ public class McComparatorTest
     private static final class FooInt
     {
         /** a value. */
-        private final int a;
+        private final int avalue;
         /** a value. */
-        private final int b;
+        private final int bvalue;
         
         /**
-         * Constructor
+         * Constructor.
+         * 
          * @param a
+         *            a
          * @param b
+         *            b
          */
         public FooInt(int a, int b)
         {
-            this.a = a;
-            this.b = b;
+            this.avalue = a;
+            this.bvalue = b;
         }
-
+        
         /**
-         * @return the a
+         * the a.
+         * 
+         * @return the a.
          */
         public int getA()
         {
-            return this.a;
+            return this.avalue;
         }
-
+        
         /**
+         * the b.
+         * 
          * @return the b
          */
         public int getB()
         {
-            return this.b;
+            return this.bvalue;
         }
     }
     
@@ -602,35 +609,42 @@ public class McComparatorTest
     private static final class FooLong
     {
         /** a value. */
-        private final long a;
+        private final long avalue;
         /** a value. */
-        private final long b;
+        private final long bvalue;
         
         /**
-         * Constructor
+         * Constructor.
+         * 
          * @param a
+         *            the a
          * @param b
+         *            the b
          */
         public FooLong(long a, long b)
         {
-            this.a = a;
-            this.b = b;
+            this.avalue = a;
+            this.bvalue = b;
         }
-
+        
         /**
+         * Returns the a.
+         * 
          * @return the a
          */
         public long getA()
         {
-            return this.a;
+            return this.avalue;
         }
-
+        
         /**
+         * Returns the b.
+         * 
          * @return the b
          */
         public long getB()
         {
-            return this.b;
+            return this.bvalue;
         }
     }
     
@@ -640,35 +654,42 @@ public class McComparatorTest
     private static final class FooDouble
     {
         /** a value. */
-        private final double a;
+        private final double avalue;
         /** a value. */
-        private final double b;
+        private final double bvalue;
         
         /**
-         * Constructor
+         * Constructor.
+         * 
          * @param a
+         *            the a
          * @param b
+         *            the b
          */
         public FooDouble(double a, double b)
         {
-            this.a = a;
-            this.b = b;
+            this.avalue = a;
+            this.bvalue = b;
         }
-
+        
         /**
+         * Returns the a.
+         * 
          * @return the a
          */
         public double getA()
         {
-            return this.a;
+            return this.avalue;
         }
-
+        
         /**
+         * Returns the b.
+         * 
          * @return the b
          */
         public double getB()
         {
-            return this.b;
+            return this.bvalue;
         }
     }
     

@@ -34,7 +34,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McLongUnaryOperator;
 
 /**
- * Tests case for {@link McLongUnaryOperator}
+ * Tests case for {@link McLongUnaryOperator}.
  * 
  * @author mepeisen
  */
@@ -52,7 +52,11 @@ public class McLongUnaryOperatorTest
     {
         final AtomicLong result1 = new AtomicLong(0);
         final McLongUnaryOperator func = (l) -> l * 2;
-        final McLongUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McLongUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.compose(func2).applyAsLong(4));
         assertEquals(4, result1.get());
@@ -69,7 +73,11 @@ public class McLongUnaryOperatorTest
     {
         final AtomicLong result1 = new AtomicLong(0);
         final McLongUnaryOperator func = (l) -> l * 2;
-        final McLongUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McLongUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.andThen(func2).applyAsLong(4));
         assertEquals(8, result1.get());

@@ -24,6 +24,10 @@
 
 package de.minigameslib.mclib.spigottest;
 
+import static org.junit.Assert.assertEquals;
+
+import java.lang.reflect.Method;
+
 /**
  * Some shared test utility.
  * 
@@ -42,9 +46,13 @@ public class CommonTestUtil
     {
         try
         {
-            for (Object o : (Object[]) clazz.getMethod("values").invoke(null)) //$NON-NLS-1$
+            final Method methodValues = clazz.getMethod("values"); //$NON-NLS-1$
+            methodValues.setAccessible(true);
+            final Method methodValueOf = clazz.getMethod("valueOf", String.class); //$NON-NLS-1$
+            methodValueOf.setAccessible(true);
+            for (Object o : (Object[]) methodValues.invoke(null))
             {
-                clazz.getMethod("valueOf", String.class).invoke(null, o.toString()); //$NON-NLS-1$
+                assertEquals(o, methodValueOf.invoke(null, o.toString()));
             }
         }
         catch (Throwable e)

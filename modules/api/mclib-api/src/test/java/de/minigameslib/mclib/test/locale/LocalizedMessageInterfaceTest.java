@@ -47,7 +47,7 @@ import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
 
 /**
- * Test for {@link LocalizedMessageInterface}
+ * Test for {@link LocalizedMessageInterface}.
  * 
  * @author mepeisen
  */
@@ -62,6 +62,7 @@ public class LocalizedMessageInterfaceTest
     /**
      * Some setup.
      * @throws ClassNotFoundException 
+     *             thrown on errors
      */
     @Before
     public void setup() throws ClassNotFoundException
@@ -73,7 +74,7 @@ public class LocalizedMessageInterfaceTest
     }
     
     /**
-     * Tests {@link LocalizedMessageInterface#isSingleLine()}
+     * Tests {@link LocalizedMessageInterface#isSingleLine()}.
      */
     @Test
     public void testIsSingleLine()
@@ -83,7 +84,7 @@ public class LocalizedMessageInterfaceTest
     }
     
     /**
-     * Tests {@link LocalizedMessageInterface#isMultiLine()}
+     * Tests {@link LocalizedMessageInterface#isMultiLine()}.
      */
     @Test
     public void testIsMultiLine()
@@ -93,7 +94,7 @@ public class LocalizedMessageInterfaceTest
     }
     
     /**
-     * Tests {@link LocalizedMessageInterface#getSeverity}
+     * Tests {@link LocalizedMessageInterface#getSeverity}.
      */
     @Test
     public void testGetSeverity()
@@ -125,7 +126,9 @@ public class LocalizedMessageInterfaceTest
     /**
      * Tests {@link LocalizedMessageInterface#toUserMessageLine(java.util.Locale, java.io.Serializable...)}
      * @throws SecurityException 
+     *             thrown on errors
      * @throws NoSuchFieldException 
+     *             thrown on errors
      */
     @Test
     public void testToUserMessageLine() throws NoSuchFieldException, SecurityException
@@ -138,7 +141,9 @@ public class LocalizedMessageInterfaceTest
     /**
      * Tests {@link LocalizedMessageInterface#toAdminMessageLine(java.util.Locale, java.io.Serializable...)}
      * @throws SecurityException 
+     *             thrown on errors
      * @throws NoSuchFieldException 
+     *             thrown on errors
      */
     @Test
     public void testToAdminMessageLine() throws NoSuchFieldException, SecurityException
@@ -148,17 +153,17 @@ public class LocalizedMessageInterfaceTest
     }
     
     /**
-     * Helper enum
+     * Helper enum.
      */
     @LocalizedMessages("msg")
     public enum TestMessages implements LocalizedMessageInterface
     {
         
-        /** single line */
+        /** single line. */
         @LocalizedMessage(defaultMessage = "FooSingleLine")
         FooSingleLine,
         
-        /** multi line */
+        /** multi line. */
         @LocalizedMessageList({"FooMultiLine 1", "FooMultiLine 2"})
         FooMultiLine,
         

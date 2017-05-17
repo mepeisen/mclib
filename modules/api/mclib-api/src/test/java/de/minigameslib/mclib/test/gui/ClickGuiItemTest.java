@@ -38,7 +38,7 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 
 /**
- * test case for {@link ClickGuiItem}
+ * test case for {@link ClickGuiItem}.
  * 
  * @author mepeisen
  */
@@ -46,7 +46,7 @@ public class ClickGuiItemTest
 {
     
     /**
-     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler)}
+     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler, java.io.Serializable...)}
      */
     @Test
     public void constructorTest()
@@ -65,7 +65,7 @@ public class ClickGuiItemTest
     }
     
     /**
-     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler)}
+     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler, java.io.Serializable...)}
      * @throws McException thrown on errors
      */
     @Test

@@ -34,7 +34,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 
 /**
- * Tests case for {@link McConsumer}
+ * Tests case for {@link McConsumer}.
  * 
  * @author mepeisen
  */

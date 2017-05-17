@@ -37,7 +37,7 @@ import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
- * test case for {@link LocalizedConfigString}
+ * test case for {@link LocalizedConfigString}.
  * 
  * @author mepeisen
  */
@@ -45,7 +45,7 @@ public class LocalizedConfigStringTest
 {
     
     /**
-     * Tests the argument substitution
+     * Tests the argument substitution.
      */
     @Test
     public void testArgs()

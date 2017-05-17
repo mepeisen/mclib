@@ -28,12 +28,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.util.function.McDoubleUnaryOperator;
 import com.google.common.util.concurrent.AtomicDouble;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.util.function.McDoubleUnaryOperator;
+
 /**
- * Tests case for {@link McDoubleUnaryOperator}
+ * Tests case for {@link McDoubleUnaryOperator}.
  * 
  * @author mepeisen
  */
@@ -51,7 +52,11 @@ public class McDoubleUnaryOperatorTest
     {
         final AtomicDouble result1 = new AtomicDouble(0);
         final McDoubleUnaryOperator func = (l) -> l * 2;
-        final McDoubleUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McDoubleUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.compose(func2).applyAsDouble(4), 0);
         assertEquals(4, result1.get(), 0);
@@ -68,7 +73,11 @@ public class McDoubleUnaryOperatorTest
     {
         final AtomicDouble result1 = new AtomicDouble(0);
         final McDoubleUnaryOperator func = (l) -> l * 2;
-        final McDoubleUnaryOperator func2 = (l) -> { result1.set(l); return l * 3; };
+        final McDoubleUnaryOperator func2 = (l) ->
+        {
+            result1.set(l);
+            return l * 3;
+        };
         
         assertEquals(24, func.andThen(func2).applyAsDouble(4), 0);
         assertEquals(8, result1.get(), 0);

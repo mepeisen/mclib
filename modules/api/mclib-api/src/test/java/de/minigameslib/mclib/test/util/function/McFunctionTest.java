@@ -32,7 +32,7 @@ import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.util.function.McFunction;
 
 /**
- * Tests case for {@link McFunction}
+ * Tests case for {@link McFunction}.
  * 
  * @author mepeisen
  */
