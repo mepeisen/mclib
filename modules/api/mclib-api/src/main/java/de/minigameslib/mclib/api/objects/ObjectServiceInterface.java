@@ -617,14 +617,35 @@ public interface ObjectServiceInterface
      */
     public enum CuboidMode
     {
-        /** finds matching components (identical). */
+        /**
+         * finds matching components (identical).
+         * @see Cuboid#equals(Object)
+         */
         FindMatching,
-        /** finds child components. */
+        
+        /**
+         * finds child components.
+         * @see Cuboid#isChild(Cuboid)
+         */
         FindChildren,
-        /** finds parent components. */
+        
+        /**
+         * finds parent components.
+         * @see Cuboid#isParent(Cuboid)
+         */
         FindParents,
-        /** finds overlapping components. */
-        FindOverlapping
+        
+        /** 
+         * finds overlapping components.
+         * @see Cuboid#isOverlapping(Cuboid)
+         */
+        FindOverlapping,
+        
+        /**
+         * find components that share locations with given cuboid.
+         * @see Cuboid#isShared(Cuboid)
+         */
+        FindShared,
     }
     
     /**

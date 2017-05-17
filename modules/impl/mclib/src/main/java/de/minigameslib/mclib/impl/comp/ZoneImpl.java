@@ -237,6 +237,18 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindOverlapping, type);
     }
     
+    @Override
+    public Collection<ZoneInterface> getSharedZones()
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindShared);
+    }
+    
+    @Override
+    public Collection<ZoneInterface> getSharedZones(ZoneTypeId... type)
+    {
+        return ObjectServiceInterface.instance().findZones(this.cuboid, CuboidMode.FindShared, type);
+    }
+    
     /**
      * Clears all event registrations.
      */

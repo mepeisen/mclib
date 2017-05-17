@@ -1703,6 +1703,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 return (z, c) -> z.getCuboid().isParent(c);
             case FindOverlapping:
                 return (z, c) -> z.getCuboid().isOverlapping(c);
+            case FindShared:
+                return (z, c) -> z.getCuboid().isShared(c);
             default:
                 break;
         }

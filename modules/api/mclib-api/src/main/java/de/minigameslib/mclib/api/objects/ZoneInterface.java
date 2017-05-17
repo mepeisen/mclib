@@ -189,6 +189,22 @@ public interface ZoneInterface
      */
     Collection<ZoneInterface> getOverlappingZones(ZoneTypeId... type);
     
+    /**
+     * Returns the shared zones.
+     * 
+     * @return shared zones
+     */
+    Collection<ZoneInterface> getSharedZones();
+    
+    /**
+     * Returns the shared zones.
+     * 
+     * @param type
+     *            type filter
+     * @return shared zones
+     */
+    Collection<ZoneInterface> getSharedZones(ZoneTypeId... type);
+    
     // event system
     
     /**

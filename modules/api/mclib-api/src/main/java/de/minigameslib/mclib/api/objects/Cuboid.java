@@ -245,7 +245,7 @@ public final class Cuboid implements DataFragment
     }
     
     /**
-     * Checks if this cuboid is sharing sdome locations with given cuboid but is neither parent nor child.
+     * Checks if this cuboid is sharing some locations with given cuboid but is neither parent nor child.
      * 
      * @param cuboid
      *            cuboid to be checked
@@ -256,6 +256,22 @@ public final class Cuboid implements DataFragment
         if (equals(this.getWorld(), cuboid.getWorld()) && this.lowPoints != null && cuboid.lowPoints != null && this.highPoints != null && cuboid.highPoints != null)
         {
             return !equals0(cuboid) && !child0(cuboid) && !parent0(cuboid) && shared0(cuboid);
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if this cuboid is sharing some locations with given cuboid. This includes being identical, parent or child.
+     * 
+     * @param cuboid
+     *            cuboid to be checked
+     * @return {@code true} if {@code cuboid} shares location with this cuboid
+     */
+    public boolean isShared(Cuboid cuboid)
+    {
+        if (equals(this.getWorld(), cuboid.getWorld()) && this.lowPoints != null && cuboid.lowPoints != null && this.highPoints != null && cuboid.highPoints != null)
+        {
+            return shared0(cuboid);
         }
         return false;
     }
