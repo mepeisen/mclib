@@ -201,7 +201,8 @@ public class ObjectsContainer<ID extends DataFragment, IDIMPL extends ID, COMP, 
      */
     public Set<IDIMPL> getByPlugin(String pluginName)
     {
-        return this.componentsByPlugin.get(pluginName).keySet();
+        final Map<IDIMPL, Boolean> map = this.componentsByPlugin.get(pluginName);
+        return map == null ? Collections.emptySet() : map.keySet();
     }
     
     /**
