@@ -1617,8 +1617,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 }
                 buffer.append("{\"predicate\": {\"damaged\": 0, \"damage\": ") //$NON-NLS-1$
                     .append(item.getCustomDurability().getModelDurability())
-                    .append("}, \"model\": \"item/").append(item.getPluginName()) //$NON-NLS-1$
-                    .append('/').append(item.getEnumName()).append("\"},"); //$NON-NLS-1$
+                    .append("}, \"model\": \"item/").append(item.getPluginName().toLowerCase()) //$NON-NLS-1$
+                    .append('/').append(item.getEnumName().toLowerCase()).append("\"},"); //$NON-NLS-1$
             }
             buffer.append("{\"predicate\": {\"damaged\": 1, \"damage\": 0}, \"model\": \"").append(custom.getCustomType().getDefaultModel()).append("\"}"); //$NON-NLS-1$ //$NON-NLS-2$
             buffer.append("]}"); //$NON-NLS-1$
@@ -1686,10 +1686,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     final File path = new File(texture);
                     final String filename = path.getName();
                     final String file = Files.getNameWithoutExtension(filename);
-                    blockTextures.add("items/" + blockId.getPluginName() + '/' + blockId.name() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    blockTextures.add("items/" + blockId.getPluginName().toLowerCase() + '/' + blockId.name().toLowerCase() + "_" + file.toLowerCase()); //$NON-NLS-1$ //$NON-NLS-2$
                     try
                     {
-                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + blockId.getPluginName() + '/' + blockId.name() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        final JarEntry textureEntry = new JarEntry(
+                            "assets/minecraft/textures/items/" + blockId.getPluginName().toLowerCase() //$NON-NLS-1$
+                            + '/' + blockId.name().toLowerCase() + "_" + filename.toLowerCase()); //$NON-NLS-1$
                         textureEntry.setTime(System.currentTimeMillis());
                         jar.putNextEntry(textureEntry);
                         copyFile(jar, blockId.getClass().getClassLoader(), texture);
@@ -1710,10 +1712,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     final File path = new File(texture);
                     final String filename = path.getName();
                     final String file = Files.getNameWithoutExtension(filename);
-                    textures.add("items/" + variant.getPluginName() + '/' + variant.name() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    textures.add("items/" + variant.getPluginName().toLowerCase() + '/' + variant.name().toLowerCase() + "_" + file.toLowerCase()); //$NON-NLS-1$ //$NON-NLS-2$
                     try
                     {
-                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + variant.getPluginName() + '/' + variant.name() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        final JarEntry textureEntry = new JarEntry(
+                            "assets/minecraft/textures/items/" + variant.getPluginName().toLowerCase() //$NON-NLS-1$
+                            + '/' + variant.name().toLowerCase() + "_" + filename.toLowerCase()); //$NON-NLS-1$
                         textureEntry.setTime(System.currentTimeMillis());
                         jar.putNextEntry(textureEntry);
                         copyFile(jar, variant.getClass().getClassLoader(), texture);
@@ -1768,10 +1772,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     final File path = new File(texture);
                     final String filename = path.getName();
                     final String file = Files.getNameWithoutExtension(filename);
-                    textures.add("items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                    textures.add("items/" + item.getPluginName().toLowerCase() + '/' + item.getEnumName().toLowerCase() + "_" + file.toLowerCase()); //$NON-NLS-1$ //$NON-NLS-2$
                     try
                     {
-                        final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                        final JarEntry textureEntry = new JarEntry(
+                            "assets/minecraft/textures/items/" + item.getPluginName().toLowerCase() //$NON-NLS-1$
+                            + '/' + item.getEnumName().toLowerCase() + "_" + filename.toLowerCase()); //$NON-NLS-1$
                         textureEntry.setTime(System.currentTimeMillis());
                         jar.putNextEntry(textureEntry);
                         copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);
@@ -1782,7 +1788,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                     }
                 }
                 
-                final JarEntry modelJson = new JarEntry("assets/minecraft/models/item/" + item.getPluginName() + '/' + item.getEnumName() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
+                final JarEntry modelJson = new JarEntry(
+                    "assets/minecraft/models/item/" + item.getPluginName().toLowerCase() + '/' + item.getEnumName().toLowerCase() + ".json"); //$NON-NLS-1$ //$NON-NLS-2$
                 modelJson.setTime(System.currentTimeMillis());
                 jar.putNextEntry(modelJson);
                 writeFile(jar, String.format(item.getItemId().getModelJson(), textures.toArray()));
@@ -1815,10 +1822,12 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 final File path = new File(texture);
                 final String filename = path.getName();
                 final String file = Files.getNameWithoutExtension(filename);
-                textures.add("items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + file); //$NON-NLS-1$ //$NON-NLS-2$
+                textures.add("items/" + item.getPluginName().toLowerCase() + '/' + item.getEnumName().toLowerCase() + "_" + file.toLowerCase()); //$NON-NLS-1$ //$NON-NLS-2$
                 try
                 {
-                    final JarEntry textureEntry = new JarEntry("assets/minecraft/textures/items/" + item.getPluginName() + '/' + item.getEnumName() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                    final JarEntry textureEntry = new JarEntry(
+                        "assets/minecraft/textures/items/" + item.getPluginName().toLowerCase() //$NON-NLS-1$
+                        + '/' + item.getEnumName().toLowerCase() + "_" + filename.toLowerCase()); //$NON-NLS-1$
                     textureEntry.setTime(System.currentTimeMillis());
                     jar.putNextEntry(textureEntry);
                     copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);
@@ -1834,7 +1843,8 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
                 final String filename = path.getName();
                 try
                 {
-                    final JarEntry textureEntry = new JarEntry("assets/mclib/textures/models/armor/custom-" + item.getNumId() + "_" + filename); //$NON-NLS-1$ //$NON-NLS-2$
+                    final JarEntry textureEntry = new JarEntry(
+                        "assets/mclib/textures/models/armor/custom-" + item.getNumId() + "_" + filename.toLowerCase()); //$NON-NLS-1$ //$NON-NLS-2$
                     textureEntry.setTime(System.currentTimeMillis());
                     jar.putNextEntry(textureEntry);
                     copyFile(jar, item.getItemId().getClass().getClassLoader(), texture);

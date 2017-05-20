@@ -12,7 +12,7 @@
     "credits": "",
     "logoFile": "/logo.png",
     "screenshots": [ ],
-    "requiredMods": [ "Forge" ],
+    "requiredMods": [ ],
     "dependencies": [ ],
     "dependants": [ ],
     "useDependencyInformation": true

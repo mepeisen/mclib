@@ -54,7 +54,7 @@ sourceSets {
 
 minecraft {
     runDir = "run"
-    version = "1.11.2-13.20.0.2201"
+    version = "1.11.2-13.20.0.2299"
     mappings = "snapshot_20161220"
     replaceIn "MclibMod.java"
     replace "VERSIONNUMBER", project.version
