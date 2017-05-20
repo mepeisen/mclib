@@ -66,7 +66,7 @@ public abstract class AbstractLocationComponent extends AbstractComponent
     public AbstractLocationComponent(ComponentRegistry registry, Location location, File config, ComponentOwner owner) throws McException
     {
         super(registry, config, owner);
-        this.location = location == null ? null : location;
+        this.location = location;
         this.changeLocs();
     }
     
