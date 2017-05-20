@@ -86,6 +86,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
                 this.cuboid = new Cuboid();
                 this.cuboid.read(core.getSection("location")); //$NON-NLS-1$
                 this.readData(core);
+                this.changeLocs();
             }
         }
     }
