@@ -1418,7 +1418,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final List<ZoneInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) ->
         {
-            this.zones.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
+            final Set<ZoneId> list = this.zones.getByPlugin(plugin);
+            if (list != null)
+            {
+                list.stream().filter(id -> ids.contains(id.getType())).map(this.zones::get).forEach(result::add);
+            }
         });
         
         return result;
@@ -1563,7 +1567,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final List<ComponentInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) ->
         {
-            this.components.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
+            final Set<ComponentId> list = this.components.getByPlugin(plugin);
+            if (list != null)
+            {
+                list.stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
+            }
         });
         
         return result;
@@ -1637,7 +1645,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final List<SignInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) ->
         {
-            this.signs.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
+            final Set<SignId> list = this.signs.getByPlugin(plugin);
+            if (list != null)
+            {
+                list.stream().filter(id -> ids.contains(id.getType())).map(this.signs::get).forEach(result::add);
+            }
         });
         
         return result;
@@ -1798,7 +1810,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final List<ObjectInterface> result = new ArrayList<>();
         perPlugin.forEach((plugin, ids) ->
         {
-            this.objects.getByPlugin(plugin).stream().filter(id -> ids.contains(id.getType())).map(this.objects::get).forEach(result::add);
+            final Set<ObjectId> list = this.objects.getByPlugin(plugin);
+            if (list != null)
+            {
+                list.stream().filter(id -> ids.contains(id.getType())).map(this.objects::get).forEach(result::add);
+            }
         });
         
         return result;
