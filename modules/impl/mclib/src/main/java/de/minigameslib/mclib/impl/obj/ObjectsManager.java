@@ -1674,7 +1674,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     /**
-     * Returns a stream for all chunks in given cuboid.
+     * Returns a stream for all objects in given cuboid.
      * 
      * @param cuboid
      *            the cuboid to search for
@@ -1687,9 +1687,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         final WorldChunk highChunk = new WorldChunk(cuboid.getHighLoc());
         for (int x = lowChunk.getX(); x <= highChunk.getX(); x++)
         {
-            for (int z = lowChunk.getZ(); z < lowChunk.getZ(); z++)
+            for (int z = lowChunk.getZ(); z <= highChunk.getZ(); z++)
             {
-                final WorldChunk chunk = new WorldChunk(lowChunk.getServerName(), lowChunk.getServerName(), x, z);
+                final WorldChunk chunk = new WorldChunk(lowChunk.getServerName(), lowChunk.getWorldName(), x, z);
                 result = Stream.concat(result, this.registry.fetch(chunk).stream());
             }
         }
