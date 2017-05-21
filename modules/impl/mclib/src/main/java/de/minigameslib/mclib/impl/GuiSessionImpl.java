@@ -282,12 +282,17 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
     @Override
     public void setNewPage(ClickGuiPageInterface page)
     {
-        this.currentPage = page;
-        this.currentName = page.getPageName();
-        this.currentItems = page.getItems();
-        final String name = toName(this.player, this.currentName);
-        final ItemStack[] items = this.toItemStack();
-        this.guiHelper.setNewPage(name, items);
+        // session may become invlaid before setting new page
+        // lets check this
+        if (this.player != null)
+        {
+            this.currentPage = page;
+            this.currentName = page.getPageName();
+            this.currentItems = page.getItems();
+            final String name = toName(this.player, this.currentName);
+            final ItemStack[] items = this.toItemStack();
+            this.guiHelper.setNewPage(name, items);
+        }
     }
     
     @Override
