@@ -31,7 +31,7 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -39,9 +39,10 @@ public class MgPlayerCommandPreprocessEvent extends AbstractMinigameEvent<Player
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event)
     {

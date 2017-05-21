@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.event.McExplosionPrimeEvent;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -38,9 +38,10 @@ public class MgExplosionPrimeEvent extends AbstractMinigameEvent<ExplosionPrimeE
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgExplosionPrimeEvent(ExplosionPrimeEvent event)
     {

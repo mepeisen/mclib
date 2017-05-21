@@ -29,8 +29,10 @@ import org.bukkit.event.Event;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
+import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.util.function.FalseStub;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
@@ -50,13 +52,19 @@ public abstract class AbstractMinigameEvent<EVT extends Event, MGEVT extends Min
 {
     
     /** the bukkit event object. */
-    private EVT               event;
+    private EVT                event;
     
     /** the player for this event. */
-    private McPlayerInterface player;
+    private McPlayerInterface  player;
     
     /** the zone interface. */
-    private ZoneInterface     zone;
+    private ZoneInterface      zone;
+    
+    /** the component interface. */
+    private ComponentInterface component;
+    
+    /** the sign interface. */
+    private SignInterface      sign;
     
     /**
      * Abstract minigame event.
@@ -118,7 +126,9 @@ public abstract class AbstractMinigameEvent<EVT extends Event, MGEVT extends Min
     {
         this.event = event;
         this.player = player;
-        this.zone = ObjectServiceInterface.instance().findZone(location);
+        this.zone = location == null ? null : ObjectServiceInterface.instance().findZone(location);
+        this.component = location == null ? null : ObjectServiceInterface.instance().findComponent(location);
+        this.sign = location == null ? null : ObjectServiceInterface.instance().findSign(location);
     }
     
     @Override
@@ -131,6 +141,18 @@ public abstract class AbstractMinigameEvent<EVT extends Event, MGEVT extends Min
     public ZoneInterface getZone()
     {
         return this.zone == null && this.player != null ? this.player.getZone() : this.zone;
+    }
+    
+    @Override
+    public ComponentInterface getComponent()
+    {
+        return this.component;
+    }
+    
+    @Override
+    public SignInterface getSign()
+    {
+        return this.sign;
     }
     
     @Override

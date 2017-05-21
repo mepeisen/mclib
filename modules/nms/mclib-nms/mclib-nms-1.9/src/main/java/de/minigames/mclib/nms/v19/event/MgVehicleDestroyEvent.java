@@ -35,7 +35,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -43,9 +43,10 @@ public class MgVehicleDestroyEvent extends AbstractMinigameEvent<VehicleDestroyE
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgVehicleDestroyEvent(VehicleDestroyEvent event)
     {
@@ -54,6 +55,7 @@ public class MgVehicleDestroyEvent extends AbstractMinigameEvent<VehicleDestroyE
     
     /**
      * @param event
+     *            the bukkit event
      * @return passanger
      */
     private static McPlayerInterface passenger(VehicleDestroyEvent event)
@@ -64,6 +66,7 @@ public class MgVehicleDestroyEvent extends AbstractMinigameEvent<VehicleDestroyE
     
     /**
      * @param event
+     *            the bukkit event
      * @return passanger
      */
     private static ZoneInterface location(VehicleDestroyEvent event)

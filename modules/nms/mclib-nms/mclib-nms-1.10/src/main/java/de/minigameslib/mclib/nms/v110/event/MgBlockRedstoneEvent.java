@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.event.McBlockRedstoneEvent;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -38,9 +38,10 @@ public class MgBlockRedstoneEvent extends AbstractMinigameEvent<BlockRedstoneEve
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgBlockRedstoneEvent(BlockRedstoneEvent event)
     {

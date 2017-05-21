@@ -37,7 +37,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -45,9 +45,10 @@ public class MgEntityDamageByEntityEvent extends AbstractMinigameEvent<EntityDam
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgEntityDamageByEntityEvent(EntityDamageByEntityEvent event)
     {
@@ -56,6 +57,7 @@ public class MgEntityDamageByEntityEvent extends AbstractMinigameEvent<EntityDam
     
     /**
      * @param event
+     *            the bukkit event
      * @return player
      */
     private static McPlayerInterface player(EntityDamageEvent event)
@@ -76,6 +78,7 @@ public class MgEntityDamageByEntityEvent extends AbstractMinigameEvent<EntityDam
     
     /**
      * @param event
+     *            the bukkit event
      * @return arena
      */
     private static ZoneInterface location(EntityDamageByEntityEvent event)

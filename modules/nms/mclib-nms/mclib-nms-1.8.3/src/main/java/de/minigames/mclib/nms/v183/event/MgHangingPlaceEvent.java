@@ -33,7 +33,7 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -41,9 +41,10 @@ public class MgHangingPlaceEvent extends AbstractMinigameEvent<HangingPlaceEvent
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgHangingPlaceEvent(HangingPlaceEvent event)
     {
@@ -52,6 +53,7 @@ public class MgHangingPlaceEvent extends AbstractMinigameEvent<HangingPlaceEvent
     
     /**
      * @param event
+     *            the bukkit event
      * @return player
      */
     private static McPlayerInterface player(HangingPlaceEvent event)

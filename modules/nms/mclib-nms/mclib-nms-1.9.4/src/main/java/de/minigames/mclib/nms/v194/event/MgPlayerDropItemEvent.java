@@ -31,7 +31,7 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -39,9 +39,10 @@ public class MgPlayerDropItemEvent extends AbstractMinigameEvent<PlayerDropItemE
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgPlayerDropItemEvent(PlayerDropItemEvent event)
     {

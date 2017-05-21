@@ -30,7 +30,7 @@ import de.minigameslib.mclib.api.event.McItemSpawnEvent;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -38,9 +38,10 @@ public class MgItemSpawnEvent extends AbstractMinigameEvent<ItemSpawnEvent, McIt
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgItemSpawnEvent(ItemSpawnEvent event)
     {

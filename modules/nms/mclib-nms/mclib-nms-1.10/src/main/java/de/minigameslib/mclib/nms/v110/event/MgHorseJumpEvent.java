@@ -35,7 +35,7 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.nms.api.AbstractMinigameEvent;
 
 /**
- * Minigame event implementation
+ * Minigame event implementation.
  * 
  * @author mepeisen
  */
@@ -43,9 +43,10 @@ public class MgHorseJumpEvent extends AbstractMinigameEvent<HorseJumpEvent, McHo
 {
     
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param event
+     *            the bukkit event
      */
     public MgHorseJumpEvent(HorseJumpEvent event)
     {
@@ -54,6 +55,7 @@ public class MgHorseJumpEvent extends AbstractMinigameEvent<HorseJumpEvent, McHo
     
     /**
      * @param event
+     *            the bukkit event
      * @return player
      */
     private static McPlayerInterface player(HorseJumpEvent event)
@@ -64,6 +66,7 @@ public class MgHorseJumpEvent extends AbstractMinigameEvent<HorseJumpEvent, McHo
     
     /**
      * @param event
+     *            the bukkit event
      * @return arena
      */
     private static ZoneInterface location(HorseJumpEvent event)
