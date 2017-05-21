@@ -147,7 +147,7 @@ public abstract class AbstractCuboidComponent extends AbstractComponent
             final WorldChunk highChunk = new WorldChunk(this.cuboid.getHighLoc().clone().add(new Vector(2, 2, 2)));
             for (int x = lowChunk.getX(); x <= highChunk.getX(); x++)
             {
-                for (int z = highChunk.getZ(); z <= highChunk.getZ(); z++)
+                for (int z = lowChunk.getZ(); z <= highChunk.getZ(); z++)
                 {
                     final WorldChunk chunk = new WorldChunk(lowChunk.getServerName(), lowChunk.getWorldName(), x, z);
                     chunks.add(chunk);
