@@ -424,7 +424,27 @@ class ConfigurationTool
      * 
      * @return path calculator
      */
+    static PathCalculator<ConfigurationJavaEnum> javaEnumPath()
+    {
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
+    }
+    
+    /**
+     * Returns the path calculator for given type.
+     * 
+     * @return path calculator
+     */
     static PathCalculator<ConfigurationEnumList> enumListPath()
+    {
+        return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
+    }
+    
+    /**
+     * Returns the path calculator for given type.
+     * 
+     * @return path calculator
+     */
+    static PathCalculator<ConfigurationJavaEnumList> javaEnumListPath()
     {
         return (val, configs, config, lib) -> lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? val.name() : config.name()));
     }

@@ -60,6 +60,16 @@ public interface ConfigurationValueInterface extends EnumerationValue
     }
     
     /**
+     * Checks if this configuration variable is an enum.
+     * 
+     * @return {@code true} if this is an enum
+     */
+    default boolean isJavaEnum()
+    {
+        return ConfigurationTool.isType(this, ConfigurationJavaEnum.class);
+    }
+    
+    /**
      * Checks if this configuration variable is an enum list.
      * 
      * @return {@code true} if this is an enum list
@@ -67,6 +77,16 @@ public interface ConfigurationValueInterface extends EnumerationValue
     default boolean isEnumList()
     {
         return ConfigurationTool.isType(this, ConfigurationEnumList.class);
+    }
+    
+    /**
+     * Checks if this configuration variable is an enum list.
+     * 
+     * @return {@code true} if this is an enum list
+     */
+    default boolean isJavaEnumList()
+    {
+        return ConfigurationTool.isType(this, ConfigurationJavaEnumList.class);
     }
     
     /**
@@ -382,6 +402,22 @@ public interface ConfigurationValueInterface extends EnumerationValue
             }
             {
                 final ConfigurationEnumList config = field.getAnnotation(ConfigurationEnumList.class);
+                if (config != null)
+                {
+                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    return path;
+                }
+            }
+            {
+                final ConfigurationJavaEnum config = field.getAnnotation(ConfigurationJavaEnum.class);
+                if (config != null)
+                {
+                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    return path;
+                }
+            }
+            {
+                final ConfigurationJavaEnumList config = field.getAnnotation(ConfigurationJavaEnumList.class);
                 if (config != null)
                 {
                     final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
@@ -787,6 +823,20 @@ public interface ConfigurationValueInterface extends EnumerationValue
      * @param value
      *            value to set.
      */
+    default void setJavaEnum(Enum<?> value)
+    {
+        ConfigurationTool.consume(this, ConfigurationJavaEnum.class, ConfigurationTool.javaEnumPath(), (val, configs, config, lib, minigame, path) ->
+        {
+            minigame.getConfig(configs.file()).set(path, value);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     */
     default void setEnumList(EnumerationValue[] value)
     {
         final List<EnumerationValue> list = Arrays.asList(value);
@@ -807,6 +857,38 @@ public interface ConfigurationValueInterface extends EnumerationValue
     default void setEnumList(EnumerationValue[] value, String subpath)
     {
         final List<EnumerationValue> list = Arrays.asList(value);
+        ConfigurationTool.consume(this, subpath, (val, configs, config, lib, minigame, path) ->
+        {
+            minigame.getConfig(configs.file()).setPrimitiveList(path, list);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     */
+    default void setJavaEnumList(Enum<?>[] value)
+    {
+        final List<Enum<?>> list = Arrays.asList(value);
+        ConfigurationTool.consume(this, ConfigurationJavaEnumList.class, ConfigurationTool.javaEnumListPath(), (val, configs, config, lib, minigame, path) ->
+        {
+            minigame.getConfig(configs.file()).setPrimitiveList(path, list);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     * @param subpath
+     *            the sub path
+     */
+    default void setJavaEnumList(Enum<?>[] value, String subpath)
+    {
+        final List<Enum<?>> list = Arrays.asList(value);
         ConfigurationTool.consume(this, subpath, (val, configs, config, lib, minigame, path) ->
         {
             minigame.getConfig(configs.file()).setPrimitiveList(path, list);
@@ -1795,6 +1877,39 @@ public interface ConfigurationValueInterface extends EnumerationValue
     /**
      * Returns the value of given configuration value.
      * 
+     * @param <T>
+     *            enumeration class
+     * @param clazz
+     *            enumeration class
+     * @return value.
+     */
+    default <T extends Enum<?>> T getJavaEnum(Class<T> clazz)
+    {
+        return ConfigurationTool.calculate(
+            this, ConfigurationJavaEnum.class, ConfigurationTool.javaEnumPath(),
+            (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file()).getEnum(clazz, path));
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
+     * @param <T>
+     *            enumration class
+     * @param clazz
+     *            enumeration class
+     * @param path
+     *            sub path of configuration section
+     * 
+     * @return value.
+     */
+    default <T extends Enum<?>> T getJavaEnum(Class<T> clazz, String path)
+    {
+        return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnum(clazz, spath));
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
      * @return value.
      */
     default ConfigColorData getColor()
@@ -2043,6 +2158,58 @@ public interface ConfigurationValueInterface extends EnumerationValue
     default <T extends EnumerationValue> T[] getEnumList(Class<T> clazz, String path)
     {
         final List<T> list = ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnumValueList(clazz, spath));
+        @SuppressWarnings("unchecked")
+        final T[] result = (T[]) Array.newInstance(clazz, list == null ? 0 : list.size());
+        if (list != null)
+        {
+            for (int i = 0; i < result.length; i++)
+            {
+                result[i] = list.get(i);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
+     * @param <T>
+     *            enumeration class
+     * @param clazz
+     *            enumeration class
+     * @return value.
+     */
+    default <T extends Enum<?>> T[] getJavaEnumList(Class<T> clazz)
+    {
+        final List<T> list = ConfigurationTool.calculate(this, ConfigurationJavaEnumList.class, ConfigurationTool.javaEnumListPath(),
+            (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file()).getEnumList(clazz, path), null);
+        @SuppressWarnings("unchecked")
+        final T[] result = (T[]) Array.newInstance(clazz, list == null ? 0 : list.size());
+        if (list != null)
+        {
+            for (int i = 0; i < result.length; i++)
+            {
+                result[i] = list.get(i);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the value of given configuration value.
+     * 
+     * @param <T>
+     *            enumeration class
+     * @param clazz
+     *            enumeration class
+     * @param path
+     *            sub path of configuration section
+     * 
+     * @return value.
+     */
+    default <T extends Enum<?>> T[] getJavaEnumList(Class<T> clazz, String path)
+    {
+        final List<T> list = ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnumList(clazz, spath));
         @SuppressWarnings("unchecked")
         final T[] result = (T[]) Array.newInstance(clazz, list == null ? 0 : list.size());
         if (list != null)
@@ -2795,6 +2962,40 @@ public interface ConfigurationValueInterface extends EnumerationValue
             
             {
                 final ConfigurationEnumList config = field.getAnnotation(ConfigurationEnumList.class);
+                if (config != null)
+                {
+                    return config.clazz();
+                }
+            }
+        }
+        catch (@SuppressWarnings("unused") Exception ex)
+        {
+            // silently ignore
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the enum class hint for enum values.
+     * 
+     * @return enum class hint
+     */
+    default Class<? extends Enum<?>> getJavaEnumClass()
+    {
+        try
+        {
+            final Field field = this.getClass().getDeclaredField(this.name());
+            
+            {
+                final ConfigurationJavaEnum config = field.getAnnotation(ConfigurationJavaEnum.class);
+                if (config != null)
+                {
+                    return config.clazz();
+                }
+            }
+            
+            {
+                final ConfigurationJavaEnumList config = field.getAnnotation(ConfigurationJavaEnumList.class);
                 if (config != null)
                 {
                     return config.clazz();

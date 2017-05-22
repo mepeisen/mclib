@@ -204,6 +204,14 @@ public abstract class AbstractConfigOption
         {
             return new EnumListConfigOption(value);
         }
+        if (value.isJavaEnum())
+        {
+            return new JavaEnumConfigOption(value);
+        }
+        if (value.isJavaEnumList())
+        {
+            return new JavaEnumListConfigOption(value);
+        }
         if (value.isFloat())
         {
             return new FloatConfigOption(value);
