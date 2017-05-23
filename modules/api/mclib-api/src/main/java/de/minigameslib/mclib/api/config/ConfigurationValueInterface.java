@@ -34,9 +34,20 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Color;
 
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.validate.ValidateFMax;
+import de.minigameslib.mclib.api.validate.ValidateFMin;
+import de.minigameslib.mclib.api.validate.ValidateIsset;
+import de.minigameslib.mclib.api.validate.ValidateLMax;
+import de.minigameslib.mclib.api.validate.ValidateLMin;
+import de.minigameslib.mclib.api.validate.ValidateListMax;
+import de.minigameslib.mclib.api.validate.ValidateListMin;
+import de.minigameslib.mclib.api.validate.ValidateStrMax;
+import de.minigameslib.mclib.api.validate.ValidateStrMin;
+import de.minigameslib.mclib.api.validate.Validator;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
@@ -46,344 +57,208 @@ import de.minigameslib.mclib.shared.api.com.EnumerationValue;
  * 
  * @author mepeisen
  */
-public interface ConfigurationValueInterface extends EnumerationValue
+public interface ConfigurationValueInterface extends EnumerationValue, EditableValue
 {
     
-    /**
-     * Checks if this configuration variable is an enum.
-     * 
-     * @return {@code true} if this is an enum
-     */
+    @Override
     default boolean isEnum()
     {
         return ConfigurationTool.isType(this, ConfigurationEnum.class);
     }
     
-    /**
-     * Checks if this configuration variable is an enum.
-     * 
-     * @return {@code true} if this is an enum
-     */
+    @Override
     default boolean isJavaEnum()
     {
         return ConfigurationTool.isType(this, ConfigurationJavaEnum.class);
     }
     
-    /**
-     * Checks if this configuration variable is an enum list.
-     * 
-     * @return {@code true} if this is an enum list
-     */
+    @Override
     default boolean isEnumList()
     {
         return ConfigurationTool.isType(this, ConfigurationEnumList.class);
     }
     
-    /**
-     * Checks if this configuration variable is an enum list.
-     * 
-     * @return {@code true} if this is an enum list
-     */
+    @Override
     default boolean isJavaEnumList()
     {
         return ConfigurationTool.isType(this, ConfigurationJavaEnumList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a boolean.
-     * 
-     * @return {@code true} if this is a boolean
-     */
+    @Override
     default boolean isBoolean()
     {
         return ConfigurationTool.isType(this, ConfigurationBool.class);
     }
     
-    /**
-     * Checks if this configuration variable is a boolean list.
-     * 
-     * @return {@code true} if this is a boolean list
-     */
+    @Override
     default boolean isBooleanList()
     {
         return ConfigurationTool.isType(this, ConfigurationBoolList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a byte.
-     * 
-     * @return {@code true} if this is a byte
-     */
+    @Override
     default boolean isByte()
     {
         return ConfigurationTool.isType(this, ConfigurationByte.class);
     }
     
-    /**
-     * Checks if this configuration variable is a byte list.
-     * 
-     * @return {@code true} if this is a byte list
-     */
+    @Override
     default boolean isByteList()
     {
         return ConfigurationTool.isType(this, ConfigurationByteList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a character.
-     * 
-     * @return {@code true} if this is a character
-     */
+    @Override
     default boolean isCharacter()
     {
         return ConfigurationTool.isType(this, ConfigurationCharacter.class);
     }
     
-    /**
-     * Checks if this configuration variable is a character list.
-     * 
-     * @return {@code true} if this is a character list
-     */
+    @Override
     default boolean isCharacterList()
     {
         return ConfigurationTool.isType(this, ConfigurationCharacterList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a color list.
-     * 
-     * @return {@code true} if this is a color list
-     */
+    @Override
     default boolean isColorList()
     {
         return ConfigurationTool.isType(this, ConfigurationColorList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a color.
-     * 
-     * @return {@code true} if this is a color
-     */
+    @Override
     default boolean isColor()
     {
         return ConfigurationTool.isType(this, ConfigurationColor.class);
     }
     
-    /**
-     * Checks if this configuration variable is a double list.
-     * 
-     * @return {@code true} if this is a double list
-     */
+    @Override
     default boolean isDoubleList()
     {
         return ConfigurationTool.isType(this, ConfigurationDoubleList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a double.
-     * 
-     * @return {@code true} if this is a double
-     */
+    @Override
     default boolean isDouble()
     {
         return ConfigurationTool.isType(this, ConfigurationDouble.class);
     }
     
-    /**
-     * Checks if this configuration variable is a float list.
-     * 
-     * @return {@code true} if this is a float list
-     */
+    @Override
     default boolean isFloatList()
     {
         return ConfigurationTool.isType(this, ConfigurationFloatList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a float.
-     * 
-     * @return {@code true} if this is a float
-     */
+    @Override
     default boolean isFloat()
     {
         return ConfigurationTool.isType(this, ConfigurationFloat.class);
     }
     
-    /**
-     * Checks if this configuration variable is a int list.
-     * 
-     * @return {@code true} if this is a int list
-     */
+    @Override
     default boolean isIntList()
     {
         return ConfigurationTool.isType(this, ConfigurationIntList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a int.
-     * 
-     * @return {@code true} if this is a int
-     */
+    @Override
     default boolean isInt()
     {
         return ConfigurationTool.isType(this, ConfigurationInt.class);
     }
     
-    /**
-     * Checks if this configuration variable is an item stack list.
-     * 
-     * @return {@code true} if this is an item stack list
-     */
+    @Override
     default boolean isItemStackList()
     {
         return ConfigurationTool.isType(this, ConfigurationItemStackList.class);
     }
     
-    /**
-     * Checks if this configuration variable is an item stack.
-     * 
-     * @return {@code true} if this is an item stack
-     */
+    @Override
     default boolean isItemStack()
     {
         return ConfigurationTool.isType(this, ConfigurationItemStack.class);
     }
     
-    /**
-     * Checks if this configuration variable is a section.
-     * 
-     * @return {@code true} if this is a section
-     */
+    @Override
     default boolean isSection()
     {
         return ConfigurationTool.isType(this, ConfigurationSection.class);
     }
     
-    /**
-     * Checks if this configuration variable is a long list.
-     * 
-     * @return {@code true} if this is a long list
-     */
+    @Override
     default boolean isLongList()
     {
         return ConfigurationTool.isType(this, ConfigurationLongList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a long.
-     * 
-     * @return {@code true} if this is a long
-     */
+    @Override
     default boolean isLong()
     {
         return ConfigurationTool.isType(this, ConfigurationLong.class);
     }
     
-    /**
-     * Checks if this configuration variable is an object list.
-     * 
-     * @return {@code true} if this is an object list
-     */
+    @Override
     default boolean isObjectList()
     {
         return ConfigurationTool.isType(this, ConfigurationObjectList.class);
     }
     
-    /**
-     * Checks if this configuration variable is an object.
-     * 
-     * @return {@code true} if this is an object
-     */
+    @Override
     default boolean isObject()
     {
         return ConfigurationTool.isType(this, ConfigurationObject.class);
     }
     
-    /**
-     * Checks if this configuration variable is a player list.
-     * 
-     * @return {@code true} if this is a player list
-     */
+    @Override
     default boolean isPlayerList()
     {
         return ConfigurationTool.isType(this, ConfigurationPlayerList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a player.
-     * 
-     * @return {@code true} if this is a player
-     */
+    @Override
     default boolean isPlayer()
     {
         return ConfigurationTool.isType(this, ConfigurationPlayer.class);
     }
     
-    /**
-     * Checks if this configuration variable is a short list.
-     * 
-     * @return {@code true} if this is a short list
-     */
+    @Override
     default boolean isShortList()
     {
         return ConfigurationTool.isType(this, ConfigurationShortList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a short.
-     * 
-     * @return {@code true} if this is a short
-     */
+    @Override
     default boolean isShort()
     {
         return ConfigurationTool.isType(this, ConfigurationShort.class);
     }
     
-    /**
-     * Checks if this configuration variable is a string list.
-     * 
-     * @return {@code true} if this is a string list
-     */
+    @Override
     default boolean isStringList()
     {
         return ConfigurationTool.isType(this, ConfigurationStringList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a string.
-     * 
-     * @return {@code true} if this is a string
-     */
+    @Override
     default boolean isString()
     {
         return ConfigurationTool.isType(this, ConfigurationString.class);
     }
     
-    /**
-     * Checks if this configuration variable is a vector list.
-     * 
-     * @return {@code true} if this is a vector list
-     */
+    @Override
     default boolean isVectorList()
     {
         return ConfigurationTool.isType(this, ConfigurationVectorList.class);
     }
     
-    /**
-     * Checks if this configuration variable is a vector.
-     * 
-     * @return {@code true} if this is a vector
-     */
+    @Override
     default boolean isVector()
     {
         return ConfigurationTool.isType(this, ConfigurationVector.class);
     }
     
-    /**
-     * Returns the configuration path of this option.
-     * 
-     * @return configuration path
-     */
+    @Override
     default String path()
     {
         try
@@ -664,11 +539,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         }
     }
     
-    /**
-     * Checks if this configuration value is set.
-     * 
-     * @return {@code true} if this configuraiton value is set.
-     */
+    @Override
     default boolean isset()
     {
         final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
@@ -728,12 +599,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setObject(DataFragment value)
     {
         ConfigurationTool.consume(this, ConfigurationObject.class, ConfigurationTool.objectPath(), (val, configs, config, lib, minigame, path) ->
@@ -747,12 +613,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setObjectList(DataFragment[] value)
     {
         ConfigurationTool.consumeList(this, ConfigurationObjectList.class, ConfigurationTool.objectListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
@@ -803,12 +664,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setEnum(EnumerationValue value)
     {
         ConfigurationTool.consume(this, ConfigurationEnum.class, ConfigurationTool.enumPath(), (val, configs, config, lib, minigame, path) ->
@@ -817,12 +673,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setJavaEnum(Enum<?> value)
     {
         ConfigurationTool.consume(this, ConfigurationJavaEnum.class, ConfigurationTool.javaEnumPath(), (val, configs, config, lib, minigame, path) ->
@@ -831,12 +682,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setEnumList(EnumerationValue[] value)
     {
         final List<EnumerationValue> list = Arrays.asList(value);
@@ -863,12 +709,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setJavaEnumList(Enum<?>[] value)
     {
         final List<Enum<?>> list = Arrays.asList(value);
@@ -911,12 +752,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setBoolean(boolean value)
     {
         ConfigurationTool.consume(this, ConfigurationBool.class, ConfigurationTool.boolPath(), (val, configs, config, lib, minigame, path) ->
@@ -925,12 +761,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setBooleanList(boolean[] value)
     {
         final List<Boolean> list = new ArrayList<>();
@@ -981,12 +812,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setByte(byte value)
     {
         ConfigurationTool.consume(this, ConfigurationByte.class, ConfigurationTool.bytePath(), (val, configs, config, lib, minigame, path) ->
@@ -995,12 +821,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setByteList(byte[] value)
     {
         final List<Byte> list = new ArrayList<>();
@@ -1051,12 +872,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setCharacter(char value)
     {
         ConfigurationTool.consume(this, ConfigurationCharacter.class, ConfigurationTool.charPath(), (val, configs, config, lib, minigame, path) ->
@@ -1065,12 +881,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setCharacterList(char[] value)
     {
         final List<Character> list = new ArrayList<>();
@@ -1121,12 +932,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setColor(ConfigColorData value)
     {
         ConfigurationTool.consume(this, ConfigurationColor.class, ConfigurationTool.colorPath(), (val, configs, config, lib, minigame, path) ->
@@ -1135,12 +941,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setColorList(ConfigColorData[] value)
     {
         ConfigurationTool.consumeList(this, ConfigurationColorList.class, ConfigurationTool.colorListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
@@ -1181,12 +982,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setDouble(double value)
     {
         ConfigurationTool.consume(this, ConfigurationDouble.class, ConfigurationTool.doublePath(), (val, configs, config, lib, minigame, path) ->
@@ -1195,12 +991,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setDoubleList(double[] value)
     {
         final List<Double> list = new ArrayList<>();
@@ -1251,12 +1042,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setFloat(float value)
     {
         ConfigurationTool.consume(this, ConfigurationFloat.class, ConfigurationTool.floatPath(), (val, configs, config, lib, minigame, path) ->
@@ -1265,12 +1051,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setFloatList(float[] value)
     {
         final List<Float> list = new ArrayList<>();
@@ -1321,12 +1102,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setInt(int value)
     {
         ConfigurationTool.consume(this, ConfigurationInt.class, ConfigurationTool.intPath(), (val, configs, config, lib, minigame, path) ->
@@ -1335,12 +1111,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setIntList(int[] value)
     {
         final List<Integer> list = new ArrayList<>();
@@ -1391,12 +1162,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setItemStack(ConfigItemStackData value)
     {
         ConfigurationTool.consume(this, ConfigurationItemStack.class, ConfigurationTool.itemStackPath(), (val, configs, config, lib, minigame, path) ->
@@ -1405,12 +1171,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setItemStackList(ConfigItemStackData[] value)
     {
         ConfigurationTool.consumeList(this, ConfigurationItemStackList.class, ConfigurationTool.itemStackListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
@@ -1451,12 +1212,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setLong(long value)
     {
         ConfigurationTool.consume(this, ConfigurationLong.class, ConfigurationTool.longPath(), (val, configs, config, lib, minigame, path) ->
@@ -1465,12 +1221,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setLongList(long[] value)
     {
         final List<Long> list = new ArrayList<>();
@@ -1521,12 +1272,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setPlayer(McPlayerInterface value)
     {
         ConfigurationTool.consume(this, ConfigurationPlayer.class, ConfigurationTool.playerPath(), (val, configs, config, lib, minigame, path) ->
@@ -1535,12 +1281,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setPlayerList(McPlayerInterface[] value)
     {
         ConfigurationTool.consumeList(this, ConfigurationPlayerList.class, ConfigurationTool.playerListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
@@ -1581,12 +1322,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setShort(short value)
     {
         ConfigurationTool.consume(this, ConfigurationShort.class, ConfigurationTool.shortPath(), (val, configs, config, lib, minigame, path) ->
@@ -1595,12 +1331,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setShortList(short[] value)
     {
         final List<Short> list = new ArrayList<>();
@@ -1651,12 +1382,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setString(String value)
     {
         ConfigurationTool.consume(this, ConfigurationString.class, ConfigurationTool.stringPath(), (val, configs, config, lib, minigame, path) ->
@@ -1686,12 +1412,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setStringList(String[] value)
     {
         final List<String> list = new ArrayList<>();
@@ -1721,12 +1442,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setVector(ConfigVectorData value)
     {
         ConfigurationTool.consume(this, ConfigurationVector.class, ConfigurationTool.vectorPath(), (val, configs, config, lib, minigame, path) ->
@@ -1735,12 +1451,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Sets the value to this configuration variable.
-     * 
-     * @param value
-     *            value to set.
-     */
+    @Override
     default void setVectorList(ConfigVectorData[] value)
     {
         ConfigurationTool.consumeList(this, ConfigurationVectorList.class, ConfigurationTool.vectorListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
@@ -1765,13 +1476,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     * @param <T>
-     *            DataFragment object class
-     */
+    @Override
     @SuppressWarnings("unchecked")
     default <T extends DataFragment> T getObject()
     {
@@ -1815,11 +1520,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default byte getByte()
     {
         return ConfigurationTool.calculate(this, ConfigurationByte.class, ConfigurationTool.bytePath(),
@@ -1841,15 +1542,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getInt(spath, defaultValue)).byteValue();
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @param <T>
-     *            enumeration class
-     * @param clazz
-     *            enumeration class
-     * @return value.
-     */
+    @Override
     default <T extends EnumerationValue> T getEnum(Class<T> clazz)
     {
         return ConfigurationTool.calculate(
@@ -1874,15 +1567,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnumValue(clazz, spath));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @param <T>
-     *            enumeration class
-     * @param clazz
-     *            enumeration class
-     * @return value.
-     */
+    @Override
     default <T extends Enum<?>> T getJavaEnum(Class<T> clazz)
     {
         return ConfigurationTool.calculate(
@@ -1907,11 +1592,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getEnum(clazz, spath));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigColorData getColor()
     {
         return ConfigurationTool.calculate(this, ConfigurationColor.class, ConfigurationTool.colorPath(), (val, configs, config, lib, minigame, path) -> minigame.getConfig(configs.file())
@@ -1937,11 +1618,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigItemStackData getItemStack()
     {
         return ConfigurationTool.calculate(this, ConfigurationItemStack.class, ConfigurationTool.itemStackPath(), (val, configs, config, lib, minigame, path) ->
@@ -1968,11 +1645,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigVectorData getVector()
     {
         return ConfigurationTool.calculate(this, ConfigurationVector.class, ConfigurationTool.vectorPath(), (val, configs, config, lib, minigame, path) ->
@@ -1999,11 +1672,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default McPlayerInterface getPlayer()
     {
         return ConfigurationTool.calculate(this, ConfigurationPlayer.class, ConfigurationTool.playerPath(),
@@ -2023,11 +1692,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getFragment(McPlayerInterface.class, spath));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default char getCharacter()
     {
         return ConfigurationTool.calculate(this, ConfigurationCharacter.class, ConfigurationTool.charPath(),
@@ -2049,11 +1714,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getString(spath, "" + defaultValue)).charAt(0); //$NON-NLS-1$
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default boolean getBoolean()
     {
         return ConfigurationTool.calculate(this, ConfigurationBool.class, ConfigurationTool.boolPath(),
@@ -2075,11 +1736,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getBoolean(spath, defaultValue));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default boolean[] getBooleanList()
     {
         final List<Boolean> list = ConfigurationTool.calculate(this, ConfigurationBoolList.class, ConfigurationTool.boolListPath(),
@@ -2118,15 +1775,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @param <T>
-     *            enumeration class
-     * @param clazz
-     *            enumeration class
-     * @return value.
-     */
+    @Override
     default <T extends EnumerationValue> T[] getEnumList(Class<T> clazz)
     {
         final List<T> list = ConfigurationTool.calculate(this, ConfigurationEnumList.class, ConfigurationTool.enumListPath(),
@@ -2170,15 +1819,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @param <T>
-     *            enumeration class
-     * @param clazz
-     *            enumeration class
-     * @return value.
-     */
+    @Override
     default <T extends Enum<?>> T[] getJavaEnumList(Class<T> clazz)
     {
         final List<T> list = ConfigurationTool.calculate(this, ConfigurationJavaEnumList.class, ConfigurationTool.javaEnumListPath(),
@@ -2222,11 +1863,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default byte[] getByteList()
     {
         final List<Byte> list = ConfigurationTool.calculate(this, ConfigurationByteList.class, ConfigurationTool.byteListPath(),
@@ -2265,11 +1902,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default char[] getCharacterList()
     {
         final List<Character> list = ConfigurationTool.calculate(this, ConfigurationCharacterList.class, ConfigurationTool.charListPath(),
@@ -2308,11 +1941,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default double getDouble()
     {
         return ConfigurationTool.calculate(this, ConfigurationDouble.class, ConfigurationTool.doublePath(),
@@ -2334,11 +1963,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getDouble(spath, defaultValue));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default float getFloat()
     {
         return ConfigurationTool.calculate(this, ConfigurationFloat.class, ConfigurationTool.floatPath(),
@@ -2360,11 +1985,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getDouble(spath, defaultValue)).floatValue();
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default double[] getDoubleList()
     {
         final List<Double> list = ConfigurationTool.calculate(this, ConfigurationDoubleList.class, ConfigurationTool.doubleListPath(),
@@ -2403,11 +2024,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default float[] getFloatList()
     {
         final List<Float> list = ConfigurationTool.calculate(this, ConfigurationFloatList.class, ConfigurationTool.floatListPath(),
@@ -2446,11 +2063,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default int getInt()
     {
         return ConfigurationTool.calculate(this, ConfigurationInt.class, ConfigurationTool.intPath(),
@@ -2472,11 +2085,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getInt(spath, defaultValue));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default short getShort()
     {
         return ConfigurationTool.calculate(this, ConfigurationShort.class, ConfigurationTool.shortPath(),
@@ -2498,11 +2107,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getInt(spath, defaultValue)).shortValue();
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default int[] getIntList()
     {
         final List<Integer> list = ConfigurationTool.calculate(this, ConfigurationIntList.class, ConfigurationTool.intListPath(),
@@ -2541,11 +2146,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default long getLong()
     {
         return ConfigurationTool.calculate(this, ConfigurationLong.class, ConfigurationTool.longPath(),
@@ -2567,11 +2168,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getLong(spath, defaultValue));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default long[] getLongList()
     {
         final List<Long> list = ConfigurationTool.calculate(this, ConfigurationLongList.class, ConfigurationTool.longListPath(),
@@ -2610,11 +2207,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default short[] getShortList()
     {
         final List<Short> list = ConfigurationTool.calculate(this, ConfigurationShortList.class, ConfigurationTool.shortListPath(),
@@ -2653,11 +2246,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return result;
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default String getString()
     {
         return ConfigurationTool.calculate(this, ConfigurationString.class, ConfigurationTool.stringPath(),
@@ -2679,11 +2268,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculate(this, path, (val, configs, config, lib, minigame, spath) -> minigame.getConfig(configs.file()).getString(spath, defaultValue));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default String[] getStringList()
     {
         final List<String> list = ConfigurationTool.calculate(this, ConfigurationStringList.class, ConfigurationTool.stringListPath(),
@@ -2712,11 +2297,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return list.toArray(new String[list.size()]);
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigVectorData[] getVectorList()
     {
         return ConfigurationTool.calculateList(this, ConfigurationVectorList.class, ConfigVectorData.class, ConfigurationTool.vectorListPath(),
@@ -2736,11 +2317,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculateList(this, path, ConfigVectorData.class, (val, configs, config, lib, minigame, section, key) -> section.getFragment(ConfigVectorData.class, key));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigItemStackData[] getItemStackList()
     {
         return ConfigurationTool.calculateList(this, ConfigurationItemStackList.class, ConfigItemStackData.class, ConfigurationTool.itemStackListPath(),
@@ -2760,15 +2337,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculateList(this, path, ConfigItemStackData.class, (val, configs, config, lib, minigame, section, key) -> section.getFragment(ConfigItemStackData.class, key));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @param <T>
-     *            DataFragment object class
-     * @param clazz
-     *            DataFragment object class
-     * @return value.
-     */
+    @Override
     default <T extends DataFragment> T[] getObjectList(Class<T> clazz)
     {
         return ConfigurationTool.calculateList(this, ConfigurationObjectList.class, clazz, ConfigurationTool.objectListPath(), (val, configs, config, lib, minigame, section, key) ->
@@ -2801,11 +2370,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         });
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default ConfigColorData[] getColorList()
     {
         return ConfigurationTool.calculateList(this, ConfigurationColorList.class, ConfigColorData.class, ConfigurationTool.colorListPath(),
@@ -2825,11 +2390,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return ConfigurationTool.calculateList(this, path, ConfigColorData.class, (val, configs, config, lib, minigame, section, key) -> section.getFragment(ConfigColorData.class, key));
     }
     
-    /**
-     * Returns the value of given configuration value.
-     * 
-     * @return value.
-     */
+    @Override
     default McPlayerInterface[] getPlayerList()
     {
         return ConfigurationTool.calculateList(this, ConfigurationPlayerList.class, McPlayerInterface.class, ConfigurationTool.playerListPath(),
@@ -2879,9 +2440,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         }
     }
     
-    /**
-     * Saves the configuration file this option belongs to.
-     */
+    @Override
     default void saveConfig()
     {
         final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
@@ -2890,12 +2449,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         minigame.saveConfig(configs.file());
     }
     
-    /**
-     * Verifies the configuration this option belongs to.
-     * 
-     * @throws McException
-     *             thrown if configuration contains invalid values
-     */
+    @Override
     default void verifyConfig() throws McException
     {
         final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
@@ -2904,9 +2458,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         minigame.verifyConfig(configs.file());
     }
     
-    /**
-     * Rollback changes/ re-read config from file.
-     */
+    @Override
     default void rollbackConfig()
     {
         final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
@@ -2915,11 +2467,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         minigame.rollbackConfig(configs.file());
     }
     
-    /**
-     * Returns the comment.
-     * 
-     * @return config comment
-     */
+    @Override
     default String[] getComment()
     {
         try
@@ -2941,11 +2489,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return new String[0];
     }
     
-    /**
-     * Returns the enum class hint for enum values.
-     * 
-     * @return enum class hint
-     */
+    @Override
     default Class<? extends EnumerationValue> getEnumClass()
     {
         try
@@ -2975,11 +2519,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return null;
     }
     
-    /**
-     * Returns the enum class hint for enum values.
-     * 
-     * @return enum class hint
-     */
+    @Override
     default Class<? extends Enum<?>> getJavaEnumClass()
     {
         try
@@ -3009,11 +2549,7 @@ public interface ConfigurationValueInterface extends EnumerationValue
         return null;
     }
     
-    /**
-     * Default validation of this single configuration value; to validate the whole config file invoke {@link #verifyConfig()}.
-     * 
-     * @throws McException thrown if a validation fails
-     */
+    @Override
     default void validate() throws McException
     {
         try

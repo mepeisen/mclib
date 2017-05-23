@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,6 +91,15 @@ public abstract class AnnotatedDataFragment implements DataFragment
         FIELD_TYPES.put(ItemStackDataFragment.class, PrimitiveFieldType.ItemStack);
         FIELD_TYPES.put(ColorDataFragment.class, PrimitiveFieldType.Color);
         FIELD_TYPES.put(DataSection.class, PrimitiveFieldType.DataSection);
+    }
+    
+    /**
+     * Returns the field descriptors.
+     * @return field descriptors.
+     */
+    protected Collection<FieldDescriptor> getFieldDescriptors()
+    {
+        return DESCRIPTORS.computeIfAbsent(this.getClass(), DataDescriptor::new).fields.values();
     }
     
     @Override
@@ -335,7 +345,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
     }
     
     /** a data class descriptor. */
-    private static final class DataDescriptor
+    protected static final class DataDescriptor
     {
         
         /** the fields. */
@@ -379,51 +389,51 @@ public abstract class AnnotatedDataFragment implements DataFragment
     /**
      * A descriptor describing a single field.
      */
-    private static final class FieldDescriptor
+    protected static final class FieldDescriptor
     {
         
         /** the field to be used. */
-        final Field                             field;
+        public final Field                             field;
         
         /** primitive type. */
-        PrimitiveFieldType                      primitiveType = null;
+        public PrimitiveFieldType                      primitiveType = null;
         
         /** the target field type. */
-        Class<?>                                clazz;
+        public Class<?>                                clazz;
         
         /** true for list. */
-        boolean                                 isList;
+        public boolean                                 isList;
         
         /** true for map. */
-        boolean                                 isMap;
+        public boolean                                 isMap;
         
         /** true for set. */
-        boolean                                 isSet;
+        public boolean                                 isSet;
         
         /** the list or map element types. */
-        Class<? extends DataFragment>           elementType;
+        public Class<? extends DataFragment>           elementType;
         
         /** the list or map element types. */
-        Class<? extends UniqueEnumerationValue> uniqueEnumType;
+        public Class<? extends UniqueEnumerationValue> uniqueEnumType;
         
         /** the list or map element types. */
         @SuppressWarnings("rawtypes")
-        Class<? extends Enum>                   javaEnumType;
+        public Class<? extends Enum>                   javaEnumType;
         
         /** the list or map element types. */
-        Class<? extends EnumerationValue>       normalEnumType;
+        public Class<? extends EnumerationValue>       normalEnumType;
         
         /** true if this is a data fragment. */
-        boolean                                 isFragment;
+        public boolean                                 isFragment;
         
         /** true for java enums. */
-        boolean                                 isJavaEnum;
+        public boolean                                 isJavaEnum;
         
         /** true for unique enums. */
-        boolean                                 isUniqueEnum;
+        public boolean                                 isUniqueEnum;
         
         /** true for normal enums. */
-        boolean                                 isEnum;
+        public boolean                                 isEnum;
         
         /**
          * Constructor.
@@ -660,7 +670,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
     /**
      * the type binding.
      */
-    private interface FieldTypeBinding
+    protected interface FieldTypeBinding
     {
         /**
          * Gets object.
@@ -701,7 +711,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
      * Getter for receiving values.
      */
     @FunctionalInterface
-    private interface Getter
+    protected interface Getter
     {
         /**
          * Getter.
@@ -719,7 +729,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
      * Setter for storing values.
      */
     @FunctionalInterface
-    private interface Setter
+    protected interface Setter
     {
         /**
          * Setter.
@@ -738,7 +748,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
      * Tester for checking values.
      */
     @FunctionalInterface
-    private interface Tester
+    protected interface Tester
     {
         /**
          * Tester.
@@ -1614,7 +1624,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
     /**
      * The field types.
      */
-    private enum PrimitiveFieldType implements FieldTypeBinding
+    protected enum PrimitiveFieldType implements FieldTypeBinding
     {
         
         /** string type. */

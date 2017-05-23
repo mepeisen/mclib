@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.api.validate;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -32,24 +32,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.GenericValue;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Validator to check if a float config value or float list config value contains values not higher than x.
+ * Validator to check if a string config value or string list config value contains values not shorter than x.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
 @Target({ FIELD, ElementType.TYPE })
-public @interface ValidateFMax
+public @interface ValidateStrMin
 {
     
     /**
-     * minimum value
+     * minimum length
      * 
-     * @return minimum value
+     * @return minimum length
      */
-    double value();
+    int value();
     
     /**
      * Validation of this annotation.
@@ -59,46 +60,29 @@ public @interface ValidateFMax
         /**
          * Validation
          * 
-         * @param fmax
+         * @param smin
          *            annotation value
          * @param cvi
          *            configuration value
          * @throws McException
          *             thrown on validation errors.
          */
-        public static void validate(ValidateFMax fmax, ConfigurationValueInterface cvi) throws McException
+        public static void validate(ValidateStrMin smin, GenericValue cvi) throws McException
         {
-            if (cvi.isFloat())
+            if (cvi.isString())
             {
-                if (cvi.isset() && cvi.getFloat() > fmax.value())
+                if (cvi.isset() && cvi.getString().length() < smin.value())
                 {
-                    throw new McException(CommonMessages.ValidateFValueTooHigh, cvi.path(), cvi.getFloat(), fmax.value());
+                    throw new McException(CommonMessages.ValidateStringTooSmall, cvi.path(), cvi.getString().length(), smin.value());
                 }
             }
-            else if (cvi.isset() && cvi.isDouble())
+            else if (cvi.isStringList())
             {
-                if (cvi.getDouble() > fmax.value())
+                for (final String s : cvi.getStringList())
                 {
-                    throw new McException(CommonMessages.ValidateFValueTooHigh, cvi.path(), cvi.getDouble(), fmax.value());
-                }
-            }
-            else if (cvi.isFloatList())
-            {
-                for (final float f : cvi.getFloatList())
-                {
-                    if (f > fmax.value())
+                    if (s.length() < smin.value())
                     {
-                        throw new McException(CommonMessages.ValidateFValueTooHigh, cvi.path(), f, fmax.value());
-                    }
-                }
-            }
-            else if (cvi.isDoubleList())
-            {
-                for (final double d : cvi.getDoubleList())
-                {
-                    if (d > fmax.value())
-                    {
-                        throw new McException(CommonMessages.ValidateFValueTooHigh, cvi.path(), d, fmax.value());
+                        throw new McException(CommonMessages.ValidateStringTooSmall, cvi.path(), s.length(), smin.value());
                     }
                 }
             }

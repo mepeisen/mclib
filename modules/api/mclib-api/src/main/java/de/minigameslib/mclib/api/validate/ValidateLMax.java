@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.api.validate;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -32,16 +32,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.GenericValue;
 import de.minigameslib.mclib.api.McException;
 
 /**
- * Validator to check if a numeric config value or numeric list config value contains values not lower than x.
+ * Validator to check if a numeric config value or numeric list config value contains values not higher than x.
  * 
  * @author mepeisen
  */
 @Retention(RUNTIME)
 @Target({ FIELD, ElementType.TYPE })
-public @interface ValidateLMin
+public @interface ValidateLMax
 {
     
     /**
@@ -59,50 +60,50 @@ public @interface ValidateLMin
         /**
          * Validation
          * 
-         * @param lmin
+         * @param lmax
          *            annotation value
          * @param cvi
          *            configuration value
          * @throws McException
          *             thrown on validation errors.
          */
-        public static void validate(ValidateLMin lmin, ConfigurationValueInterface cvi) throws McException
+        public static void validate(ValidateLMax lmax, GenericValue cvi) throws McException
         {
             if (cvi.isByte())
             {
-                if (cvi.isset() && cvi.getByte() < lmin.value())
+                if (cvi.isset() && cvi.getByte() > lmax.value())
                 {
-                    throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), cvi.getByte(), lmin.value());
+                    throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), cvi.getByte(), lmax.value());
                 }
             }
             else if (cvi.isShort())
             {
-                if (cvi.isset() && cvi.getShort() < lmin.value())
+                if (cvi.isset() && cvi.getShort() > lmax.value())
                 {
-                    throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), cvi.getShort(), lmin.value());
+                    throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), cvi.getShort(), lmax.value());
                 }
             }
             else if (cvi.isInt())
             {
-                if (cvi.isset() && cvi.getInt() < lmin.value())
+                if (cvi.isset() && cvi.getInt() > lmax.value())
                 {
-                    throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), cvi.getInt(), lmin.value());
+                    throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), cvi.getInt(), lmax.value());
                 }
             }
             else if (cvi.isLong())
             {
-                if (cvi.isset() && cvi.getLong() < lmin.value())
+                if (cvi.isset() && cvi.getLong() > lmax.value())
                 {
-                    throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), cvi.getLong(), lmin.value());
+                    throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), cvi.getLong(), lmax.value());
                 }
             }
             else if (cvi.isByteList())
             {
                 for (final byte b : cvi.getByteList())
                 {
-                    if (b < lmin.value())
+                    if (b > lmax.value())
                     {
-                        throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), b, lmin.value());
+                        throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), b, lmax.value());
                     }
                 }
             }
@@ -110,9 +111,9 @@ public @interface ValidateLMin
             {
                 for (final short s : cvi.getShortList())
                 {
-                    if (s < lmin.value())
+                    if (s > lmax.value())
                     {
-                        throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), s, lmin.value());
+                        throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), s, lmax.value());
                     }
                 }
             }
@@ -120,9 +121,9 @@ public @interface ValidateLMin
             {
                 for (final int i : cvi.getIntList())
                 {
-                    if (i < lmin.value())
+                    if (i > lmax.value())
                     {
-                        throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), i, lmin.value());
+                        throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), i, lmax.value());
                     }
                 }
             }
@@ -130,9 +131,9 @@ public @interface ValidateLMin
             {
                 for (final long l : cvi.getLongList())
                 {
-                    if (l < lmin.value())
+                    if (l > lmax.value())
                     {
-                        throw new McException(CommonMessages.ValidateLValueTooLow, cvi.path(), l, lmin.value());
+                        throw new McException(CommonMessages.ValidateLValueTooHigh, cvi.path(), l, lmax.value());
                     }
                 }
             }

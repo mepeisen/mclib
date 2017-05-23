@@ -28,6 +28,7 @@ import java.io.File;
 
 import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -86,7 +87,7 @@ public interface ConfigServiceInterface
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, McRunnable contextProvider) throws McException;
     
     /**
      * Creates a gui editor item for editing given configuration variable.
@@ -99,6 +100,6 @@ public interface ConfigServiceInterface
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange) throws McException;
     
 }

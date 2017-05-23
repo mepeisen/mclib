@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.api.validate;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -32,6 +32,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.GenericValue;
 import de.minigameslib.mclib.api.McException;
 
 /**
@@ -66,7 +67,7 @@ public @interface ValidateFMin
          * @throws McException
          *             thrown on validation errors.
          */
-        public static void validate(ValidateFMin fmin, ConfigurationValueInterface cvi) throws McException
+        public static void validate(ValidateFMin fmin, GenericValue cvi) throws McException
         {
             if (cvi.isFloat())
             {

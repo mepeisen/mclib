@@ -26,8 +26,8 @@ package de.minigameslib.mclib.impl.gui.cfg;
 
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -51,7 +51,7 @@ public class ByteListConfigOption extends AbstractConfigOption
      * @param value
      *            value to be edited.
      */
-    public ByteListConfigOption(ConfigurationValueInterface value)
+    public ByteListConfigOption(EditableValue value)
     {
         super(value);
     }

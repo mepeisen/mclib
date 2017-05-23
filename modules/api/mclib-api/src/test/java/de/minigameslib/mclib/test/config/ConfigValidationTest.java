@@ -67,16 +67,16 @@ import de.minigameslib.mclib.api.config.ConfigurationStringList;
 import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
 import de.minigameslib.mclib.api.config.ConfigurationVectorList;
-import de.minigameslib.mclib.api.config.ValidateFMax;
-import de.minigameslib.mclib.api.config.ValidateFMin;
-import de.minigameslib.mclib.api.config.ValidateIsset;
-import de.minigameslib.mclib.api.config.ValidateLMax;
-import de.minigameslib.mclib.api.config.ValidateLMin;
-import de.minigameslib.mclib.api.config.ValidateListMax;
-import de.minigameslib.mclib.api.config.ValidateListMin;
-import de.minigameslib.mclib.api.config.ValidateStrMax;
-import de.minigameslib.mclib.api.config.ValidateStrMin;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.validate.ValidateFMax;
+import de.minigameslib.mclib.api.validate.ValidateFMin;
+import de.minigameslib.mclib.api.validate.ValidateIsset;
+import de.minigameslib.mclib.api.validate.ValidateLMax;
+import de.minigameslib.mclib.api.validate.ValidateLMin;
+import de.minigameslib.mclib.api.validate.ValidateListMax;
+import de.minigameslib.mclib.api.validate.ValidateListMin;
+import de.minigameslib.mclib.api.validate.ValidateStrMax;
+import de.minigameslib.mclib.api.validate.ValidateStrMin;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**

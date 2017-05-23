@@ -22,8 +22,9 @@
 
 */
 
-package de.minigameslib.mclib.api.config;
+package de.minigameslib.mclib.api.validate;
 
+import de.minigameslib.mclib.api.GenericValue;
 import de.minigameslib.mclib.api.McException;
 
 /**
@@ -42,6 +43,6 @@ public interface ValidatorInterface
      * @throws McException
      *             thrown on validation failures
      */
-    void validate(ConfigurationValueInterface cvi) throws McException;
+    void validate(GenericValue cvi) throws McException;
     
 }

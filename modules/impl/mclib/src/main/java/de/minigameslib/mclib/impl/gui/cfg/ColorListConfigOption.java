@@ -26,9 +26,9 @@ package de.minigameslib.mclib.impl.gui.cfg;
 
 import org.bukkit.inventory.ItemStack;
 
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.config.ConfigColorData;
-import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -52,7 +52,7 @@ public class ColorListConfigOption extends AbstractConfigOption
      * @param value
      *            value to be edited.
      */
-    public ColorListConfigOption(ConfigurationValueInterface value)
+    public ColorListConfigOption(EditableValue value)
     {
         super(value);
     }

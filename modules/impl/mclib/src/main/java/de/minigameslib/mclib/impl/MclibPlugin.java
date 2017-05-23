@@ -81,6 +81,7 @@ import de.minigames.mclib.nms.v185.NmsFactory1_8_5;
 import de.minigames.mclib.nms.v19.NmsFactory1_9;
 import de.minigames.mclib.nms.v194.NmsFactory1_9_4;
 import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McContext;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
@@ -1789,13 +1790,13 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange, McRunnable contextProvider) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, McRunnable contextProvider) throws McException
     {
         return AbstractConfigOption.create(config).getItem(onChange, contextProvider);
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(ConfigurationValueInterface config, Runnable onChange) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange) throws McException
     {
         return AbstractConfigOption.create(config).getItem(onChange, null);
     }

@@ -24,9 +24,9 @@
 
 package de.minigameslib.mclib.impl.gui.cfg;
 
+import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
-import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.enums.ChildEnum;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
@@ -49,7 +49,7 @@ public abstract class AbstractConfigOption
 {
     
     /** the enum value. */
-    private final ConfigurationValueInterface value;
+    private final EditableValue value;
     
     /**
      * Constructor.
@@ -57,7 +57,7 @@ public abstract class AbstractConfigOption
      * @param value
      *            the value to be edited.
      */
-    public AbstractConfigOption(ConfigurationValueInterface value)
+    public AbstractConfigOption(EditableValue value)
     {
         this.value = value;
     }
@@ -90,7 +90,7 @@ public abstract class AbstractConfigOption
      * 
      * @return the value
      */
-    public ConfigurationValueInterface getValue()
+    public EditableValue getValue()
     {
         return this.value;
     }
@@ -154,7 +154,7 @@ public abstract class AbstractConfigOption
      *            config value that will be edited
      * @return config value option
      */
-    public static AbstractConfigOption create(ConfigurationValueInterface value)
+    public static AbstractConfigOption create(EditableValue value)
     {
         if (value.isBoolean())
         {
