@@ -24,6 +24,9 @@
 
 package de.minigameslib.mclib.api.locale;
 
+import java.util.Locale;
+import java.util.function.BiFunction;
+
 /**
  * Message services.
  * 
@@ -51,5 +54,35 @@ public interface MessageServiceInterface
      * @return message api or {@code null} if the class was not declared by any minigame or extension.
      */
     MessagesConfigInterface getMessagesFromMsg(LocalizedMessageInterface item);
+    
+    /**
+     * replaces placeholders in given message.
+     * 
+     * @param locale
+     *            chosen locale
+     * @param msg
+     *            source message.
+     * @return message with replaced placeholders.
+     */
+    String replacePlaceholders(Locale locale, String msg);
+    
+    /**
+     * Registers the placeholder with given prefix.
+     * 
+     * <p>
+     * The prefix string is the string starting befroe first underscore. For example the placeholder "{foo_bar}" leads to prefix "foo".
+     * </p>
+     * 
+     * <p>
+     * The placeholder function is reposible for converting a placeholder to result string. It may return {@code null} if it does not know
+     * how to convert a string. String string array passed to the function is the placeholder splitted by underscore.
+     * </p>
+     * 
+     * @param prefix
+     *            a string prefix.
+     * @param placeholder
+     *            placeholder function.
+     */
+    void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder);
     
 }

@@ -301,7 +301,11 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         final String msg = this.getUnformattedUserMessage(locale);
-        return msg == null ? "" : String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)); //$NON-NLS-1$
+        if (msg == null)
+        {
+            return ""; //$NON-NLS-1$
+        }
+        return MessageServiceInterface.instance().replacePlaceholders(locale, String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)));
     }
     
     /**
@@ -325,7 +329,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
         int i = 0;
         for (final String lmsg : smsg)
         {
-            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            result[i] = MessageServiceInterface.instance().replacePlaceholders(locale, String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args)));
             i++;
         }
         return result;
@@ -344,7 +348,11 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     {
         final Locale locale = loc == null ? McLibInterface.instance().getDefaultLocale() : loc;
         final String msg = this.getUnformattedAdminMessage(locale);
-        return msg == null ? "" : String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)); //$NON-NLS-1$
+        if (msg == null)
+        {
+            return ""; //$NON-NLS-1$
+        }
+        return MessageServiceInterface.instance().replacePlaceholders(locale, String.format(locale, msg, (Object[]) MessageTool.convertArgs(locale, false, args)));
     }
     
     /**
@@ -368,7 +376,7 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
         int i = 0;
         for (final String lmsg : smsg)
         {
-            result[i] = String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args));
+            result[i] = MessageServiceInterface.instance().replacePlaceholders(locale, String.format(locale, lmsg, (Object[]) MessageTool.convertArgs(locale, false, args)));
             i++;
         }
         return result;

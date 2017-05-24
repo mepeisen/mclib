@@ -24,8 +24,14 @@
 
 package de.minigameslib.mclib.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.plugin.Plugin;
 
@@ -49,6 +55,12 @@ class MessageServiceImpl implements MessageServiceInterface
      */
     private final Map<Plugin, MessagesConfigInterface> messages = new HashMap<>();
     
+    /** placeholders. */
+    private final Map<String, List<BiFunction<Locale, String[], String>>> placeholders = new HashMap<>();
+    
+    /** placeholder pattern. */
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[{]([\\p{L}\\p{Alnum}_-]+)[}]"); //$NON-NLS-1$
+    
     /**
      * Constructor.
      * 
@@ -69,6 +81,57 @@ class MessageServiceImpl implements MessageServiceInterface
             return null;
         }
         return this.messages.computeIfAbsent(plugin, (key) -> new MessagesConfigImpl(plugin, this.enumService));
+    }
+
+    @Override
+    public String replacePlaceholders(Locale locale, String msg)
+    {
+        final StringBuilder target = new StringBuilder();
+        int index = 0;
+        
+        final Matcher m = PLACEHOLDER_PATTERN.matcher(msg);
+        while (m.find())
+        {
+            final String format = m.group(1);
+            if (index < m.start())
+            {
+                target.append(msg, index, m.start());
+            }
+            int indexof = format.indexOf('_');
+            final String prefix = indexof == -1 ? format : format.substring(0, indexof);
+            final String[] args = format.split("_"); //$NON-NLS-1$
+            index = m.end();
+            boolean found = false;
+            final List<BiFunction<Locale, String[], String>> list = this.placeholders.get(prefix);
+            if (list != null)
+            {
+                for (final BiFunction<Locale, String[], String> func : list)
+                {
+                    final String res = func.apply(locale, args);
+                    if (res != null)
+                    {
+                        target.append(res);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                target.append("{" + format + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        if (index < msg.length())
+        {
+            target.append(msg, index, msg.length());
+        }
+        return target.toString();
+    }
+
+    @Override
+    public void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder)
+    {
+        this.placeholders.computeIfAbsent(prefix, p -> new ArrayList<>()).add(placeholder);
     }
     
 }

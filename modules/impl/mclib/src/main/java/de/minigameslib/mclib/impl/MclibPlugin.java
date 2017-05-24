@@ -43,6 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -1813,6 +1814,19 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             ((InventoryListener) evt.getInventory()).handle(evt);
         }
+    }
+
+    @Override
+    public String replacePlaceholders(Locale locale, String msg)
+    {
+        return this.msgService.replacePlaceholders(locale, msg);
+    }
+
+    @Override
+    public void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder)
+    {
+        // TODO ask for registering plugin, remove on plugin disable
+        this.msgService.registerPlaceholders(prefix, placeholder);
     }
     
 }
