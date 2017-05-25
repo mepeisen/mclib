@@ -98,7 +98,7 @@ public abstract class AbstractWhitelistableEntityHelper
                             // if forced resapwn (teleport etc.) and it is no more in range we delete the entity so that it disappears
                             if (!newInRange)
                             {
-                                AbstractWhitelistableEntityHelper.this.sendOutOfRangePackages(con);
+                                AbstractWhitelistableEntityHelper.this.sendOutOfRangePackages(player, con);
                             }
                             // override inrange to false so that players still in range will be forced to get a clean respawn
                             AbstractWhitelistableEntityHelper.this.inRange.put(uuid, Boolean.FALSE);
@@ -109,7 +109,7 @@ public abstract class AbstractWhitelistableEntityHelper
                         {
                             if (!oldInRange)
                             {
-                                AbstractWhitelistableEntityHelper.this.sendInRangePackages(con);
+                                AbstractWhitelistableEntityHelper.this.sendInRangePackages(player, con);
                             }
                             AbstractWhitelistableEntityHelper.this.inRange.put(uuid, newInRange);
                         }
@@ -131,34 +131,42 @@ public abstract class AbstractWhitelistableEntityHelper
     /**
      * Send packages for being in range. Do spawn the entity.
      * 
+     * @param player
+     *            player instance
      * @param con
      *            connection
      */
-    protected abstract void sendInRangePackages(PlayerConnection con);
+    protected abstract void sendInRangePackages(Player player, PlayerConnection con);
     
     /**
      * Send packages for being out of range. Do kill the entity.
      * 
+     * @param player
+     *            player instance
      * @param con
      *            connection
      */
-    protected abstract void sendOutOfRangePackages(PlayerConnection con);
+    protected abstract void sendOutOfRangePackages(Player player, PlayerConnection con);
     
     /**
      * Send packages for untracking the entity.
      * 
+     * @param player
+     *            player instance
      * @param con
      *            connection
      */
-    protected abstract void sendUntrackPackages(PlayerConnection con);
+    protected abstract void sendUntrackPackages(Player player, PlayerConnection con);
     
     /**
      * Send packages for tracking the entity.
      * 
+     * @param player
+     *            player instance
      * @param con
      *            connection
      */
-    protected abstract void sendTrackPackages(PlayerConnection con);
+    protected abstract void sendTrackPackages(Player player, PlayerConnection con);
     
     /**
      * Marks all players to respawn the entity.
@@ -210,7 +218,7 @@ public abstract class AbstractWhitelistableEntityHelper
                     AbstractWhitelistableEntityHelper.this.trackedPlayers.remove(player.getUniqueId());
                     AbstractWhitelistableEntityHelper.this.inRange.remove(player.getUniqueId());
                     final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
-                    AbstractWhitelistableEntityHelper.this.sendUntrackPackages(con);
+                    AbstractWhitelistableEntityHelper.this.sendUntrackPackages(player, con);
                 }
             }.runTaskLater((Plugin) McLibInterface.instance(), 1);
         }
@@ -234,7 +242,7 @@ public abstract class AbstractWhitelistableEntityHelper
                     AbstractWhitelistableEntityHelper.this.trackedPlayers.add(player.getUniqueId());
                     AbstractWhitelistableEntityHelper.this.inRange.put(player.getUniqueId(), Boolean.FALSE);
                     final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
-                    AbstractWhitelistableEntityHelper.this.sendTrackPackages(con);
+                    AbstractWhitelistableEntityHelper.this.sendTrackPackages(player, con);
                 }
             }.runTaskLater((Plugin) McLibInterface.instance(), 1);
         }

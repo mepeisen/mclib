@@ -25,10 +25,10 @@
 package de.minigames.mclib.nms.v185.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -43,10 +43,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.nms.api.HologramHelperInterface;
+import de.minigameslib.mclib.nms.api.MessageUtil;
 import net.minecraft.server.v1_8_R3.AxisAlignedBB;
 import net.minecraft.server.v1_8_R3.DamageSource;
+import net.minecraft.server.v1_8_R3.DataWatcher;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
@@ -54,6 +55,7 @@ import net.minecraft.server.v1_8_R3.ItemStack;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
@@ -66,16 +68,39 @@ import net.minecraft.server.v1_8_R3.World;
  * @author mepeisen
  *
  */
+@SuppressWarnings("unchecked")
 public class HologramHelper1_8_5 implements HologramHelperInterface
 {
-
+    
     /**
      * The line height.
      */
-    static final double LineHeight = 0.25;
+    static final double                                                LineHeight      = 0.25;
     
     /** dummy humans. */
-    private static final EntityWithWhitelistHelper<HologramEntityImpl> LINES      = new EntityWithWhitelistHelper<>();
+    private static final EntityWithWhitelistHelper<HologramEntityImpl> LINES           = new EntityWithWhitelistHelper<>();
+    
+    /** the entity name field. */
+    static int                                                         EntityNameField = 2;
+    /** the entity name field. */
+    static int                                                         EntityNameDataType = 4;
+    /**
+     * items field in packet play out meta data.
+     */
+    static Field                                                       PacketMetadataItemsField;
+    
+    static
+    {
+        try
+        {
+            PacketMetadataItemsField = PacketPlayOutEntityMetadata.class.getDeclaredField("b"); //$NON-NLS-1$
+            PacketMetadataItemsField.setAccessible(true);
+        }
+        catch (@SuppressWarnings("unused") NoSuchFieldException | SecurityException | IllegalArgumentException e)
+        {
+            // TODO Logging.
+        }
+    }
     
     @Override
     public HologramEntityInterface create(Location location)
@@ -224,17 +249,6 @@ public class HologramHelper1_8_5 implements HologramHelperInterface
         {
             // ignore (do not allow changes)
         }
-        
-        // ?????
-        // @Override
-        // public int getId() {
-        // StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        // if (elements.length > 2 && elements[2] != null && elements[2].getFileName().equals("EntityTrackerEntry.java") && elements[2].getLineNumber() > 137 && elements[2].getLineNumber() < 147) {
-        // return -1;
-        // }
-        //
-        // return super.getId();
-        // }
         
         @Override
         public void m()
@@ -504,7 +518,10 @@ public class HologramHelper1_8_5 implements HologramHelperInterface
         private Location           location;
         
         /** the hologram lines. */
-        private List<HologramLine> lines = new ArrayList<>();
+        private List<HologramLine> lines   = new ArrayList<>();
+        
+        /** lines content. */
+        private Serializable[]     strings = new Serializable[0];
         
         /**
          * Constructor.
@@ -527,50 +544,23 @@ public class HologramHelper1_8_5 implements HologramHelperInterface
         @Override
         public void updateLines(List<Serializable> list)
         {
-            this.delete();
+            this.strings = list.toArray(new Serializable[list.size()]);
+            
+            this.lines.forEach(HologramLine::die);
+            this.lines.clear();
+            
             Location loc = this.location;
-            for (final Serializable txt : list)
+            for (int i = 0; i < Math.max(10, list.size() * 2); i++)
             {
-                if (txt instanceof LocalizedMessageInterface)
-                {
-                    // localized message
-                    final LocalizedMessageInterface lmi = (LocalizedMessageInterface) txt;
-                    if (lmi.isSingleLine())
-                    {
-                        final String text = lmi.toUserMessage(Locale.ENGLISH);
-                        final HologramLine line = new HologramLine(((CraftWorld) loc.getWorld()).getHandle());
-                        line.setLine(text);
-                        this.lines.add(line);
-                        line.setPosition(loc.getX(), loc.getY(), loc.getZ());
-                        ((CraftWorld) loc.getWorld()).addEntity(line, SpawnReason.CUSTOM);
-                        loc = loc.add(0, -LineHeight, 0);
-                    }
-                    else
-                    {
-                        for (final String text : lmi.toUserMessageLine(Locale.ENGLISH))
-                        {
-                            final HologramLine line = new HologramLine(((CraftWorld) loc.getWorld()).getHandle());
-                            line.setLine(text);
-                            this.lines.add(line);
-                            line.setPosition(loc.getX(), loc.getY(), loc.getZ());
-                            ((CraftWorld) loc.getWorld()).addEntity(line, SpawnReason.CUSTOM);
-                            loc = loc.add(0, -LineHeight, 0);
-                        }
-                    }
-                }
-                else
-                {
-                    for (final String text : txt.toString().split("\n")) //$NON-NLS-1$
-                    {
-                        final HologramLine line = new HologramLine(((CraftWorld) loc.getWorld()).getHandle());
-                        line.setLine(text);
-                        this.lines.add(line);
-                        line.setPosition(loc.getX(), loc.getY(), loc.getZ());
-                        ((CraftWorld) loc.getWorld()).addEntity(line, SpawnReason.CUSTOM);
-                        loc = loc.add(0, -LineHeight, 0);
-                    }
-                }
+                final HologramLine line = new HologramLine(((CraftWorld) loc.getWorld()).getHandle());
+                line.setLine("line " + i); //$NON-NLS-1$
+                this.lines.add(line);
+                line.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                ((CraftWorld) loc.getWorld()).addEntity(line, SpawnReason.CUSTOM);
+                loc = loc.add(0, -LineHeight, 0);
             }
+            
+            this.respawn();
         }
         
         @Override
@@ -580,37 +570,64 @@ public class HologramHelper1_8_5 implements HologramHelperInterface
             this.lines.clear();
             super.delete();
         }
-
+        
         @Override
         protected Location getLocation()
         {
             return this.location;
         }
-
+        
         @Override
-        protected void sendInRangePackages(PlayerConnection con)
+        protected void sendInRangePackages(Player player, PlayerConnection con)
         {
+            final String[] text = MessageUtil.convert(player, this.strings);
             final List<Packet<?>> packets = new ArrayList<>();
-            this.lines.stream().map(l -> new PacketPlayOutEntityDestroy(l.getId())).forEach(packets::add);
-            this.lines.stream().map(l -> new PacketPlayOutSpawnEntity(l, 78)).forEach(packets::add);
+            
+            for (int i = 0; i < this.lines.size(); i++)
+            {
+                final HologramLine line = this.lines.get(i);
+                packets.add(new PacketPlayOutEntityDestroy(line.getId()));
+                if (text.length > i)
+                {
+                    packets.add(new PacketPlayOutSpawnEntity(line, 78));
+                    final PacketPlayOutEntityMetadata meta = new PacketPlayOutEntityMetadata(line.getId(), line.getDataWatcher(), true);
+                    try
+                    {
+                        final List<DataWatcher.WatchableObject> items = (List<DataWatcher.WatchableObject>) PacketMetadataItemsField.get(meta);
+                        for (int j = 0; j < items.size(); j++)
+                        {
+                            if (items.get(j).a() == EntityNameField)
+                            {
+                                items.set(j, new DataWatcher.WatchableObject(EntityNameField, EntityNameDataType, text[i]));
+                                break;
+                            }
+                        }
+                    }
+                    catch (@SuppressWarnings("unused") SecurityException | IllegalArgumentException | IllegalAccessException e)
+                    {
+                        // TODO Logging
+                    }
+                    packets.add(meta);
+                }
+            }
             sendPackages(con, 1, packets.toArray(new Packet[packets.size()]));
         }
-
+        
         @Override
-        protected void sendOutOfRangePackages(PlayerConnection con)
+        protected void sendOutOfRangePackages(Player player, PlayerConnection con)
         {
             sendPackages(con, 1,
                 this.lines.stream().map(l -> new PacketPlayOutEntityDestroy(l.getId())).toArray(Packet[]::new));
         }
-
+        
         @Override
-        protected void sendUntrackPackages(PlayerConnection con)
+        protected void sendUntrackPackages(Player player, PlayerConnection con)
         {
             // empty
         }
-
+        
         @Override
-        protected void sendTrackPackages(PlayerConnection con)
+        protected void sendTrackPackages(Player player, PlayerConnection con)
         {
             // empty
         }

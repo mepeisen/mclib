@@ -32,6 +32,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.metadata.MetadataValue;
@@ -518,7 +519,7 @@ public class DummyHuman1_8_3 extends EntityPlayer
         }
         
         @Override
-        protected void sendInRangePackages(PlayerConnection con)
+        protected void sendInRangePackages(Player player, PlayerConnection con)
         {
             final byte encodedyaw = toAngle(DummyHuman1_8_3.this.yaw);
             float body = DummyHuman1_8_3.this.yaw + 45;
@@ -539,20 +540,20 @@ public class DummyHuman1_8_3 extends EntityPlayer
         }
         
         @Override
-        protected void sendOutOfRangePackages(PlayerConnection con)
+        protected void sendOutOfRangePackages(Player player, PlayerConnection con)
         {
             sendPackages(con, 1,
                 new PacketPlayOutEntityDestroy(DummyHuman1_8_3.this.getId()));
         }
         
         @Override
-        protected void sendUntrackPackages(PlayerConnection con)
+        protected void sendUntrackPackages(Player player, PlayerConnection con)
         {
             // does nothing
         }
         
         @Override
-        protected void sendTrackPackages(PlayerConnection con)
+        protected void sendTrackPackages(Player player, PlayerConnection con)
         {
             con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_8_3.this));
         }

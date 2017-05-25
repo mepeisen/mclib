@@ -446,7 +446,7 @@ public class DummyHuman1_10_1 extends EntityPlayer
         }
         
         @Override
-        protected void sendInRangePackages(PlayerConnection con)
+        protected void sendInRangePackages(Player player, PlayerConnection con)
         {
             final byte encodedyaw = toAngle(DummyHuman1_10_1.this.yaw);
             float body = DummyHuman1_10_1.this.yaw + 45;
@@ -467,20 +467,20 @@ public class DummyHuman1_10_1 extends EntityPlayer
         }
         
         @Override
-        protected void sendOutOfRangePackages(PlayerConnection con)
+        protected void sendOutOfRangePackages(Player player, PlayerConnection con)
         {
             sendPackages(con, 1,
                 new PacketPlayOutEntityDestroy(DummyHuman1_10_1.this.getId()));
         }
         
         @Override
-        protected void sendUntrackPackages(PlayerConnection con)
+        protected void sendUntrackPackages(Player player, PlayerConnection con)
         {
             // does nothing
         }
         
         @Override
-        protected void sendTrackPackages(PlayerConnection con)
+        protected void sendTrackPackages(Player player, PlayerConnection con)
         {
             con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_10_1.this));
         }
