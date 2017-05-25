@@ -1079,6 +1079,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             this.configurations.remove(evt.getPlugin());
             this.configProviders.remove(evt.getPlugin());
             this.msgService.unregisterPlaceholders(evt.getPlugin());
+            this.msgService.unregisterPlaceholderListener(evt.getPlugin());
         }
     }
     
@@ -1820,6 +1821,30 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public void unregisterPlaceholders(Plugin plugin)
     {
         this.msgService.unregisterPlaceholders(plugin);
+    }
+
+    @Override
+    public void registerPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener)
+    {
+        this.msgService.registerPlaceholderListener(plugin, placeholder, listener);
+    }
+
+    @Override
+    public void unregisterPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener)
+    {
+        this.msgService.unregisterPlaceholderListener(plugin, placeholder, listener);
+    }
+
+    @Override
+    public void unregisterPlaceholderListener(Plugin plugin)
+    {
+        this.msgService.unregisterPlaceholderListener(plugin);
+    }
+ 
+    @Override
+    public String[][] getPlaceholders(String msg)
+    {
+        return this.msgService.getPlaceholders(msg);
     }
     
 }

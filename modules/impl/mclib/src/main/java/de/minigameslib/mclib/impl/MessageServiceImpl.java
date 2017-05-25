@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,21 +50,76 @@ class MessageServiceImpl implements MessageServiceInterface
 {
     
     /** enum service helper. */
-    private final EnumServiceImpl                      enumService;
+    private final EnumServiceImpl                                   enumService;
     
     /**
      * messages configuration per plugin.
      */
-    private final Map<Plugin, MessagesConfigInterface> messages             = new HashMap<>();
+    private final Map<Plugin, MessagesConfigInterface>              messages             = new HashMap<>();
     
     /** placeholders. */
-    private final Map<String, List<Placeholder>>       placeholders         = new HashMap<>();
+    private final Map<String, List<Placeholder>>                    placeholders         = new HashMap<>();
     
     /** placeholder pattern. */
-    private static final Pattern                       PLACEHOLDER_PATTERN  = Pattern.compile("[{]([\\p{L}\\p{Alnum}_-]+)[}]"); //$NON-NLS-1$
+    private static final Pattern                                    PLACEHOLDER_PATTERN  = Pattern.compile("[{]([\\p{L}\\p{Alnum}_-]+)[}]"); //$NON-NLS-1$
     
     /** placeholders by plugin. */
-    private final Map<String, Set<PlaceholderInfo>>    placeholdersByPlugin = new HashMap<>();
+    private final Map<String, Set<PlaceholderInfo>>                 placeholdersByPlugin = new HashMap<>();
+    
+    /** Listeners by placeholder node. */
+    private final ListenerNode                                      listeners            = new ListenerNode();
+    
+    /** Listeners by plugin. */
+    private final Map<String, Map<PlaceholderListener, String[][]>> listenersByPlugin    = new HashMap<>();
+    
+    /**
+     * Listeners.
+     */
+    private static final class ListenerNode
+    {
+        /** listeners for this node. */
+        public final Set<PlaceholderListener>  listeners = new HashSet<>();
+        /** child nodes. */
+        public final Map<String, ListenerNode> children  = new HashMap<>();
+        /** parent node. */
+        public final ListenerNode              parent;
+        
+        /**
+         * Constructor.
+         */
+        public ListenerNode()
+        {
+            this.parent = null;
+        }
+        
+        /**
+         * Constructor.
+         * 
+         * @param parent
+         *            the parent.
+         */
+        public ListenerNode(ListenerNode parent)
+        {
+            this.parent = parent;
+        }
+        
+        /**
+         * Remove listener.
+         * 
+         * @param listener
+         *            listener to be removed.
+         */
+        public void removeListener(PlaceholderListener listener)
+        {
+            this.listeners.remove(listener);
+            ListenerNode curnode = this;
+            while (curnode != null && curnode.parent != null && curnode.listeners.isEmpty() && curnode.children.isEmpty())
+            {
+                curnode.parent.children.values().remove(curnode);
+                curnode = curnode.parent;
+            }
+        }
+    }
     
     /**
      * placeholder info.
@@ -222,11 +278,19 @@ class MessageServiceImpl implements MessageServiceInterface
             info.prefix = prefix;
             info.placeholder = placeholder;
             set.remove(info);
+            if (set.isEmpty())
+            {
+                this.placeholdersByPlugin.remove(plugin.getName());
+            }
         }
         final List<Placeholder> list = this.placeholders.get(prefix);
         if (list != null)
         {
             list.remove(placeholder);
+            if (list.isEmpty())
+            {
+                this.placeholders.remove(prefix);
+            }
         }
     }
     
@@ -238,9 +302,125 @@ class MessageServiceImpl implements MessageServiceInterface
         {
             for (final PlaceholderInfo info : set)
             {
-                this.placeholders.get(info.prefix).remove(info.placeholder);
+                final List<Placeholder> list = this.placeholders.get(info.prefix);
+                list.remove(info.placeholder);
+                if (list.isEmpty())
+                {
+                    this.placeholders.remove(info.prefix);
+                }
             }
         }
+    }
+    
+    @Override
+    public void registerPlaceholderListener(Plugin plugin, String[][] placeholderArray, PlaceholderListener listener)
+    {
+        final Map<PlaceholderListener, String[][]> map = this.listenersByPlugin.computeIfAbsent(plugin.getName(), p -> new HashMap<>());
+        final String[][] old = map.get(listener);
+        final List<String[]> newValues = new ArrayList<>();
+        if (old != null)
+        {
+            newValues.addAll(Arrays.asList(old));
+        }
+        for (final String[] parts : placeholderArray)
+        {
+            if (newValues.stream().anyMatch(p -> Arrays.equals(p, parts)))
+            {
+                continue;
+            }
+            newValues.add(parts);
+            ListenerNode curnode = this.listeners;
+            for (final String part : parts)
+            {
+                final ListenerNode parent = curnode;
+                curnode = curnode.children.computeIfAbsent(part, p -> new ListenerNode(parent));
+            }
+            curnode.listeners.add(listener);
+        }
+        map.put(listener, newValues.toArray(new String[newValues.size()][]));
+    }
+    
+    @Override
+    public void unregisterPlaceholderListener(Plugin plugin, String[][] placeholderArray, PlaceholderListener listener)
+    {
+        final Map<PlaceholderListener, String[][]> map = this.listenersByPlugin.get(plugin.getName());
+        if (map != null)
+        {
+            final String[][] old = map.get(listener);
+            final List<String[]> newValues = new ArrayList<>();
+            if (old != null)
+            {
+                newValues.addAll(Arrays.asList(old));
+            }
+            for (final String[] parts : placeholderArray)
+            {
+                if (newValues.removeIf(p -> Arrays.equals(p, parts)))
+                {
+                    ListenerNode curnode = findListenerNode(parts);
+                    if (curnode != null)
+                    {
+                        curnode.removeListener(listener);
+                    }
+                }
+            }
+            map.put(listener, newValues.toArray(new String[newValues.size()][]));
+        }
+    }
+    
+    @Override
+    public void unregisterPlaceholderListener(Plugin plugin)
+    {
+        final Map<PlaceholderListener, String[][]> map = this.listenersByPlugin.remove(plugin.getName());
+        if (map != null)
+        {
+            for (final Map.Entry<PlaceholderListener, String[][]> entry : map.entrySet())
+            {
+                for (final String[] parts : entry.getValue())
+                {
+                    ListenerNode curnode = findListenerNode(parts);
+                    if (curnode != null)
+                    {
+                        curnode.removeListener(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Finds a listener node for given parts.
+     * 
+     * @param parts
+     *            placeholder parts.
+     * @return listener node or {@code null} if part was not found.
+     */
+    private ListenerNode findListenerNode(final String[] parts)
+    {
+        ListenerNode curnode = this.listeners;
+        for (final String part : parts)
+        {
+            curnode = curnode.children.get(part);
+            if (curnode == null)
+            {
+                break;
+            }
+        }
+        return curnode;
+    }
+    
+    @Override
+    public String[][] getPlaceholders(String msg)
+    {
+        final List<String[]> result = new ArrayList<>();
+        
+        final Matcher m = PLACEHOLDER_PATTERN.matcher(msg);
+        while (m.find())
+        {
+            final String format = m.group(1);
+            final String[] args = format.split("_"); //$NON-NLS-1$
+            result.add(args);
+        }
+        return result.toArray(new String[result.size()][]);
     }
     
 }

@@ -109,6 +109,66 @@ public interface MessageServiceInterface
     void unregisterPlaceholders(Plugin plugin);
     
     /**
+     * Register a placeholder listener watching for changes on given placeholders
+     * 
+     * @param plugin
+     *            plugin owning the placeholders.
+     * @param placeholder
+     *            placeholders to listen for changes
+     * @param listener
+     *            the listener to be incoked once the given placeholders changed
+     */
+    void registerPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener);
+    
+    /**
+     * Unregister given placeholder listener.
+     * 
+     * @param plugin
+     *            plugin owning the listener.
+     * @param placeholder
+     *            placeholder registrations
+     * @param listener
+     *            the placeholder listener to remove
+     */
+    void unregisterPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener);
+    
+    /**
+     * Unregister all listeners for given plugin.
+     * 
+     * @param plugin
+     *            plugin owning the listeners.
+     */
+    void unregisterPlaceholderListener(Plugin plugin);
+    
+    /**
+     * Returns the placeholders from given message.
+     * 
+     * @param msg
+     *            source message
+     * @return array of placeholders within this message
+     */
+    String[][] getPlaceholders(String msg);
+    
+    /**
+     * Placeholder listeners for fetching changed placeholder values.
+     * 
+     * @author mepeisen
+     */
+    @FunctionalInterface
+    public interface PlaceholderListener
+    {
+        
+        /**
+         * Handles placeholder changes.
+         * 
+         * @param placeholders
+         *            placeholder that were changed; multiple entries. String devided by '_' character.
+         */
+        void handleChangedPlaceholder(String[][] placeholders);
+        
+    }
+    
+    /**
      * Placeholder interface to resolve placeholders during runtime.
      * 
      * @author mepeisen
