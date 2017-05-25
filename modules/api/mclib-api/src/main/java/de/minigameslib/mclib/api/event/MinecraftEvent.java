@@ -31,6 +31,7 @@ import org.bukkit.event.Event;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.objects.HologramInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
@@ -58,6 +59,16 @@ public interface MinecraftEvent<EVT extends Event, MGEVT extends MinecraftEvent<
      * @return original event this rule
      */
     EVT getBukkitEvent();
+    
+    /**
+     * Returns the hologram causing this event.
+     * 
+     * @return hologram causing this event or {@code null} if this event was not caused by a hologram.
+     */
+    default HologramInterface getHologram()
+    {
+        return null;
+    }
     
     /**
      * Returns the object causing this event.
@@ -118,6 +129,21 @@ public interface MinecraftEvent<EVT extends Event, MGEVT extends MinecraftEvent<
     default ComponentInterface getComponent()
     {
         return null;
+    }
+    
+    /**
+     * Returns the holograms associated with this event.
+     * 
+     * @return object list
+     */
+    default Iterable<HologramInterface> getHolograms()
+    {
+        final HologramInterface result = this.getHologram();
+        if (result == null)
+        {
+            return Collections.emptyList();
+        }
+        return Collections.singleton(result);
     }
     
     /**

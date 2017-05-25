@@ -28,8 +28,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +44,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -61,31 +58,47 @@ import com.mojang.authlib.yggdrasil.YggdrasilMinecraftSessionService;
 import com.mojang.authlib.yggdrasil.response.MinecraftProfilePropertiesResponse;
 import com.mojang.util.UUIDTypeAdapter;
 
-import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import net.minecraft.server.v1_9_R1.MinecraftServer;
 import net.minecraft.server.v1_9_R1.PlayerInteractManager;
 import net.minecraft.server.v1_9_R1.WorldServer;
 
 /**
+ * NMS implementation of entity helper.
+ * 
  * @author mepeisen
  *
  */
 public class EntityHelper1_9 implements EntityHelperInterface
 {
     
+    /**
+     * Property cache loader.
+     */
+    private static final class PropertyCacheLoader extends CacheLoader<UUID, PropertyMap>
+    {
+        /**
+         * Constructor.
+         */
+        public PropertyCacheLoader()
+        {
+            // empty
+        }
+        
+        @Override
+        public PropertyMap load(UUID key) throws Exception
+        {
+            final Player player = Bukkit.getPlayer(key);
+            return EntityHelper1_9.getRemoteProfile(player);
+        }
+    }
+    
     /** dummy humans. */
-    private static final Set<DummyHuman1_9>              HUMANS     = new HashSet<>();
+    private static final EntityWithWhitelistHelper<DummyHuman1_9.EntityHelper> HUMANS     = new EntityWithWhitelistHelper<>();
     
     /** properties cache. */
-    private static final LoadingCache<UUID, PropertyMap> PROPERTIES = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(20, TimeUnit.MINUTES).build(new CacheLoader<UUID, PropertyMap>() {
-                                                                        @Override
-                                                                        public PropertyMap load(UUID key) throws Exception
-                                                                        {
-                                                                            final Player player = Bukkit.getPlayer(key);
-                                                                            return EntityHelper1_9.getRemoteProfile(player);
-                                                                        }
-                                                                    });
+    private static final LoadingCache<UUID, PropertyMap>                       PROPERTIES = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(20, TimeUnit.MINUTES)
+        .build(new PropertyCacheLoader());
     
     @Override
     public Villager spawnDummyVillager(Location loc, Profession profession)
@@ -116,16 +129,8 @@ public class EntityHelper1_9 implements EntityHelperInterface
             setSkinToProfile(profile, skinTexture);
         }
         final DummyHuman1_9 result = new DummyHuman1_9(server, world.getHandle(), profile, new PlayerInteractManager(world.getHandle()), loc);
-        HUMANS.add(result);
+        HUMANS.add(result.getHelper());
         ((WorldServer) result.world).tracker.untrackEntity(result);
-        Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin) McLibInterface.instance(), new Runnable() {
-            
-            @Override
-            public void run()
-            {
-                Bukkit.getOnlinePlayers().forEach(result::track);
-            }
-        }, 10);
         return result.getBukkitEntity();
     }
     
@@ -160,14 +165,16 @@ public class EntityHelper1_9 implements EntityHelperInterface
     {
         final DummyHuman1_9 human = (DummyHuman1_9) ((CraftPlayer) entity).getHandle();
         setSkinToProfile(human.getProfile(), texture);
-        human.respawnAll();
+        human.getHelper().respawnAll();
     }
     
     /**
-     * Setting skin to profiles
+     * Setting skin to profiles.
      * 
      * @param profile
+     *            game profile.
      * @param texture
+     *            string texture skin.
      */
     private void setSkinToProfile(GameProfile profile, String texture)
     {
@@ -178,19 +185,13 @@ public class EntityHelper1_9 implements EntityHelperInterface
     @Override
     public void playerOnline(Player player)
     {
-        for (final DummyHuman1_9 human : HUMANS)
-        {
-            human.track(player);
-        }
+        HUMANS.playerOnline(player);
     }
     
     @Override
     public void playerOffline(Player player)
     {
-        for (final DummyHuman1_9 human : HUMANS)
-        {
-            human.untrack(player);
-        }
+        HUMANS.playerOffline(player);
     }
     
     @Override
@@ -211,11 +212,13 @@ public class EntityHelper1_9 implements EntityHelperInterface
     }
     
     /**
-     * get remote profile properties
+     * get remote profile properties.
      * 
      * @param player
+     *            target player.
      * @return profile properties
      * @throws Exception
+     *             thrown on problems.
      */
     static PropertyMap getRemoteProfile(Player player) throws Exception
     {
@@ -230,11 +233,11 @@ public class EntityHelper1_9 implements EntityHelperInterface
         url = HttpAuthenticationService.concatenateURL(url,
             new StringBuilder().append("unsigned=").append(!requireSecure).toString()); //$NON-NLS-1$
         
-        final Method MAKE_REQUEST = YggdrasilAuthenticationService.class.getDeclaredMethod(
+        final Method mthMakeRequest = YggdrasilAuthenticationService.class.getDeclaredMethod(
             "makeRequest", URL.class, Object.class, Class.class); //$NON-NLS-1$
-        MAKE_REQUEST.setAccessible(true);
+        mthMakeRequest.setAccessible(true);
         
-        final MinecraftProfilePropertiesResponse response = (MinecraftProfilePropertiesResponse) MAKE_REQUEST.invoke(
+        final MinecraftProfilePropertiesResponse response = (MinecraftProfilePropertiesResponse) mthMakeRequest.invoke(
             auth, url, null, MinecraftProfilePropertiesResponse.class);
         if (response == null)
         {
@@ -255,8 +258,7 @@ public class EntityHelper1_9 implements EntityHelperInterface
     {
         ((CraftPlayer) entity).kickPlayer("delete"); //$NON-NLS-1$
         final DummyHuman1_9 human = (DummyHuman1_9) ((CraftPlayer) entity).getHandle();
-        HUMANS.remove(human);
-        human.delete();
+        HUMANS.delete(human.getHelper());
     }
     
     @Override

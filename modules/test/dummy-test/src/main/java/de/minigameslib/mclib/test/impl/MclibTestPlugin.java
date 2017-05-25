@@ -38,8 +38,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
-import de.minigameslib.mclib.api.items.BlockData;
-import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
@@ -60,10 +58,12 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
         EnumServiceInterface.instance().registerEnumClass(this, MyMessages.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyEntitites.class);
         EnumServiceInterface.instance().registerEnumClass(this, MyBlocks.class);
+        EnumServiceInterface.instance().registerEnumClass(this, MyHolograms.class);
         
         try
         {
             ObjectServiceInterface.instance().register(MyEntitites.Dummy, DummyEntity.class);
+            ObjectServiceInterface.instance().register(MyHolograms.Dummy, DummyHologram.class);
             ObjectServiceInterface.instance().resumeObjects(this, null);
         }
         catch (McException e)
@@ -86,28 +86,37 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-            boolean flg = false;
-            if (flg)
+//            boolean flg = false;
+//            if (flg)
+//            {
+//                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+//                try
+//                {
+//                    player.openClickGui(new ClickGui());
+//                }
+//                catch (Exception ex)
+//                {
+//                    // TODO
+//                }
+//            }
+//            else
+//            {
+//                final ItemServiceInterface itemService = ItemServiceInterface.instance();
+//                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+//                itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
+//                    .onLeftClick(this::onLeftClick)
+//                    .onRightClick(this::onRightClick)
+//                    //.singleUse()
+//                    .build();
+//            }
+            try
             {
-                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-                try
-                {
-                    player.openClickGui(new ClickGui());
-                }
-                catch (Exception ex)
-                {
-                    // TODO
-                }
+                ObjectServiceInterface.instance().createHologram(MyHolograms.Dummy, ((Player)sender).getLocation().clone().add(0, 2, 0), new DummyHologram(), false);
             }
-            else
+            catch (McException e)
             {
-                final ItemServiceInterface itemService = ItemServiceInterface.instance();
-                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-                itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
-                    .onLeftClick(this::onLeftClick)
-                    .onRightClick(this::onRightClick)
-                    //.singleUse()
-                    .build();
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
         return super.onCommand(sender, command, label, args);

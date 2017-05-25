@@ -46,6 +46,7 @@ import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.event.MinecraftEvent;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
+import de.minigameslib.mclib.api.objects.HologramInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectInterface;
 import de.minigameslib.mclib.api.objects.SignInterface;
@@ -432,6 +433,31 @@ public abstract class AbstractEventSystem implements EventSystemInterface
                     catch (McException ex)
                     {
                         LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + obj, ex); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
+            }
+            
+            for (final HologramInterface hologram : mgevt.getHolograms())
+            {
+                if (hologram instanceof MgEventListener)
+                {
+                    try
+                    {
+                        mclib.runInNewContext(() ->
+                        {
+                            mclib.setContext(Event.class, evt);
+                            mclib.setContext(McPlayerInterface.class, mgevt.getPlayer());
+                            mclib.setContext(ZoneInterface.class, mgevt.getZone());
+                            mclib.setContext(ComponentInterface.class, mgevt.getComponent());
+                            mclib.setContext(HologramInterface.class, hologram);
+                            mclib.setContext(SignInterface.class, mgevt.getSign());
+                            mclib.setContext(EntityInterface.class, mgevt.getEntity());
+                            ((MgEventListener) hologram).handle(this.mgcls, mgevt);
+                        });
+                    }
+                    catch (McException ex)
+                    {
+                        LOGGER.log(Level.WARNING, "Unhandled exception while distributing event " + evt + " to " + hologram, ex); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }

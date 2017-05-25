@@ -59,6 +59,20 @@ public interface ObjectServiceInterface
     // handler registrations
     
     /**
+     * Registers a hologram handler.
+     * 
+     * @param <T>
+     *            handler class
+     * @param type
+     *            type id
+     * @param handler
+     *            handler class
+     * @throws McException
+     *             thrown if there are problems during initialization
+     */
+    <T extends HologramHandlerInterface> void register(HologramTypeId type, Class<T> handler) throws McException;
+    
+    /**
      * Registers an object handler.
      * 
      * @param <T>
@@ -129,6 +143,15 @@ public interface ObjectServiceInterface
     <T extends ZoneHandlerInterface> void register(ZoneTypeId type, Class<T> handler) throws McException;
     
     /**
+     * Returns the hologram type for given id.
+     * 
+     * @param id
+     *            hologram id
+     * @return type or {@code null} if the type is not registered/ unknown
+     */
+    HologramTypeId getType(HologramIdInterface id);
+    
+    /**
      * Returns the component type for given id.
      * 
      * @param id
@@ -197,6 +220,13 @@ public interface ObjectServiceInterface
         boolean isOk();
         
         /**
+         * Returns the list of broken holograms.
+         * 
+         * @return broken holograms
+         */
+        Iterable<HologramIdInterface> getBrokenHolograms();
+        
+        /**
          * Returns the list of broken components.
          * 
          * @return broken components
@@ -230,6 +260,15 @@ public interface ObjectServiceInterface
          * @return broken zones
          */
         Iterable<ZoneIdInterface> getBrokenZones();
+        
+        /**
+         * Returns the exception that was caught during hologram loading.
+         * 
+         * @param id
+         *            the component id of the hologram component
+         * @return caught exception
+         */
+        McException getException(HologramIdInterface id);
         
         /**
          * Returns the exception that was caught during component loading.
@@ -436,6 +475,92 @@ public interface ObjectServiceInterface
      *             thrown if the component could not be created
      */
     ComponentInterface createComponent(ComponentTypeId type, Location location, ComponentHandlerInterface handler, boolean persist) throws McException;
+    
+    // hologram api
+    
+    /**
+     * Finds a hologram by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Hologram or {@code null} if no hologram was found.
+     */
+    HologramInterface findHologram(Location location);
+    
+    /**
+     * Finds a hologram by block.
+     * 
+     * @param block
+     *            bukkit block
+     * 
+     * @return Hologram or {@code null} if no hologram was found.
+     */
+    HologramInterface findHologram(Block block);
+    
+    /**
+     * Finds hologram by id.
+     * 
+     * @param id
+     *            the hologram id to search for
+     * @return Hologram or {@code null} if no hologram was found.
+     */
+    HologramInterface findHologram(HologramIdInterface id);
+    
+    /**
+     * Finds holograms by location.
+     * 
+     * @param location
+     *            bukkit location
+     * 
+     * @return Holograms or empty collection if no hologram was found.
+     */
+    Collection<HologramInterface> findHolograms(Location location);
+    
+    /**
+     * Finds a hologram by block.
+     * 
+     * @param block
+     *            bukkit block
+     * 
+     * @return Holograms or empty collection if no hologram was found.
+     */
+    Collection<HologramInterface> findHolograms(Block block);
+    
+    /**
+     * Finds holograms by type.
+     * 
+     * @param type
+     *            hologram type array
+     * @return holograms by type.
+     */
+    Collection<HologramInterface> findHolograms(HologramTypeId... type);
+    
+    /**
+     * Find holograms within given cuboid.
+     * 
+     * @param cub
+     *            cuboid
+     * @return collection of components.
+     */
+    Collection<HologramInterface> findHolograms(Cuboid cub);
+    
+    /**
+     * Creates a new hologram with given handler.
+     * 
+     * @param type
+     *            the type enumeration value
+     * @param location
+     *            the initial location of the hologram.
+     * @param handler
+     *            handler or {@code null} to create a default handler
+     * @param persist
+     *            {@code true} to persist this hologram within configuration files and restore during server restart
+     * @return created hologram
+     * @throws McException
+     *             thrown if the hologram could not be created
+     */
+    HologramInterface createHologram(HologramTypeId type, Location location, HologramHandlerInterface handler, boolean persist) throws McException;
     
     // entity api
     

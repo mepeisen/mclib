@@ -64,6 +64,8 @@ import de.minigameslib.mclib.api.mcevent.ComponentCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ComponentCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.EntityCreateEvent;
 import de.minigameslib.mclib.api.mcevent.EntityCreatedEvent;
+import de.minigameslib.mclib.api.mcevent.HologramCreateEvent;
+import de.minigameslib.mclib.api.mcevent.HologramCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectCreateEvent;
 import de.minigameslib.mclib.api.mcevent.ObjectCreatedEvent;
 import de.minigameslib.mclib.api.mcevent.SignCreateEvent;
@@ -79,6 +81,10 @@ import de.minigameslib.mclib.api.objects.EntityHandlerInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
 import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.EntityTypeId;
+import de.minigameslib.mclib.api.objects.HologramHandlerInterface;
+import de.minigameslib.mclib.api.objects.HologramIdInterface;
+import de.minigameslib.mclib.api.objects.HologramInterface;
+import de.minigameslib.mclib.api.objects.HologramTypeId;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectHandlerInterface;
@@ -103,6 +109,8 @@ import de.minigameslib.mclib.impl.comp.ComponentOwner;
 import de.minigameslib.mclib.impl.comp.ComponentRegistry;
 import de.minigameslib.mclib.impl.comp.EntityId;
 import de.minigameslib.mclib.impl.comp.EntityImpl;
+import de.minigameslib.mclib.impl.comp.HologramId;
+import de.minigameslib.mclib.impl.comp.HologramImpl;
 import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.ObjectImpl;
 import de.minigameslib.mclib.impl.comp.SignId;
@@ -114,6 +122,7 @@ import de.minigameslib.mclib.impl.comp.builder.HumanBuilder;
 import de.minigameslib.mclib.impl.comp.builder.VillagerBuilder;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
+import de.minigameslib.mclib.nms.api.HologramHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
@@ -129,6 +138,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     
     /** target data folder. */
     private final File                                                                                                           dataFolder;
+    
+    /** data container. */
+    private final ObjectsContainer<HologramIdInterface, HologramId, HologramImpl, HologramTypeId, HologramHandlerInterface>      holograms               = new ObjectsContainer<>();
     
     /** data container. */
     private final ObjectsContainer<ComponentIdInterface, ComponentId, ComponentImpl, ComponentTypeId, ComponentHandlerInterface> components              = new ObjectsContainer<>();
@@ -148,6 +160,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     /** component types per plugin name. */
     private final Map<String, Map<String, ComponentTypeId>>                                                                      componentTypesByPlugin  = new HashMap<>();
     
+    /** hologram types per plugin name. */
+    private final Map<String, Map<String, HologramTypeId>>                                                                       hologramTypesByPlugin   = new HashMap<>();
+    
     /** entity types per plugin name. */
     private final Map<String, Map<String, EntityTypeId>>                                                                         entityTypesByPlugin     = new HashMap<>();
     
@@ -159,6 +174,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     
     /** object types per plugin name. */
     private final Map<String, Map<String, ObjectTypeId>>                                                                         objectTypesByPlugin     = new HashMap<>();
+    
+    /** registered handlers. */
+    private final Map<HologramTypeId, Class<? extends HologramHandlerInterface>>                                                 hologramHandlerClasses  = new HashMap<>();
     
     /** registered handlers. */
     private final Map<ComponentTypeId, Class<? extends ComponentHandlerInterface>>                                               componentHandlerClasses = new HashMap<>();
@@ -180,6 +198,9 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     
     /** the components folder. */
     private final File                                                                                                           componentsFolder;
+    
+    /** the holograms folder. */
+    private final File                                                                                                           hologramsFolder;
     
     /** the signs folder. */
     private final File                                                                                                           signsFolder;
@@ -228,6 +249,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     {
         this.players = players;
         this.dataFolder = dataFolder;
+        this.hologramsFolder = new File(this.dataFolder, "holograms"); //$NON-NLS-1$
         this.componentsFolder = new File(this.dataFolder, "components"); //$NON-NLS-1$
         this.signsFolder = new File(this.dataFolder, "signs"); //$NON-NLS-1$
         this.entitiesFolder = new File(this.dataFolder, "entities"); //$NON-NLS-1$
@@ -237,6 +259,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (!this.componentsFolder.exists())
         {
             this.componentsFolder.mkdirs();
+        }
+        if (!this.hologramsFolder.exists())
+        {
+            this.hologramsFolder.mkdirs();
         }
         if (!this.signsFolder.exists())
         {
@@ -255,11 +281,19 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             this.objectsFolder.mkdirs();
         }
         
+        this.holograms.loadRegistry(HologramId::new, this.hologramsFolder);
         this.components.loadRegistry(ComponentId::new, this.componentsFolder);
         this.zones.loadRegistry(ZoneId::new, this.zonesFolder);
         this.entities.loadRegistry(EntityId::new, this.entitiesFolder);
         this.signs.loadRegistry(SignId::new, this.signsFolder);
         this.objects.loadRegistry(ObjectId::new, this.objectsFolder);
+    }
+    
+    @Override
+    public <T extends HologramHandlerInterface> void register(HologramTypeId type, Class<T> handler) throws McException
+    {
+        this.hologramTypesByPlugin.computeIfAbsent(safeGetPluginName(type.name(), type), k -> new HashMap<>()).put(type.name(), type);
+        this.hologramHandlerClasses.put(type, handler);
     }
     
     @Override
@@ -327,6 +361,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (this.loadedPlugins.contains(pluginName))
         {
             final McException dupException = new McException(CommonMessages.PluginLoadedTwice, pluginName);
+            final Set<HologramIdInterface> brokenHolograms = this.holograms.containsPluginName(pluginName) ? new HashSet<>(this.holograms.getByPlugin(pluginName)) : Collections.emptySet();
             final Set<ObjectIdInterface> brokenObjects = this.objects.containsPluginName(pluginName) ? new HashSet<>(this.objects.getByPlugin(pluginName)) : Collections.emptySet();
             final Set<ZoneIdInterface> brokenZones = this.zones.containsPluginName(pluginName) ? new HashSet<>(this.zones.getByPlugin(pluginName)) : Collections.emptySet();
             final Set<ComponentIdInterface> brokenComponents = this.components.containsPluginName(pluginName) ? new HashSet<>(this.components.getByPlugin(pluginName)) : Collections.emptySet();
@@ -338,6 +373,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 public boolean isOk()
                 {
                     return false;
+                }
+                
+                @Override
+                public McException getException(HologramIdInterface id)
+                {
+                    return brokenHolograms.contains(id) ? dupException : null;
                 }
                 
                 @Override
@@ -368,6 +409,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 public McException getException(ObjectIdInterface id)
                 {
                     return brokenObjects.contains(id) ? dupException : null;
+                }
+                
+                @Override
+                public Iterable<HologramIdInterface> getBrokenHolograms()
+                {
+                    return brokenHolograms;
                 }
                 
                 @Override
@@ -403,6 +450,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         }
         
         this.loadedPlugins.add(pluginName);
+        final Map<HologramIdInterface, McException> brokenHolograms = new HashMap<>();
         final Map<ZoneIdInterface, McException> brokenZones = new HashMap<>();
         final Map<SignIdInterface, McException> brokenSigns = new HashMap<>();
         final Map<EntityIdInterface, McException> brokenEntities = new HashMap<>();
@@ -503,12 +551,31 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             return impl;
         }, brokenComponents);
         
+        this.holograms.resumeObjects(pluginName, this.hologramTypesByPlugin, HologramId::getType, this::safeCreateHandler, (id, handler) ->
+        {
+            final HologramImpl impl = new HologramImpl(plugin, this.registry, null, id, handler, new File(this.hologramsFolder, id.getUuid().toString() + ".yml"), this); //$NON-NLS-1$
+            impl.readConfig();
+            
+            this.runInContext(HologramInterface.class, impl, () ->
+            {
+                handler.onResume(impl);
+            });
+            impl.setNms(Bukkit.getServicesManager().load(NmsFactory.class).create(HologramHelperInterface.class).create(impl.getLocation()));
+            return impl;
+        }, brokenHolograms);
+        
         return new ResumeReport() {
             
             @Override
             public boolean isOk()
             {
-                return brokenComponents.isEmpty() && brokenEntities.isEmpty() && brokenSigns.isEmpty() && brokenZones.isEmpty() && brokenObjects.isEmpty();
+                return brokenHolograms.isEmpty() && brokenComponents.isEmpty() && brokenEntities.isEmpty() && brokenSigns.isEmpty() && brokenZones.isEmpty() && brokenObjects.isEmpty();
+            }
+            
+            @Override
+            public McException getException(HologramIdInterface id)
+            {
+                return brokenHolograms.get(id);
             }
             
             @Override
@@ -539,6 +606,12 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             public McException getException(ObjectIdInterface id)
             {
                 return brokenObjects.get(id);
+            }
+            
+            @Override
+            public Iterable<HologramIdInterface> getBrokenHolograms()
+            {
+                return brokenHolograms.keySet();
             }
             
             @Override
@@ -585,6 +658,11 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         if (this.loadedPlugins.contains(pluginName))
         {
             // remove types
+            final Map<String, HologramTypeId> hologramTypes = this.hologramTypesByPlugin.remove(pluginName);
+            if (hologramTypes != null)
+            {
+                hologramTypes.entrySet().forEach(this.hologramHandlerClasses::remove);
+            }
             final Map<String, ComponentTypeId> componentTypes = this.componentTypesByPlugin.remove(pluginName);
             if (componentTypes != null)
             {
@@ -607,6 +685,20 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             }
             
             // pause elements
+            this.holograms.removePlugin(pluginName).forEach((id, persistent) ->
+            {
+                final HologramImpl hologram = this.holograms.remove(id);
+                hologram.clearEventRegistrations();
+                
+                this.runInContext(HologramInterface.class, hologram, () ->
+                {
+                    hologram.getHandler().onPause(hologram);
+                    if (persistent)
+                    {
+                        hologram.saveConfig();
+                    }
+                });
+            });
             this.components.removePlugin(pluginName).forEach((id, persistent) ->
             {
                 final ComponentImpl component = this.components.remove(id);
@@ -678,6 +770,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
                 });
             });
             
+            this.holograms.forEach(c ->
+            {
+                this.runInContext(HologramInterface.class, c, () ->
+                {
+                    c.onDisable(plugin);
+                });
+            });
             this.components.forEach(c ->
             {
                 this.runInContext(ComponentInterface.class, c, () ->
@@ -729,6 +828,73 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     {
         // does nothing, waiting for invocation of resumeObjects.
         // maybe in future versions we will do some logic here
+    }
+    
+    @Override
+    public HologramInterface findHologram(Location location)
+    {
+        if (location == null)
+        {
+            return null;
+        }
+        final Optional<HologramImpl> result = this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof HologramImpl).map(c -> (HologramImpl) c)
+            .filter(c -> c.getLocation().equals(location)).findFirst();
+        return result.isPresent() ? result.get() : null;
+    }
+    
+    @Override
+    public HologramInterface findHologram(HologramIdInterface id)
+    {
+        return id == null ? null : this.holograms.get((HologramId) id);
+    }
+    
+    @Override
+    public HologramInterface findHologram(Block block)
+    {
+        return block == null ? null : this.findHologram(block.getLocation());
+    }
+    
+    @Override
+    public HologramInterface createHologram(HologramTypeId type, Location location, HologramHandlerInterface handler, boolean persist) throws McException
+    {
+        final Plugin plugin = this.safeGetPlugin(type.name(), type);
+        final String pluginName = plugin.getName();
+        if (!this.loadedPlugins.contains(pluginName))
+        {
+            throw new McException(CommonMessages.PluginNotLoaded, pluginName);
+        }
+        final HologramHandlerInterface handler2 = handler == null ? safeCreateHandler(pluginName, type) : handler;
+        final UUID uuid = UUID.randomUUID();
+        final HologramId id = new HologramId(pluginName, type.name(), uuid);
+        
+        // init
+        final HologramImpl impl = new HologramImpl(plugin, this.registry, location, id, handler2, persist ? new File(this.hologramsFolder, uuid.toString() + ".yml") : null, this); //$NON-NLS-1$
+        final HologramCreateEvent createEvent = new HologramCreateEvent(impl);
+        Bukkit.getPluginManager().callEvent(createEvent);
+        if (createEvent.isCancelled())
+        {
+            throw new McException(createEvent.getVetoReason(), createEvent.getVetoReasonArgs());
+        }
+        
+        this.runInContext(HologramInterface.class, impl, () ->
+        {
+            handler2.onCreate(impl);
+            
+            // store data
+            this.holograms.put(pluginName, id, impl, persist);
+            
+            // save data
+            if (persist)
+            {
+                this.holograms.saveIdList(this.componentsFolder);
+                impl.saveConfig();
+            }
+        });
+        impl.setNms(Bukkit.getServicesManager().load(NmsFactory.class).create(HologramHelperInterface.class).create(impl.getLocation()));
+        
+        final HologramCreatedEvent createdEvent = new HologramCreatedEvent(impl);
+        Bukkit.getPluginManager().callEvent(createdEvent);
+        return impl;
     }
     
     @Override
@@ -837,6 +1003,34 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             throw new McException(CommonMessages.BrokenObjectTypeEnumNotRegistered, "?", name, enumValue.getClass().getName()); //$NON-NLS-1$
         }
         return plugin;
+    }
+    
+    /**
+     * Safe create handler from type.
+     * 
+     * @param pluginName
+     *            plugin name
+     * @param type
+     *            enum type
+     * @return handler
+     * @throws McException
+     *             thrown if object type is broken
+     */
+    private HologramHandlerInterface safeCreateHandler(String pluginName, HologramTypeId type) throws McException
+    {
+        final Class<? extends HologramHandlerInterface> clazz = this.hologramHandlerClasses.get(type);
+        if (clazz == null)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName());
+        }
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e)
+        {
+            throw new McException(CommonMessages.BrokenObjectType, pluginName, type.name(), type.getClass().getName(), e.getMessage());
+        }
     }
     
     /**
@@ -1451,6 +1645,10 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
         {
             this.onDelete((EntityImpl) component);
         }
+        else if (component instanceof HologramImpl)
+        {
+            this.onDelete((HologramImpl) component);
+        }
     }
     
     /**
@@ -1465,6 +1663,20 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     {
         final ComponentId id = component.getComponentId();
         this.components.remove(id.getPluginName(), id, this.componentsFolder);
+    }
+    
+    /**
+     * Deletes a hologram.
+     * 
+     * @param hologram
+     *            hologram to be deleted
+     * @throws McException
+     *             thrown if deletion failed.
+     */
+    private void onDelete(HologramImpl hologram) throws McException
+    {
+        final HologramId id = hologram.getHologramId();
+        this.holograms.remove(id.getPluginName(), id, this.hologramsFolder);
     }
     
     /**
@@ -1571,6 +1783,55 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             if (list != null)
             {
                 list.stream().filter(id -> ids.contains(id.getType())).map(this.components::get).forEach(result::add);
+            }
+        });
+        
+        return result;
+    }
+    
+    @Override
+    public Collection<HologramInterface> findHolograms(Location location)
+    {
+        if (location == null)
+        {
+            return Collections.emptyList();
+        }
+        return this.registry.fetch(new WorldChunk(location)).stream().filter(c -> c instanceof HologramImpl).map(c -> (HologramImpl) c).filter(c -> c.getLocation().equals(location))
+            .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<HologramInterface> findHolograms(Block block)
+    {
+        return block == null ? Collections.emptyList() : this.findHolograms(block.getLocation());
+    }
+    
+    @Override
+    public Collection<HologramInterface> findHolograms(Cuboid cub)
+    {
+        return this.fetchForCuboid(cub).filter(c -> c instanceof HologramImpl).map(c -> (HologramImpl) c).filter(c -> cub.containsLoc(c.getLocation())).collect(Collectors.toList());
+    }
+    
+    @Override
+    public Collection<HologramInterface> findHolograms(HologramTypeId... type)
+    {
+        if (type == null || type.length == 0)
+        {
+            return Collections.emptyList();
+        }
+        final Map<String, Set<String>> perPlugin = new HashMap<>();
+        for (final HologramTypeId typeid : type)
+        {
+            perPlugin.computeIfAbsent(typeid.getPluginName(), k -> new HashSet<>()).add(typeid.name());
+        }
+        
+        final List<HologramInterface> result = new ArrayList<>();
+        perPlugin.forEach((plugin, ids) ->
+        {
+            final Set<HologramId> list = this.holograms.getByPlugin(plugin);
+            if (list != null)
+            {
+                list.stream().filter(id -> ids.contains(id.getType())).map(this.holograms::get).forEach(result::add);
             }
         });
         
@@ -1751,6 +2012,13 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             return null;
         }
         return this.players.getPlayer(uuid);
+    }
+    
+    @Override
+    public HologramTypeId getType(HologramIdInterface id)
+    {
+        final HologramId casted = (HologramId) id;
+        return this.hologramTypesByPlugin.containsKey(casted.getPluginName()) ? this.hologramTypesByPlugin.get(casted.getPluginName()).get(casted.getType()) : null;
     }
     
     @Override
@@ -2151,7 +2419,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             location.getX() + section.getInt("x2"), //$NON-NLS-1$
             location.getY() + section.getInt("y2"), //$NON-NLS-1$
             location.getZ() + section.getInt("z2")); //$NON-NLS-1$
-        final ZoneImpl impl = new ZoneImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, new Cuboid(loc1,  loc2), id, handler, file, this);
+        final ZoneImpl impl = new ZoneImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, new Cuboid(loc1, loc2), id, handler, file, this);
         impl.readConfig();
         this.runInContext(ZoneInterface.class, impl, () ->
         {
@@ -2195,7 +2463,7 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
             location.getY() + section.getInt("y"), //$NON-NLS-1$
             location.getZ() + section.getInt("z")); //$NON-NLS-1$
         final SignImpl impl = new SignImpl(Bukkit.getPluginManager().getPlugin(type.getPluginName()), this.registry, null, id, handler, file, this);
-
+        
         // research sign
         final BlockState block = loc.getBlock().getState();
         if (!(block instanceof Sign))

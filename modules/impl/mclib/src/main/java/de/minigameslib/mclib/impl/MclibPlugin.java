@@ -153,6 +153,7 @@ import de.minigameslib.mclib.api.mcevent.ZoneRelocatedEvent;
 import de.minigameslib.mclib.api.objects.ComponentIdInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
 import de.minigameslib.mclib.api.objects.EntityIdInterface;
+import de.minigameslib.mclib.api.objects.HologramIdInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.NpcServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectIdInterface;
@@ -169,6 +170,7 @@ import de.minigameslib.mclib.impl.cmd.MclibCommand;
 import de.minigameslib.mclib.impl.com.PlayerProxy;
 import de.minigameslib.mclib.impl.comp.ComponentId;
 import de.minigameslib.mclib.impl.comp.EntityId;
+import de.minigameslib.mclib.impl.comp.HologramId;
 import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
@@ -186,6 +188,7 @@ import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
 import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
+import de.minigameslib.mclib.nms.api.HologramHelperInterface;
 import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
@@ -342,6 +345,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         MemoryDataSection.initFragmentImplementation(ZoneIdInterface.class, ZoneId.class);
         MemoryDataSection.initFragmentImplementation(SignIdInterface.class, SignId.class);
         MemoryDataSection.initFragmentImplementation(EntityIdInterface.class, EntityId.class);
+        MemoryDataSection.initFragmentImplementation(HologramIdInterface.class, HologramId.class);
         
         MemoryDataSection.initFragmentImplementation(InventoryId.class, InventoryIdImpl.class);
         
@@ -968,6 +972,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 {
                     final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
                     factory.create(EntityHelperInterface.class).playerOnline(player);
+                    factory.create(HologramHelperInterface.class).playerOnline(evt.getPlayer());
                 }
             }
         }.runTaskLater(this, 10);
@@ -986,6 +991,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
             factory.create(EntityHelperInterface.class).playerOffline(evt.getPlayer());
+            factory.create(HologramHelperInterface.class).playerOffline(evt.getPlayer());
             this.players.onPlayerQuit(evt);
         }
     }

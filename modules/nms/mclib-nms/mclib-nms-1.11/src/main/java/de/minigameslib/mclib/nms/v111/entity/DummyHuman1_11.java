@@ -25,18 +25,12 @@
 package de.minigameslib.mclib.nms.v111.entity;
 
 import java.net.SocketAddress;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_11_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -79,17 +73,8 @@ import net.minecraft.server.v1_11_R1.WorldServer;
 public class DummyHuman1_11 extends EntityPlayer
 {
     
-    /** update task. */
-    private BukkitRunnable updateTask;
-    
-    /** tracked players. */
-    Set<UUID>              trackedPlayers = new HashSet<>();
-    
-    /** players in range. */
-    Map<UUID, Boolean>     inRange        = new HashMap<>();
-    
-    /** respawn flag. */
-    boolean                respawn;
+    /** helper. */
+    private EntityHelper helper = null;
     
     /**
      * Constructor.
@@ -108,6 +93,7 @@ public class DummyHuman1_11 extends EntityPlayer
     public DummyHuman1_11(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, Location loc)
     {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
+        this.helper = new EntityHelper();
         // playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
         this.setPosition(loc);
         
@@ -121,62 +107,16 @@ public class DummyHuman1_11 extends EntityPlayer
         this.playerInteractManager.a((WorldServer) this.world);
         this.playerInteractManager.b(this.world.getWorldData().getGameType());
         ((CraftServer) Bukkit.getServer()).getHandle().a(conn, this);
-        
-        this.updateTask = new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                for (final UUID uuid : DummyHuman1_11.this.trackedPlayers)
-                {
-                    final Player player = Bukkit.getPlayer(uuid);
-                    if (player != null)
-                    {
-                        final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
-                        boolean newInRange = getDistanceSquared(player) < 64 * 64;
-                        
-                        if (DummyHuman1_11.this.respawn)
-                        {
-                            // if forced resapwn (teleport etc.) and it is no more in range we delete the entity so that it disappears
-                            if (!newInRange)
-                            {
-                                sendPackages(con, 1,
-                                    new PacketPlayOutEntityDestroy(DummyHuman1_11.this.getId()));
-                            }
-                            // override inrange to false so that players still in range will be forced to get a clean respawn
-                            DummyHuman1_11.this.inRange.put(uuid, Boolean.FALSE);
-                        }
-                        
-                        boolean oldInRange = DummyHuman1_11.this.inRange.get(uuid);
-                        if (newInRange != oldInRange)
-                        {
-                            if (!oldInRange)
-                            {
-                                final byte encodedyaw = toAngle(DummyHuman1_11.this.yaw);
-                                float body = DummyHuman1_11.this.yaw + 45;
-                                if (body >= 180)
-                                {
-                                    body -= 360;
-                                }
-                                final byte encodedbody = toAngle(body);
-                                sendPackages(con, 1,
-                                    new PacketPlayOutEntityDestroy(DummyHuman1_11.this.getId()),
-                                    new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_11.this),
-                                    new PacketPlayOutNamedEntitySpawn(DummyHuman1_11.this));
-                                sendPackages(con, 2,
-                                    new PacketPlayOutEntityHeadRotation(DummyHuman1_11.this, encodedyaw),
-                                    new PacketPlayOutEntity.PacketPlayOutEntityLook(DummyHuman1_11.this.getId(), encodedbody, toAngle(DummyHuman1_11.this.pitch), true));
-                                sendPackages(con, 4,
-                                    new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_11.this));
-                            }
-                            DummyHuman1_11.this.inRange.put(uuid, newInRange);
-                        }
-                    }
-                }
-                DummyHuman1_11.this.respawn = false;
-            }
-        };
-        this.updateTask.runTaskTimer((Plugin) McLibInterface.instance(), 0, 30);
+    }
+    
+    /**
+     * Returns the whitelistable entity helper.
+     * 
+     * @return entity helper.
+     */
+    protected EntityHelper getHelper()
+    {
+        return this.helper;
     }
     
     /**
@@ -220,80 +160,6 @@ public class DummyHuman1_11 extends EntityPlayer
     public IChatBaseComponent getPlayerListName()
     {
         return null;
-    }
-    
-    /**
-     * Marks all players to respawn the entity.
-     */
-    public void respawnAll()
-    {
-        this.trackedPlayers.forEach(u -> this.inRange.put(u, false));
-    }
-    
-    /**
-     * Returns the squared distance between this human and players.
-     * 
-     * @param player
-     *            target player
-     * @return squared distance
-     */
-    protected double getDistanceSquared(Player player)
-    {
-        Location loc = player.getLocation();
-        double dx = loc.getX() - this.locX;
-        double dy = loc.getY() - this.locY;
-        double dz = loc.getZ() - this.locZ;
-        return dx * dx + dy * dy + dz * dz;
-    }
-    
-    /**
-     * untrack given player.
-     * 
-     * @param player
-     *            target player
-     */
-    public void untrack(Player player)
-    {
-        new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                DummyHuman1_11.this.trackedPlayers.remove(player.getUniqueId());
-                DummyHuman1_11.this.inRange.remove(player.getUniqueId());
-            }
-        }.runTaskLater((Plugin) McLibInterface.instance(), 1);
-    }
-    
-    /**
-     * track given player.
-     * 
-     * @param player
-     *            target player
-     */
-    public void track(Player player)
-    {
-        new BukkitRunnable() {
-            
-            @Override
-            public void run()
-            {
-                DummyHuman1_11.this.trackedPlayers.add(player.getUniqueId());
-                DummyHuman1_11.this.inRange.put(player.getUniqueId(), Boolean.FALSE);
-                final PlayerConnection con = ((CraftPlayer) player).getHandle().playerConnection;
-                con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_11.this));
-            }
-        }.runTaskLater((Plugin) McLibInterface.instance(), 1);
-    }
-    
-    /**
-     * Delete/cleanup the human.
-     */
-    public void delete()
-    {
-        this.updateTask.cancel();
-        this.trackedPlayers.clear();
-        this.inRange.clear();
     }
     
     @Override
@@ -359,7 +225,10 @@ public class DummyHuman1_11 extends EntityPlayer
     public void setPosition(double d0, double d1, double d2)
     {
         super.setPosition(d0, d1, d2);
-        this.respawn = true;
+        if (this.helper != null)
+        {
+            this.helper.respawn();
+        }
     }
     
     /**
@@ -562,6 +431,68 @@ public class DummyHuman1_11 extends EntityPlayer
         {
             // do nothing
             return null;
+        }
+        
+    }
+    
+    /**
+     * entity helper.
+     */
+    public final class EntityHelper extends AbstractWhitelistableEntityHelper
+    {
+        
+        /**
+         * The constructor for entity helper.
+         */
+        public EntityHelper()
+        {
+            // empty
+        }
+        
+        @Override
+        protected Location getLocation()
+        {
+            return DummyHuman1_11.this.getBukkitEntity().getLocation();
+        }
+        
+        @Override
+        protected void sendInRangePackages(PlayerConnection con)
+        {
+            final byte encodedyaw = toAngle(DummyHuman1_11.this.yaw);
+            float body = DummyHuman1_11.this.yaw + 45;
+            if (body >= 180)
+            {
+                body -= 360;
+            }
+            final byte encodedbody = toAngle(body);
+            sendPackages(con, 1,
+                new PacketPlayOutEntityDestroy(DummyHuman1_11.this.getId()),
+                new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, DummyHuman1_11.this),
+                new PacketPlayOutNamedEntitySpawn(DummyHuman1_11.this));
+            sendPackages(con, 2,
+                new PacketPlayOutEntityHeadRotation(DummyHuman1_11.this, encodedyaw),
+                new PacketPlayOutEntity.PacketPlayOutEntityLook(DummyHuman1_11.this.getId(), encodedbody, toAngle(DummyHuman1_11.this.pitch), true));
+            sendPackages(con, 4,
+                new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_11.this));
+        }
+        
+        @Override
+        protected void sendOutOfRangePackages(PlayerConnection con)
+        {
+            sendPackages(con, 1,
+                new PacketPlayOutEntityDestroy(DummyHuman1_11.this.getId()));
+        }
+        
+        @Override
+        protected void sendUntrackPackages(PlayerConnection con)
+        {
+            // does nothing
+        }
+        
+        @Override
+        protected void sendTrackPackages(PlayerConnection con)
+        {
+            con.sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, DummyHuman1_11.this));
         }
         
     }
