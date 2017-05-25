@@ -357,7 +357,7 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     public boolean checkPermission(PermissionsInterface perm)
     {
         final Player player = this.getBukkitPlayer();
-        return player == null ? false : player.hasPermission(perm.resolveName());
+        return player == null ? false : player.hasPermission(perm.fullPath());
     }
     
     @Override

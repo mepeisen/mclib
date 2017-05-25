@@ -25,13 +25,9 @@
 package de.minigameslib.mclib.test.perms;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
-import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.perms.Permission;
 import de.minigameslib.mclib.api.perms.Permissions;
 import de.minigameslib.mclib.api.perms.PermissionsInterface;
@@ -70,22 +66,6 @@ public class PermissionsInterfaceTest
     public void fullPathTestInvalid2()
     {
         assertEquals("FOO.BAR", InvalidEnum2.BAR.fullPath()); //$NON-NLS-1$
-    }
-    
-    /**
-     * Tests {@link PermissionsInterface#resolveName()}.
-     * 
-     * @throws ClassNotFoundException
-     *             thrown on errors
-     */
-    @Test
-    public void resolveNameTest() throws ClassNotFoundException
-    {
-        final McLibInterface mclib = mock(McLibInterface.class);
-        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mclib.resolveContextVar("FOO.BAR")).thenReturn("FOOBAR"); //$NON-NLS-1$ //$NON-NLS-2$
-        
-        assertEquals("FOOBAR", PermissionEnum.BAR.resolveName()); //$NON-NLS-1$
     }
     
     /**

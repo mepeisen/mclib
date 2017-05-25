@@ -76,15 +76,6 @@ public interface McContext
     <T> void setContext(Class<T> clazz, T value);
     
     /**
-     * Resolves a context variable and performs variable substitution.
-     * 
-     * @param src
-     *            source string
-     * @return result
-     */
-    String resolveContextVar(String src);
-    
-    /**
      * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
      * 
      * @param event
@@ -302,47 +293,6 @@ public interface McContext
      *             thrown if the class to register is already registered.
      */
     <T> void registerContextHandler(Plugin plugin, Class<T> clazz, ContextHandlerInterface<T> handler) throws McException;
-    
-    /**
-     * An interface being able to resolve variables with contexts.
-     * 
-     * @author mepeisen
-     */
-    public interface ContextResolverInterface
-    {
-        
-        /**
-         * Tries to resolve given variable name.
-         * 
-         * @param varName
-         *            variable name to resolve.
-         * @param args
-         *            arguments for resolve
-         * @param context
-         *            the context
-         * @return the resolved string or {@code null} if the variable cannot be resolved.
-         */
-        String resolve(String varName, String[] args, McContext context);
-        
-    }
-    
-    /**
-     * Registers a resolver for context variables.
-     * 
-     * @param plugin
-     *            plugin that is responsible for given resolver
-     * @param resolver
-     *            helper for resolving context variables
-     */
-    void registerContextResolver(Plugin plugin, ContextResolverInterface resolver);
-    
-    /**
-     * Unregisters context handlers and resolvers of given plugin.
-     * 
-     * @param plugin
-     *            plugin that is disabled
-     */
-    void unregisterContextHandlersAndResolvers(Plugin plugin);
     
     // delayed execution
     

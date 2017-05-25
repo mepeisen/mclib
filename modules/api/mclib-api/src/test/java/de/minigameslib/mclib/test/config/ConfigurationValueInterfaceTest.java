@@ -141,13 +141,6 @@ public class ConfigurationValueInterfaceTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
         this.objsrv = mock(ObjectServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.objects.ObjectServiceCache"), "SERVICES", this.objsrv); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                return "core." + invocation.getArgumentAt(0, String.class); //$NON-NLS-1$
-            }
-        });
         this.config = mock(ConfigInterface.class);
         when(this.lib.getConfigFromCfg(anyObject())).thenReturn(this.config);
         this.file = new MemoryDataSection();
@@ -1212,7 +1205,7 @@ public class ConfigurationValueInterfaceTest
     /**
      * Some test options.
      */
-    @ConfigurationValues(path = "config")
+    @ConfigurationValues(path = "core.config")
     public static enum TestOptions implements ConfigurationValueInterface
     {
         /** some value. */

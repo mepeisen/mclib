@@ -280,7 +280,7 @@ public interface CommandInterface
      */
     default boolean checkPermission(PermissionsInterface perm)
     {
-        return this.getSender().hasPermission(perm.resolveName());
+        return this.getSender().hasPermission(perm.fullPath());
     }
     
     /**

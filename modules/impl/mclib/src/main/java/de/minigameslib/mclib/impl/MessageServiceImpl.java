@@ -26,10 +26,11 @@ package de.minigameslib.mclib.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,13 +54,86 @@ class MessageServiceImpl implements MessageServiceInterface
     /**
      * messages configuration per plugin.
      */
-    private final Map<Plugin, MessagesConfigInterface> messages = new HashMap<>();
+    private final Map<Plugin, MessagesConfigInterface> messages             = new HashMap<>();
     
     /** placeholders. */
-    private final Map<String, List<BiFunction<Locale, String[], String>>> placeholders = new HashMap<>();
+    private final Map<String, List<Placeholder>>       placeholders         = new HashMap<>();
     
     /** placeholder pattern. */
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[{]([\\p{L}\\p{Alnum}_-]+)[}]"); //$NON-NLS-1$
+    private static final Pattern                       PLACEHOLDER_PATTERN  = Pattern.compile("[{]([\\p{L}\\p{Alnum}_-]+)[}]"); //$NON-NLS-1$
+    
+    /** placeholders by plugin. */
+    private final Map<String, Set<PlaceholderInfo>>    placeholdersByPlugin = new HashMap<>();
+    
+    /**
+     * placeholder info.
+     */
+    private static final class PlaceholderInfo
+    {
+        /**
+         * Constructor.
+         */
+        public PlaceholderInfo()
+        {
+            // empty
+        }
+        
+        /** the prefix. */
+        public String      prefix;
+        /** the placeholder. */
+        public Placeholder placeholder;
+        
+        @Override
+        public int hashCode()
+        {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((this.placeholder == null) ? 0 : this.placeholder.hashCode());
+            result = prime * result + ((this.prefix == null) ? 0 : this.prefix.hashCode());
+            return result;
+        }
+        
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+            {
+                return true;
+            }
+            if (obj == null)
+            {
+                return false;
+            }
+            if (getClass() != obj.getClass())
+            {
+                return false;
+            }
+            PlaceholderInfo other = (PlaceholderInfo) obj;
+            if (this.placeholder == null)
+            {
+                if (other.placeholder != null)
+                {
+                    return false;
+                }
+            }
+            else if (!this.placeholder.equals(other.placeholder))
+            {
+                return false;
+            }
+            if (this.prefix == null)
+            {
+                if (other.prefix != null)
+                {
+                    return false;
+                }
+            }
+            else if (!this.prefix.equals(other.prefix))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
     
     /**
      * Constructor.
@@ -82,7 +156,7 @@ class MessageServiceImpl implements MessageServiceInterface
         }
         return this.messages.computeIfAbsent(plugin, (key) -> new MessagesConfigImpl(plugin, this.enumService));
     }
-
+    
     @Override
     public String replacePlaceholders(Locale locale, String msg)
     {
@@ -102,12 +176,12 @@ class MessageServiceImpl implements MessageServiceInterface
             final String[] args = format.split("_"); //$NON-NLS-1$
             index = m.end();
             boolean found = false;
-            final List<BiFunction<Locale, String[], String>> list = this.placeholders.get(prefix);
+            final List<Placeholder> list = this.placeholders.get(prefix);
             if (list != null)
             {
-                for (final BiFunction<Locale, String[], String> func : list)
+                for (final Placeholder func : list)
                 {
-                    final String res = func.apply(locale, args);
+                    final String res = func.resolve(locale, args);
                     if (res != null)
                     {
                         target.append(res);
@@ -127,11 +201,46 @@ class MessageServiceImpl implements MessageServiceInterface
         }
         return target.toString();
     }
-
+    
     @Override
-    public void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder)
+    public void registerPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
     {
         this.placeholders.computeIfAbsent(prefix, p -> new ArrayList<>()).add(placeholder);
+        final PlaceholderInfo info = new PlaceholderInfo();
+        info.prefix = prefix;
+        info.placeholder = placeholder;
+        this.placeholdersByPlugin.computeIfAbsent(plugin.getName(), p -> new HashSet<>()).add(info);
+    }
+    
+    @Override
+    public void unregisterPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
+    {
+        final Set<PlaceholderInfo> set = this.placeholdersByPlugin.get(plugin.getName());
+        if (set != null)
+        {
+            final PlaceholderInfo info = new PlaceholderInfo();
+            info.prefix = prefix;
+            info.placeholder = placeholder;
+            set.remove(info);
+        }
+        final List<Placeholder> list = this.placeholders.get(prefix);
+        if (list != null)
+        {
+            list.remove(placeholder);
+        }
+    }
+    
+    @Override
+    public void unregisterPlaceholders(Plugin plugin)
+    {
+        final Set<PlaceholderInfo> set = this.placeholdersByPlugin.remove(plugin.getName());
+        if (set != null)
+        {
+            for (final PlaceholderInfo info : set)
+            {
+                this.placeholders.get(info.prefix).remove(info.placeholder);
+            }
+        }
     }
     
 }

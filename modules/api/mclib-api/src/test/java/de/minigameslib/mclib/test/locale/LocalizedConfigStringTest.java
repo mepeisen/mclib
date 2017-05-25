@@ -27,12 +27,21 @@ package de.minigameslib.mclib.test.locale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.Locale;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.api.locale.LocalizedConfigString;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -43,6 +52,26 @@ import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
  */
 public class LocalizedConfigStringTest
 {
+    
+    /**
+     * setup.
+     * @throws ClassNotFoundException thrown on problems.
+     */
+    @Before
+    public void setup() throws ClassNotFoundException
+    {
+        final MessageServiceInterface service = mock(MessageServiceInterface.class);
+        when(service.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(1, String.class);
+            }
+            
+        });
+        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", service); //$NON-NLS-1$ //$NON-NLS-2$
+    }
     
     /**
      * Tests the argument substitution.

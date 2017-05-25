@@ -28,7 +28,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -36,6 +38,8 @@ import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
@@ -71,6 +75,15 @@ public class LocalizedMessageInterfaceTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
         this.messages = mock(MessagesConfigInterface.class);
         when(this.lib.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
+        when(this.lib.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(1, String.class);
+            }
+            
+        });
     }
     
     /**

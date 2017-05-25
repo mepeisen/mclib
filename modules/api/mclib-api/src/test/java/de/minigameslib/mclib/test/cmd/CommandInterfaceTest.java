@@ -26,6 +26,7 @@ package de.minigameslib.mclib.test.cmd;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -81,6 +82,15 @@ public class CommandInterfaceTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
         this.messages = mock(MessagesConfigInterface.class);
         when(this.lib.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
+        when(this.lib.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(1, String.class);
+            }
+            
+        });
     }
     
     /**

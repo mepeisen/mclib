@@ -77,6 +77,50 @@ public class HelpCommandHandlerTest
     private MessagesConfigInterface messages;
     
     /**
+     * Init test case.
+     * 
+     * @throws ClassNotFoundException
+     *             thrown on errors
+     */
+    @Before
+    public void init() throws ClassNotFoundException
+    {
+        this.msgService = mock(MessageServiceInterface.class);
+        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.msgService); //$NON-NLS-1$ //$NON-NLS-2$
+        this.messages = mock(MessagesConfigInterface.class);
+        when(this.msgService.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
+        when(this.messages.getStringList(any(Locale.class), anyString(), any())).thenAnswer(new Answer<String[]>() {
+            
+            @Override
+            public String[] answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(2, String[].class);
+            }
+        });
+        when(this.messages.getString(any(Locale.class), anyString(), anyString())).thenAnswer(new Answer<String>() {
+            
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(2, String.class);
+            }
+        });
+        when(this.msgService.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(1, String.class);
+            }
+            
+        });
+        
+        this.lib = mock(McLibInterface.class);
+        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
+        when(this.lib.getDefaultLocale()).thenReturn(Locale.ENGLISH);
+    }
+    
+    /**
      * Tests the tab complete.
      * 
      * @throws McException
@@ -408,41 +452,6 @@ public class HelpCommandHandlerTest
         }
         final HelpCommandHandler result = new HelpCommandHandler(composite);
         return result;
-    }
-    
-    /**
-     * Init test case.
-     * 
-     * @throws ClassNotFoundException
-     *             thrown on errors
-     */
-    @Before
-    public void init() throws ClassNotFoundException
-    {
-        this.msgService = mock(MessageServiceInterface.class);
-        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.msgService); //$NON-NLS-1$ //$NON-NLS-2$
-        this.messages = mock(MessagesConfigInterface.class);
-        when(this.msgService.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
-        when(this.messages.getStringList(any(Locale.class), anyString(), any())).thenAnswer(new Answer<String[]>() {
-            
-            @Override
-            public String[] answer(InvocationOnMock invocation) throws Throwable
-            {
-                return invocation.getArgumentAt(2, String[].class);
-            }
-        });
-        when(this.messages.getString(any(Locale.class), anyString(), anyString())).thenAnswer(new Answer<String>() {
-            
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                return invocation.getArgumentAt(2, String.class);
-            }
-        });
-        
-        this.lib = mock(McLibInterface.class);
-        Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
-        when(this.lib.getDefaultLocale()).thenReturn(Locale.ENGLISH);
     }
     
     /**

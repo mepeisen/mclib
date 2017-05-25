@@ -43,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -762,24 +761,6 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public void registerContextResolver(Plugin plugin, ContextResolverInterface resolver)
-    {
-        this.context.registerContextResolver(plugin, resolver);
-    }
-    
-    @Override
-    public void unregisterContextHandlersAndResolvers(Plugin plugin)
-    {
-        this.context.unregisterContextHandlersAndResolvers(plugin);
-    }
-    
-    @Override
-    public String resolveContextVar(String src)
-    {
-        return this.context.resolveContextVar(src);
-    }
-    
-    @Override
     public void runInNewContext(McRunnable runnable) throws McException
     {
         this.context.runInNewContext(runnable);
@@ -1097,6 +1078,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             this.eventBus.onDisable(evt.getPlugin());
             this.configurations.remove(evt.getPlugin());
             this.configProviders.remove(evt.getPlugin());
+            this.msgService.unregisterPlaceholders(evt.getPlugin());
         }
     }
     
@@ -1823,10 +1805,21 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
 
     @Override
-    public void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder)
+    public void registerPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
     {
-        // TODO ask for registering plugin, remove on plugin disable
-        this.msgService.registerPlaceholders(prefix, placeholder);
+        this.msgService.registerPlaceholders(plugin, prefix, placeholder);
+    }
+
+    @Override
+    public void unregisterPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
+    {
+        this.msgService.unregisterPlaceholders(plugin, prefix, placeholder);
+    }
+
+    @Override
+    public void unregisterPlaceholders(Plugin plugin)
+    {
+        this.msgService.unregisterPlaceholders(plugin);
     }
     
 }

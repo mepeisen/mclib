@@ -25,7 +25,8 @@
 package de.minigameslib.mclib.api.locale;
 
 import java.util.Locale;
-import java.util.function.BiFunction;
+
+import org.bukkit.plugin.Plugin;
 
 /**
  * Message services.
@@ -74,15 +75,59 @@ public interface MessageServiceInterface
      * </p>
      * 
      * <p>
-     * The placeholder function is reposible for converting a placeholder to result string. It may return {@code null} if it does not know
-     * how to convert a string. String string array passed to the function is the placeholder splitted by underscore.
+     * The placeholder function is reposible for converting a placeholder to result string. It may return {@code null} if it does not know how to convert a string. String string array passed to the
+     * function is the placeholder splitted by underscore.
      * </p>
      * 
+     * @param plugin
+     *            plugin owning the placeholder.
      * @param prefix
      *            a string prefix.
      * @param placeholder
      *            placeholder function.
      */
-    void registerPlaceholders(String prefix, BiFunction<Locale, String[], String> placeholder);
+    void registerPlaceholders(Plugin plugin, String prefix, Placeholder placeholder);
+    
+    /**
+     * Unregisters the placeholder with given prefix.
+     * 
+     * @param plugin
+     *            plugin owning the placeholder.
+     * @param prefix
+     *            a string prefix.
+     * @param placeholder
+     *            placeholder function.
+     */
+    void unregisterPlaceholders(Plugin plugin, String prefix, Placeholder placeholder);
+    
+    /**
+     * Unregisters all placeholders for given plugin
+     * 
+     * @param plugin
+     *            plugin owning the placeholder.
+     */
+    void unregisterPlaceholders(Plugin plugin);
+    
+    /**
+     * Placeholder interface to resolve placeholders during runtime.
+     * 
+     * @author mepeisen
+     */
+    @FunctionalInterface
+    public interface Placeholder
+    {
+        
+        /**
+         * Resolve placeholders.
+         * 
+         * @param locale
+         *            locale to be used; maybe {@code null} for non localized placeholders.
+         * @param placeholder
+         *            placeholder to resolve. String devided by '_' character.
+         * @return result string. {@code null} if the placeholder does not now hoe to resolve this variable.
+         */
+        String resolve(Locale locale, String[] placeholder);
+        
+    }
     
 }

@@ -34,8 +34,6 @@ import org.bukkit.Server;
 import org.bukkit.inventory.ItemFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import de.minigameslib.mclib.api.McException;
@@ -111,14 +109,6 @@ public class ConfigValidationTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.McLibCache"), "SERVICES", mclib); //$NON-NLS-1$ //$NON-NLS-2$
         this.objsrv = mock(ObjectServiceInterface.class);
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.objects.ObjectServiceCache"), "SERVICES", this.objsrv); //$NON-NLS-1$ //$NON-NLS-2$
-        when(mclib.resolveContextVar(anyString())).thenAnswer(new Answer<String>()
-        {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable
-            {
-                return "core." + invocation.getArgumentAt(0, String.class); //$NON-NLS-1$
-            }
-        });
         this.config = mock(ConfigInterface.class);
         when(this.lib.getConfigFromCfg(anyObject())).thenReturn(this.config);
         this.file = new MemoryDataSection();

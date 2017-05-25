@@ -265,13 +265,12 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
         {
             final Field field = this.getClass().getDeclaredField(this.name());
             final ConfigurationValues configs = this.getClass().getAnnotation(ConfigurationValues.class);
-            final McLibInterface lib = McLibInterface.instance();
             
             {
                 final ConfigurationEnum config = field.getAnnotation(ConfigurationEnum.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -279,7 +278,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationEnumList config = field.getAnnotation(ConfigurationEnumList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -287,7 +286,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationJavaEnum config = field.getAnnotation(ConfigurationJavaEnum.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -295,7 +294,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationJavaEnumList config = field.getAnnotation(ConfigurationJavaEnumList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -303,7 +302,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationBool config = field.getAnnotation(ConfigurationBool.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -311,7 +310,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationBoolList config = field.getAnnotation(ConfigurationBoolList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -319,7 +318,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationByte config = field.getAnnotation(ConfigurationByte.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -327,7 +326,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationByteList config = field.getAnnotation(ConfigurationByteList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -335,7 +334,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationCharacter config = field.getAnnotation(ConfigurationCharacter.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -343,7 +342,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationCharacterList config = field.getAnnotation(ConfigurationCharacterList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -351,7 +350,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationColor config = field.getAnnotation(ConfigurationColor.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -359,7 +358,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationColorList config = field.getAnnotation(ConfigurationColorList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -367,7 +366,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationDouble config = field.getAnnotation(ConfigurationDouble.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -375,7 +374,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationDoubleList config = field.getAnnotation(ConfigurationDoubleList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -383,7 +382,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationFloat config = field.getAnnotation(ConfigurationFloat.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -391,7 +390,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationFloatList config = field.getAnnotation(ConfigurationFloatList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -399,7 +398,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationInt config = field.getAnnotation(ConfigurationInt.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -407,7 +406,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationIntList config = field.getAnnotation(ConfigurationIntList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -415,7 +414,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationItemStack config = field.getAnnotation(ConfigurationItemStack.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -423,7 +422,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationItemStackList config = field.getAnnotation(ConfigurationItemStackList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -431,7 +430,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationLong config = field.getAnnotation(ConfigurationLong.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -439,7 +438,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationLongList config = field.getAnnotation(ConfigurationLongList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -447,7 +446,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationObject config = field.getAnnotation(ConfigurationObject.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -455,7 +454,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationObjectList config = field.getAnnotation(ConfigurationObjectList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -463,7 +462,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationPlayer config = field.getAnnotation(ConfigurationPlayer.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -471,7 +470,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationPlayerList config = field.getAnnotation(ConfigurationPlayerList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -479,7 +478,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationSection config = field.getAnnotation(ConfigurationSection.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value()));
+                    final String path = configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value());
                     return path;
                 }
             }
@@ -487,7 +486,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationShort config = field.getAnnotation(ConfigurationShort.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -495,7 +494,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationShortList config = field.getAnnotation(ConfigurationShortList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -503,7 +502,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationString config = field.getAnnotation(ConfigurationString.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -511,7 +510,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationStringList config = field.getAnnotation(ConfigurationStringList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -519,7 +518,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationVector config = field.getAnnotation(ConfigurationVector.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -527,7 +526,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
                 final ConfigurationVectorList config = field.getAnnotation(ConfigurationVectorList.class);
                 if (config != null)
                 {
-                    final String path = lib.resolveContextVar(configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name()));
+                    final String path = configs.path() + '.' + (config.name().length() == 0 ? this.name() : config.name());
                     return path;
                 }
             }
@@ -567,7 +566,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
             final ConfigurationSection config = field.getAnnotation(ConfigurationSection.class);
             if (config != null)
             {
-                final String mpath = McLibInterface.instance().resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value())) + '.' + path;
+                final String mpath = configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value()) + '.' + path;
                 return minigame.getConfig(configs.file()).contains(mpath);
             }
             throw new IllegalStateException("Invalid configuration option"); //$NON-NLS-1$
@@ -2430,7 +2429,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
             }
             final ConfigServiceInterface lib = ConfigServiceInterface.instance();
             final ConfigInterface minigame = lib.getConfigFromCfg(this);
-            final String path = McLibInterface.instance().resolveContextVar(configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value()));
+            final String path = configs.path() + '.' + (config.value().length() == 0 ? this.name() : config.value());
             final Set<String> result = minigame.getConfig(configs.file()).getSection(path).getKeys(deep);
             return result.toArray(new String[result.size()]);
         }

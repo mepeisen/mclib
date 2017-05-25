@@ -25,7 +25,6 @@
 package de.minigameslib.mclib.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,12 +59,6 @@ class McContextImpl implements McContext
     
     /** the thread local storage. */
     final ThreadLocal<MyTls>                                                     tls             = ThreadLocal.withInitial(() -> new MyTls());
-    
-    /** context resolve helper. */
-    private final List<ContextResolverInterface>                               resolvers       = new ArrayList<>();
-    
-    /** resolvers per plugin. */
-    private final Map<Plugin, List<ContextResolverInterface>>                  pluginResolvers = new HashMap<>();
     
     /** handlers per plugin. */
     private final Map<Plugin, Map<Class<?>, List<ContextHandlerInterface<?>>>> pluginHandlers  = new HashMap<>();
@@ -139,49 +132,6 @@ class McContextImpl implements McContext
         {
             data.put(clazz, value);
         }
-    }
-    
-    @Override
-    public String resolveContextVar(String src)
-    {
-        if (!src.contains("$")) //$NON-NLS-1$
-        {
-            return src;
-        }
-        final StringBuilder builder = new StringBuilder();
-        int start = src.indexOf('$');
-        if (start > 0)
-        {
-            builder.append(src, 0, start);
-        }
-        int end = src.indexOf('$', start + 1);
-        final String varWithArgs = src.substring(start + 1, end - 1);
-        final String[] splitted = varWithArgs.split(":"); //$NON-NLS-1$
-        builder.append(resolve(splitted));
-        builder.append(this.resolveContextVar(src.substring(end + 1)));
-        return builder.toString();
-    }
-    
-    /**
-     * Resolve context var.
-     * 
-     * @param splitted
-     *            the splitted string
-     * @return resolved var
-     */
-    private String resolve(String[] splitted)
-    {
-        final String varName = splitted[0];
-        final String[] args = splitted.length == 1 ? new String[0] : Arrays.copyOfRange(splitted, 1, splitted.length);
-        for (final ContextResolverInterface resolver : this.resolvers)
-        {
-            final String result = resolver.resolve(varName, args, this);
-            if (result != null)
-            {
-                return result;
-            }
-        }
-        return "?"; //$NON-NLS-1$
     }
     
     @Override
@@ -347,39 +297,6 @@ class McContextImpl implements McContext
     {
         this.handlers.computeIfAbsent(clazz, (key) -> new ArrayList<>()).add(handler);
         this.pluginHandlers.computeIfAbsent(plugin, (key) -> new HashMap<>()).computeIfAbsent(clazz, (key) -> new ArrayList<>()).add(handler);
-    }
-    
-    @Override
-    public void registerContextResolver(Plugin plugin, ContextResolverInterface resolver)
-    {
-        this.resolvers.add(resolver);
-        this.pluginResolvers.computeIfAbsent(plugin, (key) -> new ArrayList<>()).add(resolver);
-    }
-    
-    @Override
-    public void unregisterContextHandlersAndResolvers(Plugin plugin)
-    {
-        final Map<Class<?>, List<ContextHandlerInterface<?>>> map = this.pluginHandlers.get(plugin);
-        if (map != null)
-        {
-            for (final Map.Entry<Class<?>, List<ContextHandlerInterface<?>>> entry : map.entrySet())
-            {
-                for (final ContextHandlerInterface<?> handler : entry.getValue())
-                {
-                    this.handlers.get(entry.getKey()).remove(handler);
-                }
-            }
-            this.pluginHandlers.remove(plugin);
-        }
-        final List<ContextResolverInterface> list = this.pluginResolvers.get(plugin);
-        if (list != null)
-        {
-            for (final ContextResolverInterface resolver : list)
-            {
-                this.resolvers.remove(resolver);
-            }
-            this.pluginResolvers.remove(plugin);
-        }
     }
     
     /**
