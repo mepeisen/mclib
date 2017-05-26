@@ -114,7 +114,8 @@ public class FloatConfigOption extends AbstractConfigOption
                     throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
                 }
             },
-            this.getValue().getComment()));
+            this.getValue().getComment(),
+            false));
     }
     
 }

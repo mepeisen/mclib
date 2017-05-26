@@ -111,7 +111,8 @@ public class CharacterConfigOption extends AbstractConfigOption
                 });
                 onChange.run();
             },
-            this.getValue().getComment()));
+            this.getValue().getComment(),
+            false));
     }
     
 }

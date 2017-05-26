@@ -116,7 +116,8 @@ public class TextListPage<T> extends AbstractListPage<T>
             text,
             null,
             (s) -> this.onEdit(player, session, gui, realLine, s),
-            player.encodeMessage(Messages.EditTextDescription, this.title, realLine)));
+            player.encodeMessage(Messages.EditTextDescription, this.title, realLine),
+            false));
     }
     
     /**

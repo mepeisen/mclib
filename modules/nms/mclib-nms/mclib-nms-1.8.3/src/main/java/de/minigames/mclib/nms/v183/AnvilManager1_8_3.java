@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R2.event.CraftEventFactory;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public class AnvilManager1_8_3 implements AnvilManagerInterface
     private final Map<UUID, Helper> playerInventories = new HashMap<>();
     
     @Override
-    public AnvilHelper openGui(Player player, ItemStack stack, AnvilListener listener)
+    public AnvilHelper openGui(Player player, ItemStack stack, ItemStack outputItem, AnvilListener listener)
     {
         final EntityPlayer entity = ((CraftPlayer) player).getHandle();
         final Helper helper = new Helper(entity, stack, listener);
@@ -71,6 +72,10 @@ public class AnvilManager1_8_3 implements AnvilManagerInterface
         entity.activeContainer.addSlotListener(entity);
         this.playerInventories.put(player.getUniqueId(), helper);
         helper.getBukkitView().getTopInventory().setItem(0, stack);
+        if (outputItem != null && outputItem.getType() != Material.AIR)
+        {
+            helper.getBukkitView().getTopInventory().setItem(2, outputItem);
+        }
         return helper;
     }
     

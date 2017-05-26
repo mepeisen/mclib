@@ -114,7 +114,8 @@ public class LongConfigOption extends AbstractConfigOption
                     throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
                 }
             },
-            this.getValue().getComment()));
+            this.getValue().getComment(),
+            false));
     }
     
 }

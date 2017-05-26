@@ -141,7 +141,8 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
                     throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
                 }
             },
-            player.encodeMessage(Messages.DecriptionRed)));
+            player.encodeMessage(Messages.DecriptionRed),
+            false));
     }
     
     /**
@@ -179,7 +180,8 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
                     throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
                 }
             },
-            player.encodeMessage(Messages.DecriptionGreen)));
+            player.encodeMessage(Messages.DecriptionGreen),
+            false));
     }
     
     /**
@@ -217,7 +219,8 @@ public class ColorEditor implements ClickGuiInterface, ClickGuiPageInterface
                     throw new McException(AbstractConfigOption.Messages.InvalidNumericFormat, ex);
                 }
             },
-            player.encodeMessage(Messages.DecriptionBlue)));
+            player.encodeMessage(Messages.DecriptionBlue),
+            false));
     }
     
     /**

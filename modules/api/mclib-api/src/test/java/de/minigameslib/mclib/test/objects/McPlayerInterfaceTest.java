@@ -56,6 +56,7 @@ import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
+import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 
@@ -384,6 +385,22 @@ public class McPlayerInterfaceTest
         
         @Override
         public GuiSessionInterface nestAnvilGui(AnvilGuiInterface gui) throws McException
+        {
+            // empty
+            return null;
+        }
+
+        @Override
+        public GuiSessionInterface openTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description,
+            Serializable... descriptionArgs) throws McException
+        {
+            // empty
+            return null;
+        }
+
+        @Override
+        public GuiSessionInterface nestTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description,
+            Serializable... descriptionArgs) throws McException
         {
             // empty
             return null;

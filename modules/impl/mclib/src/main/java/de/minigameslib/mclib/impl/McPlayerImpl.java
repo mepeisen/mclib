@@ -78,6 +78,7 @@ import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.RawMessage.RawAction;
 import de.minigameslib.mclib.impl.comp.ZoneId;
+import de.minigameslib.mclib.impl.gui.cfg.QueryText;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
@@ -916,6 +917,24 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     public ClientInterface getClient()
     {
         return this;
+    }
+
+    @Override
+    public GuiSessionInterface openTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description, Serializable... descriptionArgs)
+        throws McException
+    {
+        final String[] desc = this.encodeMessage(description, descriptionArgs);
+        final QueryText gui = new QueryText(src, onCancel, onInput, desc, preUseInput);
+        return this.openAnvilGui(gui);
+    }
+
+    @Override
+    public GuiSessionInterface nestTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description, Serializable... descriptionArgs)
+        throws McException
+    {
+        final String[] desc = this.encodeMessage(description, descriptionArgs);
+        final QueryText gui = new QueryText(src, onCancel, onInput, desc, preUseInput);
+        return this.nestAnvilGui(gui);
     }
     
 }

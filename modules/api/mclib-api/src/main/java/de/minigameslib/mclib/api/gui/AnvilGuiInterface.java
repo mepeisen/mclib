@@ -51,6 +51,16 @@ public interface AnvilGuiInterface
     ItemStack getItem();
     
     /**
+     * Returns the initial output item.
+     * 
+     * @return item; initial name must be the display name in meta data.
+     */
+    default ItemStack getOutputItem()
+    {
+        return null;
+    }
+    
+    /**
      * Handles input.
      * 
      * @param input

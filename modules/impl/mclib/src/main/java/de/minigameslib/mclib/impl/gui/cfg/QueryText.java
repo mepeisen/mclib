@@ -58,6 +58,9 @@ public class QueryText implements AnvilGuiInterface
     /** description. */
     private String[]           description;
     
+    /** pre using the input and set it to output slot. */
+    private boolean            preUseInput;
+    
     /**
      * Constructor.
      * 
@@ -69,13 +72,16 @@ public class QueryText implements AnvilGuiInterface
      *            handler for accepting a new value
      * @param description
      *            the string description for the queried value
+     * @param preUseInput
+     *            pre using the input and set it to output slot
      */
-    public QueryText(String src, McRunnable onCancel, McConsumer<String> onInput, String[] description)
+    public QueryText(String src, McRunnable onCancel, McConsumer<String> onInput, String[] description, boolean preUseInput)
     {
         this.src = src;
         this.onCancel = onCancel;
         this.onInput = onInput;
         this.description = description;
+        this.preUseInput = preUseInput;
     }
     
     @Override
@@ -88,6 +94,16 @@ public class QueryText implements AnvilGuiInterface
         return stack;
     }
     
+    @Override
+    public ItemStack getOutputItem()
+    {
+        if (this.preUseInput)
+        {
+            return this.getItem();
+        }
+        return null;
+    }
+
     @Override
     public AnvilGuiId getUniqueId()
     {

@@ -189,10 +189,11 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         this.player = player;
         
         final ItemStack item = gui.getItem();
+        final ItemStack output = gui.getOutputItem();
         final ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(translateToAnvilGui(meta.getDisplayName()));
         item.setItemMeta(meta);
-        this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(player.getBukkitPlayer(), item, this);
+        this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(player.getBukkitPlayer(), item, output, this);
     }
     
     /**
@@ -337,10 +338,11 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         if (this.type == GuiType.AnvilGui)
         {
             final ItemStack item = this.agui.getItem();
+            final ItemStack output = this.agui.getOutputItem();
             final ItemMeta meta = item.getItemMeta();
             meta.setDisplayName(translateToAnvilGui(meta.getDisplayName()));
             item.setItemMeta(meta);
-            this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(this.player.getBukkitPlayer(), item, this);
+            this.aguiHelper = Bukkit.getServicesManager().load(AnvilManagerInterface.class).openGui(this.player.getBukkitPlayer(), item, output, this);
         }
         else if (this.type == GuiType.ClickGui)
         {

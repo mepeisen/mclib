@@ -43,11 +43,13 @@ public interface AnvilManagerInterface extends Listener
      *            player that opens the gui
      * @param stack
      *            the initial item with name
+     * @param output
+     *            the initial output item with name
      * @param listener
      *            the listener
      * @return avil inventory helper
      */
-    AnvilHelper openGui(Player player, ItemStack stack, AnvilListener listener);
+    AnvilHelper openGui(Player player, ItemStack stack, ItemStack output, AnvilListener listener);
     
     /**
      * Listener for inventories.
