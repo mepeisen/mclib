@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -798,6 +799,42 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     public <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException
     {
         return this.context.calculateInCopiedContext(runnable);
+    }
+    
+    @Override
+    public void runInNewContextUnchecked(Runnable runnable)
+    {
+        this.context.runInNewContextUnchecked(runnable);
+    }
+    
+    @Override
+    public void runInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Runnable runnable)
+    {
+        this.context.runInNewContextUnchecked(event, command, player, zone, component, runnable);
+    }
+    
+    @Override
+    public void runInCopiedContextUnchecked(Runnable runnable)
+    {
+        this.context.runInCopiedContextUnchecked(runnable);
+    }
+    
+    @Override
+    public <T> T calculateInNewContextUnchecked(Supplier<T> runnable)
+    {
+        return this.context.calculateInNewContextUnchecked(runnable);
+    }
+    
+    @Override
+    public <T> T calculateInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Supplier<T> runnable)
+    {
+        return this.context.calculateInNewContextUnchecked(event, command, player, zone, component, runnable);
+    }
+    
+    @Override
+    public <T> T calculateInCopiedContextUnchecked(Supplier<T> runnable)
+    {
+        return this.context.calculateInCopiedContextUnchecked(runnable);
     }
     
     @Override

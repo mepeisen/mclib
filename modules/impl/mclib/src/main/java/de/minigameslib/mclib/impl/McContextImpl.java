@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -169,6 +170,40 @@ class McContextImpl implements McContext
     }
     
     @Override
+    public void runInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Runnable runnable)
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = command;
+            tld.event = event;
+            if (player != null)
+            {
+                tld.put(McPlayerInterface.class, player);
+            }
+            if (zone != null)
+            {
+                tld.put(ZoneInterface.class, zone);
+            }
+            if (component != null)
+            {
+                tld.put(ComponentInterface.class, component);
+            }
+            runnable.run();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
     public void runInNewContext(McRunnable runnable) throws McException
     {
         final MyTls old = this.tls.get();
@@ -191,7 +226,52 @@ class McContextImpl implements McContext
     }
     
     @Override
+    public void runInNewContextUnchecked(Runnable runnable)
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = old.command;
+            tld.event = old.event;
+            runnable.run();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
     public void runInCopiedContext(McRunnable runnable) throws McException
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.putAll(old);
+            tld.command = old.command;
+            tld.event = old.event;
+            runnable.run();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
+    public void runInCopiedContextUnchecked(Runnable runnable)
     {
         final MyTls old = this.tls.get();
         final MyTls tld = new MyTls();
@@ -248,6 +328,40 @@ class McContextImpl implements McContext
     }
     
     @Override
+    public <T> T calculateInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Supplier<T> runnable)
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = command;
+            tld.event = event;
+            if (player != null)
+            {
+                tld.put(McPlayerInterface.class, player);
+            }
+            if (zone != null)
+            {
+                tld.put(ZoneInterface.class, zone);
+            }
+            if (component != null)
+            {
+                tld.put(ComponentInterface.class, component);
+            }
+            return runnable.get();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
     public <T> T calculateInNewContext(McSupplier<T> runnable) throws McException
     {
         final MyTls old = this.tls.get();
@@ -270,7 +384,52 @@ class McContextImpl implements McContext
     }
     
     @Override
+    public <T> T calculateInNewContextUnchecked(Supplier<T> runnable)
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.command = old.command;
+            tld.event = old.event;
+            return runnable.get();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
     public <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException
+    {
+        final MyTls old = this.tls.get();
+        final MyTls tld = new MyTls();
+        this.tls.set(tld);
+        try
+        {
+            tld.clear();
+            tld.putAll(old);
+            tld.command = old.command;
+            tld.event = old.event;
+            return runnable.get();
+        }
+        finally
+        {
+            this.tls.set(old);
+            tld.clear();
+            tld.command = null;
+            tld.event = null;
+        }
+    }
+    
+    @Override
+    public <T> T calculateInCopiedContextUnchecked(Supplier<T> runnable)
     {
         final MyTls old = this.tls.get();
         final MyTls tld = new MyTls();

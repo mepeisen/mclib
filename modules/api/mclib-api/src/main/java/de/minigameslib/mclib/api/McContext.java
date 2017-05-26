@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api;
 
+import java.util.function.Supplier;
+
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -96,6 +98,24 @@ public interface McContext
     void runInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McRunnable runnable) throws McException;
     
     /**
+     * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
+     * 
+     * @param event
+     *            the event to set
+     * @param command
+     *            the command to set
+     * @param player
+     *            the player to set
+     * @param zone
+     *            the zone to set
+     * @param component
+     *            the component to set
+     * @param runnable
+     *            the runnable to execute.
+     */
+    void runInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Runnable runnable);
+    
+    /**
      * Runs the code in new context; changes made inside the runnable will be undone.
      * 
      * @param runnable
@@ -106,6 +126,14 @@ public interface McContext
     void runInNewContext(McRunnable runnable) throws McException;
     
     /**
+     * Runs the code in new context; changes made inside the runnable will be undone.
+     * 
+     * @param runnable
+     *            the runnable to execute.
+     */
+    void runInNewContextUnchecked(Runnable runnable);
+    
+    /**
      * Runs the code in new context but copies all context variables before; changes made inside the runnable will be undone.
      * 
      * @param runnable
@@ -114,6 +142,14 @@ public interface McContext
      *             rethrown from runnable.
      */
     void runInCopiedContext(McRunnable runnable) throws McException;
+    
+    /**
+     * Runs the code in new context but copies all context variables before; changes made inside the runnable will be undone.
+     * 
+     * @param runnable
+     *            the runnable to execute.
+     */
+    void runInCopiedContextUnchecked(Runnable runnable);
     
     /**
      * Runs the code in new context; changes made inside the runnable will be undone.
@@ -127,6 +163,17 @@ public interface McContext
      *             rethrown from runnable.
      */
     <T> T calculateInNewContext(McSupplier<T> runnable) throws McException;
+    
+    /**
+     * Runs the code in new context; changes made inside the runnable will be undone.
+     * 
+     * @param runnable
+     *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
+     * @return result from runnable
+     */
+    <T> T calculateInNewContextUnchecked(Supplier<T> runnable);
     
     /**
      * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
@@ -152,6 +199,27 @@ public interface McContext
     <T> T calculateInNewContext(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, McSupplier<T> runnable) throws McException;
     
     /**
+     * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
+     * 
+     * @param event
+     *            the event to set
+     * @param command
+     *            the command to set
+     * @param player
+     *            the player to set
+     * @param zone
+     *            the zone to set
+     * @param component
+     *            the component to set
+     * @param runnable
+     *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
+     * @return result from runnable
+     */
+    <T> T calculateInNewContextUnchecked(Event event, CommandInterface command, McPlayerInterface player, ZoneInterface zone, ComponentInterface component, Supplier<T> runnable);
+    
+    /**
      * Runs the code but copies all context variables before; changes made inside the runnable will be undone.
      * 
      * @param runnable
@@ -163,6 +231,17 @@ public interface McContext
      *             rethrown from runnable.
      */
     <T> T calculateInCopiedContext(McSupplier<T> runnable) throws McException;
+    
+    /**
+     * Runs the code but copies all context variables before; changes made inside the runnable will be undone.
+     * 
+     * @param runnable
+     *            the runnable to execute.
+     * @param <T>
+     *            Type of return value
+     * @return result from runnable
+     */
+    <T> T calculateInCopiedContextUnchecked(Supplier<T> runnable);
     
     /**
      * Returns the current command if context is executed within command.

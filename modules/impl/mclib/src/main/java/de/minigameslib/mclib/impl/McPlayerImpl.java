@@ -278,50 +278,53 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     @Override
     public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
     {
-        final OfflinePlayer player = this.getOfflinePlayer();
-        String[] msgs = null;
-        if (msg.isSingleLine())
-        {
-            msgs = new String[] { player.isOp() ? (msg.toAdminMessage(this.getPreferredLocale(), args)) : (msg.toUserMessage(this.getPreferredLocale(), args)) };
-        }
-        else
-        {
-            msgs = player.isOp() ? (msg.toAdminMessageLine(this.getPreferredLocale(), args)) : (msg.toUserMessageLine(this.getPreferredLocale(), args));
-        }
-        
-        final String[] result = new String[msgs.length];
-        
-        for (int i = 0; i < result.length; i++)
-        {
-            // TODO use semantic colors
-            // TODO allow override of semantic colors via server config
-            switch (msg.getSeverity())
+        return McLibInterface.instance().calculateInCopiedContextUnchecked(() -> {
+            McLibInterface.instance().setContext(McPlayerInterface.class, this);
+            final OfflinePlayer player = this.getOfflinePlayer();
+            String[] msgs = null;
+            if (msg.isSingleLine())
             {
-                default:
-                case Neutral:
-                    result[i] = msgs[i];
-                    break;
-                case Error:
-                    result[i] = ChatColor.DARK_RED + msgs[i];
-                    break;
-                case Information:
-                    result[i] = ChatColor.WHITE + msgs[i];
-                    break;
-                case Loser:
-                    result[i] = ChatColor.RED + msgs[i];
-                    break;
-                case Success:
-                    result[i] = ChatColor.GREEN + msgs[i];
-                    break;
-                case Warning:
-                    result[i] = ChatColor.YELLOW + msgs[i];
-                    break;
-                case Winner:
-                    result[i] = ChatColor.GOLD + msgs[i];
-                    break;
+                msgs = new String[] { player.isOp() ? msg.toAdminMessage(this.getPreferredLocale(), args) : msg.toUserMessage(this.getPreferredLocale(), args) };
             }
-        }
-        return result;
+            else
+            {
+                msgs = player.isOp() ? msg.toAdminMessageLine(this.getPreferredLocale(), args) : msg.toUserMessageLine(this.getPreferredLocale(), args);
+            }
+            
+            final String[] result = new String[msgs.length];
+            
+            for (int i = 0; i < result.length; i++)
+            {
+                // TODO use semantic colors
+                // TODO allow override of semantic colors via server config
+                switch (msg.getSeverity())
+                {
+                    default:
+                    case Neutral:
+                        result[i] = msgs[i];
+                        break;
+                    case Error:
+                        result[i] = ChatColor.DARK_RED + msgs[i];
+                        break;
+                    case Information:
+                        result[i] = ChatColor.WHITE + msgs[i];
+                        break;
+                    case Loser:
+                        result[i] = ChatColor.RED + msgs[i];
+                        break;
+                    case Success:
+                        result[i] = ChatColor.GREEN + msgs[i];
+                        break;
+                    case Warning:
+                        result[i] = ChatColor.YELLOW + msgs[i];
+                        break;
+                    case Winner:
+                        result[i] = ChatColor.GOLD + msgs[i];
+                        break;
+                }
+            }
+            return result;
+        });
     }
     
     @Override
