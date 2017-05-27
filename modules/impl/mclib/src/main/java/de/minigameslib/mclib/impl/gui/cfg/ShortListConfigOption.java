@@ -30,6 +30,7 @@ import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
@@ -57,7 +58,7 @@ public class ShortListConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Calculator);
         ItemServiceInterface.instance().setDescription(stack, this.getValue().getComment());

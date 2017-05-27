@@ -31,6 +31,7 @@ import org.bukkit.plugin.Plugin;
 import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 
@@ -81,13 +82,15 @@ public interface ConfigServiceInterface
      *            configuration variable to edit
      * @param onChange
      *            listener for config changes
+     * @param home
+     *            function to display main menu
      * @param contextProvider
      *            a function to setup context before reading or storing values
      * @return editor item
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, McRunnable contextProvider) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException;
     
     /**
      * Creates a gui editor item for editing given configuration variable.
@@ -96,10 +99,12 @@ public interface ConfigServiceInterface
      *            configuration variable to edit
      * @param onChange
      *            listener for config changes
+     * @param home
+     *            function to display main menu
      * @return editor item
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home) throws McException;
     
 }

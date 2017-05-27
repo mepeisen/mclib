@@ -29,11 +29,14 @@ import java.util.List;
 
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.enums.EnumServiceInterface;
+import de.minigameslib.mclib.api.gui.AbstractListPage;
+import de.minigameslib.mclib.api.gui.ClickGuiId;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 import de.minigameslib.mclib.shared.api.com.EnumerationValue;
 
 /**
@@ -110,6 +113,12 @@ public class EnumListPage extends AbstractListPage<EnumerationValue>
                 this.lines.set(realLine, c);
                 this.onSave.accept(this.lines);
             }));
+    }
+
+    @Override
+    public ClickGuiId getUniqueId()
+    {
+        return ClickGuis.List;
     }
     
 }

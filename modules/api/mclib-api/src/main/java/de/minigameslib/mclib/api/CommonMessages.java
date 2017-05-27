@@ -24,6 +24,8 @@
 
 package de.minigameslib.mclib.api;
 
+import de.minigameslib.mclib.api.enums.ChildEnum;
+import de.minigameslib.mclib.api.gui.GuiServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageList;
@@ -37,6 +39,9 @@ import de.minigameslib.mclib.api.locale.MessageSeverityType;
  * @author mepeisen
  */
 @LocalizedMessages("messages")
+@ChildEnum({
+    GuiServiceInterface.Messages.class
+})
 public enum CommonMessages implements LocalizedMessageInterface
 {
     
@@ -579,17 +584,10 @@ public enum CommonMessages implements LocalizedMessageInterface
     ValidateStringTooBig,
     
     /**
-     * prev page icon
+     * Not implemented.
      */
-    @LocalizedMessage(defaultMessage = "Previous page")
-    @MessageComment(value = "prev page icon")
-    IconPreviousPage,
-    
-    /**
-     * next page icon
-     */
-    @LocalizedMessage(defaultMessage = "Next page")
-    @MessageComment(value = "next page icon")
-    IconNextPage,
+    @LocalizedMessage(defaultMessage = "Feature not implemented", severity = MessageSeverityType.Error)
+    @MessageComment("not implemented")
+    NotImplemented,
     
 }

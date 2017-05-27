@@ -107,7 +107,9 @@ import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.GuiServiceInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.InventoryId;
@@ -175,6 +177,7 @@ import de.minigameslib.mclib.impl.comp.HologramId;
 import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
+import de.minigameslib.mclib.impl.gui.GuiServiceImpl;
 import de.minigameslib.mclib.impl.gui.cfg.AbstractConfigOption;
 import de.minigameslib.mclib.impl.items.ConfigItemStackWrapper;
 import de.minigameslib.mclib.impl.items.InventoryIdImpl;
@@ -573,6 +576,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(ServerCommunicationServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(ExtensionServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
+        Bukkit.getServicesManager().register(GuiServiceInterface.class, new GuiServiceImpl(), this, ServicePriority.Highest);
         
         Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
     }
@@ -1817,15 +1821,15 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, McRunnable contextProvider) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
-        return AbstractConfigOption.create(config).getItem(onChange, contextProvider);
+        return AbstractConfigOption.create(config).getItem(onChange, home, contextProvider);
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home) throws McException
     {
-        return AbstractConfigOption.create(config).getItem(onChange, null);
+        return AbstractConfigOption.create(config).getItem(onChange, home, null);
     }
     
     /**

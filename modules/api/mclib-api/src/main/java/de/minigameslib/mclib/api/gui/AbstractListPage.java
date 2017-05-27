@@ -22,7 +22,7 @@
 
 */
 
-package de.minigameslib.mclib.impl.gui.cfg;
+package de.minigameslib.mclib.api.gui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,13 +31,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.gui.ClickGuiId;
-import de.minigameslib.mclib.api.gui.ClickGuiInterface;
-import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
-import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
-import de.minigameslib.mclib.api.gui.GuiSessionInterface;
-import de.minigameslib.mclib.api.gui.PagableClickGuiPage;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
@@ -46,7 +40,6 @@ import de.minigameslib.mclib.api.locale.LocalizedMessageList;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
 import de.minigameslib.mclib.api.locale.MessageComment;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
-import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
  * An abstract list page being able to insert and remove list elements.
@@ -298,12 +291,6 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         @MessageComment(value = "Edit existing: text description", args = { @MessageComment.Argument("title"), @MessageComment.Argument("line number") })
         EditTextDescription,
         
-    }
-    
-    @Override
-    public ClickGuiId getUniqueId()
-    {
-        return ClickGuis.List;
     }
     
     @Override

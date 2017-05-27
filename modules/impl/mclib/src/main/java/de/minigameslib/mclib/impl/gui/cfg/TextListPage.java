@@ -29,12 +29,15 @@ import java.util.List;
 import java.util.function.Function;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.gui.AbstractListPage;
+import de.minigameslib.mclib.api.gui.ClickGuiId;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McFunction;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 
 /**
  * An abstract list page being able to insert and remove list elements.
@@ -140,6 +143,12 @@ public class TextListPage<T> extends AbstractListPage<T>
     {
         this.lines.set(realLine, this.fromString.apply(content));
         this.onSave.accept(this.lines);
+    }
+
+    @Override
+    public ClickGuiId getUniqueId()
+    {
+        return ClickGuis.List;
     }
     
 }

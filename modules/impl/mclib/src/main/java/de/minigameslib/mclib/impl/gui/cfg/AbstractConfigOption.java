@@ -28,7 +28,9 @@ import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.ChildEnum;
+import de.minigameslib.mclib.api.gui.AbstractListPage;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.locale.LocalizedMessage;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessages;
@@ -38,6 +40,11 @@ import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 import de.minigameslib.mclib.impl.gui.AnvilGuis;
 import de.minigameslib.mclib.impl.gui.ClickGuis;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedLinesEditLocale;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedLinesEditLocaleList;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedLinesList;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedStringEditor;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedStringList;
 
 /**
  * Base class for configuration option editors.
@@ -67,13 +74,15 @@ public abstract class AbstractConfigOption
      * 
      * @param onChange
      *            function to invoke once the config value is changed; may be {@code null}
+     * @param home
+     *            function to display home page
      * @param contextProvider
      *            runnable to setup context sensitive execution; may be {@code null}
      * @return click gui item; may be {@code null}
      * @throws McException
      *             thrown if there were problems creating an item.
      */
-    public abstract ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider) throws McException;
+    public abstract ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException;
     
     /**
      * The option name.
@@ -295,7 +304,7 @@ public abstract class AbstractConfigOption
         return new AbstractConfigOption(value) {
             
             @Override
-            public ClickGuiItem getItem(Runnable onChange, McRunnable contextProvider)
+            public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider)
             {
                 return null;
             }
@@ -313,7 +322,12 @@ public abstract class AbstractConfigOption
         ClickGuis.class,
         AbstractListPage.Messages.class,
         ColorEditor.Messages.class,
-        EnumEditor.Messages.class })
+        EnumEditor.Messages.class,
+        LocalizedLinesEditLocale.Messages.class,
+        LocalizedLinesEditLocaleList.Messages.class,
+        LocalizedLinesList.Messages.class,
+        LocalizedStringEditor.Messages.class,
+        LocalizedStringList.Messages.class })
     public enum Messages implements LocalizedMessageInterface
     {
         

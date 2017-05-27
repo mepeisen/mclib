@@ -29,9 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import de.minigameslib.mclib.api.CommonMessages;
-import de.minigameslib.mclib.api.items.CommonItems;
-import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
@@ -235,7 +232,7 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
      */
     public ClickGuiItem itemPrevPage()
     {
-        return this.page() > 1 ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Previous), CommonMessages.IconPreviousPage, this::onPrevPage) : null;
+        return this.page() > 1 ? GuiServiceInterface.itemPrevPage(this::onPrevPage) : null;
     }
     
     /**
@@ -245,7 +242,7 @@ public abstract class PagableClickGuiPage<T> implements ClickGuiPageInterface
      */
     public ClickGuiItem itemNextPage()
     {
-        return this.page() < this.totalPages() ? new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Next), CommonMessages.IconNextPage, this::onNextPage) : null;
+        return this.page() < this.totalPages() ? GuiServiceInterface.itemNextPage(this::onNextPage) : null;
     }
     
 }

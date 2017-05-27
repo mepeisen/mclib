@@ -52,7 +52,6 @@ import de.minigameslib.mclib.api.perms.PermissionsInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McOutgoingStubbing;
 import de.minigameslib.mclib.api.util.function.McPredicate;
-import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.PlayerDataFragment;
@@ -248,52 +247,6 @@ public interface McPlayerInterface extends PlayerDataFragment
      *             thrown if the player is not online.
      */
     GuiSessionInterface openAnvilGui(AnvilGuiInterface gui) throws McException;
-    
-    /**
-     * Lets the player opening a new anvil gui session for querying text.
-     * 
-     * @param src
-     *            original text.
-     * @param onCancel
-     *            runnable for cancelling the input.
-     * @param onInput
-     *            runnable for commiting the input.
-     * @param preUseInput
-     *            {@code true} for pre selecting the input.
-     * @param description
-     *            the description
-     * @param descriptionArgs
-     *            the description arguments
-     * 
-     * @return gui session
-     * @throws McException
-     *             thrown if the player is not online.
-     */
-    GuiSessionInterface openTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description, Serializable... descriptionArgs)
-        throws McException;
-    
-    /**
-     * Lets the player opening a new anvil gui session for querying text; nests current gui to be re-used upon close of current gui.
-     * 
-     * @param src
-     *            original text.
-     * @param onCancel
-     *            runnable for cancelling the input.
-     * @param onInput
-     *            runnable for commiting the input.
-     * @param preUseInput
-     *            {@code true} for pre selecting the input.
-     * @param description
-     *            the description
-     * @param descriptionArgs
-     *            the description arguments
-     * 
-     * @return gui session
-     * @throws McException
-     *             thrown if the player is not online.
-     */
-    GuiSessionInterface nestTextEditor(String src, McRunnable onCancel, McConsumer<String> onInput, boolean preUseInput, LocalizedMessageInterface description, Serializable... descriptionArgs)
-        throws McException;
     
     /**
      * Sends a raw message to player; can be used to create chat hovers or clickable chat texts.
