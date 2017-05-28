@@ -109,13 +109,17 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     {
         final List<String> result = new ArrayList<>();
         final int index = start / ITEMS_PER_LINE;
-        if (index < this.lines.size())
+        while (limit < result.size() && index < this.lines.size())
         {
             result.add(CREATE_BEFORE_MARKER);
             result.add(this.toString.apply(this.lines.get(index)));
             result.add(CREATE_AFTER_MARKER);
             result.add(null);
             result.add(DELETE_MARKER);
+            result.add(null);
+            result.add(null);
+            result.add(null);
+            result.add(null);
         }
         return result;
     }
