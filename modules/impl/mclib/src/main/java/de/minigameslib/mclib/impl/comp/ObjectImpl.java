@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -157,6 +158,14 @@ public class ObjectImpl extends AbstractComponent implements ObjectInterface, Mg
         {
             final DataSection core = this.config.createSection("core"); //$NON-NLS-1$
             this.handler.write(core.createSection("handler")); //$NON-NLS-1$
+            try
+            {
+                this.config.saveFile(this.configFile);
+            }
+            catch (IOException e)
+            {
+                throw new McException(CommonMessages.InternalError, e, e.getMessage());
+            }
         }
     }
     
