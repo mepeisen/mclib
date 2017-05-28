@@ -569,7 +569,7 @@ public class GuiSessionImpl implements GuiSessionInterface, InventoryListener, A
         {
             final int col = index % 9;
             final int line = (index - col) / 9;
-            if (this.currentItems.length > line && this.currentItems[line].length > col)
+            if (this.currentItems.length > line && this.currentItems[line] != null && this.currentItems[line].length > col)
             {
                 try
                 {
