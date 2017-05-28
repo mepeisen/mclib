@@ -145,7 +145,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         {
             return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteLine, (p, s, g) -> this.onDeleteLine(p, s, g, realLine), realLine);
         }
-        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), Messages.IconEdit, (p, s, g) -> onEdit(p, s, g, realLine), realLine);
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), Messages.IconEdit, (p, s, g) -> onEdit(p, s, g, realLine), realLine, elm);
     }
     
     @Override
@@ -294,7 +294,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         /**
          * Edit icon.
          */
-        @LocalizedMessage(defaultMessage = "Edit line #%1$d")
+        @LocalizedMessage(defaultMessage = "Edit line #%1$d - %2$s")
         @MessageComment(value = "Edit icon", args = @MessageComment.Argument("line number"))
         IconEdit,
         
