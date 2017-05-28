@@ -152,7 +152,16 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
             this.itemPrevPage(),
             this.itemNextPage(),
             new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Back), Messages.IconBack, this.onPrev),
-            null,
+            new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_New), Messages.IconNew, (p, s, g) -> {
+                if (this.lines.size() == 0)
+                {
+                    this.onCreateBefore(p, s, g, 0);
+                }
+                else
+                {
+                    this.onCreateAfter(p, s, g, this.lines.size() - 1);
+                }
+                }),
             new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteAll, this.onDelete),
             null,
             null
@@ -283,6 +292,13 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         @LocalizedMessage(defaultMessage = "Edit line #%1$d")
         @MessageComment(value = "Edit icon", args = @MessageComment.Argument("line number"))
         IconEdit,
+        
+        /**
+         * New icon.
+         */
+        @LocalizedMessage(defaultMessage = "Append new")
+        @MessageComment(value = "New icon", args = @MessageComment.Argument("line number"))
+        IconNew,
         
         /**
          * Edit existing: text description.
