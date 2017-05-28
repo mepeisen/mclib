@@ -91,7 +91,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
      */
     public AbstractListPage(Serializable title, T[] lines, GuiItemHandler onPrev, GuiItemHandler onDelete, Function<T, String> toString)
     {
-        this.lines = Arrays.asList(lines);
+        this.lines = new ArrayList<>(Arrays.asList(lines));
         this.title = title;
         this.onPrev = onPrev;
         this.onDelete = onDelete;
@@ -130,15 +130,15 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
         int realLine = (index - col) / ITEMS_PER_LINE;
         if (elm.equals(CREATE_BEFORE_MARKER))
         {
-            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_New), Messages.IconCreateBefore, (p, s, g) -> this.onCreateBefore(p, s, g, realLine));
+            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_New), Messages.IconCreateBefore, (p, s, g) -> this.onCreateBefore(p, s, g, realLine), realLine);
         }
         if (elm.equals(CREATE_AFTER_MARKER))
         {
-            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_New), Messages.IconCreateAfter, (p, s, g) -> this.onCreateAfter(p, s, g, realLine));
+            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_New), Messages.IconCreateAfter, (p, s, g) -> this.onCreateAfter(p, s, g, realLine), realLine);
         }
         if (elm.equals(DELETE_MARKER))
         {
-            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteLine, (p, s, g) -> this.onDeleteLine(p, s, g, realLine));
+            return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteLine, (p, s, g) -> this.onDeleteLine(p, s, g, realLine), realLine);
         }
         return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), Messages.IconEdit, (p, s, g) -> onEdit(p, s, g, realLine), realLine);
     }
@@ -161,7 +161,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
                 {
                     this.onCreateAfter(p, s, g, this.lines.size() - 1);
                 }
-                }),
+            }),
             new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Erase), Messages.IconDeleteAll, this.onDelete),
             null,
             null
