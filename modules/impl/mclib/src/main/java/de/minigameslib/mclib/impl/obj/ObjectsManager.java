@@ -2175,7 +2175,8 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
      */
     public void disable()
     {
-        for (final String pname : this.loadedPlugins)
+        // working on an array copy to not get ConcurrentModificationExceptions
+        for (final String pname : this.loadedPlugins.toArray(new String[this.loadedPlugins.size()]))
         {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin(pname);
             if (plugin != null)
