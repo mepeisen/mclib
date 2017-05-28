@@ -108,7 +108,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
     protected List<String> getElements(int start, int limit)
     {
         final List<String> result = new ArrayList<>();
-        final int index = start / ITEMS_PER_LINE;
+        int index = start / ITEMS_PER_LINE;
         while (limit > result.size() && index < this.lines.size())
         {
             result.add(CREATE_BEFORE_MARKER);
@@ -120,6 +120,7 @@ public abstract class AbstractListPage<T> extends PagableClickGuiPage<String> im
             result.add(null);
             result.add(null);
             result.add(null);
+            index++;
         }
         return result;
     }
