@@ -1,0 +1,7 @@
+name: mclib-thirdparty
+main: de.minigameslib.mclib3p.impl.Mclib3pPlugin
+version: ${mclib.releaseversion}-${mclib.timestamp}
+authors: [mepeisen]
+load: postworld
+depend: [mclib]
+softdepend: [PlaceholderAPI]
