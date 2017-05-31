@@ -24,14 +24,34 @@
 
 package de.minigameslib.mclib3p.impl.placeholder;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.plugin.Plugin;
+
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface.Placeholder;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.impl.hooks.PlaceholderExtension;
+import de.minigameslib.mclib3p.impl.Mclib3pPlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderHook;
+
 /**
  * Bridge between mclib and placerholder api.
  * 
  * @author mepeisen
  *
  */
-public class PlaceholderBridge
+public class PlaceholderBridge implements PlaceholderExtension
 {
+    
+    /** the registered placeholders in placeholder-api. */
+    private final Map<String, MclibPlaceholder> placeholders = new HashMap<>();
+    
+    /** singletone instance. */
+    private static final PlaceholderBridge INSTANCE = new PlaceholderBridge();
     
     /**
      * Check for target plugin.
@@ -49,8 +69,7 @@ public class PlaceholderBridge
      */
     public static void onSetup()
     {
-        // TODO using some better hook (in mclib there may be multiple identifiers used)
-        new MclibPlaceholders().hook();
+        ExtensionServiceInterface.instance().register(Mclib3pPlugin.INSTANCE, PlaceholderExtension.POINT, PlaceholderBridge.INSTANCE);
     }
     
     /**
@@ -58,7 +77,8 @@ public class PlaceholderBridge
      */
     public static void onDisableMclib()
     {
-        // nothing to do
+        PlaceholderAPI.unregisterPlaceholderHook(Mclib3pPlugin.INSTANCE);
+        INSTANCE.placeholders.clear();
     }
     
     /**
@@ -66,7 +86,37 @@ public class PlaceholderBridge
      */
     public static void onDisablePlugin()
     {
-        // TODO
+        ExtensionServiceInterface.instance().remove(Mclib3pPlugin.INSTANCE, PlaceholderExtension.POINT, PlaceholderBridge.INSTANCE);
+    }
+
+    @Override
+    public void registerPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
+    {
+        this.placeholders.computeIfAbsent(prefix, MclibPlaceholder::new);
+    }
+
+    @Override
+    public void unregisterPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
+    {
+        // ignore, maybe it could remove from placeholder-api but currently the api does not support it
+    }
+
+    @Override
+    public void notifyPlaceholderChanges(String[][] parray)
+    {
+        // ignore
+    }
+
+    @Override
+    public String replacePlaceholder(String placeholder, String prefix, String[] args)
+    {
+        final PlaceholderHook hook = PlaceholderAPI.getPlaceholders().get(prefix);
+        if (hook != null)
+        {
+            final McPlayerInterface player = McLibInterface.instance().getCurrentPlayer();
+            return hook.onPlaceholderRequest(player == null ? null : player.getBukkitPlayer(), String.join("_", args)); //$NON-NLS-1$
+        }
+        return null;
     }
     
 }

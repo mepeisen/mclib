@@ -26,6 +26,11 @@ package de.minigameslib.mclib3p.impl.placeholder;
 
 import org.bukkit.entity.Player;
 
+import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib3p.impl.Mclib3pPlugin;
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 
@@ -35,22 +40,39 @@ import me.clip.placeholderapi.external.EZPlaceholderHook;
  * @author mepeisen
  *
  */
-public class MclibPlaceholders extends EZPlaceholderHook
+public class MclibPlaceholder extends EZPlaceholderHook
 {
-
+    
     /**
      * Constructor.
+     * 
+     * @param prefix
+     *            the prefix to be used.
      */
-    public MclibPlaceholders()
+    public MclibPlaceholder(String prefix)
     {
-        super(Mclib3pPlugin.INSTANCE, "mclib"); //$NON-NLS-1$
+        super(Mclib3pPlugin.INSTANCE, prefix);
+        this.hook();
     }
-
+    
     @Override
     public String onPlaceholderRequest(Player player, String identifier)
     {
-        // TODO Auto-generated method stub
-        return null;
+        try
+        {
+            return McLibInterface.instance().calculateInCopiedContext(() -> {
+                final McPlayerInterface mcplayer = ObjectServiceInterface.instance().getPlayer(player);
+                McLibInterface.instance().setContext(McPlayerInterface.class, mcplayer);
+                return MessageServiceInterface.instance().replacePlaceholders(
+                    mcplayer.getPreferredLocale(),
+                    "{" + this.getPlaceholderName() + "_" + identifier + "}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            });
+        }
+        catch (McException e)
+        {
+            // TODO logging
+            return null;
+        }
     }
     
 }

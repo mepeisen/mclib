@@ -107,9 +107,9 @@ import de.minigameslib.mclib.api.ext.ExtensionInterface;
 import de.minigameslib.mclib.api.ext.ExtensionPointInterface;
 import de.minigameslib.mclib.api.ext.ExtensionServiceInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.GuiServiceInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
-import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.InventoryId;
@@ -165,6 +165,7 @@ import de.minigameslib.mclib.api.objects.SignIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
+import de.minigameslib.mclib.api.preg.PluginObjectRegistry;
 import de.minigameslib.mclib.api.skin.SkinServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -228,108 +229,111 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /**
      * plugin channel for messages between servers and clients.
      */
-    private static final String                                          MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
+    private static final String                                                        MCLIB_SERVER_TO_CLIENT_CHANNEL = "mclib|sc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for messages between bungee servers.
      */
-    private static final String                                          MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
+    private static final String                                                        MCLIB_SERVER_TO_SERVER_CHANNEL = "mclib|bc";                              //$NON-NLS-1$
     
     /**
      * plugin channel for BungeeCord.
      */
-    private static final String                                          BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
+    private static final String                                                        BUNGEECORD_CHANNEL             = "BungeeCord";                            //$NON-NLS-1$
     
     /** the overall minecraft server versioon. */
-    private static final MinecraftVersionsType                           SERVER_VERSION                 = MclibPlugin.getServerVersion();
+    private static final MinecraftVersionsType                                         SERVER_VERSION                 = MclibPlugin.getServerVersion();
     
     /** context helper. */
-    private final McContextImpl                                          context                        = new McContextImpl();
+    private final McContextImpl                                                        context                        = new McContextImpl();
     
     /** enum service helper. */
-    private final EnumServiceImpl                                        enumService                    = new EnumServiceImpl();
+    private final EnumServiceImpl                                                      enumService                    = new EnumServiceImpl();
     
     /** message service helper. */
-    private MessageServiceInterface                                      msgService                     = new MessageServiceImpl(this.enumService);
+    private MessageServiceInterface                                                    msgService                     = new MessageServiceImpl(this.enumService);
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, ConfigInterface>                           configurations                 = new HashMap<>();
+    private final Map<Plugin, ConfigInterface>                                         configurations                 = new HashMap<>();
     
     /**
      * configuration per plugin.
      */
-    private final Map<Plugin, Map<File, ConfigInterface>>                configurationsPerDataFolder    = new HashMap<>();
+    private final Map<Plugin, Map<File, ConfigInterface>>                              configurationsPerDataFolder    = new HashMap<>();
     
     /**
      * configuration providers per plugin.
      */
-    private final Map<Plugin, Map<Class<?>, McSupplier<File>>>           configProviders                = new HashMap<>();
+    private final Map<Plugin, Map<Class<?>, McSupplier<File>>>                         configProviders                = new HashMap<>();
     
     /** the player registry. */
-    PlayerRegistry                                                       players;
+    PlayerRegistry                                                                     players;
     
     /** the objects manager. */
-    ObjectsManager                                                       objectsManager;
+    ObjectsManager                                                                     objectsManager;
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>>      peerEndpoints                  = new HashMap<>();
+    private final Map<String, Map<String, CommunicationEndpointId>>                    peerEndpoints                  = new HashMap<>();
     
     /** the known handlers. */
-    private final Map<CommunicationEndpointId, CommunicationPeerHandler> peerHandlers                   = new ConcurrentHashMap<>();
+    private final Map<CommunicationEndpointId, CommunicationPeerHandler>               peerHandlers                   = new ConcurrentHashMap<>();
     
     /** the known handlers. */
-    private final Map<String, List<CommunicationEndpointId>>             peerEndpointPlugins            = new ConcurrentHashMap<>();
+    private final Map<String, List<CommunicationEndpointId>>                           peerEndpointPlugins            = new ConcurrentHashMap<>();
     
     /** the known endpoints. */
-    private final Map<String, Map<String, CommunicationEndpointId>>      bungeeEndpoints                = new HashMap<>();
+    private final Map<String, Map<String, CommunicationEndpointId>>                    bungeeEndpoints                = new HashMap<>();
     
     /** the known handlers. */
-    final Map<CommunicationEndpointId, CommunicationBungeeHandler>       bungeeHandlers                 = new ConcurrentHashMap<>();
+    final Map<CommunicationEndpointId, CommunicationBungeeHandler>                     bungeeHandlers                 = new ConcurrentHashMap<>();
     
     /** the known handlers. */
-    private final Map<String, List<CommunicationEndpointId>>             bungeeEndpointPlugins          = new ConcurrentHashMap<>();
+    private final Map<String, List<CommunicationEndpointId>>                           bungeeEndpointPlugins          = new ConcurrentHashMap<>();
     
     /** type of endpoints: true is a client endpoint, false a server endpoint. */
-    private final Map<CommunicationEndpointId, Boolean>                  endpointTypes                  = new HashMap<>();
+    private final Map<CommunicationEndpointId, Boolean>                                endpointTypes                  = new HashMap<>();
     
     /** the current bungee server (myself). */
-    private final LocalBungeeServer                                      currentBungee                  = new LocalBungeeServer();
+    private final LocalBungeeServer                                                    currentBungee                  = new LocalBungeeServer();
     
     /** the known other bungee servers from network. */
-    private final Map<String, BungeeServerInterface>                     bungeeServers                  = new HashMap<>();
+    private final Map<String, BungeeServerInterface>                                   bungeeServers                  = new HashMap<>();
     
     /**
      * queue for bungee messages.
      */
-    final Queue<Consumer<Player>>                                        bungeeQueue                    = new ConcurrentLinkedQueue<>();
+    final Queue<Consumer<Player>>                                                      bungeeQueue                    = new ConcurrentLinkedQueue<>();
     
     /**
      * the get servers ping.
      */
-    private GetServersPing                                               serversPing;
+    private GetServersPing                                                             serversPing;
     
     /** the event bus. */
-    private EventBus                                                     eventBus;
+    private EventBus                                                                   eventBus;
     
     /** mclib chat command. */
-    private MclibCommand                                                 mclibCommand                   = new MclibCommand();
+    private MclibCommand                                                               mclibCommand                   = new MclibCommand();
     
     /**
      * plugin instance.
      */
-    private static MclibPlugin                                           instance;
+    private static MclibPlugin                                                         instance;
     
     /**
      * asynchronous thread pools.
      */
-    private final ExecutorService                                        executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
+    private final ExecutorService                                                      executor                       = Executors.newFixedThreadPool(3);         // TODO configure threads
     
     /**
      * the item service impl.
      */
-    ItemServiceImpl                                                      itemService;
+    ItemServiceImpl                                                                    itemService;
+    
+    /** registered extensions. */
+    private final PluginObjectRegistry<ExtensionPointInterface<?>, ExtensionInterface> extensions                     = new PluginObjectRegistry<>();
     
     static
     {
@@ -1509,26 +1513,26 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     @Override
     public <T extends ExtensionInterface> void register(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
     {
-        // TODO support extensions
+        this.extensions.register(plugin, extPoint, extension);
     }
     
     @Override
     public <T extends ExtensionInterface> void remove(Plugin plugin, ExtensionPointInterface<T> extPoint, T extension)
     {
-        // TODO support extensions
+        this.extensions.unregister(plugin, extPoint, extension);
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ExtensionInterface> Iterable<T> getExtensions(ExtensionPointInterface<? extends T> extPoint)
     {
-        // TODO support extensions
-        return null;
+        return (Iterable<T>) this.extensions.get(extPoint);
     }
     
     @Override
     public void removeAllExtensions(Plugin plugin)
     {
-        // TODO support extensions
+        this.extensions.unregisterAll(plugin);
     }
     
     /**
@@ -1835,7 +1839,8 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     /**
      * handle inventory close event.
      * 
-     * @param evt event
+     * @param evt
+     *            event
      */
     @EventHandler
     public void onClose(InventoryCloseEvent evt)
@@ -1845,53 +1850,59 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             ((InventoryListener) evt.getInventory()).handle(evt);
         }
     }
-
+    
     @Override
     public String replacePlaceholders(Locale locale, String msg)
     {
         return this.msgService.replacePlaceholders(locale, msg);
     }
-
+    
     @Override
     public void registerPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
     {
         this.msgService.registerPlaceholders(plugin, prefix, placeholder);
     }
-
+    
     @Override
     public void unregisterPlaceholders(Plugin plugin, String prefix, Placeholder placeholder)
     {
         this.msgService.unregisterPlaceholders(plugin, prefix, placeholder);
     }
-
+    
     @Override
     public void unregisterPlaceholders(Plugin plugin)
     {
         this.msgService.unregisterPlaceholders(plugin);
     }
-
+    
     @Override
     public void registerPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener)
     {
         this.msgService.registerPlaceholderListener(plugin, placeholder, listener);
     }
-
+    
     @Override
     public void unregisterPlaceholderListener(Plugin plugin, String[][] placeholder, PlaceholderListener listener)
     {
         this.msgService.unregisterPlaceholderListener(plugin, placeholder, listener);
     }
-
+    
     @Override
     public void unregisterPlaceholderListener(Plugin plugin)
     {
         this.msgService.unregisterPlaceholderListener(plugin);
     }
- 
+    
     @Override
     public String[][] getPlaceholders(String msg)
     {
         return this.msgService.getPlaceholders(msg);
+    }
+    
+    @Override
+    public void notifyPlaceholderChanges(String[][] placeholders)
+    {
+        this.msgService.notifyPlaceholderChanges(placeholders);
     }
     
 }

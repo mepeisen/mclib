@@ -28,7 +28,7 @@ package de.minigameslib.mclib.api.ext;
  * An interface for extension points.
  * 
  * <p>
- * Use this in enumeration classes to register new extension points.
+ * Use this in constants.
  * </p>
  * 
  * <p>
@@ -43,9 +43,9 @@ public interface ExtensionPointInterface<T extends ExtensionInterface>
 {
     
     /**
-     * Enumeration value name.
+     * Extension point name. Should be made of "&lt;pluginname&gt;/&lt;name&gt;"
      * 
-     * @return enumeration value name.
+     * @return extension point name.
      */
     String name();
     

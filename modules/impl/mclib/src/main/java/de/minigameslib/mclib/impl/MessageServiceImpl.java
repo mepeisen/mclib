@@ -40,6 +40,7 @@ import org.bukkit.plugin.Plugin;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
+import de.minigameslib.mclib.impl.hooks.PlaceholderExtension;
 
 /**
  * The message service impl.
@@ -248,6 +249,19 @@ class MessageServiceImpl implements MessageServiceInterface
             }
             if (!found)
             {
+                for (PlaceholderExtension extension : PlaceholderExtension.POINT.getExtensions())
+                {
+                    final String res = extension.replacePlaceholder(format, prefix, args);
+                    if (res != null)
+                    {
+                        target.append(res);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
                 target.append("{" + format + "}"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
@@ -266,6 +280,10 @@ class MessageServiceImpl implements MessageServiceInterface
         info.prefix = prefix;
         info.placeholder = placeholder;
         this.placeholdersByPlugin.computeIfAbsent(plugin.getName(), p -> new HashSet<>()).add(info);
+        for (PlaceholderExtension extension : PlaceholderExtension.POINT.getExtensions())
+        {
+            extension.registerPlaceholders(plugin, prefix, placeholder);
+        }
     }
     
     @Override
@@ -292,6 +310,10 @@ class MessageServiceImpl implements MessageServiceInterface
                 this.placeholders.remove(prefix);
             }
         }
+        for (PlaceholderExtension extension : PlaceholderExtension.POINT.getExtensions())
+        {
+            extension.unregisterPlaceholders(plugin, prefix, placeholder);
+        }
     }
     
     @Override
@@ -307,6 +329,10 @@ class MessageServiceImpl implements MessageServiceInterface
                 if (list.isEmpty())
                 {
                     this.placeholders.remove(info.prefix);
+                }
+                for (PlaceholderExtension extension : PlaceholderExtension.POINT.getExtensions())
+                {
+                    extension.unregisterPlaceholders(plugin, info.prefix, info.placeholder);
                 }
             }
         }
@@ -384,6 +410,23 @@ class MessageServiceImpl implements MessageServiceInterface
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void notifyPlaceholderChanges(String[][] parray)
+    {
+        for (final String[] arr : parray)
+        {
+            final ListenerNode node = this.findListenerNode(arr);
+            if (node != null)
+            {
+                node.listeners.forEach(l -> l.handleChangedPlaceholder(new String[][]{arr}));
+            }
+        }
+        for (PlaceholderExtension extension : PlaceholderExtension.POINT.getExtensions())
+        {
+            extension.notifyPlaceholderChanges(parray);
         }
     }
     

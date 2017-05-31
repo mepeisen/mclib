@@ -150,6 +150,14 @@ public interface MessageServiceInterface
     String[][] getPlaceholders(String msg);
     
     /**
+     * Notifies about changes on placeholders.
+     * 
+     * @param placeholders
+     *            the list of changed placeholders
+     */
+    void notifyPlaceholderChanges(String[][] placeholders);
+    
+    /**
      * Placeholder listeners for fetching changed placeholder values.
      * 
      * @author mepeisen
