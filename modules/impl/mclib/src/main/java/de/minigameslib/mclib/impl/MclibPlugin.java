@@ -199,6 +199,7 @@ import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
+import de.minigameslib.mclib.nms.api.SignHelperInterface;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
 import de.minigameslib.mclib.nms.v111.NmsFactory1_11;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
@@ -1017,6 +1018,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
                 {
                     final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
                     factory.create(EntityHelperInterface.class).playerOnline(player);
+                    factory.create(SignHelperInterface.class).playerOnline(player);
                     factory.create(HologramHelperInterface.class).playerOnline(evt.getPlayer());
                 }
             }
@@ -1036,6 +1038,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         {
             final NmsFactory factory = Bukkit.getServicesManager().load(NmsFactory.class);
             factory.create(EntityHelperInterface.class).playerOffline(evt.getPlayer());
+            factory.create(SignHelperInterface.class).playerOffline(evt.getPlayer());
             factory.create(HologramHelperInterface.class).playerOffline(evt.getPlayer());
             this.players.onPlayerQuit(evt);
         }

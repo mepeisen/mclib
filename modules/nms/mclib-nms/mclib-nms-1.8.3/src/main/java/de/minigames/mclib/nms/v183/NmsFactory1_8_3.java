@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 
 import de.minigames.mclib.nms.v183.entity.EntityHelper1_8_3;
 import de.minigames.mclib.nms.v183.entity.HologramHelper1_8_3;
+import de.minigames.mclib.nms.v183.entity.SignHelper1_8_3;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
 import de.minigameslib.mclib.nms.api.EntityHelperInterface;
@@ -39,6 +40,7 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
+import de.minigameslib.mclib.nms.api.SignHelperInterface;
 
 /**
  * Factory to create NMS relevant classes.
@@ -64,6 +66,7 @@ public class NmsFactory1_8_3 implements NmsFactory
         this.impls.put(EntityHelperInterface.class, EntityHelper1_8_3::new);
         this.impls.put(ItemHelperInterface.class, ItemHelper1_8_3::new);
         this.impls.put(HologramHelperInterface.class, HologramHelper1_8_3::new);
+        this.impls.put(SignHelperInterface.class, SignHelper1_8_3::new);
     }
     
     @Override

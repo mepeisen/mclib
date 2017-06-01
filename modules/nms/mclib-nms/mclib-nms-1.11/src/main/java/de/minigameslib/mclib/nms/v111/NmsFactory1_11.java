@@ -37,8 +37,10 @@ import de.minigameslib.mclib.nms.api.InventoryManagerInterface;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
+import de.minigameslib.mclib.nms.api.SignHelperInterface;
 import de.minigameslib.mclib.nms.v111.entity.EntityHelper1_11;
 import de.minigameslib.mclib.nms.v111.entity.HologramHelper1_11;
+import de.minigameslib.mclib.nms.v111.entity.SignHelper1_11;
 
 /**
  * Factory to create NMS relevant classes.
@@ -64,6 +66,7 @@ public class NmsFactory1_11 implements NmsFactory
         this.impls.put(EntityHelperInterface.class, EntityHelper1_11::new);
         this.impls.put(ItemHelperInterface.class, ItemHelper1_11::new);
         this.impls.put(HologramHelperInterface.class, HologramHelper1_11::new);
+        this.impls.put(SignHelperInterface.class, SignHelper1_11::new);
     }
     
     @Override

@@ -26,6 +26,9 @@ package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -53,6 +56,9 @@ import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
 import de.minigameslib.mclib.nms.api.MgEventListener;
+import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.nms.api.SignHelperInterface;
+import de.minigameslib.mclib.nms.api.SignHelperInterface.SignNmsInterface;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
@@ -74,8 +80,14 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     /** the sign handler. */
     private final SignHandlerInterface handler;
     
+    /** nms sign impl. */
+    private SignNmsInterface           nmsSign;
+    
     /** an event bus to handle events. */
     private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    
+    /** serializable lines. */
+    private final List<Serializable>   lines = new ArrayList<>();
     
     /**
      * Constructor.
@@ -106,6 +118,12 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         if (this.handler instanceof McListener)
         {
             this.eventBus.registerHandlers(plugin, (McListener) this.handler);
+        }
+        if (this.sign != null)
+        {
+            this.nmsSign = Bukkit.getServicesManager().load(NmsFactory.class).create(SignHelperInterface.class).create(this.getLocation());
+            this.lines.addAll(Arrays.asList(this.sign.getLines()));
+            this.nmsSign.updateLines(this.lines);
         }
     }
     
@@ -154,6 +172,12 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         });
         this.eventBus.clear();
         
+        if (this.nmsSign != null)
+        {
+            Bukkit.getServicesManager().load(NmsFactory.class).create(SignHelperInterface.class).delete(this.nmsSign);
+            this.nmsSign = null;
+        }
+        
         final SignDeletedEvent deletedEvent = new SignDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
     }
@@ -187,7 +211,24 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
      */
     public void setSign(Sign block)
     {
+        if (this.nmsSign != null)
+        {
+            Bukkit.getServicesManager().load(NmsFactory.class).create(SignHelperInterface.class).delete(this.nmsSign);
+            this.nmsSign = null;
+        }
+        
         this.sign = block;
+
+        if (this.sign != null)
+        {
+            this.nmsSign = Bukkit.getServicesManager().load(NmsFactory.class).create(SignHelperInterface.class).create(this.getLocation());
+            if (this.lines.size() == 0)
+            {
+                // initial setup
+                this.lines.addAll(Arrays.asList(this.sign.getLines()));
+            }
+            this.nmsSign.updateLines(this.lines);
+        }
     }
     
     @Override
@@ -295,12 +336,30 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         final Sign s = this.getBukkitSign();
         s.setLine(index, content);
         s.update();
+        
+        this.lines.set(index, content);
+
+        if (this.nmsSign != null)
+        {
+            this.nmsSign.updateLines(this.lines);
+        }
     }
     
     @Override
     public void setLine(int index, LocalizedMessageInterface content, Serializable... args)
     {
-        this.setLine(index, content.toUserMessage(McLibInterface.instance().getDefaultLocale(), args));
+        final String scontent = content.toUserMessage(McLibInterface.instance().getDefaultLocale(), args);
+        
+        final Sign s = this.getBukkitSign();
+        s.setLine(index, scontent);
+        s.update();
+        
+        this.lines.set(index, content);
+
+        if (this.nmsSign != null)
+        {
+            this.nmsSign.updateLines(this.lines);
+        }
     }
     
     /**

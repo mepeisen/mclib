@@ -26,27 +26,26 @@ package de.minigameslib.mclib.nms.api;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * A helper to manage holograms.
+ * A helper to manage signs.
  * 
  * @author mepeisen
  */
-public interface HologramHelperInterface
+public interface SignHelperInterface
 {
     
     /**
-     * Creates a new hologram entity at given location.
+     * Creates a new localized sign at given location.
      * 
      * @param location
-     *            the location where the hologram is displayed.
-     * @return the hologram entity.
+     *            the location where the sign is displayed.
+     * @return the sign entity.
      */
-    HologramEntityInterface create(Location location);
+    SignNmsInterface create(Location location);
     
     /**
      * Updates visibility list for given player.
@@ -65,17 +64,17 @@ public interface HologramHelperInterface
     void playerOffline(Player player);
     
     /**
-     * Deletes given entity that was created by {@link #create(Location)}.
+     * Deletes given sign that was created by {@link #create(Location)}.
      * 
-     * @param entity
-     *            entity to be deleted
+     * @param sign
+     *            sign to be deleted
      */
-    void delete(HologramEntityInterface entity);
+    void delete(SignNmsInterface sign);
     
     /**
-     * The hologram entity.
+     * The sign entity.
      */
-    public interface HologramEntityInterface
+    public interface SignNmsInterface
     {
         
         /**
@@ -87,25 +86,12 @@ public interface HologramHelperInterface
         void setNewLocation(Location newLocation);
         
         /**
-         * Hides the hologram expect for given players.
-         * 
-         * @param whitelist
-         *            whitelist.
-         */
-        void hide(List<UUID> whitelist);
-        
-        /**
          * Update the lines.
          * 
          * @param lines
          *            new lines
          */
         void updateLines(List<Serializable> lines);
-        
-        /**
-         * Shows the hologram for all players.
-         */
-        void show();
         
     }
     
