@@ -107,7 +107,7 @@ public interface SignInterface
      * @param content
      *            line content
      */
-    void setLine(int index, String content);
+    void setLine(int index, Serializable content);
     
     /**
      * Sets line contents.

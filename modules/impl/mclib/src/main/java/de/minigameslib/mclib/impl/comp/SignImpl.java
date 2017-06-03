@@ -331,11 +331,14 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
     }
     
     @Override
-    public void setLine(int index, String content)
+    public void setLine(int index, Serializable content)
     {
-        final Sign s = this.getBukkitSign();
-        s.setLine(index, content);
-        s.update();
+        if (content instanceof String)
+        {
+            final Sign s = this.getBukkitSign();
+            s.setLine(index, content.toString());
+            s.update();
+        }
         
         this.lines.set(index, content);
 
