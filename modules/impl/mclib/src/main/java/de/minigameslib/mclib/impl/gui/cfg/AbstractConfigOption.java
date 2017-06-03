@@ -74,6 +74,8 @@ public abstract class AbstractConfigOption
      * 
      * @param onChange
      *            function to invoke once the config value is changed; may be {@code null}
+     * @param back
+     *            function to display back page
      * @param home
      *            function to display home page
      * @param contextProvider
@@ -82,7 +84,7 @@ public abstract class AbstractConfigOption
      * @throws McException
      *             thrown if there were problems creating an item.
      */
-    public abstract ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException;
+    public abstract ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException;
     
     /**
      * The option name.
@@ -304,7 +306,7 @@ public abstract class AbstractConfigOption
         return new AbstractConfigOption(value) {
             
             @Override
-            public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider)
+            public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider)
             {
                 return null;
             }

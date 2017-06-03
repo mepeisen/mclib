@@ -32,6 +32,8 @@ import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
+import de.minigameslib.mclib.api.locale.LocalizedConfigLine;
+import de.minigameslib.mclib.api.locale.LocalizedConfigString;
 import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.McSupplier;
 
@@ -82,6 +84,8 @@ public interface ConfigServiceInterface
      *            configuration variable to edit
      * @param onChange
      *            listener for config changes
+     * @param back
+     *            function to display back menu item
      * @param home
      *            function to display main menu
      * @param contextProvider
@@ -90,7 +94,7 @@ public interface ConfigServiceInterface
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException;
     
     /**
      * Creates a gui editor item for editing given configuration variable.
@@ -99,12 +103,86 @@ public interface ConfigServiceInterface
      *            configuration variable to edit
      * @param onChange
      *            listener for config changes
+     * @param back
+     *            function to display back menu item
      * @param home
      *            function to display main menu
      * @return editor item
      * @throws McException
      *             thrown on problems creating the item
      */
-    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home) throws McException;
+    ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException;
+
+    /**
+     * Creates a gui editor item for editing given localized message.
+     * 
+     * @param msg
+     *            Message to edit
+     * @param onChange
+     *            listener for config changes
+     * @param back
+     *            function to display back menu item
+     * @param home
+     *            function to display main menu item
+     * @return editor item
+     * @throws McException
+     *             thrown on problems creating the item
+     */
+    ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException;
+
+    /**
+     * Creates a gui editor item for editing given localized message.
+     * 
+     * @param msg
+     *            Message to edit
+     * @param onChange
+     *            listener for config changes
+     * @param back
+     *            function to display back menu item
+     * @param home
+     *            function to display main menu item
+     * @param contextProvider
+     *            a function to setup context before reading or storing values
+     * @return editor item
+     * @throws McException
+     *             thrown on problems creating the item
+     */
+    ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException;
+
+    /**
+     * Creates a gui editor item for editing given localized message.
+     * 
+     * @param msg
+     *            Message to edit
+     * @param onChange
+     *            listener for config changes
+     * @param back
+     *            function to display back menu item
+     * @param home
+     *            function to display main menu item
+     * @return editor item
+     * @throws McException
+     *             thrown on problems creating the item
+     */
+    ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException;
+
+    /**
+     * Creates a gui editor item for editing given localized message.
+     * 
+     * @param msg
+     *            Message to edit
+     * @param onChange
+     *            listener for config changes
+     * @param back
+     *            function to display back menu item
+     * @param home
+     *            function to display main menu item
+     * @param contextProvider
+     *            a function to setup context before reading or storing values
+     * @return editor item
+     * @throws McException
+     *             thrown on problems creating the item
+     */
+    ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException;
     
 }

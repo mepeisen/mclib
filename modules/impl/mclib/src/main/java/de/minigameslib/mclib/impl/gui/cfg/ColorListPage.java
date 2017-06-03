@@ -32,7 +32,9 @@ import de.minigameslib.mclib.api.config.ConfigColorData;
 import de.minigameslib.mclib.api.gui.AbstractListPage;
 import de.minigameslib.mclib.api.gui.ClickGuiId;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
+import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
+import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
@@ -67,6 +69,12 @@ public class ColorListPage extends AbstractListPage<ConfigColorData>
     {
         super(title, lines, onPrev, onDelete, b -> b.getRed() + "," + b.getGreen() + "," + b.getBlue()); //$NON-NLS-1$ //$NON-NLS-2$
         this.onSave = save;
+    }
+    
+    @Override
+    public ClickGuiItem[][] getItems()
+    {
+        return ClickGuiPageInterface.withFillers(super.getItems(), 6);
     }
     
     @Override

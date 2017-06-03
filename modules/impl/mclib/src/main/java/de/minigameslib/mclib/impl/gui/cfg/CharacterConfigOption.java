@@ -58,7 +58,7 @@ public class CharacterConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final char str = this.calculate(contextProvider, this.getValue()::getCharacter);
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Text);

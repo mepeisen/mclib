@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.ClickGuiPageInterface;
 import de.minigameslib.mclib.api.gui.GuiServiceInterface;
 import de.minigameslib.mclib.api.gui.GuiSessionInterface;
@@ -68,7 +69,7 @@ public class LocalizedLinesList extends PagableClickGuiPage<Locale>
     private McConsumer<LocalizedConfigLine> save;
     
     /** previous page. */
-    private ClickGuiPageInterface           prevPage;
+    private GuiItemHandler           prevPage;
     
     /**
      * Constructor.
@@ -82,7 +83,7 @@ public class LocalizedLinesList extends PagableClickGuiPage<Locale>
      * @param prevPage
      *            prev page
      */
-    public LocalizedLinesList(Serializable title, LocalizedConfigLine string, McConsumer<LocalizedConfigLine> save, ClickGuiPageInterface prevPage)
+    public LocalizedLinesList(Serializable title, LocalizedConfigLine string, McConsumer<LocalizedConfigLine> save, GuiItemHandler prevPage)
     {
         this.title = title;
         this.string = string;
@@ -122,7 +123,7 @@ public class LocalizedLinesList extends PagableClickGuiPage<Locale>
             GuiServiceInterface.itemRefresh(this::onRefresh),
             this.itemPrevPage(),
             this.itemNextPage(),
-            GuiServiceInterface.itemBack(this::onBack, Messages.IconBack),
+            GuiServiceInterface.itemBack(this.prevPage, Messages.IconBack),
             GuiServiceInterface.itemNew(this::onNew, Messages.IconCreate),
             null,
             null,
@@ -225,21 +226,6 @@ public class LocalizedLinesList extends PagableClickGuiPage<Locale>
             (p, s, g) -> this.onDelete(p, s, g, locale)));
     }
     
-    /**
-     * back.
-     * 
-     * @param player
-     *            player
-     * @param session
-     *            session
-     * @param gui
-     *            gui
-     */
-    private void onBack(McPlayerInterface player, GuiSessionInterface session, ClickGuiInterface gui)
-    {
-        session.setNewPage(this.prevPage);
-    }
-    
     @Override
     public Serializable getPageName()
     {
@@ -254,6 +240,13 @@ public class LocalizedLinesList extends PagableClickGuiPage<Locale>
     @LocalizedMessages(value = "gui.lines_editor")
     public enum Messages implements LocalizedMessageInterface
     {
+
+        /**
+         * Title.
+         */
+        @LocalizedMessage(defaultMessage = "Edit localized string")
+        @MessageComment("Title")
+        Title,
         
         /**
          * Back icon.

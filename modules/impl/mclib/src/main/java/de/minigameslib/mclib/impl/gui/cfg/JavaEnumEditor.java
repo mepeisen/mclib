@@ -161,6 +161,12 @@ public class JavaEnumEditor extends PagableClickGuiPage<Enum<?>> implements Clic
     }
     
     @Override
+    public ClickGuiItem[][] getItems()
+    {
+        return ClickGuiPageInterface.withFillers(super.getItems(), 6);
+    }
+    
+    @Override
     public ClickGuiId getUniqueId()
     {
         return ClickGuis.Enum;

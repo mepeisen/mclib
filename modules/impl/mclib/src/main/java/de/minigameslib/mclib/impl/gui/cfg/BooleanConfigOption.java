@@ -58,7 +58,7 @@ public class BooleanConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final boolean isset = this.calculate(contextProvider, this.getValue()::getBoolean);
         final ItemStack stack = ItemServiceInterface.instance().createItem(isset ? CommonItems.App_Yes : CommonItems.App_No);

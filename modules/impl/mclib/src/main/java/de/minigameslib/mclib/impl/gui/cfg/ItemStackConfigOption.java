@@ -58,7 +58,7 @@ public class ItemStackConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Buy);
         ItemServiceInterface.instance().setDescription(stack, this.getValue().getComment());

@@ -110,12 +110,15 @@ import de.minigameslib.mclib.api.gui.ClickGuiItem;
 import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler;
 import de.minigameslib.mclib.api.gui.GuiServiceInterface;
 import de.minigameslib.mclib.api.gui.RawMessageInterface;
+import de.minigameslib.mclib.api.gui.SimpleClickGui;
 import de.minigameslib.mclib.api.items.BlockServiceInterface;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.InventoryId;
 import de.minigameslib.mclib.api.items.InventoryServiceInterface;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
 import de.minigameslib.mclib.api.items.ResourceServiceInterface;
+import de.minigameslib.mclib.api.locale.LocalizedConfigLine;
+import de.minigameslib.mclib.api.locale.LocalizedConfigString;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
 import de.minigameslib.mclib.api.locale.MessageServiceInterface;
 import de.minigameslib.mclib.api.locale.MessagesConfigInterface;
@@ -178,8 +181,11 @@ import de.minigameslib.mclib.impl.comp.HologramId;
 import de.minigameslib.mclib.impl.comp.ObjectId;
 import de.minigameslib.mclib.impl.comp.SignId;
 import de.minigameslib.mclib.impl.comp.ZoneId;
+import de.minigameslib.mclib.impl.gui.ClickGuis;
 import de.minigameslib.mclib.impl.gui.GuiServiceImpl;
 import de.minigameslib.mclib.impl.gui.cfg.AbstractConfigOption;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedLinesList;
+import de.minigameslib.mclib.impl.gui.etc.LocalizedStringList;
 import de.minigameslib.mclib.impl.items.ConfigItemStackWrapper;
 import de.minigameslib.mclib.impl.items.InventoryIdImpl;
 import de.minigameslib.mclib.impl.items.InventoryListener;
@@ -1834,15 +1840,67 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
-        return AbstractConfigOption.create(config).getItem(onChange, home, contextProvider);
+        return AbstractConfigOption.create(config).getItem(onChange, back, home, contextProvider);
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler home) throws McException
+    public ClickGuiItem createGuiEditorItem(EditableValue config, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
     {
-        return AbstractConfigOption.create(config).getItem(onChange, home, null);
+        return AbstractConfigOption.create(config).getItem(onChange, back, home, null);
+    }
+    
+    @Override
+    public ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
+    {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedLinesList.Messages.Title, (p, s, g) -> {
+            p.openClickGui(new SimpleClickGui(
+                ClickGuis.List,
+                new LocalizedLinesList(LocalizedLinesList.Messages.Title, msg, m -> onChange.run(), back),
+                6));
+        });
+    }
+    
+    @Override
+    public ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
+    {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedLinesList.Messages.Title, (p, s, g) -> {
+            p.openClickGui(new SimpleClickGui(
+                ClickGuis.List,
+                new LocalizedLinesList(LocalizedLinesList.Messages.Title, msg, 
+                    m -> McLibInterface.instance().runInNewContext(() -> {
+                        contextProvider.run();
+                        onChange.run();
+                    }), back),
+                6));
+        });
+    }
+    
+    @Override
+    public ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
+    {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedStringList.Messages.Title, (p, s, g) -> {
+            p.openClickGui(new SimpleClickGui(
+                ClickGuis.List,
+                new LocalizedStringList(LocalizedStringList.Messages.Title, msg, m -> onChange.run(), back),
+                6));
+        });
+    }
+    
+    @Override
+    public ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
+    {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedStringList.Messages.Title, (p, s, g) -> {
+            p.openClickGui(new SimpleClickGui(
+                ClickGuis.List,
+                new LocalizedStringList(LocalizedStringList.Messages.Title, msg, 
+                    m -> McLibInterface.instance().runInNewContext(() -> {
+                        contextProvider.run();
+                        onChange.run();
+                    }), back),
+                6));
+        });
     }
     
     /**

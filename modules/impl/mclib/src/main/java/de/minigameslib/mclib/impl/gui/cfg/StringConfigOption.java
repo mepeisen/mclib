@@ -58,7 +58,7 @@ public class StringConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final String str = this.calculate(contextProvider, this.getValue()::getString);
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Text);

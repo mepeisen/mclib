@@ -58,7 +58,7 @@ public class LongConfigOption extends AbstractConfigOption
     }
     
     @Override
-    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem getItem(Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
         final long num = this.calculate(contextProvider, this.getValue()::getLong);
         final ItemStack stack = ItemServiceInterface.instance().createItem(CommonItems.App_Calculator);
