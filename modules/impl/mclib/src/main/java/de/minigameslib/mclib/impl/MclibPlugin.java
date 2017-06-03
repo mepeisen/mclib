@@ -27,6 +27,7 @@ package de.minigameslib.mclib.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1852,9 +1853,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
+    public ClickGuiItem createGuiEditorItem(
+        LocalizedMessageInterface title, LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
     {
-        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedLinesList.Messages.Title, (p, s, g) -> {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), title, (p, s, g) -> {
             p.openClickGui(new SimpleClickGui(
                 ClickGuis.List,
                 new LocalizedLinesList(LocalizedLinesList.Messages.Title, msg, m -> onChange.run(), back),
@@ -1863,9 +1865,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem createGuiEditorItem(
+        LocalizedMessageInterface title, LocalizedConfigLine msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
-        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedLinesList.Messages.Title, (p, s, g) -> {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), title, (p, s, g) -> {
             p.openClickGui(new SimpleClickGui(
                 ClickGuis.List,
                 new LocalizedLinesList(LocalizedLinesList.Messages.Title, msg, 
@@ -1878,9 +1881,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
+    public ClickGuiItem createGuiEditorItem(
+        LocalizedMessageInterface title, LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home) throws McException
     {
-        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedStringList.Messages.Title, (p, s, g) -> {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), title, (p, s, g) -> {
             p.openClickGui(new SimpleClickGui(
                 ClickGuis.List,
                 new LocalizedStringList(LocalizedStringList.Messages.Title, msg, m -> onChange.run(), back),
@@ -1889,9 +1893,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
-    public ClickGuiItem createGuiEditorItem(LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
+    public ClickGuiItem createGuiEditorItem(
+        LocalizedMessageInterface title, LocalizedConfigString msg, Runnable onChange, GuiItemHandler back, GuiItemHandler home, McRunnable contextProvider) throws McException
     {
-        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), LocalizedStringList.Messages.Title, (p, s, g) -> {
+        return new ClickGuiItem(ItemServiceInterface.instance().createItem(CommonItems.App_Text), title, (p, s, g) -> {
             p.openClickGui(new SimpleClickGui(
                 ClickGuis.List,
                 new LocalizedStringList(LocalizedStringList.Messages.Title, msg, 
