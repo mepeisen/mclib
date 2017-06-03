@@ -390,5 +390,14 @@ public class SignImpl extends AbstractLocationComponent implements SignInterface
         }
         return result;
     }
+
+    @Override
+    public void updateLines()
+    {
+        if (this.nmsSign != null)
+        {
+            this.nmsSign.updateLines(this.lines);
+        }
+    }
     
 }

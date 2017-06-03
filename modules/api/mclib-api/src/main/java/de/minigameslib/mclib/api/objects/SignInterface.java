@@ -128,6 +128,11 @@ public interface SignInterface
      */
     SignHandlerInterface getHandler();
     
+    /**
+     * Update the text lines; can be used if placeholders or language texts are updated.
+     */
+    void updateLines();
+    
     // event system
     
     /**
