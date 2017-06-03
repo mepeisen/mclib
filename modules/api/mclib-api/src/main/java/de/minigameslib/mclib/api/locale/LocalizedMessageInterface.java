@@ -29,6 +29,8 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.enums.McEnumInterface;
@@ -432,6 +434,52 @@ public interface LocalizedMessageInterface extends Serializable, McEnumInterface
     default DynamicListArg toListArg(Serializable... args)
     {
         return (loc, isAdmin) -> isAdmin ? this.toAdminMessageLine(loc, args) : this.toUserMessageLine(loc, args);
+    }
+    
+    /**
+     * Converts this message to a string function using a copy of current context
+     * 
+     * @param args
+     *            arguments to use.
+     * @return ths string function
+     */
+    default DynamicListArg toContextListArg(Serializable... args)
+    {
+        final Function<Supplier<String[]>, String[]> context = McLibInterface.instance().createContextSupplier();
+        final DynamicListArg result = this.toListArg(args);
+        return (loc, isAdmin) -> context.apply(() -> result.apply(loc, isAdmin));
+    }
+    
+    /**
+     * Converts this message to a string function using a copy of current context
+     * 
+     * @param startLine
+     *            starting line
+     * @param lineLimit
+     *            limit of lines
+     * @param args
+     *            arguments to use.
+     * @return ths string function
+     */
+    default DynamicListArg toContextListArg(int startLine, int lineLimit, Serializable... args)
+    {
+        final Function<Supplier<String[]>, String[]> context = McLibInterface.instance().createContextSupplier();
+        final DynamicListArg result = this.toListArg(startLine, lineLimit, args);
+        return (loc, isAdmin) -> context.apply(() -> result.apply(loc, isAdmin));
+    }
+    
+    /**
+     * Converts this message to a string function using a copy of current context
+     * 
+     * @param args
+     *            arguments to use.
+     * @return ths string function
+     */
+    default DynamicArg toContextArg(Serializable... args)
+    {
+        final Function<Supplier<String>, String> context = McLibInterface.instance().createContextSupplier();
+        final DynamicArg result = this.toArg(args);
+        return (loc, isAdmin) -> context.apply(() -> result.apply(loc, isAdmin));
     }
     
     /**

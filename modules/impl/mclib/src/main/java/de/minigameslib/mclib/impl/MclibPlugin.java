@@ -769,6 +769,12 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
     }
     
     @Override
+    public <T> Function<Supplier<T>, T> createContextSupplier()
+    {
+        return this.context.createContextSupplier();
+    }
+    
+    @Override
     public <T> void registerContextHandler(Plugin plugin, Class<T> clazz, ContextHandlerInterface<T> handler) throws McException
     {
         this.context.registerContextHandler(plugin, clazz, handler);

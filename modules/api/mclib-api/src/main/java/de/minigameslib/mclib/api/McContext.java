@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.bukkit.event.Event;
@@ -76,6 +77,15 @@ public interface McContext
      *            Type of context value
      */
     <T> void setContext(Class<T> clazz, T value);
+    
+    /**
+     * Creates a function for calculating data within a copy of the current context. To be used in later method invocations.
+     * 
+     * @param <T>
+     *            return value
+     * @return context function
+     */
+    <T> Function<Supplier<T>, T> createContextSupplier();
     
     /**
      * Runs the code in new context; changes made inside the runnable will be undone. Sets the given data before calling the runnable
