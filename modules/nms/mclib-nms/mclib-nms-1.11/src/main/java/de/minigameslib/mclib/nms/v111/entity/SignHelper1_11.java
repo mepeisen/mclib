@@ -30,7 +30,11 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface.PlaceholderListener;
 import de.minigameslib.mclib.nms.api.MessageUtil;
 import de.minigameslib.mclib.nms.api.SignHelperInterface;
 import net.minecraft.server.v1_11_R1.BlockPosition;
@@ -82,7 +86,7 @@ public class SignHelper1_11 implements SignHelperInterface
     /**
      * nms impl of hologram entity.
      */
-    private static final class SignImpl extends AbstractWhitelistableEntityHelper implements SignNmsInterface
+    private static final class SignImpl extends AbstractWhitelistableEntityHelper implements SignNmsInterface, PlaceholderListener
     {
         
         /** location. */
@@ -100,6 +104,23 @@ public class SignHelper1_11 implements SignHelperInterface
         public SignImpl(Location location)
         {
             this.location = location;
+            MessageServiceInterface.instance().registerPlaceholderListener(
+                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
+        }
+        
+        @Override
+        public void delete()
+        {
+            super.delete();
+            MessageServiceInterface.instance().unregisterPlaceholderListener(
+                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
+        }
+
+        @Override
+        public void handleChangedPlaceholder(String[][] placeholders)
+        {
+            // TODO performance: only listen for interesting placeholders
+            this.respawn();
         }
         
         @Override

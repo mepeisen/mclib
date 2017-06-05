@@ -39,10 +39,14 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import de.minigameslib.mclib.api.McLibInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface;
+import de.minigameslib.mclib.api.locale.MessageServiceInterface.PlaceholderListener;
 import de.minigameslib.mclib.nms.api.HologramHelperInterface;
 import de.minigameslib.mclib.nms.api.MessageUtil;
 import net.minecraft.server.v1_9_R2.AxisAlignedBB;
@@ -525,7 +529,7 @@ public class HologramHelper1_9_4 implements HologramHelperInterface
     /**
      * nms impl of hologram entity.
      */
-    private static final class HologramEntityImpl extends AbstractWhitelistableEntityHelper implements HologramEntityInterface
+    private static final class HologramEntityImpl extends AbstractWhitelistableEntityHelper implements HologramEntityInterface, PlaceholderListener
     {
         
         /** location. */
@@ -546,6 +550,17 @@ public class HologramHelper1_9_4 implements HologramHelperInterface
         public HologramEntityImpl(Location location)
         {
             this.location = location;
+            MessageServiceInterface.instance().registerPlaceholderListener(
+                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
+        }
+
+        @Override
+        public void handleChangedPlaceholder(String[][] placeholders)
+        {
+            // TODO performance: only listen for interesting placeholders
+            this.respawn();
+            MessageServiceInterface.instance().unregisterPlaceholderListener(
+                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
         }
         
         @Override
