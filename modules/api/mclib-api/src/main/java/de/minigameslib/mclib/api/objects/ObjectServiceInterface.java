@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.objects;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -327,6 +328,15 @@ public interface ObjectServiceInterface
      * @return checks for human npcs
      */
     boolean isHuman(Player player);
+    
+    /**
+     * Find players in given cuboid.
+     * 
+     * @param cuboid
+     *            cuboid to search for.
+     * @return player list
+     */
+    List<McPlayerInterface> findPlayers(Cuboid cuboid);
     
     /**
      * Returns the player for given bukkit player.
@@ -744,30 +754,35 @@ public interface ObjectServiceInterface
     {
         /**
          * finds matching components (identical).
+         * 
          * @see Cuboid#equals(Object)
          */
         FindMatching,
         
         /**
          * finds child components.
+         * 
          * @see Cuboid#isChild(Cuboid)
          */
         FindChildren,
         
         /**
          * finds parent components.
+         * 
          * @see Cuboid#isParent(Cuboid)
          */
         FindParents,
         
-        /** 
+        /**
          * finds overlapping components.
+         * 
          * @see Cuboid#isOverlapping(Cuboid)
          */
         FindOverlapping,
         
         /**
          * find components that share locations with given cuboid.
+         * 
          * @see Cuboid#isShared(Cuboid)
          */
         FindShared,

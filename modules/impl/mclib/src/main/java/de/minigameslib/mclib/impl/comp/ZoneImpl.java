@@ -25,8 +25,12 @@
 package de.minigameslib.mclib.impl.comp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,6 +51,7 @@ import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface.CuboidMode;
 import de.minigameslib.mclib.api.objects.ZoneHandlerInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
+import de.minigameslib.mclib.api.objects.ZoneScoreboardVariant;
 import de.minigameslib.mclib.api.objects.ZoneTypeId;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.nms.api.EventBus;
@@ -64,13 +69,16 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
 {
     
     /** zone id. */
-    private final ZoneId               id;
+    private final ZoneId                      id;
     
     /** zone handler. */
-    private final ZoneHandlerInterface handler;
+    private final ZoneHandlerInterface        handler;
     
     /** an event bus to handle events. */
-    private final EventBus             eventBus = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    private final EventBus                    eventBus    = Bukkit.getServicesManager().load(EventSystemInterface.class).createEventBus();
+    
+    /** the zone scoreboard. */
+    private final Map<String, ZoneScoreboard> scoreboards = new HashMap<>();
     
     /**
      * Constructor.
@@ -139,6 +147,13 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         
         final ZoneDeletedEvent deletedEvent = new ZoneDeletedEvent(this);
         Bukkit.getPluginManager().callEvent(deletedEvent);
+        
+        final ZoneScoreboard[] sboards = this.scoreboards.values().toArray(new ZoneScoreboard[this.scoreboards.size()]);
+        this.scoreboards.clear();
+        for (final ZoneScoreboard sb : sboards)
+        {
+            sb.delete();
+        }
     }
     
     @Override
@@ -166,6 +181,8 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
         
         final ZoneRelocatedEvent relocatedEvent = new ZoneRelocatedEvent(this, old, cub);
         Bukkit.getPluginManager().callEvent(relocatedEvent);
+        
+        this.scoreboards.values().forEach(sb -> sb.changeCuboid(cub));
     }
     
     @Override
@@ -331,6 +348,61 @@ public class ZoneImpl extends AbstractCuboidComponent implements ZoneInterface, 
             }
         }
         return result;
+    }
+    
+    /**
+     * Returns the best matching scoreboard for this zone.
+     * @param player target player.
+     * @return best matching scoreboard.
+     */
+    public ZoneScoreboard getBestMatchingScoreboard(UUID player)
+    {
+        // first check for a hidden scoreboard with this player being whitelisted.
+        for (final ZoneScoreboard sb : this.scoreboards.values())
+        {
+            if (sb.isHidden() && sb.getWhitelist().contains(player))
+            {
+                return sb;
+            }
+        }
+        // check for visibiel variant
+        for (final ZoneScoreboard sb : this.scoreboards.values())
+        {
+            if (!sb.isHidden())
+            {
+                return sb;
+            }
+        }
+        // no one found
+        return null;
+    }
+    
+    @Override
+    public List<ZoneScoreboardVariant> getScoreboards()
+    {
+        return new ArrayList<>(this.scoreboards.values());
+    }
+    
+    @Override
+    public ZoneScoreboardVariant getScoreboardVariant(String name)
+    {
+        return this.scoreboards.get(name);
+    }
+    
+    @Override
+    public ZoneScoreboardVariant createScoreboardVariant(String name)
+    {
+        return this.scoreboards.computeIfAbsent(name, n -> new ZoneScoreboard(n, this.cuboid));
+    }
+
+    @Override
+    public void deleteScoreboardVariant(String name)
+    {
+        final ZoneScoreboard sb = this.scoreboards.remove(name);
+        if (sb != null)
+        {
+            sb.delete();
+        }
     }
     
 }

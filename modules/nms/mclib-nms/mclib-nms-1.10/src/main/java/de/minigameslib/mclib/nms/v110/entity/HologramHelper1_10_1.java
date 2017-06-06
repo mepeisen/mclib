@@ -557,8 +557,6 @@ public class HologramHelper1_10_1 implements HologramHelperInterface
         {
             // TODO performance: only listen for interesting placeholders
             this.respawn();
-            MessageServiceInterface.instance().unregisterPlaceholderListener(
-                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
         }
         
         @Override
@@ -596,6 +594,8 @@ public class HologramHelper1_10_1 implements HologramHelperInterface
             this.lines.forEach(HologramLine::die);
             this.lines.clear();
             super.delete();
+            MessageServiceInterface.instance().unregisterPlaceholderListener(
+                (Plugin)McLibInterface.instance(), new String[][]{{}}, this);
         }
         
         @Override

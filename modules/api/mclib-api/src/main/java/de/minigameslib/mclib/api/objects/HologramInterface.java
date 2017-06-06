@@ -162,7 +162,7 @@ public interface HologramInterface
      * @throws McException 
      *             thrown if config cannot be saved.
      */
-    void addPlayeToWhiteList(UUID uuid) throws McException;
+    void addPlayerToWhiteList(UUID uuid) throws McException;
     
     /**
      * Remove player from whitelist.
@@ -172,7 +172,7 @@ public interface HologramInterface
      * @throws McException 
      *             thrown if config cannot be saved.
      */
-    void removePlayeFromWhiteList(UUID uuid) throws McException;
+    void removePlayerFromWhiteList(UUID uuid) throws McException;
     
     /**
      * Returns the players from whitelist.

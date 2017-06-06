@@ -2015,6 +2015,17 @@ public class ObjectsManager implements ComponentOwner, ObjectServiceInterface, N
     }
     
     @Override
+    public List<McPlayerInterface> findPlayers(Cuboid cuboid)
+    {
+        final List<McPlayerInterface> result = new ArrayList<>();
+        Bukkit.getOnlinePlayers().stream()
+            .filter(p -> cuboid.containsLoc(p.getLocation()))
+            .map(this::getPlayer)
+            .forEach(result::add);
+        return result;
+    }
+    
+    @Override
     public HologramTypeId getType(HologramIdInterface id)
     {
         final HologramId casted = (HologramId) id;

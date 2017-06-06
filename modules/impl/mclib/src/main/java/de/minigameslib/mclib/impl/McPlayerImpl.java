@@ -46,6 +46,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import de.minigameslib.mclib.api.CommonMessages;
 import de.minigameslib.mclib.api.McContext;
@@ -78,11 +81,14 @@ import de.minigameslib.mclib.api.util.function.McRunnable;
 import de.minigameslib.mclib.api.util.function.TrueStub;
 import de.minigameslib.mclib.impl.RawMessage.RawAction;
 import de.minigameslib.mclib.impl.comp.ZoneId;
+import de.minigameslib.mclib.impl.comp.ZoneImpl;
+import de.minigameslib.mclib.impl.comp.ZoneScoreboard;
 import de.minigameslib.mclib.impl.player.MclibPlayersConfig;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.ChatSystemInterface;
 import de.minigameslib.mclib.nms.api.EventBus;
 import de.minigameslib.mclib.nms.api.EventSystemInterface;
+import de.minigameslib.mclib.nms.api.MessageUtil;
 import de.minigameslib.mclib.nms.api.MgEventListener;
 import de.minigameslib.mclib.nms.api.NmsFactory;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
@@ -100,7 +106,7 @@ import net.jodah.expiringmap.ExpiringMap;
  * @author mepeisen
  *
  */
-class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterface
+public class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterface
 {
     
     /** logger. */
@@ -150,6 +156,21 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
      * the players zone manager.
      */
     private final ZoneManager                   zoneManager      = new PlayerZoneManager();
+    
+    /**
+     * the currently active scoreboard.
+     */
+    private ZoneScoreboard                      zoneScoreboard;
+    
+    /**
+     * the players mclib scoreboard.
+     */
+    private Scoreboard                          scoreboard;
+    
+    /**
+     * the players original scoreboard.
+     */
+    private Scoreboard                          originalScoreboard;
     
     /**
      * Constructor.
@@ -278,7 +299,8 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     @Override
     public String[] encodeMessage(LocalizedMessageInterface msg, Serializable... args)
     {
-        return McLibInterface.instance().calculateInCopiedContextUnchecked(() -> {
+        return McLibInterface.instance().calculateInCopiedContextUnchecked(() ->
+        {
             McLibInterface.instance().setContext(McPlayerInterface.class, this);
             final OfflinePlayer player = this.getOfflinePlayer();
             String[] msgs = null;
@@ -615,6 +637,13 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
         // clear handlers
         this.eventBus.clear();
         this.zoneManager.registerMovement(null);
+        
+        if (this.zoneScoreboard != null)
+        {
+            this.zoneScoreboard.removeFromPlayer(this);
+            this.scoreboard = null;
+            this.originalScoreboard = null;
+        }
     }
     
     /**
@@ -878,15 +907,20 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     @Override
     public <T extends Event, EVT extends MinecraftEvent<T, EVT>> void handle(Class<EVT> eventClass, EVT event)
     {
+        boolean zonesChanged = false;
         if (eventClass == McPlayerMoveEvent.class)
         {
-            this.zoneManager.registerMovement(((McPlayerMoveEvent) event).getBukkitEvent().getTo());
+            zonesChanged = this.zoneManager.registerMovement(((McPlayerMoveEvent) event).getBukkitEvent().getTo());
         }
         else if (eventClass == McPlayerTeleportEvent.class)
         {
-            this.zoneManager.registerMovement(((McPlayerTeleportEvent) event).getBukkitEvent().getTo());
+            zonesChanged = this.zoneManager.registerMovement(((McPlayerTeleportEvent) event).getBukkitEvent().getTo());
         }
         this.eventBus.handle(eventClass, event);
+        if (zonesChanged)
+        {
+            this.recalcBestScoreboard();
+        }
     }
     
     /**
@@ -916,6 +950,97 @@ class McPlayerImpl implements McPlayerInterface, MgEventListener, ClientInterfac
     public ClientInterface getClient()
     {
         return this;
+    }
+    
+    /**
+     * Sets the scoreboard to be used by this player.
+     * 
+     * @param sb
+     *            scoreboard.
+     */
+    public void setScoreboard(ZoneScoreboard sb)
+    {
+        this.zoneScoreboard = sb;
+        if (this.scoreboard == null)
+        {
+            final Player bukkitPlayer = this.getBukkitPlayer();
+            this.originalScoreboard = bukkitPlayer.getScoreboard();
+            this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            bukkitPlayer.setScoreboard(this.scoreboard);
+            this.updateScoreboard();
+        }
+    }
+    
+    /**
+     * Updates scoreboard text.
+     */
+    public void updateScoreboard()
+    {
+        if (this.scoreboard != null)
+        {
+            final Player bukkitPlayer = this.getBukkitPlayer();
+            this.scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+            final Objective objective = this.scoreboard.registerNewObjective("dummy", "dummy"); //$NON-NLS-1$ //$NON-NLS-2$
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            int i = 0;
+            for (final Serializable ser : this.zoneScoreboard.getLines())
+            {
+                final String str = MessageUtil.convert(bukkitPlayer, ser);
+                objective.getScore(str).setScore(i);
+                i++;
+            }
+        }
+    }
+    
+    /**
+     * Rempves the scoreboard if currently set to given scoreboard.
+     * 
+     * @param sb
+     *            scorepoard to be removed
+     */
+    public void removeScoreboard(ZoneScoreboard sb)
+    {
+        if (this.zoneScoreboard == sb)
+        {
+            this.zoneScoreboard = null;
+            this.scoreboard = null;
+            this.getBukkitPlayer().setScoreboard(this.originalScoreboard);
+            this.originalScoreboard = null;
+        }
+    }
+    
+    /**
+     * Recalc best scoreboard from player zones.
+     */
+    public void recalcBestScoreboard()
+    {
+        // TODO Let the scoreboards have priorities: higher value will be preferred if multiple scoreboards
+        if (!this.isOnline())
+        {
+            // offline players do not have scoreboards
+            return;
+        }
+        final ZoneScoreboard old = this.zoneScoreboard;
+        for (final ZoneInterface zone : this.getZones())
+        {
+            final ZoneImpl impl = (ZoneImpl) zone;
+            final ZoneScoreboard sb = impl.getBestMatchingScoreboard(this.uuid);
+            if (sb != null)
+            {
+                // found a good scoreboard
+                if (sb == old)
+                {
+                    // same scoreboard. Silently do nothing.
+                    return;
+                }
+                sb.showToPlayer(this);
+                if (old != null)
+                {
+                    old.removeFromPlayer(this);
+                }
+                return;
+            }
+        }
     }
     
 }

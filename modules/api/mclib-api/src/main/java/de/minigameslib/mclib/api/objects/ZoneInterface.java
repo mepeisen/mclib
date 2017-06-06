@@ -25,6 +25,7 @@
 package de.minigameslib.mclib.api.objects;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
@@ -254,5 +255,41 @@ public interface ZoneInterface
      *            listener class having methods tagged with {@link McEventHandler}
      */
     void unregisterHandlers(Plugin plugin, McListener listener);
+    
+    // scoreboards
+    
+    /**
+     * Lists all available scoreboard variants.
+     * 
+     * @return scoreboard variants.
+     */
+    List<ZoneScoreboardVariant> getScoreboards();
+    
+    /**
+     * Returns the scoreboard variant for given name.
+     * 
+     * @param name
+     *            name of the scoreboard variant.
+     * @return scoreboard variant or {@code null} if variant does not exist.
+     */
+    ZoneScoreboardVariant getScoreboardVariant(String name);
+    
+    /**
+     * Creates a new scoreboard variant. New scoreboards starts hidden and with empty whitelist. To display them call {@link ZoneScoreboardVariant#show()} or add players via
+     * {@link ZoneScoreboardVariant#addPlayerToWhiteList(java.util.UUID)}.
+     * 
+     * @param name
+     *            name of the scoreboard variant
+     * @return the scoreboard variant
+     */
+    ZoneScoreboardVariant createScoreboardVariant(String name);
+    
+    /**
+     * Deletes scoreboard variant with given name.
+     * 
+     * @param name
+     *            scoreboard to be deleted.
+     */
+    void deleteScoreboardVariant(String name);
     
 }

@@ -68,8 +68,9 @@ abstract class ZoneManager
      * 
      * @param target
      *            new location of the entity
+     * @return {@code true} if zones were changed
      */
-    void registerMovement(Location target)
+    boolean registerMovement(Location target)
     {
         final Location newLocation = target == null ? null : new Location(target.getWorld(), target.getBlockX(), target.getBlockY(), target.getBlockZ());
         if (this.oldLocation == null)
@@ -77,14 +78,14 @@ abstract class ZoneManager
             if (newLocation == null)
             {
                 // nothing to do
-                return;
+                return false;
             }
             // entering zones.
             final Set<ZoneId> newZones = this.getZones(newLocation);
             this.zones = newZones;
             this.oldLocation = newLocation;
             this.fireZonesEntered(newZones);
-            return;
+            return true;
         }
         if (newLocation == null)
         {
@@ -92,8 +93,9 @@ abstract class ZoneManager
             this.zones = new HashSet<>();
             this.oldLocation = newLocation;
             this.fireZonesLeft(oldZones);
-            return;
+            return true;
         }
+        boolean changedZones = false;
         if (!this.oldLocation.equals(newLocation))
         {
             final Set<ZoneId> enteredZones = this.getZones(newLocation);
@@ -104,8 +106,16 @@ abstract class ZoneManager
             // calculate new situation
             this.zones.removeAll(leftZones);
             this.zones.addAll(enteredZones);
-            this.fireZonesLeft(leftZones);
-            this.fireZonesEntered(enteredZones);
+            if (!leftZones.isEmpty())
+            {
+                this.fireZonesLeft(leftZones);
+                changedZones = true;
+            }
+            if (!enteredZones.isEmpty())
+            {
+                this.fireZonesEntered(enteredZones);
+                changedZones = true;
+            }
         }
         
         if (this.zones.size() == 0)
@@ -116,6 +126,7 @@ abstract class ZoneManager
         {
             this.primaryZone = this.zones.iterator().next();
         }
+        return changedZones;
     }
     
     /**
@@ -161,7 +172,8 @@ abstract class ZoneManager
     /**
      * Returns the zone of given types the player is within.
      * 
-     * @param type zone type array.
+     * @param type
+     *            zone type array.
      * @return zone list
      */
     Collection<ZoneInterface> getZones(ZoneTypeId... type)
@@ -193,7 +205,8 @@ abstract class ZoneManager
      * This method returns the "primary zone". If the zones are overlapping this may be a random
      * </p>
      * 
-     * @param type zone type array
+     * @param type
+     *            zone type array
      * @return the zone or {@code null} if no matching zone was found.
      */
     ZoneInterface getZone(ZoneTypeId... type)
@@ -215,7 +228,8 @@ abstract class ZoneManager
     /**
      * Checks if the player is within given zone.
      * 
-     * @param zone zone to test
+     * @param zone
+     *            zone to test
      * @return {@code true} if player is inside given zone.
      */
     boolean isInsideZone(ZoneInterface zone)
@@ -226,7 +240,8 @@ abstract class ZoneManager
     /**
      * Checks if the player is inside at least one of the given zones.
      * 
-     * @param zone zone to test
+     * @param zone
+     *            zone to test
      * @return {@code true} if player is at least inside one of the given zones.
      */
     boolean isInsideRandomZone(ZoneInterface... zone)
@@ -244,7 +259,8 @@ abstract class ZoneManager
     /**
      * Checks if the player is inside at least one of the given zones of given type.
      * 
-     * @param type zone type array
+     * @param type
+     *            zone type array
      * @return {@code true} if player is at least inside one of the given zones.
      */
     boolean isInsideRandomZone(ZoneTypeId... type)
@@ -255,7 +271,8 @@ abstract class ZoneManager
     /**
      * Checks if the player is inside every of the given zones.
      * 
-     * @param zone zone to test
+     * @param zone
+     *            zone to test
      * @return {@code true} if player is inside of the given zones.
      */
     boolean isInsideAllZones(ZoneInterface... zone)

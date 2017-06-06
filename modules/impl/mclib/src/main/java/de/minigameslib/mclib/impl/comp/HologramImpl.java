@@ -355,7 +355,7 @@ public class HologramImpl extends AbstractLocationComponent implements HologramI
     }
     
     @Override
-    public void addPlayeToWhiteList(UUID uuid) throws McException
+    public void addPlayerToWhiteList(UUID uuid) throws McException
     {
         this.whitelist.add(uuid);
         this.saveConfig();
@@ -366,7 +366,7 @@ public class HologramImpl extends AbstractLocationComponent implements HologramI
     }
     
     @Override
-    public void removePlayeFromWhiteList(UUID uuid) throws McException
+    public void removePlayerFromWhiteList(UUID uuid) throws McException
     {
         this.whitelist.remove(uuid);
         this.saveConfig();
