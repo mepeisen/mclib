@@ -25,14 +25,18 @@
 package de.minigameslib.mclib.shared.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
+import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.LocationData;
+import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
 /**
  * Testing {@code LocationData}.
@@ -104,6 +108,72 @@ public class LocationDataTest
         assertEquals("FOO", map.get(new LocationData(1, 2, 3, 4, 5, "world"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("BAR", map.get(new LocationData(1, 2, 3, 4, 5, "world2"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("BAR2", map.get(new LocationData(1, 2, 3, 4, 5, null))); //$NON-NLS-1$
+    }
+
+    /**
+     * Simple test case.
+     */
+    @Test
+    public void testMe()
+    {
+        final DataSection section = new MemoryDataSection();
+        final LocationData data = new LocationData();
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(data.test(section));
+
+        section.set("x", "a"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.test(section));
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", "a"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.test(section));
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", "a"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.test(section));
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", "a"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.test(section));
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", "a"); //$NON-NLS-1$ //$NON-NLS-2$
+        section.set("world",  "world"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertFalse(data.test(section));
+        
+        section.set("x", 123.45d); //$NON-NLS-1$
+        section.set("y", 123.45d); //$NON-NLS-1$
+        section.set("z", 123.45d); //$NON-NLS-1$
+        section.set("pitch", 123.45f); //$NON-NLS-1$
+        section.set("yaw", 123.45f); //$NON-NLS-1$
+        section.set("world",  123); //$NON-NLS-1$
+        assertFalse(data.test(section));
     }
     
 }
