@@ -47,7 +47,7 @@ public interface McUniqueEnumInterface extends UniqueEnumerationValue
      */
     default Plugin getPlugin()
     {
-        return EnumServiceCache.get().getPlugin(this);
+        return EnumServiceInterface.instance().getPlugin(this);
     }
     
     @Override

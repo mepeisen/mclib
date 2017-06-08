@@ -43,7 +43,7 @@ public interface McEnumInterface extends EnumerationValue
      */
     default Plugin getPlugin()
     {
-        return EnumServiceCache.get().getPlugin(this);
+        return EnumServiceInterface.instance().getPlugin(this);
     }
     
     /**

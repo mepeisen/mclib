@@ -28,11 +28,16 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import org.bukkit.event.Event;
 import org.junit.Test;
 
 import de.minigameslib.mclib.api.McContext;
+import de.minigameslib.mclib.api.cmd.CommandInterface;
 import de.minigameslib.mclib.api.objects.ComponentInterface;
+import de.minigameslib.mclib.api.objects.EntityInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
+import de.minigameslib.mclib.api.objects.ObjectInterface;
+import de.minigameslib.mclib.api.objects.SignInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 
 
@@ -56,6 +61,76 @@ public class McContextTest
         when(ctx.getContext(ZoneInterface.class)).thenReturn(arena);
         
         assertSame(arena, ctx.getCurrentZone());
+    }
+    
+    /**
+     * Tests {@link McContext#getCurrentCommand()}.
+     */
+    @Test
+    public void getCurrentCommandTest()
+    {
+        final CommandInterface command = mock(CommandInterface.class);
+        final McContextImpl ctx = mock(McContextImpl.class);
+        when(ctx.getCurrentCommand()).thenCallRealMethod();
+        when(ctx.getContext(CommandInterface.class)).thenReturn(command);
+        
+        assertSame(command, ctx.getCurrentCommand());
+    }
+    
+    /**
+     * Tests {@link McContext#getCurrentSign()}.
+     */
+    @Test
+    public void getCurrentSignTest()
+    {
+        final SignInterface sign = mock(SignInterface.class);
+        final McContextImpl ctx = mock(McContextImpl.class);
+        when(ctx.getCurrentSign()).thenCallRealMethod();
+        when(ctx.getContext(SignInterface.class)).thenReturn(sign);
+        
+        assertSame(sign, ctx.getCurrentSign());
+    }
+    
+    /**
+     * Tests {@link McContext#getCurrentObject()}.
+     */
+    @Test
+    public void getCurrentObjectTest()
+    {
+        final ObjectInterface object = mock(ObjectInterface.class);
+        final McContextImpl ctx = mock(McContextImpl.class);
+        when(ctx.getCurrentObject()).thenCallRealMethod();
+        when(ctx.getContext(ObjectInterface.class)).thenReturn(object);
+        
+        assertSame(object, ctx.getCurrentObject());
+    }
+    
+    /**
+     * Tests {@link McContext#getCurrentEntity()}.
+     */
+    @Test
+    public void getCurrentEntityTest()
+    {
+        final EntityInterface entity = mock(EntityInterface.class);
+        final McContextImpl ctx = mock(McContextImpl.class);
+        when(ctx.getCurrentEntity()).thenCallRealMethod();
+        when(ctx.getContext(EntityInterface.class)).thenReturn(entity);
+        
+        assertSame(entity, ctx.getCurrentEntity());
+    }
+    
+    /**
+     * Tests {@link McContext#getCurrentEvent()}.
+     */
+    @Test
+    public void getCurrentEventTest()
+    {
+        final Event event = mock(Event.class);
+        final McContextImpl ctx = mock(McContextImpl.class);
+        when(ctx.getCurrentEvent()).thenCallRealMethod();
+        when(ctx.getContext(Event.class)).thenReturn(event);
+        
+        assertSame(event, ctx.getCurrentEvent());
     }
     
     /**

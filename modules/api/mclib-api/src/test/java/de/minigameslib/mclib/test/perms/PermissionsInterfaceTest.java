@@ -69,6 +69,16 @@ public class PermissionsInterfaceTest
     }
     
     /**
+     * Tests {@link PermissionsInterface#fullPath()}.
+     */
+    @SuppressWarnings("synthetic-access")
+    @Test(expected = IllegalStateException.class)
+    public void testInvalid3()
+    {
+        assertEquals("FOO.BAR", new InvalidEnum3().fullPath()); //$NON-NLS-1$
+    }
+    
+    /**
      * some sample permission.
      */
     @Permissions(value = "FOO")
@@ -100,6 +110,21 @@ public class PermissionsInterfaceTest
     {
         /** bar permission. */
         BAR
+    }
+    
+    /**
+     * some sample permission.
+     */
+    @Permissions(value = "FOO")
+    private static class InvalidEnum3 implements PermissionsInterface
+    {
+
+        @Override
+        public String name()
+        {
+            return "BAR"; //$NON-NLS-1$
+        }
+        
     }
     
 }
