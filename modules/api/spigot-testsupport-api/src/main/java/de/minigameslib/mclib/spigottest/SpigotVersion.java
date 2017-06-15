@@ -68,5 +68,7 @@ public enum SpigotVersion
     V1_11,
     /** V1.11.2 */
     V1_11_2,
+    /** V1.12 */
+    V1_12,
     
 }

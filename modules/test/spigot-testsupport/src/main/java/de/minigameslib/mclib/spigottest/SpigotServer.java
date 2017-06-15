@@ -45,6 +45,7 @@ import de.minigameslib.mclib.spigottest.SpigotServerConfig.Plugin;
 import de.minigameslib.mclib.spigottest.nms.FilterableClassLoader;
 import de.minigameslib.mclib.spigottest.nms.v1102.Nms1102ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v111.Nms111ServerManager;
+import de.minigameslib.mclib.spigottest.nms.v112.Nms112ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v18.Nms18ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v183.Nms183ServerManager;
 import de.minigameslib.mclib.spigottest.nms.v185.Nms185ServerManager;
@@ -84,8 +85,11 @@ public class SpigotServer
             case Local:
                 switch (spigotServerConfig.getServerVersion())
                 {
-                    case V1_11_2:
                     case Latest:
+                    case V1_12:
+                        this.manager = new Nms112ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
+                        break;
+                    case V1_11_2:
                         this.manager = new Nms111ServerManager().createLocalServerManager(spigotServerConfig.getTempDirectory(), this.installRuntime(spigotServerConfig), injectedClasses);
                         break;
                     case V1_11:
@@ -182,6 +186,9 @@ public class SpigotServer
         {
             case Latest:
             default:
+            case V1_12:
+                version = "1.12-R0.1-SNAPSHOT"; //$NON-NLS-1$
+                break;
             case V1_11_2:
                 version = "1.11.2-R0.1-SNAPSHOT"; //$NON-NLS-1$
                 break;

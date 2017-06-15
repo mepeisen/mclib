@@ -27,7 +27,6 @@ package de.minigameslib.mclib.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -209,6 +208,7 @@ import de.minigameslib.mclib.nms.api.PlayerManagerInterface;
 import de.minigameslib.mclib.nms.api.SignHelperInterface;
 import de.minigameslib.mclib.nms.v110.NmsFactory1_10_1;
 import de.minigameslib.mclib.nms.v111.NmsFactory1_11;
+import de.minigameslib.mclib.nms.v112.NmsFactory1_12;
 import de.minigameslib.mclib.pshared.ActionPerformedData;
 import de.minigameslib.mclib.pshared.CoreMessages;
 import de.minigameslib.mclib.pshared.MclibCommunication;
@@ -608,6 +608,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             case V1_7_R4:
             default:
                 throw new IllegalStateException("Unsupported minecraft server version."); //$NON-NLS-1$
+            case V1_12:
+            case V1_12_R1:
+                Bukkit.getServicesManager().register(NmsFactory.class, new NmsFactory1_12(), this, ServicePriority.Highest);
+                break;
             case V1_11:
             case V1_11_R1:
                 Bukkit.getServicesManager().register(NmsFactory.class, new NmsFactory1_11(), this, ServicePriority.Highest);
@@ -752,6 +756,10 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
             if (v.startsWith("v1_11_R1")) //$NON-NLS-1$
             {
                 return MinecraftVersionsType.V1_11_R1;
+            }
+            if (v.startsWith("v1_12_R1")) //$NON-NLS-1$
+            {
+                return MinecraftVersionsType.V1_12_R1;
             }
         }
         catch (@SuppressWarnings("unused") Exception ex)

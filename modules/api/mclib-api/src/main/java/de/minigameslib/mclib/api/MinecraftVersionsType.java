@@ -35,19 +35,19 @@ public enum MinecraftVersionsType
     Unknown(false, "invalid"), //$NON-NLS-1$
     
     /** any 1.7 version. */
-    V1_7(true, "v1_7_R1"), //$NON-NLS-1$
+    V1_7(false, "v1_7_R1"), //$NON-NLS-1$
     
     /** V1.7 R1 */
-    V1_7_R1(true, "v1_7_R1"), //$NON-NLS-1$
+    V1_7_R1(false, "v1_7_R1"), //$NON-NLS-1$
     
     /** V1.7 R2 */
-    V1_7_R2(true, "v1_7_R2"), //$NON-NLS-1$
+    V1_7_R2(false, "v1_7_R2"), //$NON-NLS-1$
     
     /** V1.7 R3 */
-    V1_7_R3(true, "v1_7_R3"), //$NON-NLS-1$
+    V1_7_R3(false, "v1_7_R3"), //$NON-NLS-1$
     
     /** V1.7 R4 */
-    V1_7_R4(true, "v1_7_R4"), //$NON-NLS-1$
+    V1_7_R4(false, "v1_7_R4"), //$NON-NLS-1$
     
     /** any 1.8 version. */
     V1_8(true, "v1_8_R1"), //$NON-NLS-1$
@@ -79,8 +79,14 @@ public enum MinecraftVersionsType
     /** any 1.11 version. */
     V1_11(true, "v1_11_R1"), //$NON-NLS-1$
     
-    /** V1.10 R1 */
+    /** V1.11 R1 */
     V1_11_R1(true, "v1_11_R1"), //$NON-NLS-1$
+    
+    /** any 1.12 version. */
+    V1_12(true, "v1_12_R1"), //$NON-NLS-1$
+    
+    /** V1.12 R1 */
+    V1_12_R1(true, "v1_12_R1"), //$NON-NLS-1$
     
     ;
     
@@ -131,6 +137,8 @@ public enum MinecraftVersionsType
     {
         switch (this)
         {
+            case V1_12:
+                return type == V1_12 || type == V1_12_R1;
             case V1_11:
                 return type == V1_11 || type == V1_11_R1;
             case V1_10:
@@ -149,6 +157,8 @@ public enum MinecraftVersionsType
                 }
                 switch (type)
                 {
+                    case V1_12:
+                        return this == V1_12_R1;
                     case V1_11:
                         return this == V1_11_R1;
                     case V1_10:

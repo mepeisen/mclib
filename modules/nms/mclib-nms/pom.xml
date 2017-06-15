@@ -20,5 +20,6 @@
   	<module>mclib-nms-1.9.4</module>
   	<module>mclib-nms-1.10</module>
   	<module>mclib-nms-1.11</module>
+  	<module>mclib-nms-1.12</module>
   </modules>
 </project>

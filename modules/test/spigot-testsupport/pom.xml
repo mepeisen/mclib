@@ -14,7 +14,7 @@
 	    <dependency>
 	      <groupId>org.spigotmc</groupId>
 	      <artifactId>spigot-api</artifactId>
-	      <version>1.10.2-R0.1-SNAPSHOT</version>
+	      <version>1.12-R0.1-SNAPSHOT</version>
 	      <scope>provided</scope>
 	    </dependency>
 	    
@@ -40,6 +40,11 @@
         <dependency>
         	<groupId>${project.groupId}</groupId>
         	<artifactId>${project.artifactId}-nms-api</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>spigot-testsupport-nms-1.12</artifactId>
         	<version>${project.version}</version>
         </dependency>
         <dependency>

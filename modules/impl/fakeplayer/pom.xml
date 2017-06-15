@@ -74,14 +74,19 @@
         	<artifactId>${project.artifactId}-nms-1.11</artifactId>
         	<version>${project.version}</version>
         </dependency>
+        <dependency>
+        	<groupId>${project.groupId}</groupId>
+        	<artifactId>${project.artifactId}-nms-1.12</artifactId>
+        	<version>${project.version}</version>
+        </dependency>
   </dependencies>
   
   <dependencyManagement>
   	<dependencies>
 	  	<dependency>
 	  		<groupId>de.minigameslib.mclib</groupId>
-	  		<artifactId>spigot-1.10.2-R0.1-api-bom</artifactId>
-	  		<version>0.0.6-SNAPSHOT</version>
+	  		<artifactId>spigot-1.12-R0.1-api-bom</artifactId>
+	  		<version>${project.version}</version>
 	  		<type>pom</type>
 	  		<scope>import</scope>
 	  	</dependency>

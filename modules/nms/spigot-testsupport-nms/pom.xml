@@ -20,5 +20,6 @@
   	<module>spigot-testsupport-nms-1.9.4</module>
   	<module>spigot-testsupport-nms-1.10</module>
   	<module>spigot-testsupport-nms-1.11</module>
+  	<module>spigot-testsupport-nms-1.12</module>
   </modules>
 </project>
