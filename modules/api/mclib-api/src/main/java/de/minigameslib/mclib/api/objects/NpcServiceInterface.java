@@ -101,6 +101,7 @@ public interface NpcServiceInterface
          * @return this object for chaining
          */
         HumanBuilderInterface name(String name);
+        // TODO set to serializable to support localized names
         
     }
     

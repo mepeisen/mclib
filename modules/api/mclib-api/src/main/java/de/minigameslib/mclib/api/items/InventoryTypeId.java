@@ -34,6 +34,6 @@ import de.minigameslib.mclib.api.enums.McUniqueEnumInterface;
 public interface InventoryTypeId extends McUniqueEnumInterface
 {
     
-    // TODO
+    // empty interface
     
 }
