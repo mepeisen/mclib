@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.minigameslib.mclib</groupId>
   <artifactId>mclib-parent</artifactId>
-  <version>0.0.6-SNAPSHOT</version>
+  <version>0.0.6</version>
   <packaging>pom</packaging>
   
   <name>mclib parent</name>
