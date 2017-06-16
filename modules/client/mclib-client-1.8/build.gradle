@@ -30,7 +30,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = "de.minigameslib.mclib.client"
-version = "0.0.6.${buildTime()}"
+version = "0.0.7.${buildTime()}"
 configurations.all {
     // Check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
