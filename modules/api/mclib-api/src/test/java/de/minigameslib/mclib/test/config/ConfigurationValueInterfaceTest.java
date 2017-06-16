@@ -28,6 +28,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
@@ -59,8 +60,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
+import de.minigameslib.mclib.api.CommonMessages;
+import de.minigameslib.mclib.api.McException;
 import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.config.ConfigColorData;
+import de.minigameslib.mclib.api.config.ConfigComment;
 import de.minigameslib.mclib.api.config.ConfigInterface;
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
 import de.minigameslib.mclib.api.config.ConfigServiceInterface;
@@ -75,12 +79,16 @@ import de.minigameslib.mclib.api.config.ConfigurationColor;
 import de.minigameslib.mclib.api.config.ConfigurationColorList;
 import de.minigameslib.mclib.api.config.ConfigurationDouble;
 import de.minigameslib.mclib.api.config.ConfigurationDoubleList;
+import de.minigameslib.mclib.api.config.ConfigurationEnum;
+import de.minigameslib.mclib.api.config.ConfigurationEnumList;
 import de.minigameslib.mclib.api.config.ConfigurationFloat;
 import de.minigameslib.mclib.api.config.ConfigurationFloatList;
 import de.minigameslib.mclib.api.config.ConfigurationInt;
 import de.minigameslib.mclib.api.config.ConfigurationIntList;
 import de.minigameslib.mclib.api.config.ConfigurationItemStack;
 import de.minigameslib.mclib.api.config.ConfigurationItemStackList;
+import de.minigameslib.mclib.api.config.ConfigurationJavaEnum;
+import de.minigameslib.mclib.api.config.ConfigurationJavaEnumList;
 import de.minigameslib.mclib.api.config.ConfigurationLong;
 import de.minigameslib.mclib.api.config.ConfigurationLongList;
 import de.minigameslib.mclib.api.config.ConfigurationObject;
@@ -96,6 +104,7 @@ import de.minigameslib.mclib.api.config.ConfigurationValueInterface;
 import de.minigameslib.mclib.api.config.ConfigurationValues;
 import de.minigameslib.mclib.api.config.ConfigurationVector;
 import de.minigameslib.mclib.api.config.ConfigurationVectorList;
+import de.minigameslib.mclib.api.locale.MessageSeverityType;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
@@ -153,6 +162,94 @@ public class ConfigurationValueInterfaceTest
     }
     
     /**
+     * Tests the getComment method
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void testGetComment() throws McException
+    {
+        assertArrayEquals(new String[0], TestOptions.SomeByte1.getComment());
+        assertArrayEquals(new String[]{"foo comment"}, TestOptions.SomeDummy.getComment()); //$NON-NLS-1$
+    }
+    
+    /**
+     * Tests invalid config.
+     */
+    @Test
+    public void testGetComment2()
+    {
+        assertArrayEquals(new String[0], new InvalidConfig2().getComment());
+    }
+    
+    /**
+     * Tests the getEnumClass method
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void testGetEnumClass() throws McException
+    {
+        assertNull(TestOptions.SomeByte1.getEnumClass());
+        assertSame(CommonMessages.class, TestOptions.SomeEnum.getEnumClass());
+        assertSame(CommonMessages.class, TestOptions.SomeEnumList.getEnumClass());
+    }
+    
+    /**
+     * Tests the getEnumClass method
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void testGetEnumClass2() throws McException
+    {
+        assertNull(new InvalidConfig2().getEnumClass());
+    }
+    
+    /**
+     * Tests the getJavaEnumClass method
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void testGetJavaEnumClass() throws McException
+    {
+        assertNull(TestOptions.SomeByte1.getJavaEnumClass());
+        assertSame(MessageSeverityType.class, TestOptions.SomeJavaEnum.getJavaEnumClass());
+        assertSame(MessageSeverityType.class, TestOptions.SomeJavaEnumList.getJavaEnumClass());
+    }
+    
+    /**
+     * Tests the getJavaEnumClass method
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void testGetJavaEnumClass2() throws McException
+    {
+        assertNull(new InvalidConfig2().getJavaEnumClass());
+    }
+    
+    /**
+     * Checks the rollback config call.
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void rollbackConfigTest() throws McException
+    {
+        TestOptions.SomeByte1.rollbackConfig();
+        
+        verify(this.config, times(1)).rollbackConfig("config.yml"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Checks the verify config call.
+     * @throws McException thrown on problems.
+     */
+    @Test
+    public void verifyConfigTest() throws McException
+    {
+        TestOptions.SomeByte1.verifyConfig();
+        
+        verify(this.config, times(1)).verifyConfig("config.yml"); //$NON-NLS-1$
+    }
+    
+    /**
      * Checks the save config call.
      */
     @Test
@@ -199,7 +296,7 @@ public class ConfigurationValueInterfaceTest
      * Tests {@link ConfigurationValueInterface#isset()}.
      */
     @Test(expected = IllegalStateException.class)
-    public void issetTestInvalie()
+    public void issetTestInvalid()
     {
         TestOptions.SomeBooleanFalse.isset("Foo"); //$NON-NLS-1$
     }
@@ -239,6 +336,47 @@ public class ConfigurationValueInterfaceTest
             MemoryDataSection.initFragmentImplementation(McPlayerInterface.class, DummyPlayer.class);
             MemoryDataSection.initFragmentImplementation(ItemStackDataFragment.class, DummyItemStackData.class);
             MemoryDataSection.initFragmentImplementation(ConfigItemStackData.class, DummyItemStackData.class);
+            
+            // java enum
+            assertNull(TestOptions.SomeJavaEnum.getJavaEnum(MessageSeverityType.class));
+            assertNull(TestOptions.SomeJavaEnum.getJavaEnum(MessageSeverityType.class));
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeJavaEnumList.getJavaEnumList(MessageSeverityType.class));
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeJavaEnumList.getJavaEnumList(MessageSeverityType.class));
+            
+            TestOptions.SomeJavaEnum.setJavaEnum(MessageSeverityType.Information);
+            TestOptions.SomeOtherJavaEnum.setJavaEnum(MessageSeverityType.Loser);
+            TestOptions.SomeJavaEnumList.setJavaEnumList(new MessageSeverityType[] { MessageSeverityType.Loser, MessageSeverityType.Information });
+            TestOptions.SomeOtherJavaEnumList.setJavaEnumList(new MessageSeverityType[] { MessageSeverityType.Warning, MessageSeverityType.Winner });
+            
+            assertEquals("Information", this.file.get(TestOptions.SomeJavaEnum.path())); //$NON-NLS-1$
+            assertEquals("Loser", this.file.get(TestOptions.SomeOtherJavaEnum.path())); //$NON-NLS-1$
+            assertEquals(Arrays.asList("Loser", "Information"), this.file.getStringList(TestOptions.SomeJavaEnumList.path())); //$NON-NLS-1$ //$NON-NLS-2$
+            assertEquals(Arrays.asList("Warning", "Winner"), this.file.getStringList(TestOptions.SomeOtherJavaEnumList.path())); //$NON-NLS-1$ //$NON-NLS-2$
+            
+            assertEquals(MessageSeverityType.Information, TestOptions.SomeJavaEnum.getJavaEnum(MessageSeverityType.class));
+            assertEquals(MessageSeverityType.Loser, TestOptions.SomeOtherJavaEnum.getJavaEnum(MessageSeverityType.class));
+            assertArrayEquals(new MessageSeverityType[] { MessageSeverityType.Loser, MessageSeverityType.Information }, TestOptions.SomeJavaEnumList.getJavaEnumList(MessageSeverityType.class));
+            assertArrayEquals(new MessageSeverityType[] { MessageSeverityType.Warning, MessageSeverityType.Winner }, TestOptions.SomeOtherJavaEnumList.getJavaEnumList(MessageSeverityType.class));
+            
+            // enum
+            assertNull(TestOptions.SomeEnum.getEnum(CommonMessages.class));
+            assertNull(TestOptions.SomeEnum.getEnum(CommonMessages.class));
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeEnumList.getEnumList(CommonMessages.class));
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeEnumList.getEnumList(CommonMessages.class));
+            
+            TestOptions.SomeEnum.setEnum(CommonMessages.AlreadyDeletedError);
+            TestOptions.SomeOtherEnum.setEnum(CommonMessages.BrokenObjectType);
+            TestOptions.SomeEnumList.setEnumList(new CommonMessages[] { CommonMessages.BrokenObjectTypeEnumException, CommonMessages.BrokenObjectTypeEnumNotRegistered });
+            TestOptions.SomeOtherEnumList.setEnumList(new CommonMessages[] { CommonMessages.BrokenObjectTypeNotAnEnum, CommonMessages.CommandDisabled });
+            
+            assertEquals(CommonMessages.AlreadyDeletedError, TestOptions.SomeEnum.getEnum(CommonMessages.class));
+            assertEquals(CommonMessages.BrokenObjectType, TestOptions.SomeOtherEnum.getEnum(CommonMessages.class));
+            assertArrayEquals(
+                new CommonMessages[] { CommonMessages.BrokenObjectTypeEnumException, CommonMessages.BrokenObjectTypeEnumNotRegistered },
+                TestOptions.SomeEnumList.getEnumList(CommonMessages.class));
+            assertArrayEquals(
+                new CommonMessages[] { CommonMessages.BrokenObjectTypeNotAnEnum, CommonMessages.CommandDisabled },
+                TestOptions.SomeOtherEnumList.getEnumList(CommonMessages.class));
             
             // boolean
             assertEquals(true, TestOptions.SomeBooleanTrue.getBoolean());
@@ -586,8 +724,14 @@ public class ConfigurationValueInterfaceTest
             assertEquals(obj2, TestOptions.SomeOtherObject.getObject());
             assertArrayEquals(new FooObject[] { obj3, obj4 }, TestOptions.SomeObjectList.getObjectList(FooObject.class));
             assertArrayEquals(new FooObject[] { obj5, obj6 }, TestOptions.SomeOtherObjectList.getObjectList(FooObject.class));
-            
+
+            TestOptions.SomeObject.setObject(obj2);
+            TestOptions.SomeObjectList.setObjectList(new FooObject[] { obj4, obj5 });
+            assertEquals(obj2, TestOptions.SomeObject.getObject());
+            assertArrayEquals(new FooObject[] { obj4, obj5 }, TestOptions.SomeObjectList.getObjectList(FooObject.class));
+
             // sections
+            
             // boolean
             assertFalse(TestOptions.SomeSection.getBoolean("Boolean", false)); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("Boolean")); //$NON-NLS-1$
@@ -618,6 +762,30 @@ public class ConfigurationValueInterfaceTest
             // getKeys
             assertArrayEquals(new String[] { "Boolean", "BooleanList" }, TestOptions.SomeSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
             assertArrayEquals(new String[] { "Boolean", "BooleanList" }, TestOptions.SomeOtherSection.getKeys(false)); //$NON-NLS-1$ //$NON-NLS-2$
+            
+            // java enum
+            assertNull(TestOptions.SomeSection.getJavaEnum(MessageSeverityType.class, "JavaEnum")); //$NON-NLS-1$
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeSection.getJavaEnumList(MessageSeverityType.class, "JavaEnumList")); //$NON-NLS-1$
+            
+            TestOptions.SomeSection.setJavaEnum(MessageSeverityType.Information, "JavaEnum"); //$NON-NLS-1$
+            TestOptions.SomeSection.setJavaEnumList(new MessageSeverityType[] { MessageSeverityType.Loser, MessageSeverityType.Information }, "JavaEnumList"); //$NON-NLS-1$
+            
+            assertEquals(MessageSeverityType.Information, TestOptions.SomeSection.getJavaEnum(MessageSeverityType.class, "JavaEnum")); //$NON-NLS-1$
+            assertArrayEquals(
+                new MessageSeverityType[] { MessageSeverityType.Loser, MessageSeverityType.Information },
+                TestOptions.SomeSection.getJavaEnumList(MessageSeverityType.class, "JavaEnumList")); //$NON-NLS-1$
+            
+            // enum
+            assertNull(TestOptions.SomeSection.getEnum(CommonMessages.class, "Enum")); //$NON-NLS-1$
+            assertArrayEquals(new MessageSeverityType[] {}, TestOptions.SomeSection.getEnumList(CommonMessages.class, "EnumList")); //$NON-NLS-1$
+            
+            TestOptions.SomeSection.setEnum(CommonMessages.AlreadyDeletedError, "Enum"); //$NON-NLS-1$
+            TestOptions.SomeSection.setEnumList(new CommonMessages[] { CommonMessages.BrokenObjectTypeEnumException, CommonMessages.BrokenObjectTypeEnumNotRegistered }, "EnumList"); //$NON-NLS-1$
+            
+            assertEquals(CommonMessages.AlreadyDeletedError, TestOptions.SomeSection.getEnum(CommonMessages.class, "Enum")); //$NON-NLS-1$
+            assertArrayEquals(
+                new CommonMessages[] { CommonMessages.BrokenObjectTypeEnumException, CommonMessages.BrokenObjectTypeEnumNotRegistered },
+                TestOptions.SomeSection.getEnumList(CommonMessages.class, "EnumList")); //$NON-NLS-1$
             
             // byte
             assertEquals(1, TestOptions.SomeSection.getByte("Byte", (byte) 1)); //$NON-NLS-1$
@@ -745,12 +913,16 @@ public class ConfigurationValueInterfaceTest
             TestOptions.SomeSection.setObject(obj1, "Object"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("Object")); //$NON-NLS-1$
             assertEquals(obj1, TestOptions.SomeSection.getObject(FooObject.class, "Object")); //$NON-NLS-1$
+            TestOptions.SomeSection.setObject(obj2, "Object"); //$NON-NLS-1$
+            assertEquals(obj2, TestOptions.SomeSection.getObject(FooObject.class, "Object")); //$NON-NLS-1$
             
             assertArrayEquals(new FooObject[] {}, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
             assertFalse(TestOptions.SomeSection.isset("ObjectList")); //$NON-NLS-1$
             TestOptions.SomeSection.setObjectList(new FooObject[] { obj2, obj3 }, "ObjectList"); //$NON-NLS-1$
             assertTrue(TestOptions.SomeSection.isset("ObjectList")); //$NON-NLS-1$
             assertArrayEquals(new FooObject[] { obj2, obj3 }, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
+            TestOptions.SomeSection.setObjectList(new FooObject[] { obj3, obj4 }, "ObjectList"); //$NON-NLS-1$
+            assertArrayEquals(new FooObject[] { obj3, obj4 }, TestOptions.SomeSection.getObjectList(FooObject.class, "ObjectList")); //$NON-NLS-1$
             
             // Player
             assertNull(TestOptions.SomeSection.getPlayer("Player")); //$NON-NLS-1$
@@ -859,6 +1031,16 @@ public class ConfigurationValueInterfaceTest
     @Test
     public void pathTest()
     {
+        assertEquals("core.config.SomeJavaEnum", TestOptions.SomeJavaEnum.path()); //$NON-NLS-1$
+        assertEquals("core.config.some_other_java_enum", TestOptions.SomeOtherJavaEnum.path()); //$NON-NLS-1$
+        assertEquals("core.config.SomeJavaEnumList", TestOptions.SomeJavaEnumList.path()); //$NON-NLS-1$
+        assertEquals("core.config.some_other_java_enum_list", TestOptions.SomeOtherJavaEnumList.path()); //$NON-NLS-1$
+
+        assertEquals("core.config.SomeEnum", TestOptions.SomeEnum.path()); //$NON-NLS-1$
+        assertEquals("core.config.some_other_enum", TestOptions.SomeOtherEnum.path()); //$NON-NLS-1$
+        assertEquals("core.config.SomeEnumList", TestOptions.SomeEnumList.path()); //$NON-NLS-1$
+        assertEquals("core.config.some_other_enum_list", TestOptions.SomeOtherEnumList.path()); //$NON-NLS-1$
+        
         assertEquals("core.config.SomeBooleanFalse", TestOptions.SomeBooleanFalse.path()); //$NON-NLS-1$
         assertEquals("core.config.some_other_boolean", TestOptions.SomeOtherBoolean.path()); //$NON-NLS-1$
         assertEquals("core.config.SomeBooleanList", TestOptions.SomeBooleanList.path()); //$NON-NLS-1$
@@ -939,6 +1121,16 @@ public class ConfigurationValueInterfaceTest
     @Test
     public void isXxTest()
     {
+        assertTrue(TestOptions.SomeEnum.isEnum());
+        assertFalse(TestOptions.SomeEnum.isEnumList());
+        assertTrue(TestOptions.SomeEnumList.isEnumList());
+        assertFalse(TestOptions.SomeEnumList.isEnum());
+        
+        assertTrue(TestOptions.SomeJavaEnum.isJavaEnum());
+        assertFalse(TestOptions.SomeJavaEnum.isJavaEnumList());
+        assertTrue(TestOptions.SomeJavaEnumList.isJavaEnumList());
+        assertFalse(TestOptions.SomeJavaEnumList.isJavaEnum());
+        
         assertTrue(TestOptions.SomeBooleanTrue.isBoolean());
         assertFalse(TestOptions.SomeBooleanTrue.isBooleanList());
         assertTrue(TestOptions.SomeBooleanList.isBooleanList());
@@ -1209,6 +1401,32 @@ public class ConfigurationValueInterfaceTest
     public static enum TestOptions implements ConfigurationValueInterface
     {
         /** some value. */
+        @ConfigurationEnum(clazz = CommonMessages.class)
+        SomeEnum,
+        /** some value. */
+        @ConfigurationEnum(name = "some_other_enum", clazz = CommonMessages.class)
+        SomeOtherEnum,
+        /** some value. */
+        @ConfigurationEnumList(clazz = CommonMessages.class)
+        SomeEnumList,
+        /** some value. */
+        @ConfigurationEnumList(name = "some_other_enum_list", clazz = CommonMessages.class)
+        SomeOtherEnumList,
+        
+        /** some value. */
+        @ConfigurationJavaEnum(clazz = MessageSeverityType.class)
+        SomeJavaEnum,
+        /** some value. */
+        @ConfigurationJavaEnum(name = "some_other_java_enum", clazz = MessageSeverityType.class)
+        SomeOtherJavaEnum,
+        /** some value. */
+        @ConfigurationJavaEnumList(clazz = MessageSeverityType.class)
+        SomeJavaEnumList,
+        /** some value. */
+        @ConfigurationJavaEnumList(name = "some_other_java_enum_list", clazz = MessageSeverityType.class)
+        SomeOtherJavaEnumList,
+        
+        /** some value. */
         @ConfigurationBool(defaultValue = false)
         SomeBooleanFalse,
         /** some value. */
@@ -1442,6 +1660,7 @@ public class ConfigurationValueInterfaceTest
         SomeOtherVectorList,
         
         /** some invalid dummy value. */
+        @ConfigComment("foo comment")
         SomeDummy,
     }
     

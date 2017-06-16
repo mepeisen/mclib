@@ -36,7 +36,6 @@ import org.bukkit.Color;
 
 import de.minigameslib.mclib.api.EditableValue;
 import de.minigameslib.mclib.api.McException;
-import de.minigameslib.mclib.api.McLibInterface;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.validate.ValidateFMax;
 import de.minigameslib.mclib.api.validate.ValidateFMin;
@@ -617,11 +616,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
     {
         ConfigurationTool.consumeList(this, ConfigurationObjectList.class, ConfigurationTool.objectListPath(), value, (val, configs, config, lib, minigame, section, path, element) ->
         {
-            DataSection configurationSection = section.getSection(path);
-            if (configurationSection == null)
-            {
-                configurationSection = section.createSection(path);
-            }
+            final DataSection configurationSection = section.createSection(path);
             element.write(configurationSection);
         });
     }
@@ -638,11 +633,7 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
     {
         ConfigurationTool.consumeList(this, subpath, value, (val, configs, config, lib, minigame, section, path, element) ->
         {
-            DataSection section2 = section.getSection(path);
-            if (section2 == null)
-            {
-                section2 = section.createSection(path);
-            }
+            final DataSection section2 = section.createSection(path);
             element.write(section2);
         });
     }
@@ -667,6 +658,22 @@ public interface ConfigurationValueInterface extends EnumerationValue, EditableV
     default void setEnum(EnumerationValue value)
     {
         ConfigurationTool.consume(this, ConfigurationEnum.class, ConfigurationTool.enumPath(), (val, configs, config, lib, minigame, path) ->
+        {
+            minigame.getConfig(configs.file()).set(path, value);
+        });
+    }
+    
+    /**
+     * Sets the value to this configuration variable.
+     * 
+     * @param value
+     *            value to set.
+     * @param subpath
+     *            the sub path
+     */
+    default void setJavaEnum(Enum<?> value, String subpath)
+    {
+        ConfigurationTool.consume(this, subpath, (val, configs, config, lib, minigame, path) ->
         {
             minigame.getConfig(configs.file()).set(path, value);
         });

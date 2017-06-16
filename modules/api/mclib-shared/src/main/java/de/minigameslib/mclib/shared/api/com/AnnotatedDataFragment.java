@@ -401,6 +401,9 @@ public abstract class AnnotatedDataFragment implements DataFragment
         /** the target field type. */
         public Class<?>                                clazz;
         
+        /** the target field type. */
+        public Class<?>                                primitiveListMapType;
+        
         /** true for list. */
         public boolean                                 isList;
         
@@ -500,6 +503,7 @@ public abstract class AnnotatedDataFragment implements DataFragment
                         {
                             this.primitiveType = PrimitiveFieldType.PrimitiveList;
                         }
+                        this.primitiveListMapType = listType;
                     }
                     // TODO support map list etc.
                     // else if (Map.class.isAssignableFrom(elementType)) { }

@@ -130,7 +130,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isBooleanList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Boolean;
+            return this.field.isList && this.field.primitiveListMapType == Boolean.class;
         }
         
         @Override
@@ -142,7 +142,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isByteList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Byte;
+            return this.field.isList && this.field.primitiveListMapType == Byte.class;
         }
         
         @Override
@@ -154,7 +154,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isCharacterList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Character;
+            return this.field.isList && this.field.primitiveListMapType == Character.class;
         }
         
         @Override
@@ -172,7 +172,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isDoubleList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Double;
+            return this.field.isList && this.field.primitiveListMapType == Double.class;
         }
         
         @Override
@@ -184,7 +184,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isFloatList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Float;
+            return this.field.isList && this.field.primitiveListMapType == Float.class;
         }
         
         @Override
@@ -196,7 +196,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isIntList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Integer;
+            return this.field.isList && this.field.primitiveListMapType == Integer.class;
         }
         
         @Override
@@ -226,7 +226,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isLongList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Long;
+            return this.field.isList && this.field.primitiveListMapType == Long.class;
         }
         
         @Override
@@ -256,13 +256,13 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isPlayer()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Player;
+            return !this.field.isList && this.field.primitiveType == PrimitiveFieldType.Player;
         }
         
         @Override
         public boolean isShortList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Short;
+            return this.field.isList && this.field.primitiveListMapType == Short.class;
         }
         
         @Override
@@ -274,7 +274,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public boolean isStringList()
         {
-            return this.field.isList && this.field.primitiveType == PrimitiveFieldType.Str;
+            return this.field.isList && this.field.primitiveListMapType == String.class;
         }
         
         @Override
