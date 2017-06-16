@@ -8,14 +8,14 @@
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
   	<artifactId>mclib-bom-parent</artifactId>
-  	<version>0.0.6</version>
+  	<version>0.0.7-SNAPSHOT</version>
   </parent>
   
   <properties>
     <spigot.version>1.9.2-R0.1-SNAPSHOT</spigot.version>
     <bungee.version>1.10-SNAPSHOT</bungee.version>
 	
-	<mclib.version>0.0.6-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT</mclib.version>
+	<mclib.version>0.0.7-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT-SNAPSHOT</mclib.version>
   </properties>
   
   <dependencies>
