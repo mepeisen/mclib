@@ -24,7 +24,11 @@
 
 package de.minigameslib.mclib.api.config;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -324,7 +328,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (T) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -338,7 +342,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Byte) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -353,7 +357,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (T) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -368,7 +372,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (T) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -382,7 +386,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (ConfigColorData) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -396,7 +400,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (ConfigItemStackData) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -410,7 +414,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (ConfigVectorData) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -424,7 +428,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (McPlayerInterface) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -438,7 +442,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Character) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -452,7 +456,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Boolean) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return false;
@@ -464,9 +468,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (boolean[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final boolean[] result = new boolean[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Boolean) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -479,9 +491,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (T[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray((T[])Array.newInstance(clazz, 0));
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -494,9 +506,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (T[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray((T[])Array.newInstance(clazz, 0));
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -508,9 +520,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (byte[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final byte[] result = new byte[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Byte) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -522,9 +542,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (char[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final char[] result = new char[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Character) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -538,7 +566,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Double) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -552,7 +580,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Float) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -564,9 +592,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (double[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final double[] result = new double[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Double) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -578,9 +614,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (float[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final float[] result = new float[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Float) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -594,7 +638,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Integer) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -608,7 +652,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Short) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -620,9 +664,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (int[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final int[] result = new int[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Integer) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -636,7 +688,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (Long) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return 0;
@@ -648,9 +700,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (long[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final long[] result = new long[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Long) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -662,9 +722,17 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (short[]) this.field.field.get(EditableDataFragment.this);
+                final List<?> list = (List<?>) this.field.field.get(EditableDataFragment.this);
+                final short[] result = new short[list.size()];
+                int i = 0;
+                for (Object obj : list)
+                {
+                    result[i] = (Short) obj;
+                    i++;
+                }
+                return result;
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -678,7 +746,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
             {
                 return (String) this.field.field.get(EditableDataFragment.this);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -690,9 +758,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (String[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray(new String[0]);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -704,9 +772,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (ConfigVectorData[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray(new ConfigVectorData[0]);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -718,9 +786,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (ConfigItemStackData[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray(new ConfigItemStackData[0]);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -733,9 +801,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (T[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray((T[])Array.newInstance(clazz, 0));
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -747,9 +815,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (ConfigColorData[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray(new ConfigColorData[0]);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -761,9 +829,9 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return (McPlayerInterface[]) this.field.field.get(EditableDataFragment.this);
+                return ((List<?>)this.field.field.get(EditableDataFragment.this)).toArray(new McPlayerInterface[0]);
             }
-            catch (IllegalArgumentException | IllegalAccessException e)
+            catch (ClassCastException | IllegalArgumentException | IllegalAccessException e)
             {
                 LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
                 return null;
@@ -773,15 +841,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         @Override
         public String[] getComment()
         {
-            try
-            {
-                return (String[]) this.field.field.get(EditableDataFragment.this);
-            }
-            catch (IllegalArgumentException | IllegalAccessException e)
-            {
-                LOGGER.log(Level.WARNING, "problems fetching data fragment field " + this.name(), e); //$NON-NLS-1$
-                return null;
-            }
+            return new String[0];
         }
         
         @Override
@@ -815,7 +875,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -854,7 +914,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -867,7 +927,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -893,7 +953,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Boolean> val = new ArrayList<>();
+                for (final boolean b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -919,7 +984,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Byte> val = new ArrayList<>();
+                for (final byte b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -945,7 +1015,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Character> val = new ArrayList<>();
+                for (final char b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -971,7 +1046,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -997,7 +1072,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Double> val = new ArrayList<>();
+                for (final double b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1023,7 +1103,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Float> val = new ArrayList<>();
+                for (final float b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1049,7 +1134,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Integer> val = new ArrayList<>();
+                for (final int b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1075,7 +1165,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1101,7 +1191,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Long> val = new ArrayList<>();
+                for (final long b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1127,7 +1222,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1153,7 +1248,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                final List<Short> val = new ArrayList<>();
+                for (final short b : value)
+                {
+                    val.add(b);
+                }
+                this.field.field.set(EditableDataFragment.this, val);
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1179,7 +1279,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
@@ -1205,7 +1305,7 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                this.field.field.set(EditableDataFragment.this, value);
+                this.field.field.set(EditableDataFragment.this, Arrays.asList(value));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
