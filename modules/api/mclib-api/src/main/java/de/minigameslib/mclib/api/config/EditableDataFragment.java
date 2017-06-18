@@ -311,7 +311,12 @@ public class EditableDataFragment extends AnnotatedDataFragment
         {
             try
             {
-                return this.field.field.get(EditableDataFragment.this) != null;
+                final Object object = this.field.field.get(EditableDataFragment.this);
+                if (object instanceof List<?>)
+                {
+                    return !((List<?>) object).isEmpty();
+                }
+                return object != null;
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
