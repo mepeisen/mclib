@@ -79,7 +79,7 @@ public class DefaultSwordDigRule implements ItemDigInterface
     @Override
     public boolean canHarvest(Material material)
     {
-        return BlockServiceInterface.instance().isWeb(Material.WEB);
+        return BlockServiceInterface.instance().isWeb(material);
     }
     
     @Override
