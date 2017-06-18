@@ -94,7 +94,7 @@ public class ClickGuiItem
      */
     public ClickGuiItem(ItemStack itemStack, boolean moveable, GuiReplaceHandler replaceHandler)
     {
-        this.itemStack = itemStack;
+        this.itemStack = itemStack.clone();
         this.moveable = moveable;
         this.displayName = null;
         this.displayNameArgs = null;
@@ -129,7 +129,7 @@ public class ClickGuiItem
      */
     public ItemStack getItemStack()
     {
-        return this.itemStack.clone();
+        return this.itemStack;
     }
     
     /**

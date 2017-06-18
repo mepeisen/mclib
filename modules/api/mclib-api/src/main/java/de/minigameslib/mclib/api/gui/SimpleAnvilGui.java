@@ -62,7 +62,7 @@ public class SimpleAnvilGui implements AnvilGuiInterface
     public SimpleAnvilGui(AnvilGuiId guiId, ItemStack item, McConsumer<String> inputAction)
     {
         this.guiId = guiId;
-        this.item = item;
+        this.item = item.clone();
         this.inputAction = inputAction;
         this.cancelAction = null;
     }
@@ -82,7 +82,7 @@ public class SimpleAnvilGui implements AnvilGuiInterface
     public SimpleAnvilGui(AnvilGuiId guiId, ItemStack item, Runnable cancelAction, McConsumer<String> inputAction)
     {
         this.guiId = guiId;
-        this.item = item;
+        this.item = item.clone();
         this.cancelAction = cancelAction;
         this.inputAction = inputAction;
     }

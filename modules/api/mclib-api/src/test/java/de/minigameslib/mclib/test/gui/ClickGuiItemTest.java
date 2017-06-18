@@ -24,18 +24,28 @@
 
 package de.minigameslib.mclib.test.gui;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import java.io.Serializable;
+
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
 import de.minigameslib.mclib.api.McException;
+import de.minigameslib.mclib.api.gui.ClickGuiInterface;
 import de.minigameslib.mclib.api.gui.ClickGuiItem;
+import de.minigameslib.mclib.api.gui.ClickGuiItem.GuiReplaceHandler;
+import de.minigameslib.mclib.api.gui.GuiSessionInterface;
 import de.minigameslib.mclib.api.locale.LocalizedMessageInterface;
+import de.minigameslib.mclib.api.objects.McPlayerInterface;
 
 /**
  * test case for {@link ClickGuiItem}.
@@ -52,7 +62,8 @@ public class ClickGuiItemTest
     public void constructorTest()
     {
         final ItemStack item = mock(ItemStack.class);
-        when(item.clone()).thenReturn(item);
+        final ItemStack clone = mock(ItemStack.class);
+        when(item.clone()).thenReturn(clone);
         final LocalizedMessageInterface name = mock(LocalizedMessageInterface.class);
         final ClickGuiItem.GuiItemHandler handler = mock(ClickGuiItem.GuiItemHandler.class);
         
@@ -60,8 +71,75 @@ public class ClickGuiItemTest
         
         verify(item, times(1)).clone();
         
-        assertSame(item, guiItem.getItemStack());
+        assertSame(clone, guiItem.getItemStack());
         assertSame(name, guiItem.getDisplayName());
+        assertArrayEquals(new Serializable[0], guiItem.getDisplayNameArgs());
+        assertFalse(guiItem.isMoveable());
+    }
+    
+    /**
+     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, boolean, GuiReplaceHandler)}.
+     */
+    @Test
+    public void constructor2Test()
+    {
+        final ItemStack item = mock(ItemStack.class);
+        final ItemStack clone = mock(ItemStack.class);
+        when(item.clone()).thenReturn(clone);
+        final GuiReplaceHandler handler = mock(GuiReplaceHandler.class);
+        
+        final ClickGuiItem guiItem = new ClickGuiItem(item, true, handler);
+        
+        verify(item, times(1)).clone();
+        
+        assertSame(clone, guiItem.getItemStack());
+        assertNull(guiItem.getDisplayName());
+        assertTrue(guiItem.isMoveable());
+        
+        guiItem.setMoveable(false);
+        assertFalse(guiItem.isMoveable());
+    }
+    
+    /**
+     * Tests
+     * {@link ClickGuiItem#replace(de.minigameslib.mclib.api.objects.McPlayerInterface, de.minigameslib.mclib.api.gui.GuiSessionInterface, de.minigameslib.mclib.api.gui.ClickGuiInterface, ItemStack)}.
+     * @throws McException thrown on errors
+     */
+    @Test
+    public void replaceTest() throws McException
+    {
+        final ItemStack item = mock(ItemStack.class);
+        when(item.clone()).thenReturn(item);
+        final GuiReplaceHandler handler = mock(GuiReplaceHandler.class);
+        
+        final ClickGuiItem guiItem = new ClickGuiItem(item, true, handler);
+        final ItemStack stack = mock(ItemStack.class);
+        final McPlayerInterface player = mock(McPlayerInterface.class);
+        final GuiSessionInterface session = mock(GuiSessionInterface.class);
+        final ClickGuiInterface gui = mock(ClickGuiInterface.class);
+        
+        guiItem.replace(player, session, gui, stack);
+        verify(handler, times(1)).handle(player, session, gui, stack);
+    }
+    
+    /**
+     * Tests
+     * {@link ClickGuiItem#replace(de.minigameslib.mclib.api.objects.McPlayerInterface, de.minigameslib.mclib.api.gui.GuiSessionInterface, de.minigameslib.mclib.api.gui.ClickGuiInterface, ItemStack)}.
+     * @throws McException thrown on errors
+     */
+    @Test
+    public void replaceNullTest() throws McException
+    {
+        final ItemStack item = mock(ItemStack.class);
+        when(item.clone()).thenReturn(item);
+        
+        final ClickGuiItem guiItem = new ClickGuiItem(item, true, null);
+        final ItemStack stack = mock(ItemStack.class);
+        final McPlayerInterface player = mock(McPlayerInterface.class);
+        final GuiSessionInterface session = mock(GuiSessionInterface.class);
+        final ClickGuiInterface gui = mock(ClickGuiInterface.class);
+        
+        guiItem.replace(player, session, gui, stack);
     }
     
     /**
@@ -77,7 +155,41 @@ public class ClickGuiItemTest
         final ClickGuiItem.GuiItemHandler handler = mock(ClickGuiItem.GuiItemHandler.class);
         
         final ClickGuiItem guiItem = new ClickGuiItem(item, name, handler);
-        guiItem.handle(null, null, null);
+        assertTrue(guiItem.handle(null, null, null));
+        
+        verify(handler, times(1)).handle(null, null, null);
+    }
+    
+    /**
+     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler, java.io.Serializable...)}
+     * @throws McException thrown on errors
+     */
+    @Test
+    public void handlerNullTest() throws McException
+    {
+        final ItemStack item = mock(ItemStack.class);
+        when(item.clone()).thenReturn(item);
+        final LocalizedMessageInterface name = mock(LocalizedMessageInterface.class);
+        
+        final ClickGuiItem guiItem = new ClickGuiItem(item, name, null);
+        assertTrue(guiItem.handle(null, null, null));
+    }
+    
+    /**
+     * Tests {@link ClickGuiItem#ClickGuiItem(ItemStack, LocalizedMessageInterface, de.minigameslib.mclib.api.gui.ClickGuiItem.GuiItemHandler, java.io.Serializable...)}
+     * @throws McException thrown on errors
+     */
+    @Test
+    public void handlerMovableTest() throws McException
+    {
+        final ItemStack item = mock(ItemStack.class);
+        when(item.clone()).thenReturn(item);
+        final LocalizedMessageInterface name = mock(LocalizedMessageInterface.class);
+        final ClickGuiItem.GuiItemHandler handler = mock(ClickGuiItem.GuiItemHandler.class);
+        
+        final ClickGuiItem guiItem = new ClickGuiItem(item, name, handler);
+        guiItem.setMoveable(true);
+        assertFalse(guiItem.handle(null, null, null));
         
         verify(handler, times(1)).handle(null, null, null);
     }
