@@ -180,8 +180,10 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
     {
         final BlockPosition position = new BlockPosition(block.getX(), block.getY(), block.getZ());
         ((CraftWorld) block.getWorld()).getHandle().setTypeAndData(position, net.minecraft.server.v1_10_R1.Blocks.AIR.getBlockData(), 0);
-        final IBlockData blockData = net.minecraft.server.v1_10_R1.Block.getById(type).getBlockData();
-        blockData.set(CustomBlock.VARIANT, CustomBlock.EnumCustomVariant.values()[variant]);
+        final net.minecraft.server.v1_10_R1.Block nms = net.minecraft.server.v1_10_R1.Block.getById(type);
+        @SuppressWarnings("deprecation")
+        final IBlockData blockData = nms.fromLegacyData(variant);
+        // blockData.set(CustomBlock.VARIANT, CustomBlock.EnumCustomVariant.values()[variant]);
         // final IBlockData blockData = Blocks.FURNACE.getBlockData();
         IBlockData old = ((CraftChunk) block.getChunk()).getHandle().getBlockData(position);
         boolean success = ((CraftChunk) block.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
@@ -1456,14 +1458,14 @@ public class ItemHelper1_10_1 implements ItemHelperInterface
         }
         
         // persist item data
-        final int[][][] blockData = new int[8][][];
-        for (int x = 0; x < 8; x++)
+        final int[][][] blockData = new int[16][][];
+        for (int x = 0; x < 16; x++)
         {
             blockData[x] = new int[256][];
             for (int y = 0; y < 256; y++)
             {
-                blockData[x][y] = new int[8];
-                for (int z = 0; z < 8; z++)
+                blockData[x][y] = new int[16];
+                for (int z = 0; z < 16; z++)
                 {
                     final IBlockData data = handle.a(x, y, z);
                     blockData[x][y][z] = net.minecraft.server.v1_10_R1.Block.REGISTRY_ID.getId(data);

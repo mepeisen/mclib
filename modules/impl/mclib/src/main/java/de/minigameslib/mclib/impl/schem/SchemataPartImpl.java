@@ -273,9 +273,9 @@ public class SchemataPartImpl implements SchemataPartInterface
      */
     public void setChunkData(List<ChunkDataImpl> allChunks, Location lowLoc, Location highLoc)
     {
-        this.xsize = highLoc.getBlockX() - lowLoc.getBlockX();
-        this.ysize = highLoc.getBlockY() - lowLoc.getBlockY();
-        this.zsize = highLoc.getBlockZ() - lowLoc.getBlockZ();
+        this.xsize = highLoc.getBlockX() - lowLoc.getBlockX() + 1;
+        this.ysize = highLoc.getBlockY() - lowLoc.getBlockY() + 1;
+        this.zsize = highLoc.getBlockZ() - lowLoc.getBlockZ() + 1;
         this.blockMappings = ((ItemServiceImpl) BlockServiceInterface.instance()).getBlockMappings();
         
         // init block data
@@ -314,7 +314,7 @@ public class SchemataPartImpl implements SchemataPartInterface
             
             // check data
             final int[][][] chunkdata = chunk.getBlockData();
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < 16; x++)
             {
                 int relx = xPos + x - lowLoc.getBlockX();
                 if (relx >= 0 && relx < this.xsize)
@@ -324,7 +324,7 @@ public class SchemataPartImpl implements SchemataPartInterface
                         int rely = y - lowLoc.getBlockY();
                         if (rely >= 0 && rely < this.ysize)
                         {
-                            for (int z = 0; z < 8; z++)
+                            for (int z = 0; z < 16; z++)
                             {
                                 int relz = zPos + z - lowLoc.getBlockZ();
                                 if (relz >= 0 && relz < this.xsize)

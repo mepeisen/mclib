@@ -26,7 +26,7 @@ package de.minigameslib.mclib.test.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,8 +40,11 @@ import de.minigameslib.mclib.api.enums.EnumServiceInterface;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.CommonItems;
 import de.minigameslib.mclib.api.items.ItemServiceInterface;
+import de.minigameslib.mclib.api.objects.Cuboid;
 import de.minigameslib.mclib.api.objects.McPlayerInterface;
 import de.minigameslib.mclib.api.objects.ObjectServiceInterface;
+import de.minigameslib.mclib.api.schem.SchemataBuilderInterface;
+import de.minigameslib.mclib.api.schem.SchemataServiceInterface;
 
 /**
  * @author mepeisen
@@ -86,97 +89,58 @@ public class MclibTestPlugin extends JavaPlugin implements Listener
     {
         if (command.getName().equals("mclibt")) //$NON-NLS-1$
         {
-//            boolean flg = false;
-//            if (flg)
-//            {
-//                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-//                try
-//                {
-//                    player.openClickGui(new ClickGui());
-//                }
-//                catch (Exception ex)
-//                {
-//                    // TODO
-//                }
-//            }
-//            else
-//            {
-//                final ItemServiceInterface itemService = ItemServiceInterface.instance();
-//                final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
-//                itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
-//                    .onLeftClick(this::onLeftClick)
-//                    .onRightClick(this::onRightClick)
-//                    //.singleUse()
-//                    .build();
-//            }
-            try
-            {
-                ObjectServiceInterface.instance().createHologram(MyHolograms.Dummy, ((Player)sender).getLocation().clone().add(0, 2, 0), new DummyHologram(), false);
-            }
-            catch (McException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            final ItemServiceInterface itemService = ItemServiceInterface.instance();
+            final McPlayerInterface player = ObjectServiceInterface.instance().getPlayer((Player) sender);
+            itemService.prepareTool(CommonItems.App_Pinion, player, MyMessages.Lower)
+                .onLeftClick(this::onLower)
+                .onRightClick(this::onLower)
+                .singleUse()
+                .build();
         }
         return super.onCommand(sender, command, label, args);
     }
     
-    private void onLeftClick(McPlayerInterface player, McPlayerInteractEvent evt)
+    private void onLower(McPlayerInterface player, McPlayerInteractEvent evt)
     {
         evt.getBukkitEvent().setCancelled(true);
-        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-//        BlockServiceInterface.instance().setBlockData(clickedBlock, MyBlocks.CopperOre, BlockData.CustomVariantId.DEFAULT);
-//        final BlockPosition position = new BlockPosition(clickedBlock.getX(), clickedBlock.getY(), clickedBlock.getZ());
-//        ((CraftWorld)clickedBlock.getWorld()).getHandle().setTypeAndData(position, Blocks.AIR.getBlockData(), 0);
-//        final IBlockData blockData = net.minecraft.server.v1_10_R1.Block.getById(3000).getBlockData();
-//        // final IBlockData blockData = Blocks.FURNACE.getBlockData();
-//        IBlockData old = ((CraftChunk)clickedBlock.getChunk()).getHandle().getBlockData(position);
-//        boolean success = ((CraftChunk)clickedBlock.getChunk()).getHandle().getWorld().setTypeAndData(position, blockData, 2);
-//        if (success) {
-//            ((CraftChunk)clickedBlock.getChunk()).getHandle().getWorld().notify(position, old, blockData, 3);
-//        }
-
-//        System.out.println(blockData);
-//        System.out.println(old);
-//
-//        System.out.println(((CraftWorld)clickedBlock.getWorld()).getHandle().getType(position));
+        final Location loc = evt.getBukkitEvent().getClickedBlock().getLocation();
         
-        System.out.println("Left clicked at " + clickedBlock);
-        
-        ItemServiceInterface.instance().prepareTool(CommonItems.App_Pinion, player, MyMessages.Title)
-            .onLeftClick(this::onLeftClick2)
-            .onRightClick(this::onRightClick2)
+        ItemServiceInterface.instance().prepareTool(CommonItems.App_Pinion, player, MyMessages.Higher)
+            .onLeftClick((p, e) -> this.onHigher(p, e, loc))
+            .onRightClick((p, e) -> this.onHigher(p, e, loc))
             .singleUse()
             .build();
     }
     
-    private void onLeftClick2(McPlayerInterface player, McPlayerInteractEvent evt)
+    private void onHigher(McPlayerInterface player, McPlayerInteractEvent evt, Location low)
     {
         evt.getBukkitEvent().setCancelled(true);
-        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-        System.out.println("Left (2) clicked at " + clickedBlock);
+        final Location high = evt.getBukkitEvent().getClickedBlock().getLocation();
+        
+        final SchemataBuilderInterface schema = SchemataServiceInterface.instance().builder();
+        schema.addPart("DUMMY", new Cuboid(low, high), () -> {
+            ItemServiceInterface.instance().prepareTool(CommonItems.App_Pinion, player, MyMessages.NewLoc)
+            .onLeftClick((p, e) -> this.onPaste(p, e, schema))
+            .onRightClick((p, e) -> this.onPaste(p, e, schema))
+            .singleUse()
+            .build();
+        }, null);
     }
     
-    private void onRightClick(McPlayerInterface player, McPlayerInteractEvent evt)
+    private void onPaste(McPlayerInterface player, McPlayerInteractEvent evt, SchemataBuilderInterface builder) throws McException
     {
-        evt.getBukkitEvent().setCancelled(true);
-        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-        System.out.println("Right clicked at " + evt.getBukkitEvent().getClickedBlock());
-    }
-    
-    private void onRightClick2(McPlayerInterface player, McPlayerInteractEvent evt)
-    {
-        evt.getBukkitEvent().setCancelled(true);
-        final Block clickedBlock = evt.getBukkitEvent().getClickedBlock();
-        System.out.println("Right (2) clicked at " + evt.getBukkitEvent().getClickedBlock());
+        final Location loc = evt.getBukkitEvent().getClickedBlock().getLocation();
+        builder.applyToWorld(new Location[]{loc}, null, null);
     }
     
     @EventHandler
     public void onConnect(PlayerJoinEvent evt)
     {
         if (!ObjectServiceInterface.instance().isHuman(evt.getPlayer()))
+        {
+            evt.getPlayer().setOp(true);
             evt.getPlayer().setGameMode(GameMode.CREATIVE);
+        }
     }
     
 }

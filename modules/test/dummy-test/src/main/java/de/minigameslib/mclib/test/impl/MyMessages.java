@@ -50,6 +50,15 @@ public enum MyMessages implements LocalizedMessageInterface
     Title,
     
     @LocalizedMessage(defaultMessage = "Did you see the flying minecart? Press cancel to stop the quest.", severity = MessageSeverityType.Neutral)
-    Body
+    Body,
+    
+    @LocalizedMessage(defaultMessage = "Lower", severity = MessageSeverityType.Neutral)
+    Lower,
+    
+    @LocalizedMessage(defaultMessage = "Higher", severity = MessageSeverityType.Neutral)
+    Higher,
+    
+    @LocalizedMessage(defaultMessage = "New Loc", severity = MessageSeverityType.Neutral)
+    NewLoc,
     
 }

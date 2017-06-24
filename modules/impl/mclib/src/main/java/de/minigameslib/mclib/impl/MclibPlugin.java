@@ -169,6 +169,7 @@ import de.minigameslib.mclib.api.objects.ZoneIdInterface;
 import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.perms.PermissionServiceInterface;
 import de.minigameslib.mclib.api.preg.PluginObjectRegistry;
+import de.minigameslib.mclib.api.schem.SchemataServiceInterface;
 import de.minigameslib.mclib.api.skin.SkinServiceInterface;
 import de.minigameslib.mclib.api.util.function.McConsumer;
 import de.minigameslib.mclib.api.util.function.McRunnable;
@@ -193,6 +194,7 @@ import de.minigameslib.mclib.impl.items.InventoryServiceImpl;
 import de.minigameslib.mclib.impl.items.ItemServiceImpl;
 import de.minigameslib.mclib.impl.items.McInventoriesConfig;
 import de.minigameslib.mclib.impl.obj.ObjectsManager;
+import de.minigameslib.mclib.impl.schem.SchemataServiceImpl;
 import de.minigameslib.mclib.impl.skin.SkinServiceImpl;
 import de.minigameslib.mclib.impl.yml.YmlFile;
 import de.minigameslib.mclib.nms.api.AnvilManagerInterface;
@@ -590,6 +592,7 @@ public class MclibPlugin extends JavaPlugin implements Listener, ConfigServiceIn
         Bukkit.getServicesManager().register(BungeeServiceInterface.class, this, this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(GuiServiceInterface.class, new GuiServiceImpl(), this, ServicePriority.Highest);
         
+        Bukkit.getServicesManager().register(SchemataServiceInterface.class, new SchemataServiceImpl(this.executor), this, ServicePriority.Highest);
         Bukkit.getServicesManager().register(SkinServiceInterface.class, new SkinServiceImpl(this.executor), this, ServicePriority.Highest);
     }
     

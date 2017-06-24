@@ -741,9 +741,9 @@ public class SchemataImpl implements SchemataBuilderInterface
         final int chunkX2 = highLoc.getBlockX() >> 4;
         final int chunkZ2 = highLoc.getBlockZ() >> 4;
         final List<int[]> chunks = new ArrayList<>();
-        for (int chunkX = chunkX1; chunkX < chunkX2; chunkX++)
+        for (int chunkX = chunkX1; chunkX <= chunkX2; chunkX++)
         {
-            for (int chunkZ = chunkZ1; chunkZ < chunkZ2; chunkZ++)
+            for (int chunkZ = chunkZ1; chunkZ <= chunkZ2; chunkZ++)
             {
                 chunks.add(new int[] { chunkX, chunkZ });
             }
