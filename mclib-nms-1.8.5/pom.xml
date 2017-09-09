@@ -3,10 +3,11 @@
   <artifactId>mclib-nms-1.8.5</artifactId>
   
   <name>mclib-nms-1.8.5</name>
+  <description>Minecraft core library for Minigames</description>
   
   <parent>
   	<groupId>de.minigameslib.mclib</groupId>
-  	<artifactId>mclib-nms-parent</artifactId>
+  	<artifactId>mclib-java-parent</artifactId>
   	<version>0.0.7-SNAPSHOT</version>
   </parent>
   

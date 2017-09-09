@@ -1,98 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.minigameslib.mclib</groupId>
-  <artifactId>mclib-parent</artifactId>
-  <version>0.0.7-SNAPSHOT</version>
+  <artifactId>mclib-build</artifactId>
   <packaging>pom</packaging>
   
-  <name>mclib parent</name>
-  <url>http://mclib.minigames.de</url>
-  <description>Minigames library for minecraft/spigot plugins</description>
+  <name>build for mclib</name>
   
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <java.version>1.8</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mclib.releaseversion>0.0.7</mclib.releaseversion>
-    <mclib.timestamp>${maven.build.timestamp}</mclib.timestamp>
-	<maven.build.timestamp.format>yyyyMMdd.HHmmss</maven.build.timestamp.format>
-  </properties>
+  <parent>
+  	<groupId>de.minigameslib.mclib</groupId>
+  	<artifactId>mclib-java-parent</artifactId>
+  	<version>0.0.7-SNAPSHOT</version>
+  </parent>
   
   <modules>
-  	<module>modules</module>
+  	<module>mclib</module>
+    <module>mclib-api</module>
+    <module>mclib-nms-api</module>
+  	<module>mclib-nms-1.8</module>
+  	<module>mclib-nms-1.8.3</module>
+  	<module>mclib-nms-1.8.5</module>
+  	<module>mclib-nms-1.9</module>
+  	<module>mclib-nms-1.9.4</module>
+  	<module>mclib-nms-1.10</module>
+  	<module>mclib-nms-1.11</module>
+  	<module>mclib-nms-1.12</module>
+  	<module>mclib-thirdparty</module>
   </modules>
-  
-  <repositories>
-    <repository>
-      <id>spigot-repo</id>
-      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>oss-sonatype</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>mce-repo</id>
-      <url>http://nexus.xworlds.eu/nexus/content/groups/mce</url>
-    </repository>
-  </repositories>
-  
-  <organization>
-  	<name>minigames.de</name>
-  	<url>http://www.minigames.de</url>
-  </organization>
-  
-  <scm>
-  	<url>http://git.mystic-city.de:3000/mepeisen/McLib</url>
-  	<connection>scm:git:http://git.mystic-city.de:3000/mepeisen/McLib</connection>
-  </scm>
-  
-  <issueManagement>
-  	<url>http://git.mystic-city.de:3000/mepeisen/McLib/issues</url>
-  	<system>GitHub Issues</system>
-  </issueManagement>
-  
-  <ciManagement>
-  	<system>Hudson</system>
-  	<url>http://hudson.xworlds.eu/job/McLib</url>
-  </ciManagement>
-  
-  <licenses>
-  	<license>
-  	  <name>GNU General Public License (GPL)</name>
-  	  <url>http://www.gnu.org/licenses/gpl.txt</url>
-  	  <distribution>repo</distribution>
-  	  <comments>GPL v3 or newer</comments>
-  	</license>
-  	<license>
-  	  <name>minigameslib.de commercial license</name>
-  	  <url>http://www.minigameslib.de/licenses/commercial.txt</url>
-  	  <distribution>repo</distribution>
-  	  <comments>For linking with closed-source projects and commercial needs</comments>
-  	</license>
-  </licenses>
-  
-  <developers>
-  	<developer>
-  		<email>mep_eisen@web.de</email>
-  		<name>Martin Eisengardt</name>
-  		<id>mepeisen</id>
-  		<organization>minigames.de</organization>
-  		<organizationUrl>http://www.minigames.de/</organizationUrl>
-  		<roles>
-  			<role>owner</role>
-  			<role>architect</role>
-  			<role>developer</role>
-  		</roles>
-  	</developer>
-  	<developer>
-  		<id>Mystic-City</id>
-  		<roles>
-  			<role>owner</role>
-  		</roles>
-  	</developer>
-  </developers>
-  <contributors></contributors>
-  
 </project>
