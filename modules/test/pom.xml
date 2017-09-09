@@ -12,7 +12,6 @@
   </parent>
   
   <modules>
-  	<module>spigot-testsupport</module>
   	<module>mclib-testsupport</module>
   	<module>dummy-test</module>
   </modules>

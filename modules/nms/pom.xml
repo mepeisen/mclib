@@ -14,6 +14,5 @@
   <modules>
   	<module>fakeplayer-nms</module>
   	<module>mclib-nms</module>
-  	<module>spigot-testsupport-nms</module>
   </modules>
 </project>
