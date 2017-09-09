@@ -13,7 +13,6 @@
   
   <modules>
   	<module>fakeplayer-api</module>
-  	<module>mclib-shared</module>
   	<module>mclib-api</module>
   	<module>spigot-testsupport-api</module>
   </modules>
