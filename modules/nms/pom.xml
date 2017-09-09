@@ -12,7 +12,6 @@
   </parent>
   
   <modules>
-  	<module>fakeplayer-nms</module>
   	<module>mclib-nms</module>
   </modules>
 </project>

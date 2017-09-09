@@ -12,7 +12,6 @@
   </parent>
   
   <modules>
-  	<module>fakeplayer</module>
   	<module>mclib</module>
   	<module>mclib-thirdparty</module>
   </modules>
