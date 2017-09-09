@@ -1,9 +1,0 @@
-name: mclibShowcase
-main: de.minigameslib.mclib.MclibShowcasePlugin
-version: ${project.version}
-author: [mepeisen]
-softdepend: []
-depend: []
-commands:
-  mclibs:
-  
