@@ -153,6 +153,24 @@ public interface BlockId extends McUniqueEnumInterface
     }
     
     /**
+     * The hopper rule.
+     * 
+     * @return the drop rule
+     */
+    default BlockHopperRuleInterface hopperRule()
+    {
+        try
+        {
+            final BlockHopper data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockHopper.class);
+            return data == null ? null : data.value().newInstance();
+        }
+        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
+    
+    /**
      * The furnace recipe.
      * 
      * @return the furnace recipe

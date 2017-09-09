@@ -81,6 +81,7 @@ import de.minigameslib.mclib.api.event.McPlayerDeathEvent;
 import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.BlockDropRuleInterface;
+import de.minigameslib.mclib.api.items.BlockHopperRuleInterface;
 import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockInventoryMeta;
 import de.minigameslib.mclib.api.items.BlockMeta;
@@ -1152,6 +1153,13 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             if (stackSize != 64)
             {
                 helper.setStackSize(blockId, stackSize);
+            }
+            
+            // hopper rule
+            final BlockHopperRuleInterface hopper = block.hopperRule();
+            if (hopper != null)
+            {
+                // TODO helper.setHopperRule();
             }
             
             final BlockInventoryMeta blockInv = block.inventory();
