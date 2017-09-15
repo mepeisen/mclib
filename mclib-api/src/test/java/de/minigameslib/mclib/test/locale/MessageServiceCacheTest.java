@@ -92,7 +92,7 @@ public class MessageServiceCacheTest
                     @Override
                     public String answer(InvocationOnMock i2) throws Throwable
                     {
-                        return i2.getArgumentAt(0, String.class);
+                        return i2.getArgumentAt(1, String.class);
                     }
                     
                 });
