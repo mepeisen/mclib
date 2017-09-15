@@ -39,18 +39,20 @@ import net.minecraft.server.v1_8_R1.ItemStack;
 import net.minecraft.server.v1_8_R1.World;
 
 /**
+ * A custom item implementation.
+ * 
  * @author mepeisen
  */
 public class CustomItem extends Item
 {
     
     /**
-     * flag for using the attack modifiers
+     * flag for using the attack modifiers.
      */
     private boolean              attackModifiersUsed = false;
     
     /**
-     * item enchantability
+     * item enchantability.
      */
     private int                  itemEnchantability;
     
@@ -60,9 +62,9 @@ public class CustomItem extends Item
     private NmsItemRuleInterface itemRule;
     
     /**
-     * Sets the itemEnchantability
+     * Sets the itemEnchantability.
      * 
-     * @param itemEnchantability
+     * @param itemEnchantability enchant modifier.
      */
     public void setItemEnchantability(int itemEnchantability)
     {
@@ -125,7 +127,8 @@ public class CustomItem extends Item
     }
     
     /**
-     * @param nmsItemRule
+     * sets the item rule.
+     * @param nmsItemRule item rule to use.
      */
     public void setItemRules(NmsItemRuleInterface nmsItemRule)
     {

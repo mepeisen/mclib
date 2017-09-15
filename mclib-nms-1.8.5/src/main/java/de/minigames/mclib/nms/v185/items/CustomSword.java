@@ -44,6 +44,8 @@ import net.minecraft.server.v1_8_R3.ItemSword;
 import net.minecraft.server.v1_8_R3.World;
 
 /**
+ * A custom item implementation.
+ * 
  * @author mepeisen
  */
 public class CustomSword extends ItemSword
@@ -55,22 +57,23 @@ public class CustomSword extends ItemSword
     private double               attackDmg;
     
     /**
-     * attack speed
+     * attack speed.
      */
+    @SuppressWarnings("unused")
     private double               attackSpeed;
     
     /**
-     * flag for using the attack modifiers
+     * flag for using the attack modifiers.
      */
     private boolean              attackModifiersUsed = false;
     
     /**
-     * Dmg vs entity (see entity living)
+     * Dmg vs entity (see entity living).
      */
     private float                dmgVsEntity;
     
     /**
-     * item enchantability
+     * item enchantability.
      */
     private int                  itemEnchantability;
     
@@ -80,7 +83,7 @@ public class CustomSword extends ItemSword
     private NmsItemRuleInterface itemRule;
     
     /**
-     * 
+     * Constructor.
      */
     public CustomSword()
     {
@@ -88,10 +91,10 @@ public class CustomSword extends ItemSword
     }
     
     /**
-     * Sets the attack modifiers
+     * Sets the attack modifiers.
      * 
-     * @param dmg
-     * @param speed
+     * @param dmg damage modifier
+     * @param speed speed modifier
      */
     public void setAttackModifiers(double dmg, double speed)
     {
@@ -101,9 +104,9 @@ public class CustomSword extends ItemSword
     }
     
     /**
-     * Sets the dmg vs entity data
+     * Sets the dmg vs entity data.
      * 
-     * @param dmgVsEntity
+     * @param dmgVsEntity dmg vs entity modifier
      */
     public void setDmgVsEntity(float dmgVsEntity)
     {
@@ -111,13 +114,19 @@ public class CustomSword extends ItemSword
     }
     
     /**
-     * Sets the itemEnchantability
+     * Sets the itemEnchantability.
      * 
-     * @param itemEnchantability
+     * @param itemEnchantability enchant modifier.
      */
     public void setItemEnchantability(int itemEnchantability)
     {
         this.itemEnchantability = itemEnchantability;
+    }
+    
+    @Override
+    public Item setMaxDurability(int paramInt)
+    {
+        return super.setMaxDurability(paramInt);
     }
     
     @Override
@@ -130,12 +139,6 @@ public class CustomSword extends ItemSword
     public float g()
     {
         return this.dmgVsEntity;
-    }
-    
-    @Override
-    public Item setMaxDurability(int paramInt)
-    {
-        return super.setMaxDurability(paramInt);
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -196,7 +199,8 @@ public class CustomSword extends ItemSword
     }
     
     /**
-     * @param nmsItemRule
+     * sets the item rule.
+     * @param nmsItemRule item rule to use.
      */
     public void setItemRules(NmsItemRuleInterface nmsItemRule)
     {

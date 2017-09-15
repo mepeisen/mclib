@@ -46,6 +46,8 @@ import net.minecraft.server.v1_11_R1.ItemStack;
 import net.minecraft.server.v1_11_R1.World;
 
 /**
+ * A custom item implementation.
+ * 
  * @author mepeisen
  */
 public class CustomPickaxe extends ItemPickaxe
@@ -57,17 +59,17 @@ public class CustomPickaxe extends ItemPickaxe
     private double               attackDmg;
     
     /**
-     * attack speed
+     * attack speed.
      */
     private double               attackSpeed;
     
     /**
-     * flag for using the attack modifiers
+     * flag for using the attack modifiers.
      */
     private boolean              attackModifiersUsed = false;
     
     /**
-     * item enchantability
+     * item enchantability.
      */
     private int                  itemEnchantability;
     
@@ -77,7 +79,7 @@ public class CustomPickaxe extends ItemPickaxe
     private NmsItemRuleInterface itemRule;
     
     /**
-     * 
+     * Constructor.
      */
     public CustomPickaxe()
     {
@@ -85,10 +87,10 @@ public class CustomPickaxe extends ItemPickaxe
     }
     
     /**
-     * Sets the attack modifiers
+     * Sets the attack modifiers.
      * 
-     * @param dmg
-     * @param speed
+     * @param dmg damage modifier
+     * @param speed speed modifier
      */
     public void setAttackModifiers(double dmg, double speed)
     {
@@ -98,9 +100,9 @@ public class CustomPickaxe extends ItemPickaxe
     }
     
     /**
-     * Sets the itemEnchantability
+     * Sets the itemEnchantability.
      * 
-     * @param itemEnchantability
+     * @param itemEnchantability enchant modifier.
      */
     public void setItemEnchantability(int itemEnchantability)
     {
@@ -120,6 +122,13 @@ public class CustomPickaxe extends ItemPickaxe
     }
     
     @Override
+    public float getDestroySpeed(ItemStack paramItemStack, IBlockData paramIBlockData)
+    {
+        final Block localBlock = paramIBlockData.getBlock();
+        return this.itemRule.getHarvestSpeed(CraftItemStack.asCraftMirror(paramItemStack), Block.getId(localBlock), localBlock.toLegacyData(paramIBlockData));
+    }
+    
+    @Override
     public Multimap<String, AttributeModifier> a(EnumItemSlot paramEnumItemSlot)
     {
         Multimap<String, AttributeModifier> localMultimap = super.a(paramEnumItemSlot);
@@ -131,13 +140,6 @@ public class CustomPickaxe extends ItemPickaxe
         }
         
         return localMultimap;
-    }
-    
-    @Override
-    public float getDestroySpeed(ItemStack paramItemStack, IBlockData paramIBlockData)
-    {
-        final Block localBlock = paramIBlockData.getBlock();
-        return this.itemRule.getHarvestSpeed(CraftItemStack.asCraftMirror(paramItemStack), Block.getId(localBlock), localBlock.toLegacyData(paramIBlockData));
     }
     
     @Override
@@ -180,7 +182,8 @@ public class CustomPickaxe extends ItemPickaxe
     }
     
     /**
-     * @param nmsItemRule
+     * sets the item rule.
+     * @param nmsItemRule item rule to use.
      */
     public void setItemRules(NmsItemRuleInterface nmsItemRule)
     {
