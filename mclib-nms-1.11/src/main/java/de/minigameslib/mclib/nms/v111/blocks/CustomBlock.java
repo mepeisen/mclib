@@ -204,7 +204,7 @@ public class CustomBlock extends Block
     }
     
     @Override
-    public int getExpDrop(net.minecraft.server.v1_11_R1.World world, IBlockData data, int i)
+    public int getExpDrop(World world, IBlockData data, int i)
     {
         return this.dropRule == null ? super.getExpDrop(world, data, i) : this.dropRule.getExpDrop(this.toLegacyData(data), world.random, i);
     }
