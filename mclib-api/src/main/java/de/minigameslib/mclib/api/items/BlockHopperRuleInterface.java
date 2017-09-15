@@ -24,6 +24,7 @@
 
 package de.minigameslib.mclib.api.items;
 
+import org.bukkit.block.Hopper;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
@@ -45,16 +46,21 @@ public interface BlockHopperRuleInterface extends DataFragment
      *            slot index
      * @param stack
      *            stack size
+     * @param hopper
+     *            Hopper the underlying hopper
      * @return true if item is valid, false if invalid and super for invocing original method.
      */
-    BooleanResult isItemValidForSlot(int index, ItemStack stack);
+    BooleanResult isItemValidForSlot(int index, ItemStack stack, Hopper hopper);
     
     /**
      * Update tick (player placed an item manually).
      * 
+     * @param hopper
+     *            Hopper the underlying hopper
+     * 
      * @return void result
      */
-    VoidResult update();
+    VoidResult update(Hopper hopper);
     
     /**
      * Special enum for void results.
@@ -85,15 +91,15 @@ public interface BlockHopperRuleInterface extends DataFragment
      */
     class Original extends AnnotatedDataFragment implements BlockHopperRuleInterface
     {
-
+        
         @Override
-        public BooleanResult isItemValidForSlot(int index, ItemStack stack)
+        public BooleanResult isItemValidForSlot(int index, ItemStack stack, Hopper hopper)
         {
             return BooleanResult.CallSuper;
         }
-
+        
         @Override
-        public VoidResult update()
+        public VoidResult update(Hopper hopper)
         {
             return VoidResult.CallSuper;
         }

@@ -1156,10 +1156,10 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             }
             
             // hopper rule
-            final BlockHopperRuleInterface hopper = block.hopperRule();
+            final Class<? extends BlockHopperRuleInterface> hopper = block.hopperRule();
             if (hopper != null)
             {
-                // TODO helper.setHopperRule();
+                helper.setHopperRule(blockId, hopper);
             }
             
             final BlockInventoryMeta blockInv = block.inventory();

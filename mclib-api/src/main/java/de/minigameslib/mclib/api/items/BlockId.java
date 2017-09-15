@@ -157,14 +157,14 @@ public interface BlockId extends McUniqueEnumInterface
      * 
      * @return the drop rule
      */
-    default BlockHopperRuleInterface hopperRule()
+    default Class<? extends BlockHopperRuleInterface> hopperRule()
     {
         try
         {
             final BlockHopper data = this.getClass().getDeclaredField(this.name()).getAnnotation(BlockHopper.class);
-            return data == null ? null : data.value().newInstance();
+            return data == null ? null : data.value();
         }
-        catch (NoSuchFieldException | InstantiationException | IllegalAccessException ex)
+        catch (NoSuchFieldException ex)
         {
             throw new IllegalStateException(ex);
         }

@@ -62,6 +62,7 @@ import org.bukkit.material.MaterialData;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v18.blocks.CustomBlock;
+import de.minigames.mclib.nms.v18.blocks.CustomHopper;
 import de.minigames.mclib.nms.v18.items.ConfigItemStackDataImpl;
 import de.minigames.mclib.nms.v18.items.CustomArmor;
 import de.minigames.mclib.nms.v18.items.CustomAxe;
@@ -71,6 +72,7 @@ import de.minigames.mclib.nms.v18.items.CustomPickaxe;
 import de.minigames.mclib.nms.v18.items.CustomShovel;
 import de.minigames.mclib.nms.v18.items.CustomSword;
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
+import de.minigameslib.mclib.api.items.BlockHopperRuleInterface;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.ChunkDataImpl;
 import de.minigameslib.mclib.nms.api.ChunkDataImpl.TileEntityData;
@@ -664,6 +666,34 @@ public class ItemHelper1_8 implements ItemHelperInterface
     }
     
     /**
+     * Replaces an existing block with new modded block.
+     * @param numBlockId numeric block id
+     * @param block new block impl
+     */
+    private void replaceModdedBlock(int numBlockId, net.minecraft.server.v1_8_R1.Block block)
+    {
+        try
+        {
+            final Field bMapField = net.minecraft.server.v1_8_R1.RegistryMaterials.class.getDeclaredField("b"); //$NON-NLS-1$
+            bMapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final Map<net.minecraft.server.v1_8_R1.Block, MinecraftKey> bMap = (Map<net.minecraft.server.v1_8_R1.Block, MinecraftKey>) bMapField.get(net.minecraft.server.v1_8_R1.Block.REGISTRY);
+            
+            final Field aMapField = net.minecraft.server.v1_8_R1.RegistryMaterials.class.getDeclaredField("a"); //$NON-NLS-1$
+            aMapField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            final RegistryID aMap = (RegistryID) aMapField.get(net.minecraft.server.v1_8_R1.Block.REGISTRY);
+            
+            bMap.put(block, bMap.remove(net.minecraft.server.v1_8_R1.Block.getById(numBlockId)));
+            aMap.a(block, numBlockId);
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log(Level.SEVERE, "Problems initializing modded blocks", ex); //$NON-NLS-1$
+        }
+    }
+    
+    /**
      * Replaces a custom item with given modded (=special) item.
      * 
      * @param itemId
@@ -715,6 +745,14 @@ public class ItemHelper1_8 implements ItemHelperInterface
             default:
                 return 0;
         }
+    }
+
+    @Override
+    public void setHopperRule(int numBlockId, Class<? extends BlockHopperRuleInterface> hopper)
+    {
+        final CustomHopper block = new CustomHopper();
+        block.setHopperRule(hopper);
+        this.replaceModdedBlock(numBlockId, block);
     }
     
     @Override

@@ -29,6 +29,7 @@ import java.util.function.BiFunction;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
+import de.minigameslib.mclib.pshared.DataSectionTools;
 import de.minigameslib.mclib.shared.api.com.CommunicationEndpointId;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 

@@ -66,11 +66,11 @@ import de.minigameslib.mclib.api.objects.ZoneInterface;
 import de.minigameslib.mclib.api.schem.SchemataBuilderInterface;
 import de.minigameslib.mclib.api.schem.SchemataPartInterface;
 import de.minigameslib.mclib.api.util.function.McRunnable;
-import de.minigameslib.mclib.impl.DataSectionTools;
 import de.minigameslib.mclib.impl.obj.ObjectsManager;
 import de.minigameslib.mclib.nms.api.ChunkDataImpl;
 import de.minigameslib.mclib.nms.api.ItemHelperInterface;
 import de.minigameslib.mclib.nms.api.NmsFactory;
+import de.minigameslib.mclib.pshared.DataSectionTools;
 import de.minigameslib.mclib.shared.api.com.DataSection;
 import de.minigameslib.mclib.shared.api.com.MemoryDataSection;
 
