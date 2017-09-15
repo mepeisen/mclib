@@ -91,6 +91,15 @@ public class AbstractCompositeCommandHandlerTest
         Whitebox.setInternalState(Class.forName("de.minigameslib.mclib.api.locale.MessageServiceCache"), "SERVICES", this.lib); //$NON-NLS-1$ //$NON-NLS-2$
         this.messages = mock(MessagesConfigInterface.class);
         when(this.lib.getMessagesFromMsg(anyObject())).thenReturn(this.messages);
+        when(this.lib.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable
+            {
+                return invocation.getArgumentAt(1, String.class);
+            }
+            
+        });
     }
     
     /**

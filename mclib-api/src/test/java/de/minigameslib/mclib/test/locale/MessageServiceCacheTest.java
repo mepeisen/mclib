@@ -25,10 +25,13 @@
 package de.minigameslib.mclib.test.locale;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.lang.reflect.Constructor;
+import java.util.Locale;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -83,7 +86,17 @@ public class MessageServiceCacheTest
             @Override
             public MessageServiceInterface answer(InvocationOnMock invocation) throws Throwable
             {
-                return mock(MessageServiceInterface.class);
+                final MessageServiceInterface result = mock(MessageServiceInterface.class);
+                when(result.replacePlaceholders(any(Locale.class), anyString())).thenAnswer(new Answer<String>() {
+
+                    @Override
+                    public String answer(InvocationOnMock i2) throws Throwable
+                    {
+                        return i2.getArgumentAt(0, String.class);
+                    }
+                    
+                });
+                return result;
             }
         });
         
