@@ -62,6 +62,7 @@ import org.bukkit.material.MaterialData;
 import com.google.common.base.Function;
 
 import de.minigames.mclib.nms.v183.blocks.CustomBlock;
+import de.minigames.mclib.nms.v183.blocks.CustomDropper;
 import de.minigames.mclib.nms.v183.blocks.CustomHopper;
 import de.minigames.mclib.nms.v183.items.ConfigItemStackDataImpl;
 import de.minigames.mclib.nms.v183.items.CustomArmor;
@@ -72,6 +73,7 @@ import de.minigames.mclib.nms.v183.items.CustomPickaxe;
 import de.minigames.mclib.nms.v183.items.CustomShovel;
 import de.minigames.mclib.nms.v183.items.CustomSword;
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
+import de.minigameslib.mclib.api.items.BlockDropperRuleInterface;
 import de.minigameslib.mclib.api.items.BlockHopperRuleInterface;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.ChunkDataImpl;
@@ -752,6 +754,14 @@ public class ItemHelper1_8_3 implements ItemHelperInterface
     {
         final CustomHopper block = new CustomHopper();
         block.setHopperRule(hopper);
+        this.replaceModdedBlock(numBlockId, block);
+    }
+
+    @Override
+    public void setDropperRule(int numBlockId, Class<? extends BlockDropperRuleInterface> hopper)
+    {
+        final CustomDropper block = new CustomDropper();
+        block.setDropperRule(hopper);
         this.replaceModdedBlock(numBlockId, block);
     }
     

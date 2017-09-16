@@ -36,6 +36,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.api.config.ConfigItemStackData;
+import de.minigameslib.mclib.api.items.BlockDropperRuleInterface;
 import de.minigameslib.mclib.api.items.BlockHopperRuleInterface;
 import de.minigameslib.mclib.api.items.ItemArmor.ArmorSlot;
 import de.minigameslib.mclib.nms.api.ChunkDataImpl.TileEntityData;
@@ -1328,5 +1329,15 @@ public interface ItemHelperInterface
      *            the hopper rule class.
      */
     void setHopperRule(int numBlockId, Class<? extends BlockHopperRuleInterface> hopper);
+
+    /**
+     * Sets the dropper rule class for implementing custom droppers.
+     * 
+     * @param numBlockId
+     *            numeric blockid
+     * @param dropper
+     *            the dropper rule class.
+     */
+    void setDropperRule(int numBlockId, Class<? extends BlockDropperRuleInterface> dropper);
     
 }

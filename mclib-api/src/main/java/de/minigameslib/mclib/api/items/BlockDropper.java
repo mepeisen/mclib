@@ -31,33 +31,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Block representing a hopper.
+ * Block representing a dropper.
  * 
  * @author mepeisen
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
-public @interface BlockHopper
+public @interface BlockDropper
 {
     
     /**
-     * returns the number of slots this hopper supports.
+     * returns the number of slots this dropper supports.
      * @return number of slots.
      */
     int countSlots() default 5;
     
     /**
-     * Returns the max stack size for this hopper.
+     * Returns the max stack size for this dropper.
      * @return max stack size.
      */
     int maxStackSize() default 64;
     
     /**
-     * Hopper rule class; will be initialized once per hopper.
+     * Drop rule class; will be initialized once per dropper.
      * 
-     * @return Hopper rule class
+     * @return drop rule class
      */
-    Class<? extends BlockHopperRuleInterface> value() default BlockHopperRuleInterface.Original.class;
+    Class<? extends BlockDropperRuleInterface> value() default BlockDropperRuleInterface.Original.class;
     
 }

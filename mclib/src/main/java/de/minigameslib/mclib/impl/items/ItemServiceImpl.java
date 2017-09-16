@@ -81,6 +81,7 @@ import de.minigameslib.mclib.api.event.McPlayerDeathEvent;
 import de.minigameslib.mclib.api.event.McPlayerDropItemEvent;
 import de.minigameslib.mclib.api.event.McPlayerInteractEvent;
 import de.minigameslib.mclib.api.items.BlockDropRuleInterface;
+import de.minigameslib.mclib.api.items.BlockDropperRuleInterface;
 import de.minigameslib.mclib.api.items.BlockHopperRuleInterface;
 import de.minigameslib.mclib.api.items.BlockId;
 import de.minigameslib.mclib.api.items.BlockInventoryMeta;
@@ -1159,7 +1160,16 @@ public class ItemServiceImpl implements ItemServiceInterface, BlockServiceInterf
             final Class<? extends BlockHopperRuleInterface> hopper = block.hopperRule();
             if (hopper != null)
             {
+                // TODO support blockSize and countSlots
                 helper.setHopperRule(blockId, hopper);
+            }
+            
+            // dropper rule
+            final Class<? extends BlockDropperRuleInterface> dropper = block.dropperRule();
+            if (dropper != null)
+            {
+                // TODO support blockSize and countSlots
+                helper.setDropperRule(blockId, dropper);
             }
             
             final BlockInventoryMeta blockInv = block.inventory();

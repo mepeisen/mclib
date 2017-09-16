@@ -24,19 +24,19 @@
 
 package de.minigameslib.mclib.api.items;
 
-import org.bukkit.block.Hopper;
+import org.bukkit.block.Dropper;
 import org.bukkit.inventory.ItemStack;
 
 import de.minigameslib.mclib.shared.api.com.AnnotatedDataFragment;
 import de.minigameslib.mclib.shared.api.com.DataFragment;
 
 /**
- * A rule for influencing hoppers.
+ * A rule for influencing droppers.
  * 
  * @author mepeisen
  *
  */
-public interface BlockHopperRuleInterface extends DataFragment
+public interface BlockDropperRuleInterface extends DataFragment
 {
     
     /**
@@ -46,21 +46,29 @@ public interface BlockHopperRuleInterface extends DataFragment
      *            slot index
      * @param stack
      *            stack size
-     * @param hopper
-     *            the underlying hopper
+     * @param dropper
+     *            the underlying dropper
      * @return true if item is valid, false if invalid and super for invocing original method.
      */
-    BooleanResult isItemValidForSlot(int index, ItemStack stack, Hopper hopper);
+    BooleanResult isItemValidForSlot(int index, ItemStack stack, Dropper dropper);
     
     /**
-     * Update tick (player placed an item manually).
+     * Update tick from external source (item changes etc.).
      * 
-     * @param hopper
-     *            the underlying hopper
+     * @param dropper
+     *            the underlying dropper
      * 
      * @return void result
      */
-    VoidResult update(Hopper hopper);
+    VoidResult update(Dropper dropper);
+    
+    /**
+     * Update tick.
+     * 
+     * @param dropper
+     *            the underlying dropper
+     */
+    void updateTick(Dropper dropper);
     
     /**
      * Special enum for void results.
@@ -89,19 +97,25 @@ public interface BlockHopperRuleInterface extends DataFragment
     /**
      * original behavior.
      */
-    class Original extends AnnotatedDataFragment implements BlockHopperRuleInterface
+    class Original extends AnnotatedDataFragment implements BlockDropperRuleInterface
     {
         
         @Override
-        public BooleanResult isItemValidForSlot(int index, ItemStack stack, Hopper hopper)
+        public BooleanResult isItemValidForSlot(int index, ItemStack stack, Dropper dropper)
         {
             return BooleanResult.CallSuper;
         }
         
         @Override
-        public VoidResult update(Hopper hopper)
+        public VoidResult update(Dropper dropper)
         {
             return VoidResult.CallSuper;
+        }
+
+        @Override
+        public void updateTick(Dropper dropper)
+        {
+            // do nothing
         }
         
     }
